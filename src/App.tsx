@@ -14,7 +14,6 @@ import Camps from "./pages/info/Camps";     // Import sub-halaman
 import Training from "./pages/info/Training"; // Import sub-halaman
 import ContactUs from "./pages/ContactUs"; // Import halaman Contact Us
 import Partners from "./pages/Partners";   // Import halaman Partners
-import Info from "./pages/Info";           // Import halaman Info baru
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,7 +36,6 @@ const App = () => (
             <Route path="info/training" element={<Training />} /> {/* Rute sub-halaman */}
             <Route path="contact-us" element={<ContactUs />} /> {/* Rute untuk halaman Contact Us */}
             <Route path="partners" element={<Partners />} />   {/* Rute untuk halaman Partners */}
-            <Route path="info" element={<Info />} />           {/* Rute untuk halaman Info baru */}
             {/* TAMBAHKAN SEMUA RUTE KUSTOM DI ATAS RUTE CATCH-ALL "*" */}
             <Route path="*" element={<NotFound />} />
           </Route>

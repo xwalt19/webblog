@@ -1,1 +1,0 @@
-// This file is no longer needed as it has been renamed to Home.tsx
