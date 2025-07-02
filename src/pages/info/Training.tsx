@@ -72,8 +72,8 @@ const Training: React.FC = () => {
       </section>
 
       <div className="text-center mt-12">
-        <Link to="/info">
-          <Button>Kembali ke Activity Program</Button>
+        <Link to="/">
+          <Button>Kembali ke Beranda</Button>
         </Link>
       </div>
     </div>

@@ -148,7 +148,7 @@ const Camps: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>Return to Home</Button>
+          <Button>Kembali ke Beranda</Button>
         </Link>
       </div>
     </div>
