@@ -18,8 +18,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Input } from "@/components/ui/input";
-import BlogSidebarFilters from "@/components/BlogSidebarFilters"; // Import komponen sidebar baru
+import { Input } from "@/components/ui/input"; // Import Input component
 
 interface BlogPost {
   id: string;
@@ -155,6 +154,8 @@ const dummyBlogPosts: BlogPost[] = [
   },
 ];
 
+// allCategories tidak lagi dibutuhkan karena filter dihapus
+// const allCategories = ["Semua", ...new Set(dummyBlogPosts.map(post => post.category))];
 const allTags = ["Semua", ...new Set(dummyBlogPosts.flatMap(post => post.tags))];
 
 const monthNames = [
@@ -165,8 +166,10 @@ const monthNames = [
 const POSTS_PER_PAGE = 6; // Jumlah postingan per halaman
 
 const BlogPage: React.FC = () => {
-  const [selectedPeriod, setSelectedPeriod] = useState("Semua");
-  const [selectedTag, setSelectedTag] = useState("Semua");
+  // State untuk filter kategori tidak lagi dibutuhkan
+  // const [selectedCategory, setSelectedCategory] = useState("Semua");
+  const [selectedPeriod, setSelectedPeriod] = useState("Semua"); // State baru untuk filter gabungan tahun-bulan
+  const [selectedTag, setSelectedTag] = useState("Semua"); // State baru untuk filter tag
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -194,6 +197,8 @@ const BlogPage: React.FC = () => {
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return dummyBlogPosts.filter(post => {
+      // Filter kategori dihapus dari logika
+      // const matchesCategory = selectedCategory === "Semua" || post.category === selectedCategory;
       const matchesSearch = post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
                             post.excerpt.toLowerCase().includes(lowerCaseSearchTerm);
       
@@ -205,9 +210,10 @@ const BlogPage: React.FC = () => {
 
       const matchesTag = selectedTag === "Semua" || post.tags.includes(selectedTag);
 
+      // Hanya menggunakan filter pencarian, periode, dan tag
       return matchesSearch && matchesPeriod && matchesTag;
     });
-  }, [selectedPeriod, selectedTag, searchTerm]);
+  }, [selectedPeriod, selectedTag, searchTerm]); // Dependensi disesuaikan
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -224,7 +230,7 @@ const BlogPage: React.FC = () => {
   // Reset pagination whenever filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPeriod, selectedTag, searchTerm]);
+  }, [selectedPeriod, selectedTag, searchTerm]); // Dependensi disesuaikan
 
   return (
     <div className="container mx-auto py-10 px-4">
@@ -233,92 +239,120 @@ const BlogPage: React.FC = () => {
         Jelajahi semua postingan blog kami, filter berdasarkan periode (tahun & bulan), tag, atau cari berdasarkan kata kunci.
       </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Sidebar for filters */}
-        <div className="lg:col-span-1">
-          <BlogSidebarFilters
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedTag={selectedTag}
-            setSelectedTag={setSelectedTag}
-            selectedPeriod={selectedPeriod}
-            setSelectedPeriod={setSelectedPeriod}
-            allTags={allTags}
-            allPeriods={allPeriods}
-            getPeriodDisplayName={getPeriodDisplayName}
-          />
-        </div>
+      {/* Filter Area */}
+      <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-10 flex-wrap">
+        {/* Search Input */}
+        <Input
+          type="text"
+          placeholder="Cari postingan..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full md:max-w-xs" // Adjust width for better alignment
+        />
 
-        {/* Main content for blog posts */}
-        <div className="lg:col-span-3">
-          {currentPosts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {currentPosts.map((post) => (
-                <Card key={post.id} className="flex flex-col overflow-hidden">
-                  <img src={post.image} alt={post.title} className="w-full h-48 object-cover" />
-                  <CardHeader className="flex-grow">
-                    <div className="flex justify-between items-center mb-2">
-                      <Badge variant="secondary">{post.category}</Badge>
-                      <span className="text-sm text-muted-foreground">{post.date}</span>
-                    </div>
-                    <CardTitle className="text-xl">{post.title}</CardTitle>
-                    <CardDescription className="text-sm text-muted-foreground">By {post.author}</CardDescription>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {post.tags.map(tag => (
-                        <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
-                      ))}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-6 pt-0">
-                    <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
-                    {post.pdfLink ? (
-                      <a href={post.pdfLink} target="_blank" rel="noopener noreferrer" className="w-full">
-                        <Button variant="outline" className="w-full">Baca Selengkapnya (PDF)</Button>
-                      </a>
-                    ) : (
-                      <Link to={`/posts/${post.id}`}>
-                        <Button variant="outline" className="w-full">Baca Selengkapnya</Button>
-                      </Link>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center text-muted-foreground mt-8 text-lg">Tidak ada postingan yang cocok dengan filter Anda.</p>
-          )}
+        {/* Tag Filter (as Select) */}
+        <Select
+          value={selectedTag}
+          onValueChange={(value) => setSelectedTag(value)}
+        >
+          <SelectTrigger className="w-full md:w-[180px]">
+            <SelectValue placeholder="Tag" />
+          </SelectTrigger>
+          <SelectContent>
+            {allTags.map(tag => (
+              <SelectItem key={tag} value={tag}>
+                {tag === "Semua" ? "Tag" : tag} {/* Perubahan di sini */}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-          {/* Paginasi */}
-          {totalPages > 1 && (
-            <Pagination className="mt-12">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : undefined}
-                  />
-                </PaginationItem>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      onClick={() => handlePageChange(page)}
-                      isActive={currentPage === page}
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
-        </div>
+        {/* Period Filter (Year and Month Combined) */}
+        <Select
+          value={selectedPeriod}
+          onValueChange={(value) => setSelectedPeriod(value)}
+        >
+          <SelectTrigger className="w-full md:w-[200px]">
+            <SelectValue placeholder="Pilih Periode" />
+          </SelectTrigger>
+          <SelectContent>
+            {allPeriods.map(period => (
+              <SelectItem key={period} value={period}>
+                {getPeriodDisplayName(period)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
+
+      {/* Grid Postingan Blog */}
+      {currentPosts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {currentPosts.map((post) => (
+            <Card key={post.id} className="flex flex-col overflow-hidden">
+              <img src={post.image} alt={post.title} className="w-full h-48 object-cover" />
+              <CardHeader className="flex-grow">
+                <div className="flex justify-between items-center mb-2">
+                  <Badge variant="secondary">{post.category}</Badge>
+                  <span className="text-sm text-muted-foreground">{post.date}</span>
+                </div>
+                <CardTitle className="text-xl">{post.title}</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">By {post.author}</CardDescription>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {post.tags.map(tag => (
+                    <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                  ))}
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
+                {/* Mengubah Link menjadi tag <a> untuk membuka PDF */}
+                {post.pdfLink ? (
+                  <a href={post.pdfLink} target="_blank" rel="noopener noreferrer" className="w-full">
+                    <Button variant="outline" className="w-full">Baca Selengkapnya (PDF)</Button>
+                  </a>
+                ) : (
+                  <Link to={`/posts/${post.id}`}>
+                    <Button variant="outline" className="w-full">Baca Selengkapnya</Button>
+                  </Link>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-muted-foreground mt-8 text-lg">Tidak ada postingan yang cocok dengan filter Anda.</p>
+      )}
+
+      {/* Paginasi */}
+      {totalPages > 1 && (
+        <Pagination className="mt-12">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => handlePageChange(currentPage - 1)}
+                className={currentPage === 1 ? "pointer-events-none opacity-50" : undefined}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  onClick={() => handlePageChange(page)}
+                  isActive={currentPage === page}
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => handlePageChange(currentPage + 1)}
+                className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </div>
   );
 };
