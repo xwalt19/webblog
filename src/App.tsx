@@ -6,12 +6,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import PostDetail from "./pages/PostDetail";
+import CoursesPage from "./pages/Courses"; // Import halaman Kursus
+import BlogPage from "./pages/Blog";       // Import halaman Blog
+import AboutPage from "./pages/About";     // Import halaman Tentang Kami
 import NotFound from "./pages/NotFound";
-
-// Komponen placeholder untuk rute baru
-const RelatedCoursesPage = () => <div className="container mx-auto py-10 text-center"><h1 className="text-4xl font-bold">Kursus Terkait</h1><p className="text-lg text-muted-foreground mt-4">Di sini akan ada informasi tentang kursus yang relevan dengan blog.</p></div>;
-const AboutPage = () => <div className="container mx-auto py-10 text-center"><h1 className="text-4xl font-bold">Tentang Kami</h1><p className="text-lg text-muted-foreground mt-4">Informasi tentang Blog Kurusiu.</p></div>;
-
 
 const queryClient = new QueryClient();
 
@@ -25,8 +23,9 @@ const App = () => (
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="posts/:id" element={<PostDetail />} />
-            <Route path="related-courses" element={<RelatedCoursesPage />} />
-            <Route path="about" element={<AboutPage />} />
+            <Route path="courses" element={<CoursesPage />} /> {/* Rute untuk halaman Kursus */}
+            <Route path="blog" element={<BlogPage />} />       {/* Rute untuk halaman Blog */}
+            <Route path="about" element={<AboutPage />} />     {/* Rute untuk halaman Tentang Kami */}
             {/* TAMBAHKAN SEMUA RUTE KUSTOM DI ATAS RUTE CATCH-ALL "*" */}
             <Route path="*" element={<NotFound />} />
           </Route>

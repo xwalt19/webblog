@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -71,35 +71,16 @@ const dummyBlogPosts: BlogPost[] = [
   },
 ];
 
-const categories = ["Semua", "Dasar HTML", "Styling CSS", "JavaScript Interaktif", "Proyek Akhir"];
-
 const LatestBlogPosts: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState("Semua");
-
-  const filteredPosts = selectedCategory === "Semua"
-    ? dummyBlogPosts
-    : dummyBlogPosts.filter(post => post.category === selectedCategory);
+  // Ambil hanya 3 postingan terbaru untuk homepage
+  const latestPosts = dummyBlogPosts.slice(0, 3);
 
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        {/* Filter Kategori */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {categories.map(category => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
-              onClick={() => setSelectedCategory(category)}
-              className="px-4 py-2 rounded-full"
-            >
-              {category}
-            </Button>
-          ))}
-        </div>
-
-        {/* Grid Postingan Blog */}
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Wawasan Terbaru dari Blog Kami</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPosts.map((post) => (
+          {latestPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">
               <img src={post.image} alt={post.title} className="w-full h-48 object-cover" />
               <CardHeader className="flex-grow">
@@ -119,9 +100,11 @@ const LatestBlogPosts: React.FC = () => {
             </Card>
           ))}
         </div>
-        {filteredPosts.length === 0 && (
-          <p className="text-center text-muted-foreground mt-8">Tidak ada postingan untuk kategori ini.</p>
-        )}
+        <div className="text-center mt-10">
+          <Link to="/blog">
+            <Button size="lg" variant="default">Baca Semua Postingan</Button>
+          </Link>
+        </div>
       </div>
     </section>
   );
