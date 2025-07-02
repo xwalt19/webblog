@@ -106,7 +106,13 @@ const Layout: React.FC = () => {
                         </Link>
                       </NavigationMenuLink>
                     </li>
-                    <Separator className="col-span-full my-2" /> {/* Separator opsional */}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Info</NavigationMenuTrigger> {/* Mengubah Info menjadi trigger */}
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
@@ -139,13 +145,6 @@ const Layout: React.FC = () => {
                     </li>
                   </ul>
                 </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/info" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Info
-                  </NavigationMenuLink>
-                </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
