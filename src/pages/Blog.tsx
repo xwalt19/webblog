@@ -18,6 +18,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Input } from "@/components/ui/input"; // Import Input component
 
 interface BlogPost {
   id: string;
@@ -28,6 +29,7 @@ interface BlogPost {
   category: string;
   author: string;
   year: number;
+  month: number; // Tambahkan properti bulan
 }
 
 const dummyBlogPosts: BlogPost[] = [
@@ -40,6 +42,7 @@ const dummyBlogPosts: BlogPost[] = [
     category: "Dasar HTML",
     author: "Instruktur A",
     year: 2023,
+    month: 10, // Oktober
   },
   {
     id: "2",
@@ -50,6 +53,7 @@ const dummyBlogPosts: BlogPost[] = [
     category: "Styling CSS",
     author: "Instruktur B",
     year: 2023,
+    month: 11, // November
   },
   {
     id: "3",
@@ -60,6 +64,7 @@ const dummyBlogPosts: BlogPost[] = [
     category: "JavaScript Interaktif",
     author: "Instruktur C",
     year: 2023,
+    month: 12, // Desember
   },
   {
     id: "4",
@@ -70,6 +75,7 @@ const dummyBlogPosts: BlogPost[] = [
     category: "JavaScript Interaktif",
     author: "Instruktur A",
     year: 2024,
+    month: 1, // Januari
   },
   {
     id: "5",
@@ -80,6 +86,7 @@ const dummyBlogPosts: BlogPost[] = [
     category: "Proyek Akhir",
     author: "Instruktur B",
     year: 2024,
+    month: 2, // Februari
   },
   {
     id: "6",
@@ -90,6 +97,7 @@ const dummyBlogPosts: BlogPost[] = [
     category: "Dasar HTML",
     author: "Instruktur C",
     year: 2024,
+    month: 2, // Februari
   },
   {
     id: "7",
@@ -100,6 +108,7 @@ const dummyBlogPosts: BlogPost[] = [
     category: "Styling CSS",
     author: "Instruktur A",
     year: 2024,
+    month: 3, // Maret
   },
   {
     id: "8",
@@ -110,6 +119,7 @@ const dummyBlogPosts: BlogPost[] = [
     category: "JavaScript Interaktif",
     author: "Instruktur B",
     year: 2024,
+    month: 4, // April
   },
   {
     id: "9",
@@ -120,26 +130,40 @@ const dummyBlogPosts: BlogPost[] = [
     category: "Proyek Akhir",
     author: "Instruktur C",
     year: 2025,
+    month: 5, // Mei
   },
 ];
 
 const allCategories = ["Semua", ...new Set(dummyBlogPosts.map(post => post.category))];
 const allYears = ["Semua", ...new Set(dummyBlogPosts.map(post => post.year.toString()))].sort((a, b) => parseInt(b) - parseInt(a));
 
+const monthNames = [
+  "Semua", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+  "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+];
+const allMonths = ["Semua", ...new Set(dummyBlogPosts.map(post => post.month.toString()))].sort((a, b) => parseInt(a) - parseInt(b));
+
+
 const POSTS_PER_PAGE = 6; // Jumlah postingan per halaman
 
 const BlogPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [selectedYear, setSelectedYear] = useState("Semua");
+  const [selectedMonth, setSelectedMonth] = useState("Semua"); // State baru untuk filter bulan
+  const [searchTerm, setSearchTerm] = useState(""); // State baru untuk filter pencarian
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredPosts = useMemo(() => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return dummyBlogPosts.filter(post => {
       const matchesCategory = selectedCategory === "Semua" || post.category === selectedCategory;
       const matchesYear = selectedYear === "Semua" || post.year.toString() === selectedYear;
-      return matchesCategory && matchesYear;
+      const matchesMonth = selectedMonth === "Semua" || post.month.toString() === selectedMonth;
+      const matchesSearch = post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+                            post.excerpt.toLowerCase().includes(lowerCaseSearchTerm);
+      return matchesCategory && matchesYear && matchesMonth && matchesSearch;
     });
-  }, [selectedCategory, selectedYear]);
+  }, [selectedCategory, selectedYear, selectedMonth, searchTerm]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -153,25 +177,36 @@ const BlogPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on page change
   };
 
+  // Reset pagination whenever filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, selectedYear, selectedMonth, searchTerm]);
+
   return (
     <div className="container mx-auto py-10 px-4">
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Artikel & Tutorial</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
-        Jelajahi semua postingan blog kami, filter berdasarkan kategori dan tahun untuk menemukan wawasan yang Anda cari.
+        Jelajahi semua postingan blog kami, filter berdasarkan kategori, tahun, bulan, atau cari berdasarkan kata kunci.
       </p>
 
       {/* Filter Area */}
-      <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-10">
+      <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-10 flex-wrap">
+        {/* Search Input */}
+        <Input
+          type="text"
+          placeholder="Cari postingan..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full md:w-auto max-w-sm"
+        />
+
         {/* Category Filter */}
         <div className="flex flex-wrap justify-center gap-2">
           {allCategories.map(category => (
             <Button
               key={category}
               variant={selectedCategory === category ? "default" : "outline"}
-              onClick={() => {
-                setSelectedCategory(category);
-                setCurrentPage(1); // Reset to first page on filter change
-              }}
+              onClick={() => setSelectedCategory(category)}
               className="px-4 py-2 rounded-full"
             >
               {category}
@@ -182,10 +217,7 @@ const BlogPage: React.FC = () => {
         {/* Year Filter */}
         <Select
           value={selectedYear}
-          onValueChange={(value) => {
-            setSelectedYear(value);
-            setCurrentPage(1); // Reset to first page on filter change
-          }}
+          onValueChange={(value) => setSelectedYear(value)}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Pilih Tahun" />
@@ -194,6 +226,23 @@ const BlogPage: React.FC = () => {
             {allYears.map(year => (
               <SelectItem key={year} value={year}>
                 {year === "Semua" ? "Semua Tahun" : year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Month Filter */}
+        <Select
+          value={selectedMonth}
+          onValueChange={(value) => setSelectedMonth(value)}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Pilih Bulan" />
+          </SelectTrigger>
+          <SelectContent>
+            {allMonths.map(month => (
+              <SelectItem key={month} value={month}>
+                {monthNames[parseInt(month)] || "Semua Bulan"}
               </SelectItem>
             ))}
           </SelectContent>
