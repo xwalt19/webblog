@@ -48,7 +48,7 @@ const dummyTeamMembers: TeamMember[] = [
 
 const AboutPage: React.FC = () => {
   return (
-    <div className="container mx-auto py-10 px-4">
+    <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner"> {/* Added bg-muted/40 and shadow-inner */}
       <section className="text-center mb-16">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Tentang ProCodeCG</h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -57,7 +57,7 @@ const AboutPage: React.FC = () => {
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-        <Card className="p-6">
+        <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
           <CardHeader className="pb-4">
             <CardTitle className="text-2xl font-semibold flex items-center gap-2">
               <Lightbulb className="text-yellow-500" size={28} /> Misi Kami
@@ -69,7 +69,7 @@ const AboutPage: React.FC = () => {
             </p>
           </CardContent>
         </Card>
-        <Card className="p-6">
+        <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
           <CardHeader className="pb-4">
             <CardTitle className="text-2xl font-semibold flex items-center gap-2">
               <Users className="text-blue-500" size={28} /> Visi Kami
@@ -86,21 +86,21 @@ const AboutPage: React.FC = () => {
       <section className="mb-16">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Nilai-nilai Kami</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="text-center p-6">
+          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
             <Handshake className="mx-auto mb-4 text-green-500" size={40} />
             <CardTitle className="text-xl mb-2">Aksesibilitas</CardTitle>
             <CardContent className="text-muted-foreground p-0">
               Kami percaya pendidikan berkualitas harus dapat diakses oleh semua orang, tanpa memandang latar belakang atau lokasi.
             </CardContent>
           </Card>
-          <Card className="text-center p-6">
+          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
             <Lightbulb className="mx-auto mb-4 text-purple-500" size={40} />
             <CardTitle className="text-xl mb-2">Inovasi</CardTitle>
             <CardContent className="text-muted-foreground p-0">
               Kami terus berinovasi dalam metode pengajaran dan konten untuk memastikan Anda selalu mendapatkan informasi terbaru.
             </CardContent>
           </Card>
-          <Card className="text-center p-6">
+          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
             <Users className="mx-auto mb-4 text-red-500" size={40} />
             <CardTitle className="text-xl mb-2">Komunitas</CardTitle>
             <CardContent className="text-muted-foreground p-0">
@@ -114,7 +114,7 @@ const AboutPage: React.FC = () => {
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Tim Kami</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {dummyTeamMembers.map((member, index) => (
-            <Card key={index} className="flex flex-col items-center text-center p-6">
+            <Card key={index} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
               <Avatar className="w-24 h-24 mb-4">
                 <AvatarImage src={member.avatarUrl} alt={member.name} />
                 <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
