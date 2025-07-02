@@ -1,52 +1,40 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarDays, Tent, Award } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"; // Import Select components
 
 const InfoPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleSelectChange = (value: string) => {
+    if (value && value !== "placeholder") { // Hindari navigasi jika nilai kosong atau placeholder
+      navigate(`/info/${value}`);
+    }
+  };
+
   return (
-    <div className="container mx-auto py-10 px-4">
-      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Informasi Program Kami</h1>
-      <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
+    <div className="container mx-auto py-10 px-4 text-center">
+      <h1 className="text-4xl md:text-5xl font-bold mb-4">Informasi Program Kami</h1>
+      <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
         Temukan berbagai program dan kegiatan yang kami tawarkan untuk mengembangkan potensi Anda di dunia teknologi.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Link to="/info/regular-events-classes" className="block">
-          <Card className="h-full flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardHeader className="pb-4">
-              <CalendarDays className="mx-auto mb-4 text-primary" size={48} />
-              <CardTitle className="text-xl mb-2">REGULAR EVENTS & CLASSES</CardTitle>
-            </CardHeader>
-            <CardContent className="text-muted-foreground p-0 flex-grow">
-              Jadwal rutin kelas dan acara mingguan kami.
-            </CardContent>
-          </Card>
-        </Link>
-
-        <Link to="/info/camps" className="block">
-          <Card className="h-full flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardHeader className="pb-4">
-              <Tent className="mx-auto mb-4 text-green-500" size={48} />
-              <CardTitle className="text-xl mb-2">CAMPS</CardTitle>
-            </CardHeader>
-            <CardContent className="text-muted-foreground p-0 flex-grow">
-              Program intensif liburan sekolah dan akhir pekan.
-            </CardContent>
-          </Card>
-        </Link>
-
-        <Link to="/info/training" className="block">
-          <Card className="h-full flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardHeader className="pb-4">
-              <Award className="mx-auto mb-4 text-purple-500" size={48} />
-              <CardTitle className="text-xl mb-2">TRAINING</CardTitle>
-            </CardHeader>
-            <CardContent className="text-muted-foreground p-0 flex-grow">
-              Pelatihan khusus untuk individu dan korporasi.
-            </CardContent>
-          </Card>
-        </Link>
+      <div className="flex justify-center">
+        <Select onValueChange={handleSelectChange}>
+          <SelectTrigger className="w-full md:w-[300px]">
+            <SelectValue placeholder="Pilih Kategori Informasi" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="regular-events-classes">REGULAR EVENTS & CLASSES</SelectItem>
+            <SelectItem value="camps">CAMPS</SelectItem>
+            <SelectItem value="training">TRAINING</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
