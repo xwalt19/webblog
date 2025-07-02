@@ -1,15 +1,15 @@
 import React from "react";
 import HeroSection from "@/components/HeroSection";
-// import FeaturedCourses from "@/components/FeaturedCourses"; // Diaktifkan kembali
 import LatestBlogPosts from "@/components/LatestBlogPosts";
-import WhyProCodeCG from "@/components/WhyProCodeCG"; // Import komponen baru
+import WhyProCodeCG from "@/components/WhyProCodeCG";
+import CallToActionSection from "@/components/CallToActionSection"; // Import komponen baru
 
 const Home: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <HeroSection />
-      {/* <FeaturedCourses /> */} {/* Ditampilkan kembali */}
-      <WhyProCodeCG /> {/* Komponen baru */}
+      <WhyProCodeCG />
+      <CallToActionSection /> {/* Komponen baru ditambahkan di sini */}
       <LatestBlogPosts />
       {/* Bagian lain untuk homepage dapat ditambahkan di sini */}
     </div>
