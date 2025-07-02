@@ -23,7 +23,7 @@ const MobileNav: React.FC = () => {
           <span className="sr-only">Toggle mobile menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-64 p-4 pt-10 bg-background text-foreground"> {/* Changed background and text color */}
+      <SheetContent side="left" className="w-64 p-4 pt-10 bg-blue-100 text-foreground"> {/* Changed background to bg-blue-100 */}
         <Link to="/" className="text-2xl font-bold text-primary mb-6 block" onClick={closeSheet}> {/* Changed text color */}
           ProCodeCG
         </Link>

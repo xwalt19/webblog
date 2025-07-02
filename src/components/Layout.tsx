@@ -19,7 +19,7 @@ const Layout: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header (Navbar) */}
-      <header className="sticky top-0 z-50 bg-background backdrop-blur-sm border-b border-border"> {/* Changed background and border */}
+      <header className="sticky top-0 z-50 bg-blue-100 backdrop-blur-sm border-b border-border"> {/* Changed background to bg-blue-100 */}
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-primary"> {/* Changed text color to primary */}
