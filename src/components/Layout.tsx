@@ -158,45 +158,6 @@ const Layout: React.FC = () => {
       <main className="flex-grow">
         <Outlet />
       </main>
-
-      {/* Footer */}
-      <footer className="bg-secondary text-secondary-foreground p-8 mt-12">
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Tautan Cepat</h3>
-            <ul className="space-y-2">
-              <li><Link to="/" className="hover:underline">Home</Link></li>
-              <li><Link to="/about" className="hover:underline">About</Link></li>
-              <li><Link to="/blog" className="hover:underline">Blog</Link></li>
-              <li><Link to="/archives" className="hover:underline">Archives</Link></li>
-              <li><Link to="/contact-us" className="hover:underline">Contact Us</Link></li>
-              <li><Link to="/partners" className="hover:underline">Partners</Link></li>
-              <li><Link to="/info" className="hover:underline">Info</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact Info / Placeholder */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Hubungi Kami</h3>
-            <p>Email: info@procodecg.com</p>
-            <p>Telepon: +62 123 4567</p>
-          </div>
-
-          {/* Social Media */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Ikuti Kami</h3>
-            <div className="flex space-x-4">
-              <a href="#" aria-label="LinkedIn" className="hover:text-primary-foreground"><Linkedin size={24} /></a>
-              <a href="#" aria-label="Instagram" className="hover:text-primary-foreground"><Instagram size={24} /></a>
-              <a href="#" aria-label="Twitter" className="hover:text-primary-foreground"><Twitter size={24} /></a>
-              <a href="#" aria-label="Facebook" className="hover:text-primary-foreground"><Facebook size={24} /></a>
-            </div>
-          </div>
-        </div>
-        <Separator className="my-8 bg-border" />
-        <p className="text-center text-sm">&copy; {new Date().getFullYear()} ProCodeCG. All rights reserved.</p>
-      </footer>
     </div>
   );
 };
