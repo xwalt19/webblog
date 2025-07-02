@@ -71,9 +71,9 @@ const RegularEventsClasses: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">REGULAR EVENTS & CLASSES</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Jadwal & Acara ProCodeCG</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          Temukan berbagai topik menarik, jadwal kelas rutin, dan acara komunitas yang kami selenggarakan untuk mengembangkan keterampilan IT Anda.
+          Temukan topik pembelajaran, kelas rutin, dan acara komunitas kami.
         </p>
       </section>
 
@@ -113,7 +113,6 @@ const RegularEventsClasses: React.FC = () => {
       {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Kelas yang Sedang Berjalan</h2>
-          {/* Menghapus max-w-3xl mx-auto dan mengatur grid untuk satu kolom penuh */}
           <div className="grid grid-cols-1 gap-6"> 
             {runningClasses.map((cls, index) => (
               <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
@@ -141,7 +140,6 @@ const RegularEventsClasses: React.FC = () => {
       {(selectedActivityView === "allActivities" || selectedActivityView === "regularEvents") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Acara Reguler</h2>
-          {/* Menghapus max-w-3xl mx-auto dan mengatur grid untuk satu kolom penuh */}
           <div className="grid grid-cols-1 gap-6">
             {regularEvents.map((event, index) => (
               <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
