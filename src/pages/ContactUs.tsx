@@ -7,16 +7,9 @@ import { Mail, Facebook, Twitter, Globe } from "lucide-react"; // Menggunakan ik
 const ContactUs: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
-      {/* Bagian judul "Hubungi Kami" telah dihapus */}
-
       <div className="flex justify-center mb-16">
         <Card className="w-full max-w-4xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="text-3xl font-bold mb-2">Mari Terhubung!</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Kami selalu terbuka untuk pertanyaan, kolaborasi, atau sekadar sapaan.
-            </CardDescription>
-          </CardHeader>
+          {/* Bagian CardHeader yang berisi judul dan deskripsi telah dihapus */}
           <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Email Card */}
             <Card className="flex flex-col items-center text-center p-6 bg-muted/30 hover:bg-muted/50 transition-colors duration-200">
