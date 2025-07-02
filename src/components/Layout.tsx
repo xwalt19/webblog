@@ -19,10 +19,10 @@ const Layout: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header (Navbar) */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 bg-gray-900 backdrop-blur-sm border-b border-gray-700"> {/* Changed background and border */}
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-primary">
+          <Link to="/" className="text-2xl font-bold text-white"> {/* Changed text color to white */}
             ProCodeCG
           </Link>
 
@@ -31,46 +31,46 @@ const Layout: React.FC = () => {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <Link to="/" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700")}> {/* Adjusted text and hover colors */}
                     Home
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/about" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700")}>
                     About
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/blog" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700")}>
                     Blog
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/archives" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700")}>
                     Archives
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Activity</NavigationMenuTrigger>
-                <NavigationMenuContent>
+                <NavigationMenuTrigger className="text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700">Activity</NavigationMenuTrigger> {/* Adjusted text and hover colors */}
+                <NavigationMenuContent className="bg-gray-800 text-white border-gray-700"> {/* Dark background for content */}
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
                           to="/info/regular-events-classes"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-700 hover:text-gray-200 focus:bg-gray-700 focus:text-gray-200" // Adjusted hover/focus colors
                           )}
                         >
-                          <div className="text-sm font-medium leading-none">REGULAR EVENTS & CLASSES</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          <div className="text-sm font-medium leading-none text-white">REGULAR EVENTS & CLASSES</div> {/* Ensure text is white */}
+                          <p className="line-clamp-2 text-sm leading-snug text-gray-400"> {/* Muted foreground for description */}
                             Jadwal rutin kelas dan acara mingguan kami.
                           </p>
                         </Link>
@@ -81,11 +81,11 @@ const Layout: React.FC = () => {
                         <Link
                           to="/info/camps"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-700 hover:text-gray-200 focus:bg-gray-700 focus:text-gray-200"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none">CAMPS</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          <div className="text-sm font-medium leading-none text-white">CAMPS</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-gray-400">
                             Program intensif liburan sekolah dan akhir pekan.
                           </p>
                         </Link>
@@ -96,11 +96,11 @@ const Layout: React.FC = () => {
                         <Link
                           to="/info/training"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-700 hover:text-gray-200 focus:bg-gray-700 focus:text-gray-200"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none">TRAINING</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          <div className="text-sm font-medium leading-none text-white">TRAINING</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-gray-400">
                             Pelatihan khusus untuk individu dan korporasi.
                           </p>
                         </Link>
@@ -110,19 +110,19 @@ const Layout: React.FC = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Info</NavigationMenuTrigger> {/* Mengubah Info menjadi trigger */}
-                <NavigationMenuContent>
+                <NavigationMenuTrigger className="text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700">Info</NavigationMenuTrigger> {/* Adjusted text and hover colors */}
+                <NavigationMenuContent className="bg-gray-800 text-white border-gray-700"> {/* Dark background for content */}
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
                           to="/contact-us"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-700 hover:text-gray-200 focus:bg-gray-700 focus:text-gray-200"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none">CONTACT US</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          <div className="text-sm font-medium leading-none text-white">CONTACT US</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-gray-400">
                             Hubungi kami untuk pertanyaan atau kolaborasi.
                           </p>
                         </Link>
@@ -133,11 +133,11 @@ const Layout: React.FC = () => {
                         <Link
                           to="/partners"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-700 hover:text-gray-200 focus:bg-gray-700 focus:text-gray-200"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none">PARTNERS</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                          <div className="text-sm font-medium leading-none text-white">PARTNERS</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-gray-400">
                             Lihat mitra dan kolaborator kami.
                           </p>
                         </Link>
