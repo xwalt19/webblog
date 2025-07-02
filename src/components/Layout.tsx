@@ -5,12 +5,15 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuContent,
+  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import MobileNav from "./MobileNav"; // Import MobileNav component
+import { cn } from "@/lib/utils"; // Import cn utility
 
 const Layout: React.FC = () => {
   return (
@@ -55,11 +58,71 @@ const Layout: React.FC = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/info" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Info
-                  </NavigationMenuLink>
-                </Link>
+                <NavigationMenuTrigger>Info</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                    <li className="row-span-3">
+                      <NavigationMenuLink asChild>
+                        <a
+                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                          href="/info"
+                        >
+                          <div className="mb-2 mt-4 text-lg font-medium">
+                            Informasi Program
+                          </div>
+                          <p className="text-sm leading-tight text-muted-foreground">
+                            Temukan berbagai program dan kegiatan yang kami tawarkan.
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/info/regular-events-classes"
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">REGULAR EVENTS & CLASSES</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Jadwal rutin kelas dan acara mingguan kami.
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/info/camps"
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">CAMPS</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Program intensif liburan sekolah dan akhir pekan.
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/info/training"
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">TRAINING</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Pelatihan khusus untuk individu dan korporasi.
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  </ul>
+                </NavigationMenuContent>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>

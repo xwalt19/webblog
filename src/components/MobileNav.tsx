@@ -3,6 +3,12 @@ import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,9 +40,26 @@ const MobileNav: React.FC = () => {
           <Link to="/archives" className="text-lg font-medium hover:text-primary transition-colors" onClick={closeSheet}>
             Archives
           </Link>
-          <Link to="/info" className="text-lg font-medium hover:text-primary transition-colors" onClick={closeSheet}>
-            Info
-          </Link>
+          
+          {/* Info with Accordion for sub-items */}
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="item-1" className="border-b-0">
+              <AccordionTrigger className="py-0 text-lg font-medium hover:no-underline hover:text-primary transition-colors">
+                Info
+              </AccordionTrigger>
+              <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
+                <Link to="/info/regular-events-classes" className="block text-base text-muted-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+                  REGULAR EVENTS & CLASSES
+                </Link>
+                <Link to="/info/camps" className="block text-base text-muted-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+                  CAMPS
+                </Link>
+                <Link to="/info/training" className="block text-base text-muted-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+                  TRAINING
+                </Link>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </nav>
       </SheetContent>
     </Sheet>
