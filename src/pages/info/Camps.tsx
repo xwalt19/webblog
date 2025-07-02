@@ -109,10 +109,7 @@ const Camps: React.FC = () => {
         </p>
       </section>
 
-      {/* Separator di sini telah dihapus */}
-
       <section className="mb-16">
-        {/* Judul "Daftar Camp Kami" di sini telah dihapus */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {dummyCamps.map((camp) => (
             <Card key={camp.id} className="flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -150,8 +147,8 @@ const Camps: React.FC = () => {
       </section>
 
       <div className="text-center mt-12">
-        <Link to="/info">
-          <Button>Kembali ke Info Program</Button>
+        <Link to="/">
+          <Button>Return to Home</Button>
         </Link>
       </div>
     </div>
