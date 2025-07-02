@@ -19,10 +19,10 @@ const Layout: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header (Navbar) */}
-      <header className="sticky top-0 z-50 bg-gray-900 backdrop-blur-sm border-b border-gray-700"> {/* Changed background and border */}
+      <header className="sticky top-0 z-50 bg-background backdrop-blur-sm border-b border-border"> {/* Changed background and border */}
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-white"> {/* Changed text color to white */}
+          <Link to="/" className="text-2xl font-bold text-primary"> {/* Changed text color to primary */}
             ProCodeCG
           </Link>
 
@@ -31,46 +31,46 @@ const Layout: React.FC = () => {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <Link to="/" legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700")}> {/* Adjusted text and hover colors */}
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}> {/* Adjusted text and hover colors */}
                     Home
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/about" legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700")}>
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}>
                     About
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/blog" legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700")}>
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}>
                     Blog
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/archives" legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700")}>
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}>
                     Archives
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700">Activity</NavigationMenuTrigger> {/* Adjusted text and hover colors */}
-                <NavigationMenuContent className="bg-gray-800 text-white border-gray-700"> {/* Dark background for content */}
+                <NavigationMenuTrigger className="text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Activity</NavigationMenuTrigger> {/* Adjusted text and hover colors */}
+                <NavigationMenuContent className="bg-background text-foreground border-border"> {/* Light background for content */}
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
                           to="/info/regular-events-classes"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-700 hover:text-gray-200 focus:bg-gray-700 focus:text-gray-200" // Adjusted hover/focus colors
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" // Adjusted hover/focus colors
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-white">REGULAR EVENTS & CLASSES</div> {/* Ensure text is white */}
-                          <p className="line-clamp-2 text-sm leading-snug text-gray-400"> {/* Muted foreground for description */}
+                          <div className="text-sm font-medium leading-none text-foreground">REGULAR EVENTS & CLASSES</div> {/* Ensure text is foreground */}
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground"> {/* Muted foreground for description */}
                             Jadwal rutin kelas dan acara mingguan kami.
                           </p>
                         </Link>
@@ -81,11 +81,11 @@ const Layout: React.FC = () => {
                         <Link
                           to="/info/camps"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-700 hover:text-gray-200 focus:bg-gray-700 focus:text-gray-200"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-white">CAMPS</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-gray-400">
+                          <div className="text-sm font-medium leading-none text-foreground">CAMPS</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                             Program intensif liburan sekolah dan akhir pekan.
                           </p>
                         </Link>
@@ -96,11 +96,11 @@ const Layout: React.FC = () => {
                         <Link
                           to="/info/training"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-700 hover:text-gray-200 focus:bg-gray-700 focus:text-gray-200"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-white">TRAINING</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-gray-400">
+                          <div className="text-sm font-medium leading-none text-foreground">TRAINING</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                             Pelatihan khusus untuk individu dan korporasi.
                           </p>
                         </Link>
@@ -110,19 +110,19 @@ const Layout: React.FC = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-white hover:text-gray-300 data-[active]:bg-gray-700 data-[state=open]:bg-gray-700">Info</NavigationMenuTrigger> {/* Adjusted text and hover colors */}
-                <NavigationMenuContent className="bg-gray-800 text-white border-gray-700"> {/* Dark background for content */}
+                <NavigationMenuTrigger className="text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Info</NavigationMenuTrigger> {/* Adjusted text and hover colors */}
+                <NavigationMenuContent className="bg-background text-foreground border-border"> {/* Light background for content */}
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
                           to="/contact-us"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-700 hover:text-gray-200 focus:bg-gray-700 focus:text-gray-200"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-white">CONTACT US</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-gray-400">
+                          <div className="text-sm font-medium leading-none text-foreground">CONTACT US</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                             Hubungi kami untuk pertanyaan atau kolaborasi.
                           </p>
                         </Link>
@@ -133,11 +133,11 @@ const Layout: React.FC = () => {
                         <Link
                           to="/partners"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-700 hover:text-gray-200 focus:bg-gray-700 focus:text-gray-200"
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-white">PARTNERS</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-gray-400">
+                          <div className="text-sm font-medium leading-none text-foreground">PARTNERS</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                             Lihat mitra dan kolaborator kami.
                           </p>
                         </Link>
