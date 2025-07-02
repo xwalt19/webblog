@@ -60,6 +60,12 @@ const MobileNav: React.FC = () => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+          <Link to="/contact-us" className="text-lg font-medium hover:text-primary transition-colors" onClick={closeSheet}>
+            Contact Us
+          </Link>
+          <Link to="/partners" className="text-lg font-medium hover:text-primary transition-colors" onClick={closeSheet}>
+            Partners
+          </Link>
         </nav>
       </SheetContent>
     </Sheet>
