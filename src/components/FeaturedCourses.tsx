@@ -15,25 +15,25 @@ const dummyCourses: Course[] = [
     id: "c1",
     title: "Belajar HTML & CSS dari Dasar",
     description: "Kuasai dasar-dasar pengembangan web dengan HTML dan CSS.",
-    image: "https://source.unsplash.com/random/400x250/?html,css",
+    image: "/images/html-css-course.jpg", // Menggunakan gambar lokal
   },
   {
     id: "c2",
     title: "Pengantar JavaScript Modern",
     description: "Pelajari JavaScript ES6+ untuk interaktivitas web.",
-    image: "https://source.unsplash.com/random/400x250/?javascript,code",
+    image: "/images/javascript-course.jpg", // Menggunakan gambar lokal
   },
   {
     id: "c3",
     title: "React.js untuk Pemula",
     description: "Bangun aplikasi web dinamis dengan React.js.",
-    image: "https://source.unsplash.com/random/400x250/?reactjs,programming",
+    image: "/images/react-course.jpg", // Menggunakan gambar lokal
   },
   {
     id: "c4",
     title: "Dasar-dasar Python untuk Data Science",
     description: "Mulai perjalanan Anda di Data Science dengan Python.",
-    image: "https://source.unsplash.com/random/400x250/?python,data",
+    image: "/images/python-course.jpg", // Menggunakan gambar lokal
   },
 ];
 
