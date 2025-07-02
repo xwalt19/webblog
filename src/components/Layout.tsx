@@ -158,6 +158,13 @@ const Layout: React.FC = () => {
       <main className="flex-grow">
         <Outlet />
       </main>
+
+      {/* Footer */}
+      <footer className="bg-background py-4 text-center text-sm text-muted-foreground border-t border-border">
+        <div className="container mx-auto px-4">
+          © 2023 Copyright by ProCodeCG. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 };
