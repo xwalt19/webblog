@@ -15,53 +15,49 @@ const ContactUs: React.FC = () => {
       </section>
 
       <div className="flex justify-center mb-16">
-        <Card className="w-full max-w-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <Card className="w-full max-w-4xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader className="text-center pb-6">
             <CardTitle className="text-3xl font-bold mb-2">Mari Terhubung!</CardTitle>
             <CardDescription className="text-muted-foreground">
               Kami selalu terbuka untuk pertanyaan, kolaborasi, atau sekadar sapaan.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="flex items-center justify-center md:justify-start gap-4 p-4 bg-muted/50 rounded-md">
-              <Mail className="text-primary" size={32} />
-              <div>
-                <h3 className="text-lg font-semibold">Email Kami</h3>
-                <a href="mailto:procodecg@gmail.com" className="text-blue-600 hover:underline">
-                  procodecg@gmail.com
-                </a>
-              </div>
-            </div>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Email Card */}
+            <Card className="flex flex-col items-center text-center p-6 bg-muted/30 hover:bg-muted/50 transition-colors duration-200">
+              <Mail className="text-primary mb-4" size={48} />
+              <h3 className="text-xl font-semibold mb-2">Email Kami</h3>
+              <a href="mailto:procodecg@gmail.com" className="text-blue-600 hover:underline text-lg">
+                procodecg@gmail.com
+              </a>
+            </Card>
 
-            <div className="flex items-center justify-center md:justify-start gap-4 p-4 bg-muted/50 rounded-md">
-              <Facebook className="text-blue-700" size={32} />
-              <div>
-                <h3 className="text-lg font-semibold">Ikuti Kami di Facebook</h3>
-                <a href="https://www.facebook.com/ProCodeCG" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                  ProCodeCG
-                </a>
-              </div>
-            </div>
+            {/* Facebook Card */}
+            <Card className="flex flex-col items-center text-center p-6 bg-muted/30 hover:bg-muted/50 transition-colors duration-200">
+              <Facebook className="text-blue-700 mb-4" size={48} />
+              <h3 className="text-xl font-semibold mb-2">Ikuti Kami di Facebook</h3>
+              <a href="https://www.facebook.com/ProCodeCG" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-lg">
+                ProCodeCG
+              </a>
+            </Card>
 
-            <div className="flex items-center justify-center md:justify-start gap-4 p-4 bg-muted/50 rounded-md">
-              <Twitter className="text-blue-400" size={32} />
-              <div>
-                <h3 className="text-lg font-semibold">Sebut Kami di Twitter</h3>
-                <a href="https://twitter.com/procodecg" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                  @procodecg
-                </a>
-              </div>
-            </div>
+            {/* Twitter Card */}
+            <Card className="flex flex-col items-center text-center p-6 bg-muted/30 hover:bg-muted/50 transition-colors duration-200">
+              <Twitter className="text-blue-400 mb-4" size={48} />
+              <h3 className="text-xl font-semibold mb-2">Sebut Kami di Twitter</h3>
+              <a href="https://twitter.com/procodecg" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-lg">
+                @procodecg
+              </a>
+            </Card>
 
-            <div className="flex items-center justify-center md:justify-start gap-4 p-4 bg-muted/50 rounded-md">
-              <Globe className="text-green-600" size={32} />
-              <div>
-                <h3 className="text-lg font-semibold">Kunjungi Website Resmi Kami</h3>
-                <a href="http://www.procodecg.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                  www.procodecg.com
-                </a>
-              </div>
-            </div>
+            {/* Official Website Card */}
+            <Card className="flex flex-col items-center text-center p-6 bg-muted/30 hover:bg-muted/50 transition-colors duration-200">
+              <Globe className="text-green-600 mb-4" size={48} />
+              <h3 className="text-xl font-semibold mb-2">Kunjungi Website Resmi Kami</h3>
+              <a href="http://www.procodecg.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-lg">
+                www.procodecg.com
+              </a>
+            </Card>
           </CardContent>
         </Card>
       </div>
