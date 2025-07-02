@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/select";
 
 const RegularEventsClasses: React.FC = () => {
-  const [selectedView, setSelectedView] = useState("all"); // State untuk mengontrol tampilan
+  // State untuk mengontrol tampilan bagian 'Kegiatan' (Kelas & Acara)
+  const [selectedActivityView, setSelectedActivityView] = useState("allActivities"); 
 
   const topics = [
     {
@@ -73,43 +74,40 @@ const RegularEventsClasses: React.FC = () => {
         </p>
       </section>
 
-      {/* Filter Dropdown */}
+      <Separator className="my-12" />
+
+      {/* Topics Section (Always visible) */}
+      <section className="mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Topik Pembelajaran</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {topics.map((topic, index) => (
+            <Card key={index} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <topic.icon className="mb-4 text-primary" size={48} />
+              <CardTitle className="text-xl mb-2">{topic.title}</CardTitle>
+              <CardDescription className="text-muted-foreground">{topic.description}</CardDescription>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <Separator className="my-12" />
+
+      {/* Filter Dropdown for Activities */}
       <div className="flex justify-center mb-10">
-        <Select value={selectedView} onValueChange={setSelectedView}>
+        <Select value={selectedActivityView} onValueChange={setSelectedActivityView}>
           <SelectTrigger className="w-full md:w-[250px]">
-            <SelectValue placeholder="Pilih Tampilan" />
+            <SelectValue placeholder="Pilih Kegiatan" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Semua Bagian</SelectItem>
-            <SelectItem value="topics">Topik Pembelajaran</SelectItem>
+            <SelectItem value="allActivities">Semua Kegiatan</SelectItem>
             <SelectItem value="runningClasses">Kelas yang Sedang Berjalan</SelectItem>
             <SelectItem value="regularEvents">Acara Reguler</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      <Separator className="my-12" />
-
-      {/* Topics Section */}
-      {(selectedView === "all" || selectedView === "topics") && (
-        <section className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Topik Pembelajaran</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {topics.map((topic, index) => (
-              <Card key={index} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <topic.icon className="mb-4 text-primary" size={48} />
-                <CardTitle className="text-xl mb-2">{topic.title}</CardTitle>
-                <CardDescription className="text-muted-foreground">{topic.description}</CardDescription>
-              </Card>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {(selectedView === "all" || selectedView === "topics") && <Separator className="my-12" />}
-
       {/* Running Classes Section */}
-      {(selectedView === "all" || selectedView === "runningClasses") && (
+      {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Kelas yang Sedang Berjalan</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
@@ -128,10 +126,10 @@ const RegularEventsClasses: React.FC = () => {
         </section>
       )}
 
-      {(selectedView === "all" || selectedView === "runningClasses") && <Separator className="my-12" />}
+      {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && <Separator className="my-12" />}
 
       {/* Regular Events Section */}
-      {(selectedView === "all" || selectedView === "regularEvents") && (
+      {(selectedActivityView === "allActivities" || selectedActivityView === "regularEvents") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Acara Reguler</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
