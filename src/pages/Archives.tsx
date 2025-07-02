@@ -228,9 +228,9 @@ const Archives: React.FC = () => {
 
   return (
     <div className="container mx-auto py-10 px-4">
-      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Arsip Artikel & Tutorial</h1>
+      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Arsip</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
-        Jelajahi semua artikel dan tutorial yang telah diterbitkan, filter berdasarkan periode (tahun & bulan), tag, atau cari berdasarkan kata kunci.
+        Temukan semua artikel dan tutorial kami yang telah diterbitkan. Anda dapat memfilter berdasarkan periode (tahun & bulan), tag, atau mencari berdasarkan kata kunci.
       </p>
 
       {/* Filter Area */}
