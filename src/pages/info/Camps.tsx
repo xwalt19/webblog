@@ -109,10 +109,10 @@ const Camps: React.FC = () => {
         </p>
       </section>
 
-      <Separator className="my-12" />
+      {/* Separator di sini telah dihapus */}
 
       <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Daftar Camp Kami</h2>
+        {/* Judul "Daftar Camp Kami" di sini telah dihapus */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {dummyCamps.map((camp) => (
             <Card key={camp.id} className="flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
