@@ -9,9 +9,9 @@ const ContactUs: React.FC = () => {
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Hubungi Kami</h1>
-        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+        {/* <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           Kami senang mendengar dari Anda! Jangan ragu untuk menghubungi kami melalui informasi di bawah ini.
-        </p>
+        </p> */}
       </section>
 
       <div className="flex justify-center mb-16">
@@ -44,10 +44,12 @@ const ContactUs: React.FC = () => {
             {/* Twitter Card */}
             <Card className="flex flex-col items-center text-center p-6 bg-muted/30 hover:bg-muted/50 transition-colors duration-200">
               <Twitter className="text-blue-400 mb-4" size={48} />
-              <h3 className="text-xl font-semibold mb-2">Sebut Kami di Twitter</h3>
-              <a href="https://twitter.com/procodecg" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-lg">
-                @procodecg
-              </a>
+              <div>
+                <h3 className="text-xl font-semibold mb-2">Sebut Kami di Twitter</h3>
+                <a href="https://twitter.com/procodecg" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-lg">
+                  @procodecg
+                </a>
+              </div>
             </Card>
 
             {/* Official Website Card */}
