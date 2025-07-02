@@ -17,16 +17,13 @@ const HeroSection: React.FC = () => {
           Jelajahi kursus-kursus berkualitas tinggi dan wawasan terbaru dari blog kami untuk menguasai dunia pemrograman dan menciptakan masa depan.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link to="/courses">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg">
-              Lihat Semua Kursus
-            </Button>
-          </Link>
+          {/* Changed to link to blog */}
           <Link to="/blog">
-            <Button size="lg" variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-6 text-lg">
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-lg">
               Kunjungi Blog Kami
             </Button>
           </Link>
+          {/* Removed the second button as it was redundant after changing the first one */}
         </div>
       </div>
     </section>

@@ -32,13 +32,7 @@ const Layout: React.FC = () => {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/courses" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Kursus
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
+              {/* Kursus navigation item removed */}
               <NavigationMenuItem>
                 <Link to="/blog" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
@@ -56,8 +50,7 @@ const Layout: React.FC = () => {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* CTA Button */}
-          <Button className="hidden md:inline-flex">Daftar Sekarang</Button>
+          {/* CTA Button (Daftar Sekarang) removed */}
 
           {/* Mobile Menu Placeholder (can be expanded with a Sheet/Dialog for mobile navigation) */}
           <div className="md:hidden">
@@ -94,7 +87,7 @@ const Layout: React.FC = () => {
             <h3 className="text-lg font-semibold mb-4">Tautan Cepat</h3>
             <ul className="space-y-2">
               <li><Link to="/" className="hover:underline">Home</Link></li>
-              <li><Link to="/courses" className="hover:underline">Kursus</Link></li>
+              {/* Kursus quick link removed */}
               <li><Link to="/blog" className="hover:underline">Blog</Link></li>
               <li><Link to="/about" className="hover:underline">Tentang Kami</Link></li>
             </ul>

@@ -125,8 +125,9 @@ const AboutPage: React.FC = () => {
           Jelajahi berbagai kursus kami atau selami wawasan terbaru dari blog kami.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link to="/courses">
-            <Button size="lg">Lihat Kursus</Button>
+          {/* Changed to link to blog */}
+          <Link to="/blog">
+            <Button size="lg">Kunjungi Blog</Button>
           </Link>
           <Link to="/blog">
             <Button size="lg" variant="outline">Kunjungi Blog</Button>
