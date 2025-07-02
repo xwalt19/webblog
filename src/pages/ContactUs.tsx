@@ -67,9 +67,9 @@ const ContactUs: React.FC = () => {
       </div>
 
       <section className="text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6">Punya Pertanyaan Lain?</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">Siap untuk langkah selanjutnya?</h2>
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Jangan ragu untuk mengirimkan pesan atau menjelajahi bagian lain dari website kami.
+          Jelajahi lebih banyak atau kirimkan pesan kepada kami.
         </p>
         <Link to="/">
           <Button size="lg">Kembali ke Beranda</Button>
