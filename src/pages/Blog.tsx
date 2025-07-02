@@ -30,6 +30,7 @@ interface BlogPost {
   author: string;
   year: number;
   month: number; // Properti bulan (1-12)
+  pdfLink?: string; // Tambahkan properti untuk tautan PDF
 }
 
 const dummyBlogPosts: BlogPost[] = [
@@ -43,6 +44,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur A",
     year: 2023,
     month: 10, // Oktober
+    pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
   },
   {
     id: "2",
@@ -54,6 +56,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur B",
     year: 2023,
     month: 11, // November
+    pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
   },
   {
     id: "3",
@@ -65,6 +68,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur C",
     year: 2023,
     month: 12, // Desember
+    pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
   },
   {
     id: "4",
@@ -76,6 +80,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur A",
     year: 2024,
     month: 1, // Januari
+    pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
   },
   {
     id: "5",
@@ -87,6 +92,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur B",
     year: 2024,
     month: 2, // Februari
+    pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
   },
   {
     id: "6",
@@ -98,6 +104,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur C",
     year: 2024,
     month: 2, // Februari
+    pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
   },
   {
     id: "7",
@@ -109,6 +116,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur A",
     year: 2024,
     month: 3, // Maret
+    pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
   },
   {
     id: "8",
@@ -120,6 +128,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur B",
     year: 2024,
     month: 4, // April
+    pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
   },
   {
     id: "9",
@@ -131,6 +140,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur C",
     year: 2025,
     month: 5, // Mei
+    pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
   },
 ];
 
@@ -270,9 +280,16 @@ const BlogPage: React.FC = () => {
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
-                <Link to={`/posts/${post.id}`}>
-                  <Button variant="outline" className="w-full">Baca Selengkapnya</Button>
-                </Link>
+                {/* Mengubah Link menjadi tag <a> untuk membuka PDF */}
+                {post.pdfLink ? (
+                  <a href={post.pdfLink} target="_blank" rel="noopener noreferrer" className="w-full">
+                    <Button variant="outline" className="w-full">Baca Selengkapnya (PDF)</Button>
+                  </a>
+                ) : (
+                  <Link to={`/posts/${post.id}`}>
+                    <Button variant="outline" className="w-full">Baca Selengkapnya</Button>
+                  </Link>
+                )}
               </CardContent>
             </Card>
           ))}
