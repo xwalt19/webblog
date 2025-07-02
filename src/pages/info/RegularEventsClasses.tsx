@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users, CalendarDays } from "lucide-react"; // Icons for topics and activities
+import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users } from "lucide-react"; // Icons for topics and activities
 import {
   Select,
   SelectContent,
@@ -113,17 +113,22 @@ const RegularEventsClasses: React.FC = () => {
       {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Kelas yang Sedang Berjalan</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {/* Menghapus max-w-3xl mx-auto dan mengatur grid untuk satu kolom penuh */}
+          <div className="grid grid-cols-1 gap-6"> 
             {runningClasses.map((cls, index) => (
-              <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardHeader className="pb-4 flex flex-col items-center text-center"> {/* Tambahkan flex dan center */}
-                  {cls.icon && <cls.icon className="mb-4 text-primary" size={48} />} {/* Render ikon */}
-                  <CardTitle className="text-2xl font-semibold">{cls.name}</CardTitle>
-                  <CardDescription className="text-primary font-medium">{cls.schedule}</CardDescription>
-                </CardHeader>
-                <CardContent className="text-muted-foreground text-center"> {/* Tambahkan text-center */}
-                  {cls.description}
-                </CardContent>
+              <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
+                <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                  {cls.icon && <cls.icon className="text-primary" size={64} />} {/* Ikon lebih besar */}
+                </div>
+                <div className="flex-grow">
+                  <CardHeader className="pb-2 p-0"> {/* Menghapus padding default CardHeader */}
+                    <CardTitle className="text-2xl font-semibold">{cls.name}</CardTitle>
+                    <CardDescription className="text-primary font-medium">{cls.schedule}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="text-muted-foreground p-0 pt-2"> {/* Menghapus padding default CardContent */}
+                    {cls.description}
+                  </CardContent>
+                </div>
               </Card>
             ))}
           </div>
@@ -136,17 +141,22 @@ const RegularEventsClasses: React.FC = () => {
       {(selectedActivityView === "allActivities" || selectedActivityView === "regularEvents") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Acara Reguler</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {/* Menghapus max-w-3xl mx-auto dan mengatur grid untuk satu kolom penuh */}
+          <div className="grid grid-cols-1 gap-6">
             {regularEvents.map((event, index) => (
-              <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardHeader className="pb-4 flex flex-col items-center text-center"> {/* Tambahkan flex dan center */}
-                  {event.icon && <event.icon className="mb-4 text-primary" size={48} />} {/* Render ikon */}
-                  <CardTitle className="text-2xl font-semibold">{event.name}</CardTitle>
-                  <CardDescription className="text-primary font-medium">{event.schedule}</CardDescription>
-                </CardHeader>
-                <CardContent className="text-muted-foreground text-center"> {/* Tambahkan text-center */}
-                  {event.description}
-                </CardContent>
+              <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
+                <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                  {event.icon && <event.icon className="text-primary" size={64} />} {/* Ikon lebih besar */}
+                </div>
+                <div className="flex-grow">
+                  <CardHeader className="pb-2 p-0"> {/* Menghapus padding default CardHeader */}
+                    <CardTitle className="text-2xl font-semibold">{event.name}</CardTitle>
+                    <CardDescription className="text-primary font-medium">{event.schedule}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="text-muted-foreground p-0 pt-2"> {/* Menghapus padding default CardContent */}
+                    {event.description}
+                  </CardContent>
+                </div>
               </Card>
             ))}
           </div>
