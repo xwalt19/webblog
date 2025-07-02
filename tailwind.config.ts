@@ -62,6 +62,9 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        footer: { // New footer color
+          DEFAULT: "hsl(var(--footer-background))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
