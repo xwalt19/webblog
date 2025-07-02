@@ -103,7 +103,7 @@ const dummyBlogPosts: BlogPost[] = [
   },
   {
     id: "6",
-    title: "Sesi Pemecahan Masalah: Debugging Kode",
+    title: "Sesi Pemecahan Masalah Debugging Kode",
     excerpt: "Cuplikan dari sesi interaktif di mana siswa belajar menjadi detektif kode.",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?debugging,problemsolving",
@@ -116,7 +116,7 @@ const dummyBlogPosts: BlogPost[] = [
   },
   {
     id: "7",
-    title: "Kunjungan Industri: Mengenal Dunia Startup",
+    title: "Kunjungan Industri Mengenal Dunia Startup",
     excerpt: "Laporan kunjungan siswa ke startup teknologi terkemuka di Bandung.",
     date: "05 Maret 2024",
     image: "https://source.unsplash.com/random/400x250/?startup,industry,visit",
@@ -129,7 +129,7 @@ const dummyBlogPosts: BlogPost[] = [
   },
   {
     id: "8",
-    title: "Hackathon Mini: Tantangan Coding Seru",
+    title: "Hackathon Mini Tantangan Coding Seru",
     excerpt: "Ringkasan hackathon mini yang menguji kemampuan coding dan kolaborasi siswa.",
     date: "12 April 2024",
     image: "https://source.unsplash.com/random/400x250/?hackathon,coding,challenge",
