@@ -6,9 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import PostDetail from "./pages/PostDetail";
-// import CoursesPage from "./pages/Courses"; // Import halaman Kursus removed
 import BlogPage from "./pages/Blog";       // Import halaman Blog
 import AboutPage from "./pages/About";     // Import halaman Tentang Kami
+import Archives from "./pages/Archives";   // Import halaman Archives
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,9 +23,9 @@ const App = () => (
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="posts/:id" element={<PostDetail />} />
-            {/* Rute untuk halaman Kursus removed */}
             <Route path="blog" element={<BlogPage />} />       {/* Rute untuk halaman Blog */}
             <Route path="about" element={<AboutPage />} />     {/* Rute untuk halaman Tentang Kami */}
+            <Route path="archives" element={<Archives />} />   {/* Rute untuk halaman Archives */}
             {/* TAMBAHKAN SEMUA RUTE KUSTOM DI ATAS RUTE CATCH-ALL "*" */}
             <Route path="*" element={<NotFound />} />
           </Route>
