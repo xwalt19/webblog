@@ -154,8 +154,9 @@ const dummyBlogPosts: BlogPost[] = [
   },
 ];
 
-const allCategories = ["Semua", ...new Set(dummyBlogPosts.map(post => post.category))];
-const allTags = ["Semua", ...new Set(dummyBlogPosts.flatMap(post => post.tags))];
+// allCategories dan allTags tidak lagi dibutuhkan karena filter dihapus
+// const allCategories = ["Semua", ...new Set(dummyBlogPosts.map(post => post.category))];
+// const allTags = ["Semua", ...new Set(dummyBlogPosts.flatMap(post => post.tags))];
 
 const monthNames = [
   "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -165,9 +166,10 @@ const monthNames = [
 const POSTS_PER_PAGE = 6; // Jumlah postingan per halaman
 
 const BlogPage: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState("Semua");
+  // State untuk filter kategori dan tag tidak lagi dibutuhkan
+  // const [selectedCategory, setSelectedCategory] = useState("Semua");
+  // const [selectedTag, setSelectedTag] = useState("Semua"); 
   const [selectedPeriod, setSelectedPeriod] = useState("Semua"); // State baru untuk filter gabungan tahun-bulan
-  const [selectedTag, setSelectedTag] = useState("Semua"); // State baru untuk filter tag
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -195,7 +197,10 @@ const BlogPage: React.FC = () => {
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return dummyBlogPosts.filter(post => {
-      const matchesCategory = selectedCategory === "Semua" || post.category === selectedCategory;
+      // Filter kategori dan tag dihapus dari logika
+      // const matchesCategory = selectedCategory === "Semua" || post.category === selectedCategory;
+      // const matchesTag = selectedTag === "Semua" || post.tags.includes(selectedTag);
+
       const matchesSearch = post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
                             post.excerpt.toLowerCase().includes(lowerCaseSearchTerm);
       
@@ -205,11 +210,10 @@ const BlogPage: React.FC = () => {
         matchesPeriod = post.year === filterYear && post.month === filterMonth;
       }
 
-      const matchesTag = selectedTag === "Semua" || post.tags.includes(selectedTag);
-
-      return matchesCategory && matchesSearch && matchesPeriod && matchesTag;
+      // Hanya menggunakan filter pencarian dan periode
+      return matchesSearch && matchesPeriod;
     });
-  }, [selectedCategory, selectedPeriod, selectedTag, searchTerm]);
+  }, [selectedPeriod, searchTerm]); // Dependensi disesuaikan
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -226,13 +230,13 @@ const BlogPage: React.FC = () => {
   // Reset pagination whenever filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, selectedPeriod, selectedTag, searchTerm]);
+  }, [selectedPeriod, searchTerm]); // Dependensi disesuaikan
 
   return (
     <div className="container mx-auto py-10 px-4">
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Artikel & Tutorial</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
-        Jelajahi semua postingan blog kami, filter berdasarkan kategori, periode (tahun & bulan), tag, atau cari berdasarkan kata kunci.
+        Jelajahi semua postingan blog kami, filter berdasarkan periode (tahun & bulan), atau cari berdasarkan kata kunci.
       </p>
 
       {/* Filter Area */}
@@ -245,40 +249,6 @@ const BlogPage: React.FC = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full md:max-w-xs" // Adjust width for better alignment
         />
-
-        {/* Category Filter (as Select) */}
-        <Select
-          value={selectedCategory}
-          onValueChange={(value) => setSelectedCategory(value)}
-        >
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Pilih Kategori" />
-          </SelectTrigger>
-          <SelectContent>
-            {allCategories.map(category => (
-              <SelectItem key={category} value={category}>
-                {category}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Tag Filter (as Select) */}
-        <Select
-          value={selectedTag}
-          onValueChange={(value) => setSelectedTag(value)}
-        >
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Pilih Tag" />
-          </SelectTrigger>
-          <SelectContent>
-            {allTags.map(tag => (
-              <SelectItem key={tag} value={tag}>
-                {tag}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
 
         {/* Period Filter (Year and Month Combined) */}
         <Select
