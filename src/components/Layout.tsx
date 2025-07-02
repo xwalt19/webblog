@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import MobileNav from "./MobileNav"; // Import MobileNav component
 
 const Layout: React.FC = () => {
   return (
@@ -56,25 +57,8 @@ const Layout: React.FC = () => {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Mobile Menu Placeholder (can be expanded with a Sheet/Dialog for mobile navigation) */}
-          <div className="md:hidden">
-            <Button variant="ghost" size="icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </Button>
-          </div>
+          {/* Mobile Menu */}
+          <MobileNav />
         </div>
       </header>
 
