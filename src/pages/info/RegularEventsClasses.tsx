@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu } from "lucide-react"; // Icons for topics
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const RegularEventsClasses: React.FC = () => {
+  const [selectedView, setSelectedView] = useState("all"); // State untuk mengontrol tampilan
+
   const topics = [
     {
       icon: BookOpen,
@@ -64,61 +73,82 @@ const RegularEventsClasses: React.FC = () => {
         </p>
       </section>
 
+      {/* Filter Dropdown */}
+      <div className="flex justify-center mb-10">
+        <Select value={selectedView} onValueChange={setSelectedView}>
+          <SelectTrigger className="w-full md:w-[250px]">
+            <SelectValue placeholder="Pilih Tampilan" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Semua Bagian</SelectItem>
+            <SelectItem value="topics">Topik Pembelajaran</SelectItem>
+            <SelectItem value="runningClasses">Kelas yang Sedang Berjalan</SelectItem>
+            <SelectItem value="regularEvents">Acara Reguler</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <Separator className="my-12" />
 
       {/* Topics Section */}
-      <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Topik Pembelajaran</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {topics.map((topic, index) => (
-            <Card key={index} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <topic.icon className="mb-4 text-primary" size={48} />
-              <CardTitle className="text-xl mb-2">{topic.title}</CardTitle>
-              <CardDescription className="text-muted-foreground">{topic.description}</CardDescription>
-            </Card>
-          ))}
-        </div>
-      </section>
+      {(selectedView === "all" || selectedView === "topics") && (
+        <section className="mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Topik Pembelajaran</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {topics.map((topic, index) => (
+              <Card key={index} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <topic.icon className="mb-4 text-primary" size={48} />
+                <CardTitle className="text-xl mb-2">{topic.title}</CardTitle>
+                <CardDescription className="text-muted-foreground">{topic.description}</CardDescription>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
 
-      <Separator className="my-12" />
+      {(selectedView === "all" || selectedView === "topics") && <Separator className="my-12" />}
 
       {/* Running Classes Section */}
-      <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Kelas yang Sedang Berjalan</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {runningClasses.map((cls, index) => (
-            <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-semibold">{cls.name}</CardTitle>
-                <CardDescription className="text-primary font-medium">{cls.schedule}</CardDescription>
-              </CardHeader>
-              <CardContent className="text-muted-foreground">
-                {cls.description}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+      {(selectedView === "all" || selectedView === "runningClasses") && (
+        <section className="mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Kelas yang Sedang Berjalan</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {runningClasses.map((cls, index) => (
+              <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl font-semibold">{cls.name}</CardTitle>
+                  <CardDescription className="text-primary font-medium">{cls.schedule}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-muted-foreground">
+                  {cls.description}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
 
-      <Separator className="my-12" />
+      {(selectedView === "all" || selectedView === "runningClasses") && <Separator className="my-12" />}
 
       {/* Regular Events Section */}
-      <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Acara Reguler</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {regularEvents.map((event, index) => (
-            <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-semibold">{event.name}</CardTitle>
-                <CardDescription className="text-primary font-medium">{event.schedule}</CardDescription>
-              </CardHeader>
-              <CardContent className="text-muted-foreground">
-                {event.description}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+      {(selectedView === "all" || selectedView === "regularEvents") && (
+        <section className="mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Acara Reguler</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {regularEvents.map((event, index) => (
+              <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl font-semibold">{event.name}</CardTitle>
+                  <CardDescription className="text-primary font-medium">{event.schedule}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-muted-foreground">
+                  {event.description}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="text-center mt-12">
         <Link to="/info">
