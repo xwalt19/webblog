@@ -73,21 +73,7 @@ const Partners: React.FC = () => {
         </p>
       </section>
 
-      <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Kolaborasi Kami</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {dummyPartners.map((partner) => (
-            <Card key={partner.id} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <div className="mb-4">
-                {getIconForPartnerType(partner.type)}
-              </div>
-              <img src={partner.logoUrl} alt={partner.name} className="w-32 h-32 object-contain mb-4 rounded-lg" />
-              <CardTitle className="text-xl mb-2">{partner.name}</CardTitle>
-              <CardDescription className="text-muted-foreground">{partner.description}</CardDescription>
-            </Card>
-          ))}
-        </div>
-      </section>
+      {/* Bagian "Kolaborasi Kami" telah dihapus */}
 
       <div className="text-center mt-12">
         <Link to="/">
