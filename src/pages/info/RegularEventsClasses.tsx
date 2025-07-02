@@ -77,24 +77,6 @@ const RegularEventsClasses: React.FC = () => {
         </p>
       </section>
 
-      <Separator className="my-12" />
-
-      {/* Topics Section (Always visible) */}
-      <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Topik Pembelajaran</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {topics.map((topic, index) => (
-            <Card key={index} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <topic.icon className="mb-4 text-primary" size={48} />
-              <CardTitle className="text-xl mb-2">{topic.title}</CardTitle>
-              <CardDescription className="text-muted-foreground">{topic.description}</CardDescription>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      <Separator className="my-12" />
-
       {/* Filter Dropdown for Activities */}
       <div className="flex justify-center mb-10">
         <Select value={selectedActivityView} onValueChange={setSelectedActivityView}>
