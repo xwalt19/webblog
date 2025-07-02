@@ -19,10 +19,10 @@ const Layout: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header (Navbar) */}
-      <header className="sticky top-0 z-50 bg-blue-100 backdrop-blur-sm border-b border-border"> {/* Changed background to bg-blue-100 */}
+      <header className="sticky top-0 z-50 bg-background shadow-sm border-b border-border"> {/* Changed background to bg-background and added shadow */}
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-primary"> {/* Changed text color to primary */}
+          <Link to="/" className="text-2xl font-bold text-primary"> {/* Kept text-primary for logo */}
             ProCodeCG
           </Link>
 
@@ -31,34 +31,34 @@ const Layout: React.FC = () => {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <Link to="/" legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-blue-100 text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}> {/* Adjusted background to bg-blue-100 */}
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}> {/* Adjusted background to bg-background */}
                     Home
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/about" legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-blue-100 text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}> {/* Adjusted background to bg-blue-100 */}
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}> {/* Adjusted background to bg-background */}
                     About
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/blog" legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-blue-100 text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}> {/* Adjusted background to bg-blue-100 */}
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}> {/* Adjusted background to bg-background */}
                     Blog
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/archives" legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-blue-100 text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}> {/* Adjusted background to bg-blue-100 */}
+                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}> {/* Adjusted background to bg-background */}
                     Archives
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-blue-100 text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Activity</NavigationMenuTrigger> {/* Adjusted background to bg-blue-100 */}
+                <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Activity</NavigationMenuTrigger> {/* Adjusted background to bg-background */}
                 <NavigationMenuContent className="bg-background text-foreground border-border"> {/* Light background for content */}
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     <li>
@@ -110,7 +110,7 @@ const Layout: React.FC = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-blue-100 text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Info</NavigationMenuTrigger> {/* Adjusted background to bg-blue-100 */}
+                <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Info</NavigationMenuTrigger> {/* Adjusted background to bg-background */}
                 <NavigationMenuContent className="bg-background text-foreground border-border"> {/* Light background for content */}
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     <li>
