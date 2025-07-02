@@ -41,11 +41,11 @@ const MobileNav: React.FC = () => {
             Archives
           </Link>
           
-          {/* Info with Accordion for sub-items */}
+          {/* Activity with Accordion for sub-items */}
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1" className="border-b-0">
               <AccordionTrigger className="py-0 text-lg font-medium hover:no-underline hover:text-primary transition-colors">
-                Info
+                Activity
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
                 <Link to="/info/regular-events-classes" className="block text-base text-muted-foreground hover:text-primary transition-colors" onClick={closeSheet}>

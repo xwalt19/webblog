@@ -73,7 +73,7 @@ const Training: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/info">
-          <Button>Kembali ke Info Program</Button>
+          <Button>Kembali ke Activity Program</Button>
         </Link>
       </div>
     </div>

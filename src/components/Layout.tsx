@@ -58,10 +58,9 @@ const Layout: React.FC = () => {
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Info</NavigationMenuTrigger>
+                <NavigationMenuTrigger>Activity</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                    {/* Tautan "Informasi Program" telah dihapus */}
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
@@ -134,8 +133,6 @@ const Layout: React.FC = () => {
               <li><Link to="/about" className="hover:underline">About</Link></li>
               <li><Link to="/blog" className="hover:underline">Blog</Link></li>
               <li><Link to="/archives" className="hover:underline">Archives</Link></li>
-              {/* Tautan Info di footer tetap ada, karena ini adalah tautan umum */}
-              <li><Link to="/info" className="hover:underline">Info</Link></li>
             </ul>
           </div>
 
