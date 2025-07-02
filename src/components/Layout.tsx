@@ -19,7 +19,7 @@ const Layout: React.FC = () => {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-primary">
-            Blog Kurusiu
+            ProCodeCG
           </Link>
 
           {/* Navigation Menu */}
@@ -92,7 +92,7 @@ const Layout: React.FC = () => {
           {/* Contact Info / Placeholder */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Hubungi Kami</h3>
-            <p>Email: info@kurusiu.com</p>
+            <p>Email: info@procodecg.com</p>
             <p>Telepon: +62 123 4567</p>
           </div>
 
@@ -108,7 +108,7 @@ const Layout: React.FC = () => {
           </div>
         </div>
         <Separator className="my-8 bg-border" />
-        <p className="text-center text-sm">&copy; {new Date().getFullYear()} Blog Kurusiu. All rights reserved.</p>
+        <p className="text-center text-sm">&copy; {new Date().getFullYear()} ProCodeCG. All rights reserved.</p>
       </footer>
     </div>
   );
