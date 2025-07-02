@@ -134,15 +134,11 @@ const AboutPage: React.FC = () => {
       <section className="text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-6">Siap Memulai Perjalanan Belajar Anda?</h2>
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Jelajahi berbagai kursus kami atau selami wawasan terbaru dari blog kami.
+          Jelajahi wawasan terbaru dari blog kami.
         </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          {/* Changed to link to blog */}
+        <div className="flex justify-center">
           <Link to="/blog">
             <Button size="lg">Kunjungi Blog</Button>
-          </Link>
-          <Link to="/blog">
-            <Button size="lg" variant="outline">Kunjungi Blog</Button>
           </Link>
         </div>
       </section>
