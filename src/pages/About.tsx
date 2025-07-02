@@ -17,31 +17,31 @@ const dummyTeamMembers: TeamMember[] = [
   {
     name: "Marisa Paryasto",
     role: "Pendiri & CEO",
-    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Marisa",
+    avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Marisa",
     description: "PhD Electrical Engineering Institute Technology Bandung. Seorang peneliti di ITB dan dosen paruh waktu di Telkom University. Berpengalaman dalam pengajaran dan pendidikan, ahli dalam rekayasa/ilmu komputer, pemrograman, dan kriptografi. Sangat mengagumi anak-anak.",
   },
   {
     name: "Budi Rahardjo",
     role: "Mentor",
-    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Budi",
+    avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Budi",
     description: "PhD, Fakultas Teknik Elektro Institut Teknologi Bandung. Berkontribusi dalam membimbing dan mengarahkan pengembangan program kami.",
   },
   {
     name: "Prayudi Utomo",
     role: "CodeinTech Founder & Programmer",
-    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Prayudi",
+    avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Prayudi",
     description: "Pendiri CodeinTech dan seorang programmer berpengalaman yang bersemangat dalam inovasi teknologi.",
   },
   {
     name: "Faris Hafizhan Hakim",
     role: "Asisten Pengajar",
-    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Faris",
+    avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Faris",
     description: "Salah satu kapten dan asisten pengajar kami yang berdedikasi untuk kelas anak-anak.",
   },
   {
     name: "Bullitt Zulfiqar",
     role: "Asisten Pengajar",
-    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Bullitt",
+    avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Bullitt",
     description: "Kapten dan asisten pengajar yang antusias, membantu anak-anak mengembangkan keterampilan IT mereka.",
   },
 ];
