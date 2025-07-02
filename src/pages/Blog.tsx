@@ -243,43 +243,49 @@ const BlogPage: React.FC = () => {
           placeholder="Cari postingan..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-auto max-w-sm"
+          className="w-full md:max-w-xs" // Adjust width for better alignment
         />
 
-        {/* Category Filter */}
-        <div className="flex flex-wrap justify-center gap-2">
-          {allCategories.map(category => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
-              onClick={() => setSelectedCategory(category)}
-              className="px-4 py-2 rounded-full"
-            >
-              {category}
-            </Button>
-          ))}
-        </div>
+        {/* Category Filter (as Select) */}
+        <Select
+          value={selectedCategory}
+          onValueChange={(value) => setSelectedCategory(value)}
+        >
+          <SelectTrigger className="w-full md:w-[180px]">
+            <SelectValue placeholder="Pilih Kategori" />
+          </SelectTrigger>
+          <SelectContent>
+            {allCategories.map(category => (
+              <SelectItem key={category} value={category}>
+                {category}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-        {/* Tag Filter */}
-        <div className="flex flex-wrap justify-center gap-2">
-          {allTags.map(tag => (
-            <Button
-              key={tag}
-              variant={selectedTag === tag ? "default" : "outline"}
-              onClick={() => setSelectedTag(tag)}
-              className="px-4 py-2 rounded-full"
-            >
-              {tag}
-            </Button>
-          ))}
-        </div>
+        {/* Tag Filter (as Select) */}
+        <Select
+          value={selectedTag}
+          onValueChange={(value) => setSelectedTag(value)}
+        >
+          <SelectTrigger className="w-full md:w-[180px]">
+            <SelectValue placeholder="Pilih Tag" />
+          </SelectTrigger>
+          <SelectContent>
+            {allTags.map(tag => (
+              <SelectItem key={tag} value={tag}>
+                {tag}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         {/* Period Filter (Year and Month Combined) */}
         <Select
           value={selectedPeriod}
           onValueChange={(value) => setSelectedPeriod(value)}
         >
-          <SelectTrigger className="w-[200px]">
+          <SelectTrigger className="w-full md:w-[200px]">
             <SelectValue placeholder="Pilih Periode" />
           </SelectTrigger>
           <SelectContent>
