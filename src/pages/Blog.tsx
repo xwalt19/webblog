@@ -256,7 +256,7 @@ const BlogPage: React.FC = () => {
           onValueChange={(value) => setSelectedTag(value)}
         >
           <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Pilih Tag" />
+            <SelectValue placeholder="Tag" /> {/* Perubahan di sini */}
           </SelectTrigger>
           <SelectContent>
             {allTags.map(tag => (
