@@ -29,7 +29,7 @@ interface BlogPost {
   category: string;
   author: string;
   year: number;
-  month: number; // Tambahkan properti bulan
+  month: number; // Properti bulan (1-12)
 }
 
 const dummyBlogPosts: BlogPost[] = [
@@ -135,35 +135,57 @@ const dummyBlogPosts: BlogPost[] = [
 ];
 
 const allCategories = ["Semua", ...new Set(dummyBlogPosts.map(post => post.category))];
-const allYears = ["Semua", ...new Set(dummyBlogPosts.map(post => post.year.toString()))].sort((a, b) => parseInt(b) - parseInt(a));
 
 const monthNames = [
-  "Semua", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+  "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
   "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ];
-const allMonths = ["Semua", ...new Set(dummyBlogPosts.map(post => post.month.toString()))].sort((a, b) => parseInt(a) - parseInt(b));
-
 
 const POSTS_PER_PAGE = 6; // Jumlah postingan per halaman
 
 const BlogPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
-  const [selectedYear, setSelectedYear] = useState("Semua");
-  const [selectedMonth, setSelectedMonth] = useState("Semua"); // State baru untuk filter bulan
-  const [searchTerm, setSearchTerm] = useState(""); // State baru untuk filter pencarian
+  const [selectedPeriod, setSelectedPeriod] = useState("Semua"); // State baru untuk filter gabungan tahun-bulan
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Generate unique year-month periods
+  const allPeriods = useMemo(() => {
+    const periods = new Set<string>();
+    dummyBlogPosts.forEach(post => {
+      periods.add(`${post.year}-${post.month}`);
+    });
+    const sortedPeriods = Array.from(periods).sort((a, b) => {
+      const [yearA, monthA] = a.split('-').map(Number);
+      const [yearB, monthB] = b.split('-').map(Number);
+      if (yearA !== yearB) return yearB - yearA; // Sort by year descending
+      return monthB - monthA; // Then by month descending
+    });
+    return ["Semua", ...sortedPeriods];
+  }, []);
+
+  const getPeriodDisplayName = (period: string) => {
+    if (period === "Semua") return "Semua Waktu";
+    const [year, month] = period.split('-').map(Number);
+    return `${year} - ${monthNames[month]}`;
+  };
 
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return dummyBlogPosts.filter(post => {
       const matchesCategory = selectedCategory === "Semua" || post.category === selectedCategory;
-      const matchesYear = selectedYear === "Semua" || post.year.toString() === selectedYear;
-      const matchesMonth = selectedMonth === "Semua" || post.month.toString() === selectedMonth;
       const matchesSearch = post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
                             post.excerpt.toLowerCase().includes(lowerCaseSearchTerm);
-      return matchesCategory && matchesYear && matchesMonth && matchesSearch;
+      
+      let matchesPeriod = true;
+      if (selectedPeriod !== "Semua") {
+        const [filterYear, filterMonth] = selectedPeriod.split('-').map(Number);
+        matchesPeriod = post.year === filterYear && post.month === filterMonth;
+      }
+
+      return matchesCategory && matchesSearch && matchesPeriod;
     });
-  }, [selectedCategory, selectedYear, selectedMonth, searchTerm]);
+  }, [selectedCategory, selectedPeriod, searchTerm]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -180,13 +202,13 @@ const BlogPage: React.FC = () => {
   // Reset pagination whenever filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, selectedYear, selectedMonth, searchTerm]);
+  }, [selectedCategory, selectedPeriod, searchTerm]);
 
   return (
     <div className="container mx-auto py-10 px-4">
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Artikel & Tutorial</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
-        Jelajahi semua postingan blog kami, filter berdasarkan kategori, tahun, bulan, atau cari berdasarkan kata kunci.
+        Jelajahi semua postingan blog kami, filter berdasarkan kategori, periode (tahun & bulan), atau cari berdasarkan kata kunci.
       </p>
 
       {/* Filter Area */}
@@ -214,35 +236,18 @@ const BlogPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Year Filter */}
+        {/* Period Filter (Year and Month Combined) */}
         <Select
-          value={selectedYear}
-          onValueChange={(value) => setSelectedYear(value)}
+          value={selectedPeriod}
+          onValueChange={(value) => setSelectedPeriod(value)}
         >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Pilih Tahun" />
+          <SelectTrigger className="w-[200px]">
+            <SelectValue placeholder="Pilih Periode" />
           </SelectTrigger>
           <SelectContent>
-            {allYears.map(year => (
-              <SelectItem key={year} value={year}>
-                {year === "Semua" ? "Semua Tahun" : year}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {/* Month Filter */}
-        <Select
-          value={selectedMonth}
-          onValueChange={(value) => setSelectedMonth(value)}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Pilih Bulan" />
-          </SelectTrigger>
-          <SelectContent>
-            {allMonths.map(month => (
-              <SelectItem key={month} value={month}>
-                {monthNames[parseInt(month)] || "Semua Bulan"}
+            {allPeriods.map(period => (
+              <SelectItem key={period} value={period}>
+                {getPeriodDisplayName(period)}
               </SelectItem>
             ))}
           </SelectContent>
