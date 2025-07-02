@@ -38,120 +38,120 @@ interface BlogPost {
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
-    title: "Yuk Bikin Blog Seru Pertamamu",
-    excerpt: "Panduan asyik buat kamu yang mau punya blog sendiri, gampang banget",
+    title: "Workshop: Membuat Blog Interaktif",
+    excerpt: "Ikuti workshop kami untuk membangun blog interaktif pertamamu dari nol!",
     date: "10 Oktober 2023",
     image: "https://source.unsplash.com/random/400x250/?blogging,writing",
-    category: "Dasar HTML",
+    category: "Web Development",
     author: "Instruktur A",
     year: 2023,
     month: 10, // Oktober
     pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
-    tags: ["pemula", "blogging", "menulis"],
+    tags: ["workshop", "blog", "pemula"],
   },
   {
     id: "2",
-    title: "Rahasia Menulis Cerita Blog yang Bikin Betah Baca",
-    excerpt: "Mau tulisanmu dibaca banyak teman Ini dia tipsnya",
+    title: "Sesi Kreatif: Menulis Konten Menarik",
+    excerpt: "Pelajari teknik menulis konten yang memikat pembaca dalam sesi kreatif ini.",
     date: "15 November 2023",
     image: "https://source.unsplash.com/random/400x250/?content,marketing",
-    category: "Styling CSS",
+    category: "Content Creation",
     author: "Instruktur B",
     year: 2023,
     month: 11, // November
     pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
-    tags: ["konten", "menulis", "tips"],
+    tags: ["menulis", "kreatif", "konten"],
   },
   {
     id: "3",
-    title: "Biar Blogmu Gampang Ditemukan di Internet",
-    excerpt: "Pelajari cara biar blogmu muncul paling atas saat dicari teman-teman",
+    title: "Strategi SEO untuk Visibilitas Online",
+    excerpt: "Pahami dasar-dasar SEO untuk memastikan proyekmu mudah ditemukan di internet.",
     date: "20 Desember 2023",
     image: "https://source.unsplash.com/random/400x250/?seo,optimization",
-    category: "JavaScript Interaktif",
+    category: "Digital Marketing",
     author: "Instruktur C",
     year: 2023,
     month: 12, // Desember
     pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
-    tags: ["SEO", "internet", "visibilitas"],
+    tags: ["SEO", "online", "strategi"],
   },
   {
     id: "4",
-    title: "Sihir JavaScript Bikin Website Jadi Hidup",
-    excerpt: "Kenalan sama JavaScript, bahasa rahasia yang bikin website bisa bergerak dan interaktif",
+    title: "Eksplorasi JavaScript: Membuat Website Hidup",
+    excerpt: "Selami dunia JavaScript dan buat elemen interaktif yang memukau di websitemu.",
     date: "25 Januari 2024",
     image: "https://source.unsplash.com/random/400x250/?javascript,code",
-    category: "JavaScript Interaktif",
+    category: "Programming",
     author: "Instruktur A",
     year: 2024,
     month: 1, // Januari
     pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
-    tags: ["JavaScript", "web", "interaktif"],
+    tags: ["JavaScript", "interaktif", "web"],
   },
   {
     id: "5",
-    title: "Yuk Bikin Aplikasi Keren Pakai React",
-    excerpt: "Belajar bikin aplikasi web yang canggih dan interaktif dengan React, seru banget",
+    title: "Proyek React: Membangun Aplikasi Modern",
+    excerpt: "Bergabunglah dalam proyek React untuk menciptakan aplikasi web yang canggih dan responsif.",
     date: "01 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?reactjs,programming",
-    category: "Proyek Akhir",
+    category: "App Development",
     author: "Instruktur B",
     year: 2024,
     month: 2, // Februari
     pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
-    tags: ["React", "aplikasi web", "pemrograman"],
+    tags: ["React", "proyek", "aplikasi"],
   },
   {
     id: "6",
-    title: "Python Si Pintar Pengolah Data",
-    excerpt: "Mulai petualanganmu di dunia data dengan Python, bahasa pemrograman yang jago hitung-hitungan",
+    title: "Pengantar Python untuk Analisis Data",
+    excerpt: "Mulai perjalananmu di analisis data dengan Python, bahasa pemrograman serbaguna.",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data",
-    category: "Dasar HTML",
+    category: "Data Science",
     author: "Instruktur C",
     year: 2024,
     month: 2, // Februari
     pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
-    tags: ["Python", "data science", "pemrograman"],
+    tags: ["Python", "data", "analisis"],
   },
   {
     id: "7",
-    title: "Tailwind CSS Bikin Tampilan Website Makin Cantik",
-    excerpt: "Rahasia bikin website jadi super keren dan rapi tanpa ribet",
+    title: "Desain Responsif dengan Tailwind CSS",
+    excerpt: "Kuasai Tailwind CSS untuk mendesain tampilan website yang cantik dan adaptif di berbagai perangkat.",
     date: "05 Maret 2024",
     image: "https://source.unsplash.com/random/400x250/?tailwind,css",
-    category: "Styling CSS",
+    category: "UI/UX Design",
     author: "Instruktur A",
     year: 2024,
     month: 3, // Maret
     pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
-    tags: ["Tailwind CSS", "desain web", "styling"],
+    tags: ["Tailwind", "desain", "responsif"],
   },
   {
     id: "8",
-    title: "JavaScript Sabar Nunggu Dulu Baru Jalan",
-    excerpt: "Pernah lihat website loading Itu kerjaan JavaScript yang sabar menunggu",
+    title: "Memahami Asynchronous JavaScript",
+    excerpt: "Pelajari bagaimana JavaScript menangani operasi yang membutuhkan waktu tanpa menghentikan aplikasi.",
     date: "12 April 2024",
     image: "https://source.unsplash.com/random/400x250/?async,javascript",
-    category: "JavaScript Interaktif",
+    category: "Programming",
     author: "Instruktur B",
     year: 2024,
     month: 4, // April
     pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
-    tags: ["JavaScript", "asynchronous", "web performance"],
+    tags: ["JavaScript", "async", "performa"],
   },
   {
     id: "9",
-    title: "Jadi Detektif Kode Cari dan Perbaiki Kesalahan",
-    excerpt: "Belajar jadi detektif handal yang bisa menemukan dan memperbaiki 'bug' di programmu",
+    title: "Debugging Kode: Menjadi Detektif Handal",
+    excerpt: "Asah kemampuanmu dalam menemukan dan memperbaiki kesalahan pada kode program.",
     date: "20 Mei 2025",
     image: "https://source.unsplash.com/random/400x250/?debugging,code",
-    category: "Proyek Akhir",
+    category: "Problem Solving",
     author: "Instruktur C",
     year: 2025,
     month: 5, // Mei
     pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
-    tags: ["debugging", "pemrograman", "error handling"],
+    tags: ["debugging", "kode", "kesalahan"],
   },
 ];
 
