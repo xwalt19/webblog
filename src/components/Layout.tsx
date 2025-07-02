@@ -106,22 +106,39 @@ const Layout: React.FC = () => {
                         </Link>
                       </NavigationMenuLink>
                     </li>
+                    <Separator className="col-span-full my-2" /> {/* Separator opsional */}
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/contact-us"
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">CONTACT US</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Hubungi kami untuk pertanyaan atau kolaborasi.
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/partners"
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">PARTNERS</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Lihat mitra dan kolaborator kami.
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
                   </ul>
                 </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/contact-us" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Contact Us
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/partners" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Partners
-                  </NavigationMenuLink>
-                </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -147,8 +164,9 @@ const Layout: React.FC = () => {
               <li><Link to="/about" className="hover:underline">About</Link></li>
               <li><Link to="/blog" className="hover:underline">Blog</Link></li>
               <li><Link to="/archives" className="hover:underline">Archives</Link></li>
-              <li><Link to="/contact-us" className="hover:underline">Contact Us</Link></li>
-              <li><Link to="/partners" className="hover:underline">Partners</Link></li>
+              {/* Menghapus tautan Contact Us dan Partners dari footer jika tidak diinginkan di sini */}
+              {/* <li><Link to="/contact-us" className="hover:underline">Contact Us</Link></li> */}
+              {/* <li><Link to="/partners" className="hover:underline">Partners</Link></li> */}
             </ul>
           </div>
 
