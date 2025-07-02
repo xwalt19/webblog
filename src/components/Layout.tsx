@@ -28,21 +28,14 @@ const Layout: React.FC = () => {
               <NavigationMenuItem>
                 <Link to="/" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Home
+                    Home (Blog)
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/courses" legacyBehavior passHref>
+                <Link to="/related-courses" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Kursus
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/archives" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Blog
+                    Kursus Terkait
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
@@ -57,7 +50,7 @@ const Layout: React.FC = () => {
           </NavigationMenu>
 
           {/* CTA Button */}
-          <Button className="hidden md:inline-flex">Daftar Sekarang</Button>
+          <Button className="hidden md:inline-flex">Mulai Belajar</Button>
 
           {/* Mobile Menu Placeholder (can be expanded with a Sheet/Dialog for mobile navigation) */}
           <div className="md:hidden">
@@ -93,9 +86,8 @@ const Layout: React.FC = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Tautan Cepat</h3>
             <ul className="space-y-2">
-              <li><Link to="/" className="hover:underline">Home</Link></li>
-              <li><Link to="/courses" className="hover:underline">Kursus</Link></li>
-              <li><Link to="/archives" className="hover:underline">Blog</Link></li>
+              <li><Link to="/" className="hover:underline">Home (Blog)</Link></li>
+              <li><Link to="/related-courses" className="hover:underline">Kursus Terkait</Link></li>
               <li><Link to="/about" className="hover:underline">Tentang Kami</Link></li>
             </ul>
           </div>
