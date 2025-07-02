@@ -54,6 +54,13 @@ const Layout: React.FC = () => {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link to="/info" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Info
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 
@@ -78,6 +85,7 @@ const Layout: React.FC = () => {
               <li><Link to="/about" className="hover:underline">About</Link></li>
               <li><Link to="/blog" className="hover:underline">Blog</Link></li>
               <li><Link to="/archives" className="hover:underline">Archives</Link></li>
+              <li><Link to="/info" className="hover:underline">Info</Link></li>
             </ul>
           </div>
 

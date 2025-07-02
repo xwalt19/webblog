@@ -9,6 +9,10 @@ import PostDetail from "./pages/PostDetail";
 import BlogPage from "./pages/Blog";       // Import halaman Blog
 import AboutPage from "./pages/About";     // Import halaman Tentang Kami
 import Archives from "./pages/Archives";   // Import halaman Archives
+import InfoPage from "./pages/Info";       // Import halaman Info
+import RegularEventsClasses from "./pages/info/RegularEventsClasses"; // Import sub-halaman
+import Camps from "./pages/info/Camps";     // Import sub-halaman
+import Training from "./pages/info/Training"; // Import sub-halaman
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +30,10 @@ const App = () => (
             <Route path="blog" element={<BlogPage />} />       {/* Rute untuk halaman Blog */}
             <Route path="about" element={<AboutPage />} />     {/* Rute untuk halaman Tentang Kami */}
             <Route path="archives" element={<Archives />} />   {/* Rute untuk halaman Archives */}
+            <Route path="info" element={<InfoPage />} />       {/* Rute untuk halaman Info */}
+            <Route path="info/regular-events-classes" element={<RegularEventsClasses />} /> {/* Rute sub-halaman */}
+            <Route path="info/camps" element={<Camps />} />     {/* Rute sub-halaman */}
+            <Route path="info/training" element={<Training />} /> {/* Rute sub-halaman */}
             {/* TAMBAHKAN SEMUA RUTE KUSTOM DI ATAS RUTE CATCH-ALL "*" */}
             <Route path="*" element={<NotFound />} />
           </Route>

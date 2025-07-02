@@ -34,6 +34,9 @@ const MobileNav: React.FC = () => {
           <Link to="/archives" className="text-lg font-medium hover:text-primary transition-colors" onClick={closeSheet}>
             Archives
           </Link>
+          <Link to="/info" className="text-lg font-medium hover:text-primary transition-colors" onClick={closeSheet}>
+            Info
+          </Link>
         </nav>
       </SheetContent>
     </Sheet>
