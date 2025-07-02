@@ -39,7 +39,7 @@ const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
     title: "Workshop: Membuat Blog Interaktif",
-    excerpt: "Ikuti workshop kami untuk membangun blog interaktif pertamamu dari nol!",
+    excerpt: "Dokumentasi lengkap dari workshop interaktif kami tentang pembuatan blog dari dasar.",
     date: "10 Oktober 2023",
     image: "https://source.unsplash.com/random/400x250/?blogging,writing",
     category: "Web Development",
@@ -52,7 +52,7 @@ const dummyBlogPosts: BlogPost[] = [
   {
     id: "2",
     title: "Sesi Kreatif: Menulis Konten Menarik",
-    excerpt: "Pelajari teknik menulis konten yang memikat pembaca dalam sesi kreatif ini.",
+    excerpt: "Ringkasan sesi kreatif kami yang membahas teknik-teknik menulis konten yang memikat.",
     date: "15 November 2023",
     image: "https://source.unsplash.com/random/400x250/?content,marketing",
     category: "Content Creation",
@@ -65,7 +65,7 @@ const dummyBlogPosts: BlogPost[] = [
   {
     id: "3",
     title: "Strategi SEO untuk Visibilitas Online",
-    excerpt: "Pahami dasar-dasar SEO untuk memastikan proyekmu mudah ditemukan di internet.",
+    excerpt: "Materi dari sesi strategi SEO kami untuk meningkatkan visibilitas proyek online.",
     date: "20 Desember 2023",
     image: "https://source.unsplash.com/random/400x250/?seo,optimization",
     category: "Digital Marketing",
@@ -78,7 +78,7 @@ const dummyBlogPosts: BlogPost[] = [
   {
     id: "4",
     title: "Eksplorasi JavaScript: Membuat Website Hidup",
-    excerpt: "Selami dunia JavaScript dan buat elemen interaktif yang memukau di websitemu.",
+    excerpt: "Catatan dari sesi eksplorasi JavaScript tentang cara membuat website lebih dinamis dan interaktif.",
     date: "25 Januari 2024",
     image: "https://source.unsplash.com/random/400x250/?javascript,code",
     category: "Programming",
@@ -91,7 +91,7 @@ const dummyBlogPosts: BlogPost[] = [
   {
     id: "5",
     title: "Proyek React: Membangun Aplikasi Modern",
-    excerpt: "Bergabunglah dalam proyek React untuk menciptakan aplikasi web yang canggih dan responsif.",
+    excerpt: "Dokumentasi proyek React kami yang berfokus pada pembangunan aplikasi web modern.",
     date: "01 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?reactjs,programming",
     category: "App Development",
@@ -104,7 +104,7 @@ const dummyBlogPosts: BlogPost[] = [
   {
     id: "6",
     title: "Pengantar Python untuk Analisis Data",
-    excerpt: "Mulai perjalananmu di analisis data dengan Python, bahasa pemrograman serbaguna.",
+    excerpt: "Materi pengantar Python untuk analisis data dari sesi pelatihan kami.",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data",
     category: "Data Science",
@@ -117,7 +117,7 @@ const dummyBlogPosts: BlogPost[] = [
   {
     id: "7",
     title: "Desain Responsif dengan Tailwind CSS",
-    excerpt: "Kuasai Tailwind CSS untuk mendesain tampilan website yang cantik dan adaptif di berbagai perangkat.",
+    excerpt: "Ringkasan sesi desain responsif menggunakan Tailwind CSS untuk tampilan web yang adaptif.",
     date: "05 Maret 2024",
     image: "https://source.unsplash.com/random/400x250/?tailwind,css",
     category: "UI/UX Design",
@@ -130,7 +130,7 @@ const dummyBlogPosts: BlogPost[] = [
   {
     id: "8",
     title: "Memahami Asynchronous JavaScript",
-    excerpt: "Pelajari bagaimana JavaScript menangani operasi yang membutuhkan waktu tanpa menghentikan aplikasi.",
+    excerpt: "Materi dari sesi mendalam tentang Asynchronous JavaScript dan dampaknya pada performa aplikasi.",
     date: "12 April 2024",
     image: "https://source.unsplash.com/random/400x250/?async,javascript",
     category: "Programming",
@@ -143,7 +143,7 @@ const dummyBlogPosts: BlogPost[] = [
   {
     id: "9",
     title: "Debugging Kode: Menjadi Detektif Handal",
-    excerpt: "Asah kemampuanmu dalam menemukan dan memperbaiki kesalahan pada kode program.",
+    excerpt: "Catatan dari sesi pelatihan debugging kode untuk meningkatkan kemampuan pemecahan masalah.",
     date: "20 Mei 2025",
     image: "https://source.unsplash.com/random/400x250/?debugging,code",
     category: "Problem Solving",
