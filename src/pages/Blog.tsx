@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -234,9 +234,9 @@ const BlogPage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-10 px-4">
-      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Artikel & Tutorial</h1>
+      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Blog Kami</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
-        Jelajahi semua postingan blog kami, filter berdasarkan periode (tahun & bulan), tag, atau cari berdasarkan kata kunci.
+        Temukan artikel dan tutorial terbaru kami tentang teknologi dan coding.
       </p>
 
       {/* Filter Area */}
