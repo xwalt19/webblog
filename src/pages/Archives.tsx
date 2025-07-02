@@ -40,6 +40,8 @@ interface BlogPost {
 // akan diambil dari database melalui API, bukan dari data dummy.
 // Admin dapat mengelola postingan dan mengunggah file PDF melalui
 // antarmuka admin yang terpisah.
+// Tautan Google Drive di bawah ini adalah contoh placeholder.
+// Anda perlu menggantinya dengan tautan asli file PDF Anda di Google Drive.
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
@@ -51,7 +53,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Tim Pengajar",
     year: 2023,
     month: 10, // Oktober
-    pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
+    pdfLink: "https://docs.google.com/document/d/1_Galeri_Proyek_HTML_CSS/edit?usp=sharing", // Contoh tautan Google Drive
     tags: ["proyek", "HTML", "CSS", "galeri"],
   },
   {
@@ -64,7 +66,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur B",
     year: 2023,
     month: 11, // November
-    pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
+    pdfLink: "https://docs.google.com/document/d/1_Momen_Seru_JavaScript/edit?usp=sharing", // Contoh tautan Google Drive
     tags: ["JavaScript", "interaktif", "belajar", "momen"],
   },
   {
@@ -77,7 +79,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Tim Pengajar",
     year: 2023,
     month: 12, // Desember
-    pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
+    pdfLink: "https://docs.google.com/document/d/1_Pameran_Aplikasi_React/edit?usp=sharing", // Contoh tautan Google Drive
     tags: ["React", "aplikasi", "inovasi", "pameran"],
   },
   {
@@ -90,7 +92,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur A",
     year: 2024,
     month: 1, // Januari
-    pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
+    pdfLink: "https://docs.google.com/document/d/1_Refleksi_Python_Data_Science/edit?usp=sharing", // Contoh tautan Google Drive
     tags: ["Python", "data science", "refleksi", "pengalaman"],
   },
   {
@@ -103,7 +105,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur B",
     year: 2024,
     month: 2, // Februari
-    pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
+    pdfLink: "https://docs.google.com/document/d/1_Workshop_UIUX_Tailwind/edit?usp=sharing", // Contoh tautan Google Drive
     tags: ["Tailwind CSS", "UI/UX", "desain", "workshop"],
   },
   {
@@ -116,7 +118,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur C",
     year: 2024,
     month: 2, // Februari
-    pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
+    pdfLink: "https://docs.google.com/document/d/1_Debugging_Kode/edit?usp=sharing", // Contoh tautan Google Drive
     tags: ["debugging", "pemecahan masalah", "kode", "praktik"],
   },
   {
@@ -129,7 +131,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Tim Pengajar",
     year: 2024,
     month: 3, // Maret
-    pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
+    pdfLink: "https://docs.google.com/document/d/1_Kunjungan_Industri_Startup/edit?usp=sharing", // Contoh tautan Google Drive
     tags: ["kunjungan", "industri", "startup", "pengalaman"],
   },
   {
@@ -142,7 +144,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Instruktur B",
     year: 2024,
     month: 4, // April
-    pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
+    pdfLink: "https://docs.google.com/document/d/1_Hackathon_Mini_Coding/edit?usp=sharing", // Contoh tautan Google Drive
     tags: ["hackathon", "coding", "tantangan", "kolaborasi"],
   },
   {
@@ -155,7 +157,7 @@ const dummyBlogPosts: BlogPost[] = [
     author: "Manajemen",
     year: 2025,
     month: 5, // Mei
-    pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
+    pdfLink: "https://docs.google.com/document/d/1_Sertifikasi_Kelulusan/edit?usp=sharing", // Contoh tautan Google Drive
     tags: ["kelulusan", "sertifikasi", "perayaan", "prestasi"],
   },
 ];
