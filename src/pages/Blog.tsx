@@ -233,7 +233,7 @@ const BlogPage: React.FC = () => {
   }, [selectedPeriod, selectedTag, searchTerm]); // Dependensi disesuaikan
 
   return (
-    <div className="container mx-auto py-10 px-4">
+    <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner"> {/* Added bg-muted/40 and shadow-inner */}
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Blog Kami</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
         Temukan artikel dan tutorial terbaru kami tentang teknologi dan coding.
