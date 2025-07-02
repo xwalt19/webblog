@@ -15,22 +15,34 @@ interface TeamMember {
 
 const dummyTeamMembers: TeamMember[] = [
   {
-    name: "Budi Santoso",
+    name: "Marisa Paryasto",
     role: "Pendiri & CEO",
+    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Marisa",
+    description: "PhD Electrical Engineering Institute Technology Bandung. Seorang peneliti di ITB dan dosen paruh waktu di Telkom University. Berpengalaman dalam pengajaran dan pendidikan, ahli dalam rekayasa/ilmu komputer, pemrograman, dan kriptografi. Sangat mengagumi anak-anak.",
+  },
+  {
+    name: "Budi Rahardjo",
+    role: "Mentor",
     avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Budi",
-    description: "Visioner di balik Blog Kurusiu, bersemangat untuk memberdayakan individu melalui pendidikan teknologi.",
+    description: "PhD, Fakultas Teknik Elektro Institut Teknologi Bandung. Berkontribusi dalam membimbing dan mengarahkan pengembangan program kami.",
   },
   {
-    name: "Siti Aminah",
-    role: "Kepala Konten & Editor",
-    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Siti",
-    description: "Memastikan setiap artikel dan kursus berkualitas tinggi dan relevan dengan kebutuhan pembaca.",
+    name: "Prayudi Utomo",
+    role: "CodeinTech Founder & Programmer",
+    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Prayudi",
+    description: "Pendiri CodeinTech dan seorang programmer berpengalaman yang bersemangat dalam inovasi teknologi.",
   },
   {
-    name: "Joko Susilo",
-    role: "Pengembang Utama",
-    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Joko",
-    description: "Membangun dan memelihara platform kami, memastikan pengalaman belajar yang mulus dan inovatif.",
+    name: "Faris Hafizhan Hakim",
+    role: "Asisten Pengajar",
+    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Faris",
+    description: "Salah satu kapten dan asisten pengajar kami yang berdedikasi untuk kelas anak-anak.",
+  },
+  {
+    name: "Bullitt Zulfiqar",
+    role: "Asisten Pengajar",
+    avatarUrl: "https://api.dicebear.com/8.x/lorelei/svg?seed=Bullitt",
+    description: "Kapten dan asisten pengajar yang antusias, membantu anak-anak mengembangkan keterampilan IT mereka.",
   },
 ];
 
@@ -38,9 +50,9 @@ const AboutPage: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Tentang Blog Kurusiu</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Tentang ProCodeCG</h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Kami adalah platform yang berdedikasi untuk menyediakan sumber daya belajar teknologi berkualitas tinggi dan wawasan terbaru di dunia pemrograman.
+          ProCodeCG adalah startup yang berbasis di Bandung, berfokus pada teknologi, khususnya literasi pemrograman dan coding. Kami bersemangat membantu anak-anak membangun dan mengembangkan keterampilan mereka di lingkungan IT, karena kami menyadari bahwa anak-anak adalah investasi paling berharga untuk kebutuhan sumber daya manusia di masa depan. Kami membantu industri masa depan dengan membentuk keterampilan anak-anak sejak dini untuk memenuhi persyaratan lanskap industri teknologi, mengingat perubahan teknologi yang pesat di seluruh dunia.
         </p>
       </section>
 
@@ -53,7 +65,7 @@ const AboutPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Misi kami adalah untuk memberdayakan individu dari semua latar belakang untuk menguasai keterampilan teknologi yang relevan, membuka peluang karir baru, dan mendorong inovasi melalui pendidikan yang mudah diakses dan menarik.
+              Misi kami adalah memberdayakan generasi muda dengan literasi pemrograman dan coding, membantu mereka membangun keterampilan IT yang esensial untuk menghadapi tantangan dan peluang di industri teknologi yang terus berkembang.
             </p>
           </CardContent>
         </Card>
@@ -65,7 +77,7 @@ const AboutPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Kami membayangkan masa depan di mana setiap orang memiliki akses ke pengetahuan teknologi yang mereka butuhkan untuk berkembang di era digital, menciptakan komunitas pembelajar yang dinamis dan saling mendukung.
+              Kami juga berupaya mendukung industri kreatif dengan membangun komunitas 'Code Meet Up', tempat individu kreatif dengan beragam pengetahuan dapat berkumpul, berbagi, berkolaborasi, dan menciptakan inovasi bersama.
             </p>
           </CardContent>
         </Card>
