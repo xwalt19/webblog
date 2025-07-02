@@ -36,8 +36,8 @@ interface BlogPost {
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
-    title: "Yuk, Bikin Blog Seru Pertamamu!",
-    excerpt: "Panduan asyik buat kamu yang mau punya blog sendiri, gampang banget!",
+    title: "Yuk Bikin Blog Seru Pertamamu",
+    excerpt: "Panduan asyik buat kamu yang mau punya blog sendiri, gampang banget",
     date: "10 Oktober 2023",
     image: "https://source.unsplash.com/random/400x250/?blogging,writing",
     category: "Dasar HTML",
@@ -49,7 +49,7 @@ const dummyBlogPosts: BlogPost[] = [
   {
     id: "2",
     title: "Rahasia Menulis Cerita Blog yang Bikin Betah Baca",
-    excerpt: "Mau tulisanmu dibaca banyak teman? Ini dia tipsnya!",
+    excerpt: "Mau tulisanmu dibaca banyak teman Ini dia tipsnya",
     date: "15 November 2023",
     image: "https://source.unsplash.com/random/400x250/?content,marketing",
     category: "Styling CSS",
@@ -60,8 +60,8 @@ const dummyBlogPosts: BlogPost[] = [
   },
   {
     id: "3",
-    title: "Biar Blogmu Gampang Ditemukan di Internet!",
-    excerpt: "Pelajari cara biar blogmu muncul paling atas saat dicari teman-teman.",
+    title: "Biar Blogmu Gampang Ditemukan di Internet",
+    excerpt: "Pelajari cara biar blogmu muncul paling atas saat dicari teman-teman",
     date: "20 Desember 2023",
     image: "https://source.unsplash.com/random/400x250/?seo,optimization",
     category: "JavaScript Interaktif",
@@ -72,8 +72,8 @@ const dummyBlogPosts: BlogPost[] = [
   },
   {
     id: "4",
-    title: "Sihir JavaScript: Bikin Website Jadi Hidup!",
-    excerpt: "Kenalan sama JavaScript, bahasa rahasia yang bikin website bisa bergerak dan interaktif.",
+    title: "Sihir JavaScript Bikin Website Jadi Hidup",
+    excerpt: "Kenalan sama JavaScript, bahasa rahasia yang bikin website bisa bergerak dan interaktif",
     date: "25 Januari 2024",
     image: "https://source.unsplash.com/random/400x250/?javascript,code",
     category: "JavaScript Interaktif",
@@ -84,8 +84,8 @@ const dummyBlogPosts: BlogPost[] = [
   },
   {
     id: "5",
-    title: "Yuk, Bikin Aplikasi Keren Pakai React!",
-    excerpt: "Belajar bikin aplikasi web yang canggih dan interaktif dengan React, seru banget!",
+    title: "Yuk Bikin Aplikasi Keren Pakai React",
+    excerpt: "Belajar bikin aplikasi web yang canggih dan interaktif dengan React, seru banget",
     date: "01 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?reactjs,programming",
     category: "Proyek Akhir",
@@ -96,8 +96,8 @@ const dummyBlogPosts: BlogPost[] = [
   },
   {
     id: "6",
-    title: "Python: Si Pintar Pengolah Data!",
-    excerpt: "Mulai petualanganmu di dunia data dengan Python, bahasa pemrograman yang jago hitung-hitungan.",
+    title: "Python Si Pintar Pengolah Data",
+    excerpt: "Mulai petualanganmu di dunia data dengan Python, bahasa pemrograman yang jago hitung-hitungan",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data",
     category: "Dasar HTML",
@@ -108,8 +108,8 @@ const dummyBlogPosts: BlogPost[] = [
   },
   {
     id: "7",
-    title: "Tailwind CSS: Bikin Tampilan Website Makin Cantik!",
-    excerpt: "Rahasia bikin website jadi super keren dan rapi tanpa ribet.",
+    title: "Tailwind CSS Bikin Tampilan Website Makin Cantik",
+    excerpt: "Rahasia bikin website jadi super keren dan rapi tanpa ribet",
     date: "05 Maret 2024",
     image: "https://source.unsplash.com/random/400x250/?tailwind,css",
     category: "Styling CSS",
@@ -120,8 +120,8 @@ const dummyBlogPosts: BlogPost[] = [
   },
   {
     id: "8",
-    title: "JavaScript Sabar: Nunggu Dulu Baru Jalan!",
-    excerpt: "Pernah lihat website loading? Itu kerjaan JavaScript yang sabar menunggu.",
+    title: "JavaScript Sabar Nunggu Dulu Baru Jalan",
+    excerpt: "Pernah lihat website loading Itu kerjaan JavaScript yang sabar menunggu",
     date: "12 April 2024",
     image: "https://source.unsplash.com/random/400x250/?async,javascript",
     category: "JavaScript Interaktif",
@@ -132,8 +132,8 @@ const dummyBlogPosts: BlogPost[] = [
   },
   {
     id: "9",
-    title: "Jadi Detektif Kode: Cari dan Perbaiki Kesalahan!",
-    excerpt: "Belajar jadi detektif handal yang bisa menemukan dan memperbaiki 'bug' di programmu.",
+    title: "Jadi Detektif Kode Cari dan Perbaiki Kesalahan",
+    excerpt: "Belajar jadi detektif handal yang bisa menemukan dan memperbaiki 'bug' di programmu",
     date: "20 Mei 2025",
     image: "https://source.unsplash.com/random/400x250/?debugging,code",
     category: "Proyek Akhir",
