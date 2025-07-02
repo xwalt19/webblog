@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu } from "lucide-react"; // Icons for topics
+import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users, CalendarDays } from "lucide-react"; // Icons for topics and activities
 import {
   Select,
   SelectContent,
@@ -55,6 +55,7 @@ const RegularEventsClasses: React.FC = () => {
       name: "Programming for Kids",
       schedule: "Setiap Sabtu, 09.00 – 11.00 WIB",
       description: "Kelas yang dirancang khusus untuk memperkenalkan dasar-dasar pemrograman kepada anak-anak dengan cara yang menyenangkan dan interaktif.",
+      icon: Code, // Menambahkan ikon
     },
   ];
 
@@ -63,6 +64,7 @@ const RegularEventsClasses: React.FC = () => {
       name: "ProCodeCG codeMeetUp()",
       schedule: "Setiap Senin, 13.00 – 15.00 WIB",
       description: "Acara pertemuan rutin untuk para pengembang dan penggemar coding untuk berbagi pengetahuan, berkolaborasi, dan berdiskusi tentang tren teknologi terbaru.",
+      icon: Users, // Menambahkan ikon
     },
   ];
 
@@ -114,11 +116,12 @@ const RegularEventsClasses: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {runningClasses.map((cls, index) => (
               <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardHeader className="pb-4">
+                <CardHeader className="pb-4 flex flex-col items-center text-center"> {/* Tambahkan flex dan center */}
+                  {cls.icon && <cls.icon className="mb-4 text-primary" size={48} />} {/* Render ikon */}
                   <CardTitle className="text-2xl font-semibold">{cls.name}</CardTitle>
                   <CardDescription className="text-primary font-medium">{cls.schedule}</CardDescription>
                 </CardHeader>
-                <CardContent className="text-muted-foreground">
+                <CardContent className="text-muted-foreground text-center"> {/* Tambahkan text-center */}
                   {cls.description}
                 </CardContent>
               </Card>
@@ -127,7 +130,6 @@ const RegularEventsClasses: React.FC = () => {
         </section>
       )}
 
-      {/* Hanya tampilkan separator jika kedua bagian kegiatan tidak ditampilkan, atau jika salah satu ditampilkan dan bukan 'allActivities' */}
       {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && <Separator className="my-12" />}
 
       {/* Regular Events Section */}
@@ -137,11 +139,12 @@ const RegularEventsClasses: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {regularEvents.map((event, index) => (
               <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardHeader className="pb-4">
+                <CardHeader className="pb-4 flex flex-col items-center text-center"> {/* Tambahkan flex dan center */}
+                  {event.icon && <event.icon className="mb-4 text-primary" size={48} />} {/* Render ikon */}
                   <CardTitle className="text-2xl font-semibold">{event.name}</CardTitle>
                   <CardDescription className="text-primary font-medium">{event.schedule}</CardDescription>
                 </CardHeader>
-                <CardContent className="text-muted-foreground">
+                <CardContent className="text-muted-foreground text-center"> {/* Tambahkan text-center */}
                   {event.description}
                 </CardContent>
               </Card>
