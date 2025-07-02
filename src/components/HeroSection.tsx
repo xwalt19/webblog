@@ -14,7 +14,7 @@ const HeroSection: React.FC = () => {
           Belajar Teknologi, Wujudkan Inovasi
         </h1>
         <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto">
-          Jelajahi wawasan terbaru dari blog kami untuk menguasai dunia pemrograman dan menciptakan masa depan.
+          Temukan cerita seru dan tips coding di blog kami, yuk jadi jagoan IT masa depan
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           {/* Changed to link to blog */}
