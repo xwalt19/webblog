@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -7,84 +7,120 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
+import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const isMobile = useIsMobile();
-
+const Layout: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      {isMobile ? (
-        // Mobile layout (top bar)
-        <header className="bg-primary text-primary-foreground p-4 shadow-md">
-          <div className="container mx-auto flex justify-between items-center">
-            <Link to="/" className="text-2xl font-bold">
-              Blog Kurusiu
-            </Link>
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <Link to="/" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Home
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link to="/archives" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Archives
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
-        </header>
-      ) : (
-        // Desktop sidebar
-        <aside className="w-64 bg-sidebar text-sidebar-foreground p-4 shadow-lg flex flex-col fixed h-full top-0 left-0 z-10">
-          <Link to="/" className="text-2xl font-bold mb-8 text-sidebar-primary">
+      {/* Header (Navbar) */}
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          {/* Logo */}
+          <Link to="/" className="text-2xl font-bold text-primary">
             Blog Kurusiu
           </Link>
-          <NavigationMenu orientation="vertical" className="flex-grow">
-            <NavigationMenuList className="flex flex-col items-start space-y-2">
-              <NavigationMenuItem className="w-full">
+
+          {/* Navigation Menu */}
+          <NavigationMenu className="hidden md:flex">
+            <NavigationMenuList>
+              <NavigationMenuItem>
                 <Link to="/" legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "w-full justify-start")}>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     Home
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-              <NavigationMenuItem className="w-full">
+              <NavigationMenuItem>
+                <Link to="/courses" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Kursus
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
                 <Link to="/archives" legacyBehavior passHref>
-                  <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "w-full justify-start")}>
-                    Archives
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Blog
+                  </NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link to="/about" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Tentang Kami
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-        </aside>
-      )}
 
-      <div className={cn("flex-grow flex flex-col", !isMobile && "ml-64")}>
-        <main className="flex-grow p-4">
-          <div className="container mx-auto">
-            {children}
+          {/* CTA Button */}
+          <Button className="hidden md:inline-flex">Daftar Sekarang</Button>
+
+          {/* Mobile Menu Placeholder (can be expanded with a Sheet/Dialog for mobile navigation) */}
+          <div className="md:hidden">
+            <Button variant="ghost" size="icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </Button>
           </div>
-        </main>
-        <footer className="bg-secondary text-secondary-foreground p-4 text-center mt-8">
-          <Separator className="my-4" />
-          <p>&copy; {new Date().getFullYear()} Blog Kurusiu. All rights reserved.</p>
-        </footer>
-      </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-secondary text-secondary-foreground p-8 mt-12">
+        <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Tautan Cepat</h3>
+            <ul className="space-y-2">
+              <li><Link to="/" className="hover:underline">Home</Link></li>
+              <li><Link to="/courses" className="hover:underline">Kursus</Link></li>
+              <li><Link to="/archives" className="hover:underline">Blog</Link></li>
+              <li><Link to="/about" className="hover:underline">Tentang Kami</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact Info / Placeholder */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Hubungi Kami</h3>
+            <p>Email: info@kurusiu.com</p>
+            <p>Telepon: +62 123 4567</p>
+          </div>
+
+          {/* Social Media */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Ikuti Kami</h3>
+            <div className="flex space-x-4">
+              <a href="#" aria-label="LinkedIn" className="hover:text-primary-foreground"><Linkedin size={24} /></a>
+              <a href="#" aria-label="Instagram" className="hover:text-primary-foreground"><Instagram size={24} /></a>
+              <a href="#" aria-label="Twitter" className="hover:text-primary-foreground"><Twitter size={24} /></a>
+              <a href="#" aria-label="Facebook" className="hover:text-primary-foreground"><Facebook size={24} /></a>
+            </div>
+          </div>
+        </div>
+        <Separator className="my-8 bg-border" />
+        <p className="text-center text-sm">&copy; {new Date().getFullYear()} Blog Kurusiu. All rights reserved.</p>
+      </footer>
     </div>
   );
 };
