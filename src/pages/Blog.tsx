@@ -256,12 +256,12 @@ const BlogPage: React.FC = () => {
           onValueChange={(value) => setSelectedTag(value)}
         >
           <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Tag" /> {/* Perubahan di sini */}
+            <SelectValue placeholder="Tag" />
           </SelectTrigger>
           <SelectContent>
             {allTags.map(tag => (
               <SelectItem key={tag} value={tag}>
-                {tag}
+                {tag === "Semua" ? "Tag" : tag} {/* Perubahan di sini */}
               </SelectItem>
             ))}
           </SelectContent>
