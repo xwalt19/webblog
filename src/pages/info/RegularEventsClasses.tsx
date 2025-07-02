@@ -14,7 +14,8 @@ import {
 
 const RegularEventsClasses: React.FC = () => {
   // State untuk mengontrol tampilan bagian 'Kegiatan' (Kelas & Acara)
-  const [selectedActivityView, setSelectedActivityView] = useState("allActivities"); 
+  // Mengubah nilai awal menjadi string kosong agar tidak ada yang terpilih secara default
+  const [selectedActivityView, setSelectedActivityView] = useState(""); 
 
   const topics = [
     {
@@ -126,6 +127,7 @@ const RegularEventsClasses: React.FC = () => {
         </section>
       )}
 
+      {/* Hanya tampilkan separator jika kedua bagian kegiatan tidak ditampilkan, atau jika salah satu ditampilkan dan bukan 'allActivities' */}
       {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && <Separator className="my-12" />}
 
       {/* Regular Events Section */}
