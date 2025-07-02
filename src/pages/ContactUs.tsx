@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Mail, Facebook, Twitter, Globe } from "lucide-react"; // Menggunakan ikon yang relevan
 
 const ContactUs: React.FC = () => {
   return (
@@ -14,43 +14,62 @@ const ContactUs: React.FC = () => {
         </p>
       </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-        <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <CardHeader className="pb-4">
-            <Mail className="mx-auto mb-4 text-primary" size={48} />
-            <CardTitle className="text-xl mb-2">Email</CardTitle>
+      <div className="flex justify-center mb-16">
+        <Card className="w-full max-w-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-3xl font-bold mb-2">Mari Terhubung!</CardTitle>
+            <CardDescription className="text-muted-foreground">
+              Kami selalu terbuka untuk pertanyaan, kolaborasi, atau sekadar sapaan.
+            </CardDescription>
           </CardHeader>
-          <CardContent className="text-muted-foreground p-0">
-            <p>info@procodecg.com</p>
-            <p>support@procodecg.com</p>
-          </CardContent>
-        </Card>
-        <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <CardHeader className="pb-4">
-            <Phone className="mx-auto mb-4 text-primary" size={48} />
-            <CardTitle className="text-xl mb-2">Telepon</CardTitle>
-          </CardHeader>
-          <CardContent className="text-muted-foreground p-0">
-            <p>+62 123 4567 (Kantor)</p>
-            <p>+62 812 3456 7890 (WhatsApp)</p>
-          </CardContent>
-        </Card>
-        <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <CardHeader className="pb-4">
-            <MapPin className="mx-auto mb-4 text-primary" size={48} />
-            <CardTitle className="text-xl mb-2">Alamat</CardTitle>
-          </CardHeader>
-          <CardContent className="text-muted-foreground p-0">
-            <p>Jl. Contoh No. 123</p>
-            <p>Bandung, Jawa Barat, Indonesia</p>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-center md:justify-start gap-4 p-4 bg-muted/50 rounded-md">
+              <Mail className="text-primary" size={32} />
+              <div>
+                <h3 className="text-lg font-semibold">Email Kami</h3>
+                <a href="mailto:procodecg@gmail.com" className="text-blue-600 hover:underline">
+                  procodecg@gmail.com
+                </a>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center md:justify-start gap-4 p-4 bg-muted/50 rounded-md">
+              <Facebook className="text-blue-700" size={32} />
+              <div>
+                <h3 className="text-lg font-semibold">Ikuti Kami di Facebook</h3>
+                <a href="https://www.facebook.com/ProCodeCG" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  ProCodeCG
+                </a>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center md:justify-start gap-4 p-4 bg-muted/50 rounded-md">
+              <Twitter className="text-blue-400" size={32} />
+              <div>
+                <h3 className="text-lg font-semibold">Sebut Kami di Twitter</h3>
+                <a href="https://twitter.com/procodecg" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  @procodecg
+                </a>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center md:justify-start gap-4 p-4 bg-muted/50 rounded-md">
+              <Globe className="text-green-600" size={32} />
+              <div>
+                <h3 className="text-lg font-semibold">Kunjungi Website Resmi Kami</h3>
+                <a href="http://www.procodecg.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                  www.procodecg.com
+                </a>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
 
       <section className="text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6">Punya Pertanyaan?</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">Punya Pertanyaan Lain?</h2>
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Tim kami siap membantu Anda. Kirimkan pesan kepada kami dan kami akan segera merespons.
+          Jangan ragu untuk mengirimkan pesan atau menjelajahi bagian lain dari website kami.
         </p>
         <Link to="/">
           <Button size="lg">Kembali ke Beranda</Button>
