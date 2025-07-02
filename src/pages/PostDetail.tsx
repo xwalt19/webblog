@@ -2,12 +2,14 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge"; // Import Badge component
 
 interface BlogPost {
   id: string;
   title: string;
   date: string;
   content: string;
+  tags: string[]; // Tambahkan properti tags
 }
 
 const dummyPosts: BlogPost[] = [
@@ -20,6 +22,7 @@ const dummyPosts: BlogPost[] = [
       <p>Lalu, pilih tempat untuk blogmu. Ada banyak pilihan, seperti membuat blog di platform khusus anak-anak atau bahkan membangunnya sendiri dengan bantuan orang dewasa, seperti yang kita lakukan di sini dengan React. Pastikan tempat yang kamu pilih itu aman dan seru.</p>
       <p>Terakhir, mulai menulis Jangan takut kalau tulisan pertamamu belum sempurna. Semakin sering kamu menulis, tulisanmu akan semakin keren. Selamat ngeblog, jagoan.</p>
     `,
+    tags: ["pemula", "blogging", "menulis"],
   },
   {
     id: "2",
@@ -30,6 +33,7 @@ const dummyPosts: BlogPost[] = [
       <p>Gunakan kalimat-kalimat pendek dan mudah dimengerti. Kamu juga bisa pakai daftar poin-poin biar ceritamu gampang dibaca. Jangan lupa tambahkan gambar-gambar lucu atau video seru biar blogmu makin hidup dan tidak membosankan.</p>
       <p>Di akhir tulisan, ajak teman-temanmu untuk berkomentar atau berbagi cerita mereka. Misalnya, "Apa petualangan seru yang pernah kamu alami" Ini akan membuat mereka merasa diajak ngobrol dan ingin kembali lagi ke blogmu.</p>
     `,
+    tags: ["konten", "menulis", "tips"],
   },
   {
     id: "3",
@@ -40,6 +44,7 @@ const dummyPosts: BlogPost[] = [
       <p>Caranya, gunakan kata-kata penting yang sering dicari orang di judul dan isi blogmu. Misalnya, kalau blogmu tentang "robot mainan", pastikan kata "robot mainan" ada di judul dan beberapa kali di dalam tulisanmu. Tapi jangan terlalu banyak ya, nanti malah aneh.</p>
       <p>Pastikan juga blogmu cepat dibuka dan bisa dilihat dengan baik di handphone atau tablet. Semakin bagus blogmu, semakin sering mesin pencari akan merekomendasikannya kepada teman-teman yang mencari informasi tentang topik yang kamu tulis. Jadi, blogmu bisa jadi terkenal.</p>
     `,
+    tags: ["SEO", "internet", "visibilitas"],
   },
   {
     id: "4",
@@ -50,6 +55,7 @@ const dummyPosts: BlogPost[] = [
       <p>Bayangkan website itu seperti rumah. HTML adalah kerangka rumahnya, CSS adalah cat dan hiasannya, nah JavaScript itu seperti listrik dan semua alat yang bikin rumah itu berfungsi, seperti lampu yang bisa nyala atau pintu yang bisa dibuka otomatis.</p>
       <p>Dengan JavaScript, kita bisa membuat game sederhana, kalkulator, atau bahkan animasi lucu di website. Belajar JavaScript itu seperti belajar mantra baru yang bisa membuat website kita jadi lebih hidup dan menyenangkan.</p>
     `,
+    tags: ["JavaScript", "web", "interaktif"],
   },
   {
     id: "5",
@@ -60,6 +66,7 @@ const dummyPosts: BlogPost[] = [
       <p>Misalnya, kamu mau bikin aplikasi daftar belanjaan. Dengan React, kamu bisa bikin satu balok untuk "item belanjaan", satu balok untuk "tombol tambah", dan satu balok lagi untuk "daftar belanjaan". Lalu, kamu tinggal susun balok-balok itu jadi aplikasi yang utuh.</p>
       <p>React sangat populer karena membuat proses pembuatan aplikasi jadi lebih cepat dan mudah. Banyak aplikasi besar yang kamu pakai sehari-hari juga dibuat dengan React, lho Jadi, kalau kamu belajar React, kamu bisa bikin aplikasi keren seperti mereka.</p>
     `,
+    tags: ["React", "aplikasi web", "pemrograman"],
   },
   {
     id: "6",
@@ -70,6 +77,7 @@ const dummyPosts: BlogPost[] = [
       <p>Dengan Python, kita bisa meminta komputer untuk menghitung, mengurutkan, atau bahkan menemukan pola-pola menarik dari data-data itu. Misalnya, kamu bisa tahu siapa temanmu yang paling banyak punya koleksi stiker, atau rasa es krim apa yang paling disukai.</p>
       <p>Python juga dipakai untuk membuat game, aplikasi, dan bahkan membantu robot pintar. Belajar Python itu seperti punya teman super pintar yang siap membantumu memahami dunia angka dan informasi dengan cara yang menyenangkan.</p>
     `,
+    tags: ["Python", "data science", "pemrograman"],
   },
   {
     id: "7",
@@ -80,6 +88,7 @@ const dummyPosts: BlogPost[] = [
       <p>Biasanya, kita harus menulis banyak kode untuk mengatur warna, ukuran, atau posisi setiap bagian di website. Tapi dengan Tailwind, kita tinggal pakai "nama-nama" pendek yang sudah ada, seperti "text-blue-500" untuk teks biru, atau "p-4" untuk memberi jarak.</p>
       <p>Ini membuat proses mendesain jadi lebih cepat dan mudah, seperti menyusun balok-balok desain. Jadi, kamu bisa fokus pada ide-ide kreatifmu dan membuat website yang tampilannya memukau tanpa harus pusing dengan banyak kode desain.</p>
     `,
+    tags: ["Tailwind CSS", "desain web", "styling"],
   },
   {
     id: "8",
@@ -90,6 +99,7 @@ const dummyPosts: BlogPost[] = [
       <p>Bayangkan kamu sedang memesan makanan di restoran. Kamu tidak akan diam saja menunggu makananmu jadi, kan Kamu bisa sambil minum atau ngobrol. Nah, JavaScript juga begitu. Dia bisa melakukan pekerjaan lain sambil menunggu data dari internet atau menunggu gambar selesai dimuat.</p>
       <p>Jadi, website-mu tidak akan "macet" atau berhenti total hanya karena menunggu satu hal. JavaScript akan menyelesaikan tugas lain dulu, dan saat yang ditunggu sudah siap, dia akan melanjutkan pekerjaannya. Ini membuat website jadi lebih cepat dan nyaman digunakan.</p>
     `,
+    tags: ["JavaScript", "asynchronous", "web performance"],
   },
   {
     id: "9",
@@ -100,6 +110,7 @@ const dummyPosts: BlogPost[] = [
       <p>Proses mencari dan memperbaiki bug ini namanya "debugging". Ini seperti bermain teka-teki. Kita harus melihat kode kita dengan teliti, mencari tahu di mana letak kesalahannya, dan kemudian memperbaikinya. Kadang butuh kesabaran, tapi seru juga lho.</p>
       <p>Ada banyak alat yang bisa membantu kita jadi detektif kode yang hebat, seperti "console.log" yang bisa menampilkan pesan rahasia dari kode kita. Dengan debugging, kita jadi lebih pintar dan bisa membuat program yang bekerja dengan sempurna.</p>
     `,
+    tags: ["debugging", "pemrograman", "error handling"],
   },
 ];
 
@@ -124,6 +135,11 @@ const PostDetail: React.FC = () => {
       <CardHeader>
         <CardTitle className="text-3xl font-bold">{post.title}</CardTitle>
         <p className="text-sm text-muted-foreground">{post.date}</p>
+        <div className="flex flex-wrap gap-1 mt-2">
+          {post.tags.map(tag => (
+            <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+          ))}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post.content }} />

@@ -31,6 +31,7 @@ interface BlogPost {
   year: number;
   month: number; // Properti bulan (1-12)
   pdfLink?: string; // Tambahkan properti untuk tautan PDF
+  tags: string[]; // Tambahkan properti tags
 }
 
 const dummyBlogPosts: BlogPost[] = [
@@ -45,6 +46,7 @@ const dummyBlogPosts: BlogPost[] = [
     year: 2023,
     month: 10, // Oktober
     pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
+    tags: ["pemula", "blogging", "menulis"],
   },
   {
     id: "2",
@@ -57,6 +59,7 @@ const dummyBlogPosts: BlogPost[] = [
     year: 2023,
     month: 11, // November
     pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
+    tags: ["konten", "menulis", "tips"],
   },
   {
     id: "3",
@@ -69,6 +72,7 @@ const dummyBlogPosts: BlogPost[] = [
     year: 2023,
     month: 12, // Desember
     pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
+    tags: ["SEO", "internet", "visibilitas"],
   },
   {
     id: "4",
@@ -81,6 +85,7 @@ const dummyBlogPosts: BlogPost[] = [
     year: 2024,
     month: 1, // Januari
     pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
+    tags: ["JavaScript", "web", "interaktif"],
   },
   {
     id: "5",
@@ -93,6 +98,7 @@ const dummyBlogPosts: BlogPost[] = [
     year: 2024,
     month: 2, // Februari
     pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
+    tags: ["React", "aplikasi web", "pemrograman"],
   },
   {
     id: "6",
@@ -105,6 +111,7 @@ const dummyBlogPosts: BlogPost[] = [
     year: 2024,
     month: 2, // Februari
     pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
+    tags: ["Python", "data science", "pemrograman"],
   },
   {
     id: "7",
@@ -117,6 +124,7 @@ const dummyBlogPosts: BlogPost[] = [
     year: 2024,
     month: 3, // Maret
     pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
+    tags: ["Tailwind CSS", "desain web", "styling"],
   },
   {
     id: "8",
@@ -129,6 +137,7 @@ const dummyBlogPosts: BlogPost[] = [
     year: 2024,
     month: 4, // April
     pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
+    tags: ["JavaScript", "asynchronous", "web performance"],
   },
   {
     id: "9",
@@ -141,10 +150,12 @@ const dummyBlogPosts: BlogPost[] = [
     year: 2025,
     month: 5, // Mei
     pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
+    tags: ["debugging", "pemrograman", "error handling"],
   },
 ];
 
 const allCategories = ["Semua", ...new Set(dummyBlogPosts.map(post => post.category))];
+const allTags = ["Semua", ...new Set(dummyBlogPosts.flatMap(post => post.tags))];
 
 const monthNames = [
   "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -156,6 +167,7 @@ const POSTS_PER_PAGE = 6; // Jumlah postingan per halaman
 const BlogPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [selectedPeriod, setSelectedPeriod] = useState("Semua"); // State baru untuk filter gabungan tahun-bulan
+  const [selectedTag, setSelectedTag] = useState("Semua"); // State baru untuk filter tag
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -193,9 +205,11 @@ const BlogPage: React.FC = () => {
         matchesPeriod = post.year === filterYear && post.month === filterMonth;
       }
 
-      return matchesCategory && matchesSearch && matchesPeriod;
+      const matchesTag = selectedTag === "Semua" || post.tags.includes(selectedTag);
+
+      return matchesCategory && matchesSearch && matchesPeriod && matchesTag;
     });
-  }, [selectedCategory, selectedPeriod, searchTerm]);
+  }, [selectedCategory, selectedPeriod, selectedTag, searchTerm]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -212,13 +226,13 @@ const BlogPage: React.FC = () => {
   // Reset pagination whenever filters change
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, selectedPeriod, searchTerm]);
+  }, [selectedCategory, selectedPeriod, selectedTag, searchTerm]);
 
   return (
     <div className="container mx-auto py-10 px-4">
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Artikel & Tutorial</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
-        Jelajahi semua postingan blog kami, filter berdasarkan kategori, periode (tahun & bulan), atau cari berdasarkan kata kunci.
+        Jelajahi semua postingan blog kami, filter berdasarkan kategori, periode (tahun & bulan), tag, atau cari berdasarkan kata kunci.
       </p>
 
       {/* Filter Area */}
@@ -242,6 +256,20 @@ const BlogPage: React.FC = () => {
               className="px-4 py-2 rounded-full"
             >
               {category}
+            </Button>
+          ))}
+        </div>
+
+        {/* Tag Filter */}
+        <div className="flex flex-wrap justify-center gap-2">
+          {allTags.map(tag => (
+            <Button
+              key={tag}
+              variant={selectedTag === tag ? "default" : "outline"}
+              onClick={() => setSelectedTag(tag)}
+              className="px-4 py-2 rounded-full"
+            >
+              {tag}
             </Button>
           ))}
         </div>
@@ -277,6 +305,11 @@ const BlogPage: React.FC = () => {
                 </div>
                 <CardTitle className="text-xl">{post.title}</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">By {post.author}</CardDescription>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {post.tags.map(tag => (
+                    <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                  ))}
+                </div>
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>

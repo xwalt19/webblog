@@ -12,62 +12,69 @@ interface BlogPost {
   image: string;
   category: string;
   author: string;
+  tags: string[]; // Tambahkan properti tags
 }
 
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
-    title: "Memulai Perjalanan Blog Anda",
+    title: "Yuk Bikin Blog Seru Pertamamu",
     excerpt: "Panduan langkah demi langkah untuk membuat blog pertama Anda.",
     date: "10 Oktober 2023",
     image: "https://source.unsplash.com/random/400x250/?blogging,writing",
     category: "Dasar HTML",
     author: "Instruktur A",
+    tags: ["pemula", "blogging"],
   },
   {
     id: "2",
-    title: "Tips Menulis Konten yang Menarik",
+    title: "Rahasia Menulis Cerita Blog yang Bikin Betah Baca",
     excerpt: "Pelajari cara membuat postingan blog yang menarik perhatian pembaca.",
     date: "15 November 2023",
     image: "https://source.unsplash.com/random/400x250/?content,marketing",
     category: "Styling CSS",
     author: "Instruktur B",
+    tags: ["menulis", "konten"],
   },
   {
     id: "3",
-    title: "Mengoptimalkan Blog Anda untuk SEO",
+    title: "Biar Blogmu Gampang Ditemukan di Internet",
     excerpt: "Strategi dasar SEO untuk meningkatkan visibilitas blog Anda.",
     date: "20 Desember 2023",
     image: "https://source.unsplash.com/random/400x250/?seo,optimization",
     category: "JavaScript Interaktif",
     author: "Instruktur C",
+    tags: ["SEO", "internet"],
   },
   {
     id: "4",
-    title: "Pengantar JavaScript Modern",
+    title: "Sihir JavaScript Bikin Website Jadi Hidup",
     excerpt: "Pelajari JavaScript ES6+ untuk interaktivitas web.",
     date: "25 Januari 2024",
     image: "https://source.unsplash.com/random/400x250/?javascript,code",
     category: "JavaScript Interaktif",
     author: "Instruktur A",
+    tags: ["JavaScript", "web"],
   },
   {
     id: "5",
-    title: "Membangun Proyek Akhir dengan React",
+    title: "Yuk Bikin Aplikasi Keren Pakai React",
     excerpt: "Panduan lengkap membangun aplikasi web dinamis dengan React.js.",
     date: "01 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?reactjs,programming",
     category: "Proyek Akhir",
     author: "Instruktur B",
+    tags: ["React", "aplikasi"],
   },
   {
     id: "6",
-    title: "Dasar-dasar Python untuk Data Science",
+    title: "Python Si Pintar Pengolah Data",
     excerpt: "Mulai perjalanan Anda di Data Science dengan Python.",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data",
     category: "Dasar HTML", // Contoh kategori lain
     author: "Instruktur C",
+    tags: ["Python", "data"],
   },
 ];
 
@@ -90,6 +97,11 @@ const LatestBlogPosts: React.FC = () => {
                 </div>
                 <CardTitle className="text-xl">{post.title}</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">By {post.author}</CardDescription>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {post.tags.map(tag => (
+                    <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                  ))}
+                </div>
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
