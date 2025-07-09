@@ -101,6 +101,44 @@ const Layout: React.FC = () => {
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+              {/* New Media Navigation Item */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Media</NavigationMenuTrigger>
+                <NavigationMenuContent className="bg-background text-foreground border-border">
+                  <ul className="grid w-[200px] gap-3 p-4">
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/media/youtube"
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none text-foreground">YouTube</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Video tutorial dan vlog kami.
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/media/tiktok"
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none text-foreground">TikTok</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Video singkat dan tips coding.
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Info</NavigationMenuTrigger> {/* Adjusted background to bg-background */}
                 <NavigationMenuContent className="bg-background text-foreground border-border"> {/* Light background for content */}

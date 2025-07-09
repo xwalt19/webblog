@@ -61,9 +61,26 @@ const MobileNav: React.FC = () => {
             </AccordionItem>
           </Accordion>
 
-          {/* Info with Accordion for sub-items */}
+          {/* New Media Accordion for sub-items */}
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-2" className="border-b-0">
+              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
+                Media
+              </AccordionTrigger>
+              <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
+                <Link to="/media/youtube" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  YouTube
+                </Link>
+                <Link to="/media/tiktok" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  TikTok
+                </Link>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
+          {/* Info with Accordion for sub-items */}
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="item-3" className="border-b-0"> {/* Changed value to item-3 to avoid conflict */}
               <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors"> {/* Changed text and hover colors */}
                 Info
               </AccordionTrigger>
