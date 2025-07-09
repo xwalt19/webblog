@@ -40,7 +40,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk3",
-    title: "Behind The Scenes: Kelas Coding Anak",
+    title: "Behind The Scenes Kelas Coding Anak", // Tanda : dihapus
     description: "Intip keseruan di balik layar kelas coding untuk anak-anak.",
     thumbnail: "https://source.unsplash.com/random/400x250/?kids,coding", // Placeholder thumbnail
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334455", // Placeholder URL TikTok
@@ -48,7 +48,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk4",
-    title: "Tutorial Singkat: HTML Dasar",
+    title: "Tutorial Singkat HTML Dasar", // Tanda : dihapus
     description: "Belajar membuat struktur dasar halaman web dengan HTML.",
     thumbnail: "https://source.unsplash.com/random/400x250/?html,tutorial",
     videoUrl: "https://www.tiktok.com/@procodecg/video/2233445566",
@@ -56,7 +56,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk5",
-    title: "CSS Tricks: Styling Cepat",
+    title: "CSS Tricks Styling Cepat", // Tanda : dihapus
     description: "Trik cepat untuk mempercantik tampilan website Anda dengan CSS.",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,design",
     videoUrl: "https://www.tiktok.com/@procodecg/video/3344556677",
@@ -64,7 +64,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk6",
-    title: "JavaScript Fun: Interaksi Tombol",
+    title: "JavaScript Fun Interaksi Tombol", // Tanda : dihapus
     description: "Buat tombol interaktif di website Anda menggunakan JavaScript.",
     thumbnail: "https://source.unsplash.com/random/400x250/?javascript,button",
     videoUrl: "https://www.tiktok.com/@procodecg/video/4455667788",
@@ -80,7 +80,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk8",
-    title: "Python Basics: Variabel dan Tipe Data",
+    title: "Python Basics Variabel dan Tipe Data", // Tanda : dihapus
     description: "Mengenal dasar-dasar Python: variabel dan tipe data.",
     thumbnail: "https://source.unsplash.com/random/400x250/?python,basics",
     videoUrl: "https://www.tiktok.com/@procodecg/video/6677889900",

@@ -17,6 +17,7 @@ import Partners from "./pages/Partners";   // Import halaman Partners
 import YouTubePage from "./pages/media/YouTubePage"; // Import halaman YouTube
 import TikTokPage from "./pages/media/TikTokPage";   // Import halaman TikTok
 import NotFound from "./pages/NotFound";
+import FloatingSearchButton from "./components/FloatingSearchButton"; // Import komponen baru
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
+        <FloatingSearchButton /> {/* Tambahkan FloatingSearchButton di luar Routes agar selalu terlihat */}
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
