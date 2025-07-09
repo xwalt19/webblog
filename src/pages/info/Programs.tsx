@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users, GraduationCap, DollarSign, CalendarDays } from "lucide-react";
 
 interface PriceTier {
@@ -146,10 +152,10 @@ const ProgramsPage: React.FC = () => {
         </p>
       </section>
 
-      <div className="grid grid-cols-1 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"> {/* Changed to 2 columns on medium and large screens */}
         {programs.map((program) => (
-          <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <CardHeader className="pb-4">
+          <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+            <CardHeader className="pb-4 flex-grow">
               <div className="flex items-center gap-4 mb-2">
                 {program.icon && <program.icon className="text-primary" size={40} />}
                 <CardTitle className="text-2xl font-bold">{program.title}</CardTitle>
@@ -158,7 +164,7 @@ const ProgramsPage: React.FC = () => {
                 {program.description}
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 pt-4"> {/* Added padding top */}
               {program.schedule && (
                 <p className="text-md text-foreground mb-2 flex items-center gap-2">
                   <CalendarDays size={18} className="text-muted-foreground" />
@@ -179,43 +185,60 @@ const ProgramsPage: React.FC = () => {
                 </p>
               )}
 
-              {program.priceTable && program.priceTable.map((table, idx) => (
-                <div key={idx} className="mb-6">
-                  <h3 className="text-lg font-semibold mb-2">{table.header[1]}</h3>
-                  <Table className="w-full border">
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[150px]">{table.header[0]}</TableHead>
-                        <TableHead className="text-right">{table.header[1]}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {table.rows.map((row, rowIndex) => (
-                        <TableRow key={rowIndex}>
-                          <TableCell className="font-medium">{row.participants}</TableCell>
-                          <TableCell className="text-right">{row.price}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              ))}
-
-              {program.topics && (
-                <div className="mt-6">
-                  <h3 className="text-xl font-bold mb-4">Topik yang Termasuk:</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {program.topics.map((topic, topicIdx) => (
-                      <Card key={topicIdx} className="p-4 bg-muted/30">
-                        <div className="flex items-center gap-3 mb-2">
-                          <topic.icon size={24} className="text-accent-foreground" />
-                          <h4 className="text-lg font-semibold">{topic.title}</h4>
+              {program.priceTable && program.priceTable.length > 0 && (
+                <Accordion type="single" collapsible className="w-full mt-4">
+                  <AccordionItem value="price-details">
+                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline">
+                      Lihat Detail Harga
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-2">
+                      {program.priceTable.map((table, idx) => (
+                        <div key={idx} className="mb-6 border rounded-md overflow-hidden"> {/* Added border and rounded */}
+                          <h3 className="text-lg font-semibold bg-muted p-3 border-b">{table.header[1]}</h3> {/* Styled header */}
+                          <Table className="w-full">
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead className="w-[150px]">{table.header[0]}</TableHead>
+                                <TableHead className="text-right">{table.header[1]}</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {table.rows.map((row, rowIndex) => (
+                                <TableRow key={rowIndex}>
+                                  <TableCell className="font-medium">{row.participants}</TableCell>
+                                  <TableCell className="text-right">{row.price}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
                         </div>
-                        <p className="text-sm text-muted-foreground">{topic.description}</p>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              )}
+
+              {program.topics && program.topics.length > 0 && (
+                <Accordion type="single" collapsible className="w-full mt-4">
+                  <AccordionItem value="topics-included">
+                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline">
+                      Topik yang Termasuk
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-2">
+                      <div className="grid grid-cols-1 gap-4"> {/* Removed md:grid-cols-2 for single column topics */}
+                        {program.topics.map((topic, topicIdx) => (
+                          <Card key={topicIdx} className="p-4 bg-muted/30">
+                            <div className="flex items-center gap-3 mb-2">
+                              <topic.icon size={24} className="text-accent-foreground" />
+                              <h4 className="text-lg font-semibold">{topic.title}</h4>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{topic.description}</p>
+                          </Card>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               )}
             </CardContent>
           </Card>
