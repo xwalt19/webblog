@@ -96,6 +96,9 @@ const MobileNav: React.FC = () => {
                 <Link to="/partners" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                   PARTNERS
                 </Link>
+                <Link to="/info/calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  CALENDAR
+                </Link>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
