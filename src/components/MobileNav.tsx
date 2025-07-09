@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -48,6 +50,9 @@ const MobileNav: React.FC = () => {
                 Activity
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
+                <Link to="/info/programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  PROGRAMS
+                </Link>
                 <Link to="/info/regular-events-classes" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}> {/* Adjusted text and hover colors */}
                   REGULAR EVENTS & CLASSES
                 </Link>

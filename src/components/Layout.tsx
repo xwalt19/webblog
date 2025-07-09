@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import {
@@ -53,6 +55,21 @@ const Layout: React.FC = () => {
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Activity</NavigationMenuTrigger> {/* Adjusted background to bg-background */}
                 <NavigationMenuContent className="bg-background text-foreground border-border"> {/* Light background for content */}
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/info/programs"
+                          className={cn(
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none text-foreground">PROGRAMS</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Jelajahi semua program dan kelas coding kami.
+                          </p>
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
                     <li>
                       <NavigationMenuLink asChild>
                         <Link

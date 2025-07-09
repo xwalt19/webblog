@@ -12,6 +12,7 @@ import Archives from "./pages/Archives";   // Import halaman Archives
 import RegularEventsClasses from "./pages/info/RegularEventsClasses"; // Import sub-halaman
 import Camps from "./pages/info/Camps";     // Import sub-halaman
 import Training from "./pages/info/Training"; // Import sub-halaman
+import ProgramsPage from "./pages/info/Programs"; // Import halaman Programs
 import ContactUs from "./pages/ContactUs"; // Import halaman Contact Us
 import Partners from "./pages/Partners";   // Import halaman Partners
 import YouTubePage from "./pages/media/YouTubePage"; // Import halaman YouTube
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="info/regular-events-classes" element={<RegularEventsClasses />} /> {/* Rute sub-halaman */}
             <Route path="info/camps" element={<Camps />} />     {/* Rute sub-halaman */}
             <Route path="info/training" element={<Training />} /> {/* Rute sub-halaman */}
+            <Route path="info/programs" element={<ProgramsPage />} /> {/* Rute untuk halaman Programs */}
             <Route path="contact-us" element={<ContactUs />} /> {/* Rute untuk halaman Contact Us */}
             <Route path="partners" element={<Partners />} />   {/* Rute untuk halaman Partners */}
             <Route path="media/youtube" element={<YouTubePage />} /> {/* Rute untuk halaman YouTube */}
