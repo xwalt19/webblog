@@ -17,7 +17,7 @@ interface YouTubeVideo {
   title: string;
   description: string;
   thumbnail: string;
-  videoUrl: string; // Dikembalikan
+  videoUrl: string; 
   date: string;
 }
 
@@ -28,7 +28,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Tutorial Coding untuk Pemula HTML Dasar",
     description: "Pelajari dasar-dasar HTML untuk membuat struktur website pertamamu.",
     thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", // Dikembalikan
+    videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "1 Januari 2024",
   },
   {
@@ -36,7 +36,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Mengenal CSS Styling Website Jadi Cantik",
     description: "Bagaimana cara membuat website-mu terlihat menarik dengan CSS.",
     thumbnail: "https://img.youtube.com/vi/y_yK24_8_2Q/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=y_yK24_8_2Q", // Dikembalikan
+    videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "15 Januari 2024",
   },
   {
@@ -44,7 +44,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "JavaScript Interaktif Bikin Website Hidup",
     description: "Tambahkan interaktivitas pada website-mu dengan JavaScript.",
     thumbnail: "https://img.youtube.com/vi/PkZNo7oNFgY/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=PkZNo7oNFgY", // Dikembalikan
+    videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "1 Februari 2024",
   },
   {
@@ -52,7 +52,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "React JS untuk Pemula Membangun Komponen Pertama",
     description: "Langkah awal membangun aplikasi web modern dengan React JS.",
     thumbnail: "https://img.youtube.com/vi/Ke90Tje7VS0/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=Ke90Tje7VS0", // Dikembalikan
+    videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "10 Februari 2024",
   },
   {
@@ -60,7 +60,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Dasar-dasar Python Variabel dan Tipe Data",
     description: "Pengantar Python untuk pemula, memahami variabel dan tipe data.",
     thumbnail: "https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=rfscVS0vtbw", // Dikembalikan
+    videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "20 Februari 2024",
   },
   {
@@ -68,7 +68,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Membuat Website Responsif dengan Tailwind CSS",
     description: "Pelajari cara mendesain website yang tampil baik di semua perangkat.",
     thumbnail: "https://img.youtube.com/vi/z_g_Jt_y_2Q/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=z_g_Jt_y_2Q", // Dikembalikan
+    videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "5 Maret 2024",
   },
   {
@@ -76,7 +76,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Pengenalan Algoritma dan Struktur Data",
     description: "Pahami konsep dasar algoritma dan struktur data dalam pemrograman.",
     thumbnail: "https://img.youtube.com/vi/8hly3lP3118/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=8hly3lP3118", // Dikembalikan
+    videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "15 Maret 2024",
   },
   {
@@ -84,7 +84,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Tips dan Trik Debugging Kode JavaScript",
     description: "Cara efektif menemukan dan memperbaiki kesalahan dalam kode JavaScript Anda.",
     thumbnail: "https://img.youtube.com/vi/gSg4L7y_2QY/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=gSg4L7y_2QY", // Dikembalikan
+    videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "25 Maret 2024",
   },
   {
@@ -92,7 +92,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Membuat Animasi Sederhana dengan CSS",
     description: "Tambahkan efek animasi menarik ke website Anda menggunakan CSS.",
     thumbnail: "https://img.youtube.com/vi/o_o_o_o_o_o/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=o_o_o_o_o_o", // Dikembalikan
+    videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "5 April 2024",
   },
 ];
