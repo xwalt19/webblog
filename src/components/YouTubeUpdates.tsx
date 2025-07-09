@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlayCircle } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input"; // Import Input component
 import {
   Pagination,
   PaginationContent,
@@ -10,7 +10,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from "@/components/ui/pagination"; // Import Pagination components
 
 interface YouTubeVideo {
   id: string;
@@ -21,102 +21,79 @@ interface YouTubeVideo {
   date: string;
 }
 
+// Data dummy video YouTube yang lebih banyak untuk demonstrasi paginasi
 const dummyYouTubeVideos: YouTubeVideo[] = [
   {
     id: "yt1",
-    title: "Belajar HTML Dasar: Membuat Website Pertama",
-    description: "Panduan lengkap untuk pemula dalam membangun struktur dasar website menggunakan HTML.",
-    thumbnail: "https://img.youtube.com/vi/k_B0y_b0_b0/hqdefault.jpg", // Placeholder for HTML
-    videoUrl: "https://www.youtube.com/watch?v=k_B0y_b0_b0",
+    title: "Tutorial Coding untuk Pemula: HTML Dasar",
+    description: "Pelajari dasar-dasar HTML untuk membuat struktur website pertamamu.",
+    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     date: "1 Januari 2024",
   },
   {
     id: "yt2",
-    title: "CSS untuk Pemula: Mendesain Tampilan Web",
-    description: "Pelajari cara membuat website Anda terlihat menarik dan responsif dengan CSS.",
-    thumbnail: "https://img.youtube.com/vi/l_C1y_C1_C1/hqdefault.jpg", // Placeholder for CSS
-    videoUrl: "https://www.youtube.com/watch?v=l_C1y_C1_C1",
+    title: "Mengenal CSS: Styling Website Jadi Cantik",
+    description: "Bagaimana cara membuat website-mu terlihat menarik dengan CSS.",
+    thumbnail: "https://img.youtube.com/vi/y_yK24_8_2Q/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=y_yK24_8_2Q",
     date: "15 Januari 2024",
   },
   {
     id: "yt3",
-    title: "JavaScript Interaktif: Menghidupkan Website",
-    description: "Tambahkan fungsionalitas dinamis dan interaktivitas pada website Anda dengan JavaScript.",
-    thumbnail: "https://img.youtube.com/vi/m_D2z_D2_D2/hqdefault.jpg", // Placeholder for JavaScript
-    videoUrl: "https://www.youtube.com/watch?v=m_D2z_D2_D2",
+    title: "JavaScript Interaktif: Bikin Website Hidup",
+    description: "Tambahkan interaktivitas pada website-mu dengan JavaScript.",
+    thumbnail: "https://img.youtube.com/vi/PkZNo7oNFgY/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=PkZNo7oNFgY",
     date: "1 Februari 2024",
   },
   {
     id: "yt4",
-    title: "Pengantar React JS: Membangun UI Modern",
-    description: "Mulai perjalanan Anda dengan React JS untuk membangun antarmuka pengguna yang kompleks dan efisien.",
-    thumbnail: "https://img.youtube.com/vi/n_E3x_E3_E3/hqdefault.jpg", // Placeholder for React JS
-    videoUrl: "https://www.youtube.com/watch?v=n_E3x_E3_E3",
+    title: "React JS untuk Pemula: Membangun Komponen Pertama",
+    description: "Langkah awal membangun aplikasi web modern dengan React JS.",
+    thumbnail: "https://img.youtube.com/vi/Ke90Tje7VS0/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=Ke90Tje7VS0",
     date: "10 Februari 2024",
   },
   {
     id: "yt5",
-    title: "Python untuk Data Science: Analisis Data Dasar",
-    description: "Pelajari dasar-dasar Python untuk analisis data, visualisasi, dan manipulasi data.",
-    thumbnail: "https://img.youtube.com/vi/o_F4y_F4_F4/hqdefault.jpg", // Placeholder for Python Data Science
-    videoUrl: "https://www.youtube.com/watch?v=o_F4y_F4_F4",
+    title: "Dasar-dasar Python: Variabel dan Tipe Data",
+    description: "Pengantar Python untuk pemula, memahami variabel dan tipe data.",
+    thumbnail: "https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=rfscVS0vtbw",
     date: "20 Februari 2024",
   },
   {
     id: "yt6",
-    title: "Tailwind CSS: Desain Cepat dan Responsif",
-    description: "Optimalkan workflow desain Anda dengan Tailwind CSS untuk tampilan website yang modern.",
-    thumbnail: "https://img.youtube.com/vi/p_G5z_G5_G5/hqdefault.jpg", // Placeholder for Tailwind CSS
-    videoUrl: "https://www.youtube.com/watch?v=p_G5z_G5_G5",
+    title: "Membuat Website Responsif dengan Tailwind CSS",
+    description: "Pelajari cara mendesain website yang tampil baik di semua perangkat.",
+    thumbnail: "https://img.youtube.com/vi/z_g_Jt_y_2Q/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=z_g_Jt_y_2Q",
     date: "5 Maret 2024",
   },
   {
     id: "yt7",
-    title: "Algoritma & Struktur Data: Konsep Penting",
-    description: "Pahami fundamental algoritma dan struktur data untuk memecahkan masalah pemrograman yang kompleks.",
-    thumbnail: "https://img.youtube.com/vi/q_H6a_H6_H6/hqdefault.jpg", // Placeholder for Algorithms
-    videoUrl: "https://www.youtube.com/watch?v=q_H6a_H6_H6",
+    title: "Pengenalan Algoritma dan Struktur Data",
+    description: "Pahami konsep dasar algoritma dan struktur data dalam pemrograman.",
+    thumbnail: "https://img.youtube.com/vi/8hly3lP3118/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=8hly3lP3118",
     date: "15 Maret 2024",
   },
   {
     id: "yt8",
-    title: "Debugging JavaScript: Menemukan dan Memperbaiki Bug",
-    description: "Teknik efektif untuk mengidentifikasi dan memperbaiki kesalahan dalam kode JavaScript Anda.",
-    thumbnail: "https://img.youtube.com/vi/r_I7b_I7_I7/hqdefault.jpg", // Placeholder for Debugging
-    videoUrl: "https://www.youtube.com/watch?v=r_I7b_I7_I7",
+    title: "Tips dan Trik Debugging Kode JavaScript",
+    description: "Cara efektif menemukan dan memperbaiki kesalahan dalam kode JavaScript Anda.",
+    thumbnail: "https://img.youtube.com/vi/gSg4L7y_2QY/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=gSg4L7y_2QY",
     date: "25 Maret 2024",
   },
   {
     id: "yt9",
-    title: "Membuat Animasi Web dengan CSS3",
-    description: "Panduan langkah demi langkah untuk menambahkan animasi menarik ke elemen website Anda.",
-    thumbnail: "https://img.youtube.com/vi/s_J8c_J8_J8/hqdefault.jpg", // Placeholder for CSS Animation
-    videoUrl: "https://www.youtube.com/watch?v=s_J8c_J8_J8",
+    title: "Membuat Animasi Sederhana dengan CSS",
+    description: "Tambahkan efek animasi menarik ke website Anda menggunakan CSS.",
+    thumbnail: "https://img.youtube.com/vi/o_o_o_o_o_o/hqdefault.jpg",
+    videoUrl: "https://www.youtube.com/watch?v=o_o_o_o_o_o",
     date: "5 April 2024",
-  },
-  {
-    id: "yt10",
-    title: "Pengenalan Git & GitHub untuk Kolaborasi",
-    description: "Pelajari dasar-dasar Git dan GitHub untuk manajemen versi dan kolaborasi tim.",
-    thumbnail: "https://img.youtube.com/vi/t_K9d_K9_K9/hqdefault.jpg", // Placeholder for Git/GitHub
-    videoUrl: "https://www.youtube.com/watch?v=t_K9d_K9_K9",
-    date: "15 April 2024",
-  },
-  {
-    id: "yt11",
-    title: "Dasar-dasar SQL: Mengelola Database",
-    description: "Pahami cara berinteraksi dengan database menggunakan SQL untuk mengambil dan memanipulasi data.",
-    thumbnail: "https://img.youtube.com/vi/u_L0e_L0_L0/hqdefault.jpg", // Placeholder for SQL
-    videoUrl: "https://www.youtube.com/watch?v=u_L0e_L0_L0",
-    date: "25 April 2024",
-  },
-  {
-    id: "yt12",
-    title: "Membuat API dengan Node.js dan Express",
-    description: "Bangun RESTful API pertama Anda menggunakan Node.js dan framework Express.",
-    thumbnail: "https://img.youtube.com/vi/v_M1f_M1_M1/hqdefault.jpg", // Placeholder for Node.js/Express
-    videoUrl: "https://www.youtube.com/watch?v=v_M1f_M1_M1",
-    date: "5 Mei 2024",
   },
 ];
 
@@ -134,7 +111,7 @@ const YouTubeUpdates: React.FC = () => {
       try {
         setLoading(true);
         // Simulasi penundaan dan penggunaan data dummy
-        await new Promise<void>(resolve => setTimeout(resolve, 1000)); // Explicitly type Promise
+        await new Promise(resolve => setTimeout(resolve, 1000));
         setVideos(dummyYouTubeVideos);
       } catch (err) {
         setError("Gagal memuat video YouTube. Silakan coba lagi nanti.");
@@ -147,7 +124,7 @@ const YouTubeUpdates: React.FC = () => {
     fetchYouTubeVideos();
   }, []);
 
-  const filteredVideos: YouTubeVideo[] = useMemo(() => {
+  const filteredVideos = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return videos.filter(video =>
       video.title.toLowerCase().includes(lowerCaseSearchTerm) ||
@@ -156,7 +133,7 @@ const YouTubeUpdates: React.FC = () => {
   }, [videos, searchTerm]);
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
-  const currentVideos: YouTubeVideo[] = useMemo(() => {
+  const currentVideos = useMemo(() => {
     const startIndex = (currentPage - 1) * VIDEOS_PER_PAGE;
     const endIndex = startIndex + VIDEOS_PER_PAGE;
     return filteredVideos.slice(startIndex, endIndex);
@@ -246,6 +223,8 @@ const YouTubeUpdates: React.FC = () => {
             </PaginationContent>
           </Pagination>
         )}
+
+        {/* Tombol "Kunjungi Channel YouTube Kami" dihapus dari sini */}
       </div>
     </section>
   );

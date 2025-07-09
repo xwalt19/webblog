@@ -80,7 +80,7 @@ const dummyBlogPosts: BlogPost[] = [
 
 const LatestBlogPosts: React.FC = () => {
   // Ambil hanya 3 postingan terbaru untuk homepage
-  const latestPosts: BlogPost[] = dummyBlogPosts.slice(0, 3);
+  const latestPosts = dummyBlogPosts.slice(0, 3);
 
   return (
     <section className="py-12">

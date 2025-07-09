@@ -7,7 +7,7 @@ import { ButtonProps, buttonVariants } from "@/components/ui/button";
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
     role="navigation"
-    aria-label="Pagination"
+    aria-label="pagination"
     className={cn("mx-auto flex w-full justify-center", className)}
     {...props}
   />
@@ -37,7 +37,7 @@ PaginationItem.displayName = "PaginationItem";
 type PaginationLinkProps = {
   isActive?: boolean;
 } & Pick<ButtonProps, "size"> &
-  React.ComponentPropsWithoutRef<"a">;
+  React.ComponentProps<"a">;
 
 const PaginationLink = ({
   className,
