@@ -3,17 +3,20 @@ import HeroSection from "@/components/HeroSection";
 import LatestBlogPosts from "@/components/LatestBlogPosts";
 import WhyProCodeCG from "@/components/WhyProCodeCG";
 import CallToActionSection from "@/components/CallToActionSection";
-// import FeaturedCourses from "@/components/FeaturedCourses"; // Komponen FeaturedCourses dihapus
+import YouTubeUpdates from "@/components/YouTubeUpdates"; // Import komponen baru
+import WordPressUpdates from "@/components/WordPressUpdates"; // Import komponen baru
+import FixedNewsSchedule from "@/components/FixedNewsSchedule"; // Import komponen baru
 
 const Home: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <HeroSection />
       <WhyProCodeCG />
-      {/* <FeaturedCourses /> Komponen FeaturedCourses dihapus dari sini */}
-      <CallToActionSection />
       <LatestBlogPosts />
-      {/* Bagian lain untuk homepage dapat ditambahkan di sini */}
+      <YouTubeUpdates /> {/* Tambahkan komponen YouTube Updates */}
+      <WordPressUpdates /> {/* Tambahkan komponen WordPress Updates */}
+      <FixedNewsSchedule /> {/* Tambahkan komponen Fixed News & Schedule */}
+      <CallToActionSection />
     </div>
   );
 };
