@@ -1,11 +1,4 @@
 {
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
-  },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -64,6 +57,17 @@
     "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@types/react-router-dom": "^6.26.0",
+    "@types/lucide-react": "^0.462.0",
+    "@types/clsx": "^2.1.1",
+    "@types/tailwind-merge": "^1.4.4",
+    "@types/sonner": "^1.5.0",
+    "@types/react-day-picker": "^8.10.1",
+    "@types/embla-carousel-react": "^8.0.0",
+    "@types/recharts": "^2.12.7",
+    "@types/react-hook-form": "^7.53.0",
+    "@types/vaul": "^0.9.3",
+    "@types/next-themes": "^0.3.0",
     "@vitejs/plugin-react-swc": "^3.9.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.9.0",
