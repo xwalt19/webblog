@@ -161,7 +161,7 @@ const YouTubeUpdates: React.FC = () => {
             placeholder="Cari video..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full md:max-w-md"
+            className="w-full md:max-w-lg" /* Diubah dari md:max-w-md menjadi md:max-w-lg */
           />
         </div>
 
