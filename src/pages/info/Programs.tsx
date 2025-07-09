@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator"; // Baris ini telah diperbaiki
+import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   Accordion,
@@ -187,7 +187,7 @@ const ProgramsPage: React.FC = () => {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8"> {/* Mengubah grid menjadi satu kolom */}
         {filteredPrograms.map((program) => (
           <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
             <CardHeader className="pb-4 flex-grow">
