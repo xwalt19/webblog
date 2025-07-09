@@ -4,7 +4,6 @@ import LatestBlogPosts from "@/components/LatestBlogPosts";
 import WhyProCodeCG from "@/components/WhyProCodeCG";
 import CallToActionSection from "@/components/CallToActionSection";
 import YouTubeUpdates from "@/components/YouTubeUpdates"; // Import komponen baru
-import WordPressUpdates from "@/components/WordPressUpdates"; // Import komponen baru
 import FixedNewsSchedule from "@/components/FixedNewsSchedule"; // Import komponen baru
 
 const Home: React.FC = () => {
@@ -14,7 +13,7 @@ const Home: React.FC = () => {
       <WhyProCodeCG />
       <LatestBlogPosts />
       <YouTubeUpdates /> {/* Tambahkan komponen YouTube Updates */}
-      <WordPressUpdates /> {/* Tambahkan komponen WordPress Updates */}
+      {/* WordPressUpdates dihapus */}
       <FixedNewsSchedule /> {/* Tambahkan komponen Fixed News & Schedule */}
       <CallToActionSection />
     </div>
