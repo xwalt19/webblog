@@ -64,9 +64,7 @@ const ProgramsPage: React.FC = () => {
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           Jelajahi berbagai program coding dan pelatihan yang kami tawarkan, dirancang untuk semua tingkatan dan kebutuhan.
         </p>
-        <p className="text-md font-semibold text-primary mt-6">
-          Semua kelas dilakukan secara online.
-        </p>
+        {/* Kalimat "Semua kelas dilakukan secara online." telah dihapus */}
       </section>
 
       {/* Filter Dropdown for Program Types */}
