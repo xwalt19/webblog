@@ -187,7 +187,7 @@ const ProgramsPage: React.FC = () => {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 gap-8"> {/* Mengubah grid menjadi satu kolom */}
+      <div className="grid grid-cols-1 gap-8">
         {filteredPrograms.map((program) => (
           <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
             <CardHeader className="pb-4 flex-grow">
@@ -252,18 +252,23 @@ const ProgramsPage: React.FC = () => {
                 </div>
               )}
 
-              {/* Display topics directly, without Accordion, as a simple list */}
+              {/* Display topics as a grid of cards */}
               {program.topics && program.topics.length > 0 && (
                 <div className="mt-4">
-                  <h3 className="text-lg font-semibold text-primary mb-2">Topik yang Termasuk</h3>
-                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                  <h3 className="text-lg font-semibold text-primary mb-4">Topik yang Termasuk</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> {/* Grid untuk topik */}
                     {program.topics.map((topic, topicIdx) => (
-                      <li key={topicIdx} className="flex items-center gap-2">
-                        {topic.icon && <topic.icon size={18} className="text-accent-foreground flex-shrink-0" />}
-                        <span className="font-medium text-foreground">{topic.title}:</span> {topic.description}
-                      </li>
+                      <Card key={topicIdx} className="p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <CardHeader className="p-0 pb-2 flex flex-row items-center gap-3">
+                          {topic.icon && <topic.icon size={24} className="text-primary flex-shrink-0" />}
+                          <CardTitle className="text-base font-semibold">{topic.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0 text-sm text-muted-foreground">
+                          {topic.description}
+                        </CardContent>
+                      </Card>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
             </CardContent>
