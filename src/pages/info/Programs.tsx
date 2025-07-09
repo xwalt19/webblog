@@ -43,115 +43,8 @@ interface Program {
 }
 
 const programs: Program[] = [
-  {
-    id: "kids-regular-coding-class",
-    title: "Kids Regular Coding Class",
-    description: "ProCodeCG Kids Programming Class is a regular event every Saturday 9 - 12.",
-    schedule: "Setiap Sabtu, 09.00 – 12.00 WIB",
-    registrationFee: "Rp50.000,-",
-    icon: Code,
-    type: "kids",
-    priceTable: [
-      {
-        header: ["Jumlah Peserta", "Harga (1 Sesi - 90 menit)"],
-        rows: [
-          { participants: "Dua peserta", price: "Rp200.000" },
-          { participants: "Tiga peserta", price: "Rp180.000" },
-          { participants: "Empat peserta", price: "Rp160.000" },
-          { participants: "Lima atau lebih peserta", price: "Rp150.000" },
-        ],
-      },
-      {
-        header: ["Jumlah Peserta", "Harga (2 Sesi - 180 menit)"],
-        rows: [
-          { participants: "Dua peserta", price: "Rp325.000" },
-          { participants: "Tiga peserta", price: "Rp305.000" },
-          { participants: "Empat peserta", price: "Rp285.000" },
-          { participants: "Lima atau lebih peserta", price: "Rp275.000" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "kids-weekday-coding-class",
-    title: "Kids Weekday Coding Class",
-    description: "ProCodeCG Kids Programming Class is held every Tuesday 16:00 - 17:30, Wednesday 16:30 - 18:00, Thursday & Friday 16:00 - 17:30.",
-    schedule: "Setiap Selasa 16:00-17:30, Rabu 16:30-18:00, Kamis & Jumat 16:00-17:30 WIB",
-    registrationFee: "Rp50.000,-",
-    icon: CalendarDays,
-    type: "kids",
-    priceTable: [
-      {
-        header: ["Jumlah Peserta", "Harga per Sesi"],
-        rows: [
-          { participants: "Dua peserta", price: "Rp200.000" },
-          { participants: "Tiga peserta", price: "Rp180.000" },
-          { participants: "Empat peserta", price: "Rp160.000" },
-          { participants: "Lima atau lebih peserta", price: "Rp150.000" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "kids-coding-camp",
-    title: "Kids Coding Camp",
-    description: "ProCodeCG usually holds Kids Coding Camp event twice a year during school holiday. Each topic takes 3 - 5 days.",
-    schedule: "Dua kali setahun selama liburan sekolah (3-5 hari per topik)",
-    price: "Rp950.000 - Rp2.000.000",
-    icon: GraduationCap,
-    type: "kids",
-  },
-  {
-    id: "online-private-class",
-    title: "Online Private Class",
-    description: "ProCodeCG provides private classes with customized curriculum and more flexible schedules.",
-    price: "Rp500.000 per jam",
-    icon: Users,
-    type: "private",
-  },
-  {
-    id: "tutoring-coding-class",
-    title: "Tutoring Coding Class",
-    description: "ProCodeCG provides online tutoring class for high school and college students to help with their assignments, exams, competitions, etc. Each tutoring session is 90 minutes.",
-    schedule: "Sesi 90 menit",
-    icon: BookOpen,
-    type: "private",
-    priceTable: [
-      {
-        header: ["Jumlah Peserta", "Harga per Sesi"],
-        rows: [
-          { participants: "Dua peserta", price: "Rp250.000" },
-          { participants: "Tiga peserta", price: "Rp230.000" },
-          { participants: "Empat peserta", price: "Rp210.000" },
-          { participants: "Lima peserta", price: "Rp190.000" },
-          { participants: "Enam peserta", price: "Rp170.000" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "crash-course-customized-training",
-    title: "Crash Course & Customized Training",
-    description: "ProCodeCG provides customized curriculum and training. This program is usually for companies or adults.",
-    price: "Mulai dari Rp1.000.000",
-    icon: Cpu,
-    type: "professional",
-  },
-  {
-    id: "coding-mom",
-    title: "Coding Mom",
-    description: "Training Moms to be front-end developers. The topics included are GitHub, HTML, CSS, JavaScript, Bootstrap, PHP, MySQL.",
-    icon: Smartphone,
-    type: "professional",
-    topics: [
-      { icon: BookOpen, title: "Algorithm & Data Structure", description: "Pelajari dasar-dasar pemrograman, struktur pola pikir programmer dengan pengenalan Pemrograman Prosedural vs Pemrograman Berorientasi Objek, Design Pattern, dll." },
-      { icon: Gamepad, title: "Game Programming", description: "Pelajari cara mengembangkan game menggunakan bahasa pemrograman sederhana." },
-      { icon: Globe, title: "Web Programming", description: "Pelajari cara mengembangkan web untuk berbagai tujuan." },
-      { icon: Smartphone, title: "Application Programming", description: "Pelajari cara merancang dan mengembangkan aplikasi di berbagai platform (iOS, Android, Blackberry, Windows)." },
-      { icon: Lock, title: "Crypto Programming", description: "Pelajari cara membuat kode untuk kriptografi, untuk mengamankan aplikasi, perangkat lunak, dan komputer." },
-      { icon: Cpu, title: "Basic Hardware Programming", description: "Pelajari cara memprogram perangkat keras menggunakan Assembly atau C/C++." },
-    ],
-  },
+  // Semua data program telah dihapus di sini.
+  // Anda bisa menambahkan program baru di sini.
 ];
 
 const ProgramsPage: React.FC = () => {
@@ -274,6 +167,12 @@ const ProgramsPage: React.FC = () => {
           </Card>
         ))}
       </div>
+
+      {filteredPrograms.length === 0 && (
+        <p className="text-center text-muted-foreground mt-8 text-lg">
+          Tidak ada program yang tersedia. Silakan tambahkan program baru.
+        </p>
+      )}
 
       <Separator className="my-12" />
 
