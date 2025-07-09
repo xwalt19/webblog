@@ -12,12 +12,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Topic {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+}
+
+interface RunningClass {
+  name: string;
+  schedule: string;
+  description: string;
+  icon: React.ElementType;
+}
+
+interface RegularEvent {
+  name: string;
+  schedule: string;
+  description: string;
+  icon: React.ElementType;
+}
+
 const RegularEventsClasses: React.FC = () => {
   // State untuk mengontrol tampilan bagian 'Kegiatan' (Kelas & Acara)
   // Mengubah nilai awal menjadi string kosong agar tidak ada yang terpilih secara default
   const [selectedActivityView, setSelectedActivityView] = useState(""); 
 
-  const topics = [
+  const topics: Topic[] = [
     {
       icon: BookOpen,
       title: "Algorithm & Data Structure",
@@ -50,7 +70,7 @@ const RegularEventsClasses: React.FC = () => {
     },
   ];
 
-  const runningClasses = [
+  const runningClasses: RunningClass[] = [
     {
       name: "Programming for Kids",
       schedule: "Setiap Sabtu, 09.00 – 11.00 WIB",
@@ -59,7 +79,7 @@ const RegularEventsClasses: React.FC = () => {
     },
   ];
 
-  const regularEvents = [
+  const regularEvents: RegularEvent[] = [
     {
       name: "ProCodeCG codeMeetUp()",
       schedule: "Setiap Senin, 13.00 – 15.00 WIB",

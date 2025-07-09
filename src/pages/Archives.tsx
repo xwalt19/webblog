@@ -162,7 +162,7 @@ const dummyBlogPosts: BlogPost[] = [
   },
 ];
 
-const allTags = ["Semua", ...new Set(dummyBlogPosts.flatMap(post => post.tags))];
+const allTags: string[] = ["Semua", ...new Set(dummyBlogPosts.flatMap(post => post.tags))];
 
 const monthNames = [
   "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -178,7 +178,7 @@ const Archives: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // Generate unique year-month periods
-  const allPeriods = useMemo(() => {
+  const allPeriods: string[] = useMemo(() => {
     const periods = new Set<string>();
     dummyBlogPosts.forEach(post => {
       periods.add(`${post.year}-${post.month}`);
@@ -348,7 +348,7 @@ const Archives: React.FC = () => {
               <PaginationNext
                 onClick={() => handlePageChange(currentPage + 1)}
                 className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined}
-              />
+                />
             </PaginationItem>
           </PaginationContent>
         </Pagination>
