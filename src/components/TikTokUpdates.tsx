@@ -32,7 +32,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk2",
-    title: "Challenge Coding Seru Minggu Ini!",
+    title: "Challenge Coding Seru Minggu Ini", // Tanda seru dihapus
     description: "Ikuti challenge coding kami dan menangkan hadiah menarik.",
     thumbnail: "https://source.unsplash.com/random/400x250/?challenge,code", // Placeholder thumbnail
     videoUrl: "https://www.tiktok.com/@procodecg/video/0987654321", // Placeholder URL TikTok
