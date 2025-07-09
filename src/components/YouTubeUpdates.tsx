@@ -161,7 +161,7 @@ const YouTubeUpdates: React.FC = () => {
             placeholder="Cari video..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full md:max-w-lg" /* Diubah dari md:max-w-md menjadi md:max-w-lg */
+            className="w-full md:max-w-lg"
           />
         </div>
 
@@ -224,11 +224,7 @@ const YouTubeUpdates: React.FC = () => {
           </Pagination>
         )}
 
-        <div className="text-center mt-10">
-          <a href="https://www.youtube.com/@procodecg" target="_blank" rel="noopener noreferrer">
-            <Button size="lg" variant="default">Kunjungi Channel YouTube Kami</Button>
-          </a>
-        </div>
+        {/* Tombol "Kunjungi Channel YouTube Kami" dihapus dari sini */}
       </div>
     </section>
   );
