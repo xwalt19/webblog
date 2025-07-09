@@ -59,7 +59,6 @@
     "@types/react-dom": "^18.3.0",
     "@types/react-router-dom": "^6.26.0",
     "@types/lucide-react": "^0.462.0",
-    "@types/clsx": "^2.1.1",
     "@types/tailwind-merge": "^1.4.4",
     "@types/sonner": "^1.5.0",
     "@types/react-day-picker": "^8.10.1",
