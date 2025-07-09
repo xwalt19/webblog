@@ -152,7 +152,7 @@ const YouTubeUpdates: React.FC = () => {
   return (
     <section className="py-12 bg-muted/40">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Video YouTube Terbaru</h2>
+        {/* Judul "Video YouTube Terbaru" dihapus dari sini */}
         
         {/* Search Input */}
         <div className="flex justify-center mb-8">
