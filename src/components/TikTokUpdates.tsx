@@ -40,7 +40,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk3",
-    title: "Behind The Scenes: Kelas Coding Anak",
+    title: "Behind The Scenes Kelas Coding Anak",
     description: "Intip keseruan di balik layar kelas coding untuk anak-anak.",
     thumbnail: "https://source.unsplash.com/random/400x250/?kids,coding", // Placeholder thumbnail
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334455", // Placeholder URL TikTok

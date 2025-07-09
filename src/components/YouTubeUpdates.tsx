@@ -25,7 +25,7 @@ interface YouTubeVideo {
 const dummyYouTubeVideos: YouTubeVideo[] = [
   {
     id: "yt1",
-    title: "Tutorial Coding untuk Pemula: HTML Dasar",
+    title: "Tutorial Coding untuk Pemula HTML Dasar",
     description: "Pelajari dasar-dasar HTML untuk membuat struktur website pertamamu.",
     thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
     videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
@@ -33,7 +33,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
   },
   {
     id: "yt2",
-    title: "Mengenal CSS: Styling Website Jadi Cantik",
+    title: "Mengenal CSS Styling Website Jadi Cantik",
     description: "Bagaimana cara membuat website-mu terlihat menarik dengan CSS.",
     thumbnail: "https://img.youtube.com/vi/y_yK24_8_2Q/hqdefault.jpg",
     videoUrl: "https://www.youtube.com/watch?v=y_yK24_8_2Q",
@@ -41,7 +41,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
   },
   {
     id: "yt3",
-    title: "JavaScript Interaktif: Bikin Website Hidup",
+    title: "JavaScript Interaktif Bikin Website Hidup",
     description: "Tambahkan interaktivitas pada website-mu dengan JavaScript.",
     thumbnail: "https://img.youtube.com/vi/PkZNo7oNFgY/hqdefault.jpg",
     videoUrl: "https://www.youtube.com/watch?v=PkZNo7oNFgY",
@@ -49,7 +49,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
   },
   {
     id: "yt4",
-    title: "React JS untuk Pemula: Membangun Komponen Pertama",
+    title: "React JS untuk Pemula Membangun Komponen Pertama",
     description: "Langkah awal membangun aplikasi web modern dengan React JS.",
     thumbnail: "https://img.youtube.com/vi/Ke90Tje7VS0/hqdefault.jpg",
     videoUrl: "https://www.youtube.com/watch?v=Ke90Tje7VS0",
@@ -57,7 +57,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
   },
   {
     id: "yt5",
-    title: "Dasar-dasar Python: Variabel dan Tipe Data",
+    title: "Dasar-dasar Python Variabel dan Tipe Data",
     description: "Pengantar Python untuk pemula, memahami variabel dan tipe data.",
     thumbnail: "https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg",
     videoUrl: "https://www.youtube.com/watch?v=rfscVS0vtbw",
