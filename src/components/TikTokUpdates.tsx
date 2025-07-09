@@ -48,7 +48,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk4",
-    title: "Tutorial Singkat: HTML Semantik",
+    title: "Tutorial Singkat HTML Semantik",
     description: "Pahami pentingnya HTML semantik untuk struktur web yang lebih baik.",
     thumbnail: "https://source.unsplash.com/random/400x250/?html,webdev",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334456",
@@ -56,7 +56,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk5",
-    title: "CSS Grid vs Flexbox: Kapan Pakai yang Mana?",
+    title: "CSS Grid vs Flexbox Kapan Pakai yang Mana?",
     description: "Perbandingan singkat antara CSS Grid dan Flexbox untuk layout responsif.",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,layout",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334457",
@@ -72,7 +72,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk7",
-    title: "React Hooks: useState dan useEffect",
+    title: "React Hooks useState dan useEffect",
     description: "Pengenalan dasar React Hooks useState dan useEffect untuk pemula.",
     thumbnail: "https://source.unsplash.com/random/400x250/?react,hooks",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334459",
