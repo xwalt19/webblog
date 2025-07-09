@@ -185,7 +185,7 @@ const ProgramsPage: React.FC = () => {
                 </p>
               )}
 
-              {/* Display price table within an Accordion */}
+              {/* Display price table within an Accordion, now with Card styling for each table */}
               {!program.price && program.priceTable && program.priceTable.length > 0 && (
                 <Accordion type="single" collapsible className="w-full mt-4">
                   <AccordionItem value="price-details">
@@ -194,25 +194,29 @@ const ProgramsPage: React.FC = () => {
                     </AccordionTrigger>
                     <AccordionContent className="pt-2">
                       {program.priceTable.map((table, idx) => (
-                        <div key={idx} className="mb-6 border rounded-md overflow-hidden">
-                          <h3 className="text-lg font-semibold bg-muted p-3 border-b">{table.header[1]}</h3>
-                          <Table className="w-full">
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead className="w-[150px]">{table.header[0]}</TableHead>
-                                <TableHead className="text-right">{table.header[1]}</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {table.rows.map((row, rowIndex) => (
-                                <TableRow key={rowIndex}>
-                                  <TableCell className="font-medium">{row.participants}</TableCell>
-                                  <TableCell className="text-right">{row.price}</TableCell>
+                        <Card key={idx} className="mb-4 shadow-sm"> {/* Wrapped each table in a Card */}
+                          <CardHeader className="p-3 pb-2"> {/* Adjusted padding */}
+                            <CardTitle className="text-lg font-semibold">{table.header[1]}</CardTitle>
+                          </CardHeader>
+                          <CardContent className="p-0"> {/* Adjusted padding */}
+                            <Table className="w-full">
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead className="w-[150px]">{table.header[0]}</TableHead>
+                                  <TableHead className="text-right">{table.header[1]}</TableHead>
                                 </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
+                              </TableHeader>
+                              <TableBody>
+                                {table.rows.map((row, rowIndex) => (
+                                  <TableRow key={rowIndex}>
+                                    <TableCell className="font-medium">{row.participants}</TableCell>
+                                    <TableCell className="text-right">{row.price}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </CardContent>
+                        </Card>
                       ))}
                     </AccordionContent>
                   </AccordionItem>
