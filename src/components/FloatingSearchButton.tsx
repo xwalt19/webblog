@@ -7,11 +7,19 @@ import { Search, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { dummyScrapedArticles } from "@/data/scrapedArticles";
 
+interface ScrapedArticle {
+  id: string;
+  title: string;
+  url: string;
+  source: string;
+  snippet: string;
+}
+
 const FloatingSearchButton: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredResults = useMemo(() => {
+  const filteredResults: ScrapedArticle[] = useMemo(() => {
     if (!searchTerm) return [];
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return dummyScrapedArticles.filter(article =>

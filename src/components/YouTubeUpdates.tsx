@@ -134,7 +134,7 @@ const YouTubeUpdates: React.FC = () => {
       try {
         setLoading(true);
         // Simulasi penundaan dan penggunaan data dummy
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise<void>(resolve => setTimeout(resolve, 1000)); // Explicitly type Promise
         setVideos(dummyYouTubeVideos);
       } catch (err) {
         setError("Gagal memuat video YouTube. Silakan coba lagi nanti.");
@@ -147,7 +147,7 @@ const YouTubeUpdates: React.FC = () => {
     fetchYouTubeVideos();
   }, []);
 
-  const filteredVideos = useMemo(() => {
+  const filteredVideos: YouTubeVideo[] = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return videos.filter(video =>
       video.title.toLowerCase().includes(lowerCaseSearchTerm) ||
@@ -156,7 +156,7 @@ const YouTubeUpdates: React.FC = () => {
   }, [videos, searchTerm]);
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
-  const currentVideos = useMemo(() => {
+  const currentVideos: YouTubeVideo[] = useMemo(() => {
     const startIndex = (currentPage - 1) * VIDEOS_PER_PAGE;
     const endIndex = startIndex + VIDEOS_PER_PAGE;
     return filteredVideos.slice(startIndex, endIndex);

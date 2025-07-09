@@ -32,7 +32,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk2",
-    title: "Challenge Coding Seru Minggu Ini", // Tanda seru dihapus
+    title: "Challenge Coding Seru Minggu Ini",
     description: "Ikuti challenge coding kami dan menangkan hadiah menarik.",
     thumbnail: "https://source.unsplash.com/random/400x250/?challenge,code", // Placeholder thumbnail
     videoUrl: "https://www.tiktok.com/@procodecg/video/0987654321", // Placeholder URL TikTok
@@ -40,7 +40,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk3",
-    title: "Behind The Scenes Kelas Coding Anak", // Tanda : dihapus
+    title: "Behind The Scenes Kelas Coding Anak",
     description: "Intip keseruan di balik layar kelas coding untuk anak-anak.",
     thumbnail: "https://source.unsplash.com/random/400x250/?kids,coding", // Placeholder thumbnail
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334455", // Placeholder URL TikTok
@@ -48,7 +48,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk4",
-    title: "Tutorial Singkat HTML Dasar", // Tanda : dihapus
+    title: "Tutorial Singkat HTML Dasar",
     description: "Belajar membuat struktur dasar halaman web dengan HTML.",
     thumbnail: "https://source.unsplash.com/random/400x250/?html,tutorial",
     videoUrl: "https://www.tiktok.com/@procodecg/video/2233445566",
@@ -56,7 +56,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk5",
-    title: "CSS Tricks Styling Cepat", // Tanda : dihapus
+    title: "CSS Tricks Styling Cepat",
     description: "Trik cepat untuk mempercantik tampilan website Anda dengan CSS.",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,design",
     videoUrl: "https://www.tiktok.com/@procodecg/video/3344556677",
@@ -64,7 +64,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk6",
-    title: "JavaScript Fun Interaksi Tombol", // Tanda : dihapus
+    title: "JavaScript Fun Interaksi Tombol",
     description: "Buat tombol interaktif di website Anda menggunakan JavaScript.",
     thumbnail: "https://source.unsplash.com/random/400x250/?javascript,button",
     videoUrl: "https://www.tiktok.com/@procodecg/video/4455667788",
@@ -80,7 +80,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
   },
   {
     id: "tk8",
-    title: "Python Basics Variabel dan Tipe Data", // Tanda : dihapus
+    title: "Python Basics Variabel dan Tipe Data",
     description: "Mengenal dasar-dasar Python: variabel dan tipe data.",
     thumbnail: "https://source.unsplash.com/random/400x250/?python,basics",
     videoUrl: "https://www.tiktok.com/@procodecg/video/6677889900",
@@ -110,7 +110,7 @@ const TikTokUpdates: React.FC = () => {
       try {
         setLoading(true);
         // Simulasi penundaan dan penggunaan data dummy
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise<void>(resolve => setTimeout(resolve, 1000)); // Explicitly type Promise
         setVideos(dummyTikTokVideos);
       } catch (err) {
         setError("Gagal memuat video TikTok. Silakan coba lagi nanti.");
@@ -123,7 +123,7 @@ const TikTokUpdates: React.FC = () => {
     fetchTikTokVideos();
   }, []);
 
-  const filteredVideos = useMemo(() => {
+  const filteredVideos: TikTokVideo[] = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return videos.filter(video =>
       video.title.toLowerCase().includes(lowerCaseSearchTerm) ||
@@ -132,7 +132,7 @@ const TikTokUpdates: React.FC = () => {
   }, [videos, searchTerm]);
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
-  const currentVideos = useMemo(() => {
+  const currentVideos: TikTokVideo[] = useMemo(() => {
     const startIndex = (currentPage - 1) * VIDEOS_PER_PAGE;
     const endIndex = startIndex + VIDEOS_PER_PAGE;
     return filteredVideos.slice(startIndex, endIndex);
