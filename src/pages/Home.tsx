@@ -3,8 +3,9 @@ import HeroSection from "@/components/HeroSection";
 import LatestBlogPosts from "@/components/LatestBlogPosts";
 import WhyProCodeCG from "@/components/WhyProCodeCG";
 import CallToActionSection from "@/components/CallToActionSection";
-import CombinedMediaSearch from "@/components/CombinedMediaSearch"; // Import the new component
+import CombinedMediaSearch from "@/components/CombinedMediaSearch";
 import FixedNewsSchedule from "@/components/FixedNewsSchedule";
+import ExternalArticlesFeed from "@/components/ExternalArticlesFeed"; // Import the new component
 
 const Home: React.FC = () => {
   return (
@@ -12,8 +13,9 @@ const Home: React.FC = () => {
       <HeroSection />
       <WhyProCodeCG />
       <LatestBlogPosts />
-      <CombinedMediaSearch /> {/* Mengganti YouTubeUpdates dengan CombinedMediaSearch */}
+      <CombinedMediaSearch />
       <FixedNewsSchedule />
+      <ExternalArticlesFeed /> {/* Menambahkan komponen baru di sini */}
       <CallToActionSection />
     </div>
   );
