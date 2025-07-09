@@ -27,7 +27,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     id: "yt1",
     title: "Tutorial Coding untuk Pemula HTML Dasar",
     description: "Pelajari dasar-dasar HTML untuk membuat struktur website pertamamu.",
-    thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+    thumbnail: "https://source.unsplash.com/random/400x250/?html,coding", // Gambar placeholder baru
     videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "1 Januari 2024",
   },
@@ -35,7 +35,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     id: "yt2",
     title: "Mengenal CSS Styling Website Jadi Cantik",
     description: "Bagaimana cara membuat website-mu terlihat menarik dengan CSS.",
-    thumbnail: "https://img.youtube.com/vi/y_yK24_8_2Q/hqdefault.jpg",
+    thumbnail: "https://source.unsplash.com/random/400x250/?css,design", // Gambar placeholder baru
     videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "15 Januari 2024",
   },
@@ -43,7 +43,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     id: "yt3",
     title: "JavaScript Interaktif Bikin Website Hidup",
     description: "Tambahkan interaktivitas pada website-mu dengan JavaScript.",
-    thumbnail: "https://img.youtube.com/vi/PkZNo7oNFgY/hqdefault.jpg",
+    thumbnail: "https://source.unsplash.com/random/400x250/?javascript,web", // Gambar placeholder baru
     videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "1 Februari 2024",
   },
@@ -51,7 +51,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     id: "yt4",
     title: "React JS untuk Pemula Membangun Komponen Pertama",
     description: "Langkah awal membangun aplikasi web modern dengan React JS.",
-    thumbnail: "https://img.youtube.com/vi/Ke90Tje7VS0/hqdefault.jpg",
+    thumbnail: "https://source.unsplash.com/random/400x250/?react,frontend", // Gambar placeholder baru
     videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "10 Februari 2024",
   },
@@ -59,7 +59,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     id: "yt5",
     title: "Dasar-dasar Python Variabel dan Tipe Data",
     description: "Pengantar Python untuk pemula, memahami variabel dan tipe data.",
-    thumbnail: "https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg",
+    thumbnail: "https://source.unsplash.com/random/400x250/?python,programming", // Gambar placeholder baru
     videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "20 Februari 2024",
   },
@@ -67,7 +67,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     id: "yt6",
     title: "Membuat Website Responsif dengan Tailwind CSS",
     description: "Pelajari cara mendesain website yang tampil baik di semua perangkat.",
-    thumbnail: "https://img.youtube.com/vi/z_g_Jt_y_2Q/hqdefault.jpg",
+    thumbnail: "https://source.unsplash.com/random/400x250/?tailwind,responsive", // Gambar placeholder baru
     videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "5 Maret 2024",
   },
@@ -75,7 +75,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     id: "yt7",
     title: "Pengenalan Algoritma dan Struktur Data",
     description: "Pahami konsep dasar algoritma dan struktur data dalam pemrograman.",
-    thumbnail: "https://img.youtube.com/vi/8hly3lP3118/hqdefault.jpg",
+    thumbnail: "https://source.unsplash.com/random/400x250/?algorithm,datastructure", // Gambar placeholder baru
     videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "15 Maret 2024",
   },
@@ -83,7 +83,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     id: "yt8",
     title: "Tips dan Trik Debugging Kode JavaScript",
     description: "Cara efektif menemukan dan memperbaiki kesalahan dalam kode JavaScript Anda.",
-    thumbnail: "https://img.youtube.com/vi/gSg4L7y_2QY/hqdefault.jpg",
+    thumbnail: "https://source.unsplash.com/random/400x250/?debugging,javascript", // Gambar placeholder baru
     videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "25 Maret 2024",
   },
@@ -91,7 +91,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     id: "yt9",
     title: "Membuat Animasi Sederhana dengan CSS",
     description: "Tambahkan efek animasi menarik ke website Anda menggunakan CSS.",
-    thumbnail: "https://img.youtube.com/vi/o_o_o_o_o_o/hqdefault.jpg",
+    thumbnail: "https://source.unsplash.com/random/400x250/?css,animation", // Gambar placeholder baru
     videoUrl: "<!-- Masukkan tautan YouTube di sini -->", 
     date: "5 April 2024",
   },
