@@ -67,7 +67,6 @@ const YouTubeUpdates: React.FC = () => {
   return (
     <section className="py-12 bg-muted/40">
       <div className="container mx-auto px-4">
-        {/* <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Pembaruan YouTube Terbaru</h2> */}
         {loading ? (
           <p className="text-center text-muted-foreground">Memuat video...</p>
         ) : error ? (
@@ -96,11 +95,7 @@ const YouTubeUpdates: React.FC = () => {
         ) : (
           <p className="text-center text-muted-foreground">Tidak ada video YouTube yang tersedia saat ini.</p>
         )}
-        <div className="text-center mt-10">
-          <a href="https://www.youtube.com/@ProCodeCG" target="_blank" rel="noopener noreferrer">
-            <Button size="lg" variant="default">Kunjungi Channel YouTube Kami</Button>
-          </a>
-        </div>
+        {/* Tombol "Kunjungi Channel YouTube Kami" dihapus */}
       </div>
     </section>
   );
