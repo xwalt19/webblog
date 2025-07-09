@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlayCircle } from "lucide-react";
-import { Input } from "@/components/ui/input"; // Import Input component
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -10,14 +10,14 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"; // Import Pagination components
+} from "@/components/ui/pagination";
 
 interface YouTubeVideo {
   id: string;
   title: string;
   description: string;
   thumbnail: string;
-  videoUrl: string;
+  // videoUrl: string; // Dihapus sesuai permintaan
   date: string;
 }
 
@@ -28,7 +28,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Tutorial Coding untuk Pemula HTML Dasar",
     description: "Pelajari dasar-dasar HTML untuk membuat struktur website pertamamu.",
     thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    // videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", // Dihapus
     date: "1 Januari 2024",
   },
   {
@@ -36,7 +36,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Mengenal CSS Styling Website Jadi Cantik",
     description: "Bagaimana cara membuat website-mu terlihat menarik dengan CSS.",
     thumbnail: "https://img.youtube.com/vi/y_yK24_8_2Q/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=y_yK24_8_2Q",
+    // videoUrl: "https://www.youtube.com/watch?v=y_yK24_8_2Q", // Dihapus
     date: "15 Januari 2024",
   },
   {
@@ -44,7 +44,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "JavaScript Interaktif Bikin Website Hidup",
     description: "Tambahkan interaktivitas pada website-mu dengan JavaScript.",
     thumbnail: "https://img.youtube.com/vi/PkZNo7oNFgY/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=PkZNo7oNFgY",
+    // videoUrl: "https://www.youtube.com/watch?v=PkZNo7oNFgY", // Dihapus
     date: "1 Februari 2024",
   },
   {
@@ -52,7 +52,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "React JS untuk Pemula Membangun Komponen Pertama",
     description: "Langkah awal membangun aplikasi web modern dengan React JS.",
     thumbnail: "https://img.youtube.com/vi/Ke90Tje7VS0/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=Ke90Tje7VS0",
+    // videoUrl: "https://www.youtube.com/watch?v=Ke90Tje7VS0", // Dihapus
     date: "10 Februari 2024",
   },
   {
@@ -60,7 +60,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Dasar-dasar Python Variabel dan Tipe Data",
     description: "Pengantar Python untuk pemula, memahami variabel dan tipe data.",
     thumbnail: "https://img.youtube.com/vi/rfscVS0vtbw/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=rfscVS0vtbw",
+    // videoUrl: "https://www.youtube.com/watch?v=rfscVS0vtbw", // Dihapus
     date: "20 Februari 2024",
   },
   {
@@ -68,7 +68,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Membuat Website Responsif dengan Tailwind CSS",
     description: "Pelajari cara mendesain website yang tampil baik di semua perangkat.",
     thumbnail: "https://img.youtube.com/vi/z_g_Jt_y_2Q/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=z_g_Jt_y_2Q",
+    // videoUrl: "https://www.youtube.com/watch?v=z_g_Jt_y_2Q", // Dihapus
     date: "5 Maret 2024",
   },
   {
@@ -76,7 +76,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Pengenalan Algoritma dan Struktur Data",
     description: "Pahami konsep dasar algoritma dan struktur data dalam pemrograman.",
     thumbnail: "https://img.youtube.com/vi/8hly3lP3118/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=8hly3lP3118",
+    // videoUrl: "https://www.youtube.com/watch?v=8hly3lP3118", // Dihapus
     date: "15 Maret 2024",
   },
   {
@@ -84,7 +84,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Tips dan Trik Debugging Kode JavaScript",
     description: "Cara efektif menemukan dan memperbaiki kesalahan dalam kode JavaScript Anda.",
     thumbnail: "https://img.youtube.com/vi/gSg4L7y_2QY/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=gSg4L7y_2QY",
+    // videoUrl: "https://www.youtube.com/watch?v=gSg4L7y_2QY", // Dihapus
     date: "25 Maret 2024",
   },
   {
@@ -92,7 +92,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     title: "Membuat Animasi Sederhana dengan CSS",
     description: "Tambahkan efek animasi menarik ke website Anda menggunakan CSS.",
     thumbnail: "https://img.youtube.com/vi/o_o_o_o_o_o/hqdefault.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=o_o_o_o_o_o",
+    // videoUrl: "https://www.youtube.com/watch?v=o_o_o_o_o_o", // Dihapus
     date: "5 April 2024",
   },
 ];
@@ -175,6 +175,7 @@ const YouTubeUpdates: React.FC = () => {
               <Card key={video.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center">
                   <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
+                  {/* Tombol PlayCircle tetap ada, tetapi tautan ke video dihapus */}
                   <PlayCircle className="absolute text-white/80 hover:text-white transition-colors" size={64} />
                 </div>
                 <CardHeader className="flex-grow">
@@ -183,9 +184,12 @@ const YouTubeUpdates: React.FC = () => {
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
                   <p className="text-muted-foreground mb-4 line-clamp-2">{video.description}</p>
-                  <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" className="w-full">
+                  {/* Tautan "Lihat Video" dihapus sesuai permintaan */}
+                  {/* Anda dapat menambahkan tautan di sini nanti jika diperlukan */}
+                  {/* <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" className="w-full">
                     <Button variant="outline" className="w-full">Lihat Video</Button>
-                  </a>
+                  </a> */}
+                  <Button variant="outline" className="w-full" disabled>Lihat Video (Segera Hadir)</Button>
                 </CardContent>
               </Card>
             ))}
