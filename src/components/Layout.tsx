@@ -105,7 +105,7 @@ const Layout: React.FC = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Media</NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-background text-foreground border-border">
-                  <ul className="grid grid-cols-2 gap-3 p-4 md:w-[200px]"> {/* Ditambahkan grid-cols-2 di sini */}
+                  <ul className="grid grid-cols-2 gap-3 p-4 md:w-[400px]"> {/* Lebar disesuaikan menjadi md:w-[400px] */}
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
