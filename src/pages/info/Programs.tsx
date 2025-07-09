@@ -152,7 +152,7 @@ const ProgramsPage: React.FC = () => {
         </p>
       </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8"> {/* Changed to 2 columns on medium and large screens */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
         {programs.map((program) => (
           <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
             <CardHeader className="pb-4 flex-grow">
@@ -164,7 +164,7 @@ const ProgramsPage: React.FC = () => {
                 {program.description}
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-0 pt-4"> {/* Added padding top */}
+            <CardContent className="p-0 pt-4">
               {program.schedule && (
                 <p className="text-md text-foreground mb-2 flex items-center gap-2">
                   <CalendarDays size={18} className="text-muted-foreground" />
@@ -193,8 +193,8 @@ const ProgramsPage: React.FC = () => {
                     </AccordionTrigger>
                     <AccordionContent className="pt-2">
                       {program.priceTable.map((table, idx) => (
-                        <div key={idx} className="mb-6 border rounded-md overflow-hidden"> {/* Added border and rounded */}
-                          <h3 className="text-lg font-semibold bg-muted p-3 border-b">{table.header[1]}</h3> {/* Styled header */}
+                        <div key={idx} className="mb-6 border rounded-md overflow-hidden">
+                          <h3 className="text-lg font-semibold bg-muted p-3 border-b">{table.header[1]}</h3>
                           <Table className="w-full">
                             <TableHeader>
                               <TableRow>
@@ -225,7 +225,7 @@ const ProgramsPage: React.FC = () => {
                       Topik yang Termasuk
                     </AccordionTrigger>
                     <AccordionContent className="pt-2">
-                      <div className="grid grid-cols-1 gap-4"> {/* Removed md:grid-cols-2 for single column topics */}
+                      <div className="grid grid-cols-1 gap-4">
                         {program.topics.map((topic, topicIdx) => (
                           <Card key={topicIdx} className="p-4 bg-muted/30">
                             <div className="flex items-center gap-3 mb-2">
