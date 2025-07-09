@@ -156,9 +156,9 @@ const dummyBlogPosts: BlogPost[] = [
 
 // allCategories tidak lagi dibutuhkan karena filter dihapus
 // const allCategories = ["Semua", ...new Set(dummyBlogPosts.map(post => post.category))];
-const allTags = ["Semua", ...new Set(dummyBlogPosts.flatMap(post => post.tags))];
+const allTags: string[] = ["Semua", ...new Set(dummyBlogPosts.flatMap(post => post.tags))];
 
-const monthNames = [
+const monthNames: string[] = [
   "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
   "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ];
@@ -174,7 +174,7 @@ const BlogPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // Generate unique year-month periods
-  const allPeriods = useMemo(() => {
+  const allPeriods: string[] = useMemo(() => {
     const periods = new Set<string>();
     dummyBlogPosts.forEach(post => {
       periods.add(`${post.year}-${post.month}`);
@@ -188,13 +188,13 @@ const BlogPage: React.FC = () => {
     return ["Semua", ...sortedPeriods];
   }, []);
 
-  const getPeriodDisplayName = (period: string) => {
+  const getPeriodDisplayName = (period: string): string => {
     if (period === "Semua") return "Semua Waktu";
     const [year, month] = period.split('-').map(Number);
     return `${year} - ${monthNames[month]}`;
   };
 
-  const filteredPosts = useMemo(() => {
+  const filteredPosts: BlogPost[] = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return dummyBlogPosts.filter(post => {
       // Filter kategori dihapus dari logika
@@ -216,7 +216,7 @@ const BlogPage: React.FC = () => {
   }, [selectedPeriod, selectedTag, searchTerm]); // Dependensi disesuaikan
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-  const currentPosts = useMemo(() => {
+  const currentPosts: BlogPost[] = useMemo(() => {
     const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
     const endIndex = startIndex + POSTS_PER_PAGE;
     return filteredPosts.slice(startIndex, endIndex);
