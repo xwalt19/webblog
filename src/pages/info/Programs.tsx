@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -12,6 +12,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users, GraduationCap, DollarSign, CalendarDays } from "lucide-react";
 
 interface PriceTier {
@@ -32,6 +39,7 @@ interface Program {
   }[];
   topics?: { icon: React.ElementType; title: string; description: string }[];
   icon?: React.ElementType;
+  type: "kids" | "private" | "professional";
 }
 
 const programs: Program[] = [
@@ -42,6 +50,7 @@ const programs: Program[] = [
     schedule: "Setiap Sabtu, 09.00 – 12.00 WIB",
     registrationFee: "Rp50.000,-",
     icon: Code,
+    type: "kids",
     priceTable: [
       {
         header: ["Jumlah Peserta", "Harga (1 Sesi - 90 menit)"],
@@ -70,6 +79,7 @@ const programs: Program[] = [
     schedule: "Setiap Selasa 16:00-17:30, Rabu 16:30-18:00, Kamis & Jumat 16:00-17:30 WIB",
     registrationFee: "Rp50.000,-",
     icon: CalendarDays,
+    type: "kids",
     priceTable: [
       {
         header: ["Jumlah Peserta", "Harga per Sesi"],
@@ -89,6 +99,7 @@ const programs: Program[] = [
     schedule: "Dua kali setahun selama liburan sekolah (3-5 hari per topik)",
     price: "Rp950.000 - Rp2.000.000",
     icon: GraduationCap,
+    type: "kids",
   },
   {
     id: "online-private-class",
@@ -96,6 +107,7 @@ const programs: Program[] = [
     description: "ProCodeCG provides private classes with customized curriculum and more flexible schedules.",
     price: "Rp500.000 per jam",
     icon: Users,
+    type: "private",
   },
   {
     id: "tutoring-coding-class",
@@ -103,6 +115,7 @@ const programs: Program[] = [
     description: "ProCodeCG provides online tutoring class for high school and college students to help with their assignments, exams, competitions, etc. Each tutoring session is 90 minutes.",
     schedule: "Sesi 90 menit",
     icon: BookOpen,
+    type: "private",
     priceTable: [
       {
         header: ["Jumlah Peserta", "Harga per Sesi"],
@@ -122,12 +135,14 @@ const programs: Program[] = [
     description: "ProCodeCG provides customized curriculum and training. This program is usually for companies or adults.",
     price: "Mulai dari Rp1.000.000",
     icon: Cpu,
+    type: "professional",
   },
   {
     id: "coding-mom",
     title: "Coding Mom",
     description: "Training Moms to be front-end developers. The topics included are GitHub, HTML, CSS, JavaScript, Bootstrap, PHP, MySQL.",
     icon: Smartphone,
+    type: "professional",
     topics: [
       { icon: BookOpen, title: "Algorithm & Data Structure", description: "Pelajari dasar-dasar pemrograman, struktur pola pikir programmer dengan pengenalan Pemrograman Prosedural vs Pemrograman Berorientasi Objek, Design Pattern, dll." },
       { icon: Gamepad, title: "Game Programming", description: "Pelajari cara mengembangkan game menggunakan bahasa pemrograman sederhana." },
@@ -140,6 +155,15 @@ const programs: Program[] = [
 ];
 
 const ProgramsPage: React.FC = () => {
+  const [selectedProgramType, setSelectedProgramType] = useState("all");
+
+  const filteredPrograms = useMemo(() => {
+    if (selectedProgramType === "all") {
+      return programs;
+    }
+    return programs.filter(program => program.type === selectedProgramType);
+  }, [selectedProgramType]);
+
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
       <section className="text-center mb-12">
@@ -152,8 +176,23 @@ const ProgramsPage: React.FC = () => {
         </p>
       </section>
 
+      {/* Filter Dropdown for Program Types */}
+      <div className="flex justify-center mb-10">
+        <Select value={selectedProgramType} onValueChange={setSelectedProgramType}>
+          <SelectTrigger className="w-full md:w-[250px]">
+            <SelectValue placeholder="Pilih Jenis Program" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Semua Program</SelectItem>
+            <SelectItem value="kids">Kelas Anak-anak</SelectItem>
+            <SelectItem value="private">Kelas Privat & Bimbingan</SelectItem>
+            <SelectItem value="professional">Pelatihan Profesional</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-        {programs.map((program) => (
+        {filteredPrograms.map((program) => (
           <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
             <CardHeader className="pb-4 flex-grow">
               <div className="flex items-center gap-4 mb-2">
@@ -185,65 +224,51 @@ const ProgramsPage: React.FC = () => {
                 </p>
               )}
 
-              {/* Display price table within an Accordion, now with Card styling for each table */}
+              {/* Display price table directly, without Accordion */}
               {!program.price && program.priceTable && program.priceTable.length > 0 && (
-                <Accordion type="single" collapsible className="w-full mt-4">
-                  <AccordionItem value="price-details">
-                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline">
-                      Rincian Harga
-                    </AccordionTrigger>
-                    <AccordionContent className="pt-2">
-                      {program.priceTable.map((table, idx) => (
-                        <Card key={idx} className="mb-4 shadow-sm"> {/* Wrapped each table in a Card */}
-                          <CardHeader className="p-3 pb-2"> {/* Adjusted padding */}
-                            <CardTitle className="text-lg font-semibold">{table.header[1]}</CardTitle>
-                          </CardHeader>
-                          <CardContent className="p-0"> {/* Adjusted padding */}
-                            <Table className="w-full">
-                              <TableHeader>
-                                <TableRow>
-                                  <TableHead className="w-[150px]">{table.header[0]}</TableHead>
-                                  <TableHead className="text-right">{table.header[1]}</TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {table.rows.map((row, rowIndex) => (
-                                  <TableRow key={rowIndex}>
-                                    <TableCell className="font-medium">{row.participants}</TableCell>
-                                    <TableCell className="text-right">{row.price}</TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                <div className="mt-4">
+                  <h3 className="text-lg font-semibold text-primary mb-2">Rincian Harga</h3>
+                  {program.priceTable.map((table, idx) => (
+                    <Card key={idx} className="mb-4 shadow-sm">
+                      <CardHeader className="p-3 pb-2">
+                        <CardTitle className="text-lg font-semibold">{table.header[1]}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-0">
+                        <Table className="w-full">
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="w-[150px]">{table.header[0]}</TableHead>
+                              <TableHead className="text-right">{table.header[1]}</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {table.rows.map((row, rowIndex) => (
+                              <TableRow key={rowIndex}>
+                                <TableCell className="font-medium">{row.participants}</TableCell>
+                                <TableCell className="text-right">{row.price}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               )}
 
+              {/* Display topics directly, without Accordion, as a simple list */}
               {program.topics && program.topics.length > 0 && (
-                <Accordion type="single" collapsible className="w-full mt-4">
-                  <AccordionItem value="topics-included">
-                    <AccordionTrigger className="text-lg font-semibold text-primary hover:no-underline">
-                      Topik yang Termasuk
-                    </AccordionTrigger>
-                    <AccordionContent className="pt-2">
-                      <div className="grid grid-cols-1 gap-4">
-                        {program.topics.map((topic, topicIdx) => (
-                          <Card key={topicIdx} className="p-4 bg-muted/30">
-                            <div className="flex items-center gap-3 mb-2">
-                              <topic.icon size={24} className="text-accent-foreground" />
-                              <h4 className="text-lg font-semibold">{topic.title}</h4>
-                            </div>
-                            <p className="text-sm text-muted-foreground">{topic.description}</p>
-                          </Card>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                <div className="mt-4">
+                  <h3 className="text-lg font-semibold text-primary mb-2">Topik yang Termasuk</h3>
+                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                    {program.topics.map((topic, topicIdx) => (
+                      <li key={topicIdx} className="flex items-center gap-2">
+                        {topic.icon && <topic.icon size={18} className="text-accent-foreground flex-shrink-0" />}
+                        <span className="font-medium text-foreground">{topic.title}:</span> {topic.description}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </CardContent>
           </Card>
