@@ -159,8 +159,9 @@ const POSTS_PER_PAGE = 6;
 
 const Archives: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const [selectedPeriod, setSelectedPeriod] = useState("Semua");
-  const [selectedTag, setSelectedTag] = useState("Semua");
+  // Mengubah nilai awal agar sesuai dengan terjemahan "All"
+  const [selectedPeriod, setSelectedPeriod] = useState(t("all_time"));
+  const [selectedTag, setSelectedTag] = useState(t("tag"));
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
