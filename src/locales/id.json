@@ -392,7 +392,7 @@
     "yt4_title": "React Hooks Dijelaskan",
     "yt4_desc": "Pahami cara menggunakan React Hooks untuk manajemen state dan efek samping di komponen Anda.",
     "yt5_title": "Python untuk Pemula",
-    "yt5_desc": "Tutorial pengantar pemrograman Python, mencakup variabel, loop, dan fungsi.",
+    "yt5_desc": "Pengantar pemrograman Python, mencakup variabel, loop, dan fungsi.",
     "yt6_title": "Layout Responsif Tailwind CSS",
     "yt6_desc": "Bangun layout web responsif dengan cepat dan efisien menggunakan kelas utilitas Tailwind CSS.",
     "yt7_title": "Pengantar Algoritma",
@@ -419,7 +419,6 @@
     "tk7_desc": "Tinjauan singkat tentang siklus hidup komponen React untuk pemahaman yang lebih baik.",
     "tk8_title": "Otomatiskan Tugas dengan Python",
     "tk8_desc": "Temukan bagaimana Python dapat mengotomatiskan tugas-tugas berulang dan menghemat waktu Anda.",
-    "tk9_title": "Perintah Git untuk Kolaborasi",
     "tk9_desc": "Pelajari perintah Git penting untuk kolaborasi tim yang mulus dalam proyek coding."
   },
   "events": {
@@ -451,5 +450,7 @@
   "tiktok_desc": "Temukan tips coding singkat dan menarik serta konten menyenangkan.",
   "contact_us_desc": "Hubungi kami untuk pertanyaan, dukungan, atau kolaborasi.",
   "partners_desc": "Lihat mitra dan kolaborator kami yang berharga.",
-  "calendar_desc": "Periksa kalender acara kami untuk workshop, webinar, dan hari libur mendatang."
+  "calendar_desc": "Periksa kalender acara kami untuk workshop, webinar, dan hari libur mendatang.",
+  "contactustitle": "Hubungi Kami",
+  "contactussubtitle": "Kami senang mendengar dari Anda! Hubungi kami melalui berbagai saluran."
 }
