@@ -16,15 +16,19 @@ import { Separator } from "@/components/ui/separator";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import MobileNav from "./MobileNav"; // Import MobileNav component
 import { cn } from "@/lib/utils"; // Import cn utility
+import LanguageSwitcher from "./LanguageSwitcher"; // Import LanguageSwitcher
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 const Layout: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header (Navbar) */}
-      <header className="sticky top-0 z-50 bg-background shadow-sm border-b border-border"> {/* Changed background to bg-background and added shadow */}
+      <header className="sticky top-0 z-50 bg-background shadow-sm border-b border-border">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-primary"> {/* Kept text-primary for logo */}
+          <Link to="/" className="text-2xl font-bold text-primary">
             ProCodeCG
           </Link>
 
@@ -33,27 +37,27 @@ const Layout: React.FC = () => {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <Link to="/" className={cn(navigationMenuTriggerStyle(), "bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}>
-                  Home
+                  {t('home')}
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/about" className={cn(navigationMenuTriggerStyle(), "bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}>
-                  About
+                  {t('about')}
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/blog" className={cn(navigationMenuTriggerStyle(), "bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}>
-                  Blog
+                  {t('blog')}
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/archives" className={cn(navigationMenuTriggerStyle(), "bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}>
-                  Archives
+                  {t('archives')}
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Activity</NavigationMenuTrigger> {/* Adjusted background to bg-background */}
-                <NavigationMenuContent className="bg-background text-foreground border-border"> {/* Light background for content */}
+                <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('activity')}</NavigationMenuTrigger>
+                <NavigationMenuContent className="bg-background text-foreground border-border">
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     <li>
                       <NavigationMenuLink asChild>
@@ -63,9 +67,9 @@ const Layout: React.FC = () => {
                             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">PROGRAMS</div>
+                          <div className="text-sm font-medium leading-none text-foreground">{t('programs')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Jelajahi semua program dan kelas coding kami.
+                            {t('programs_desc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -75,12 +79,12 @@ const Layout: React.FC = () => {
                         <Link
                           to="/info/regular-events-classes"
                           className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground" // Adjusted hover/focus colors
+                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">REGULAR EVENTS & CLASSES</div> {/* Ensure text is foreground */}
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground"> {/* Muted foreground for description */}
-                            Jadwal rutin kelas dan acara mingguan kami.
+                          <div className="text-sm font-medium leading-none text-foreground">{t('regular_events_classes')}</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            {t('regular_events_classes_desc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -93,9 +97,9 @@ const Layout: React.FC = () => {
                             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">CAMPS</div>
+                          <div className="text-sm font-medium leading-none text-foreground">{t('camps')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Program intensif liburan sekolah dan akhir pekan.
+                            {t('camps_desc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -108,9 +112,9 @@ const Layout: React.FC = () => {
                             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">TRAINING</div>
+                          <div className="text-sm font-medium leading-none text-foreground">{t('training')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Pelatihan khusus untuk individu dan korporasi.
+                            {t('training_desc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -120,9 +124,9 @@ const Layout: React.FC = () => {
               </NavigationMenuItem>
               {/* New Media Navigation Item */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Media</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('media')}</NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-background text-foreground border-border">
-                  <ul className="grid grid-cols-2 gap-3 p-4 md:w-[500px] lg:w-[600px]"> {/* Lebar disesuaikan menjadi md:w-[500px] dan lg:w-[600px] */}
+                  <ul className="grid grid-cols-2 gap-3 p-4 md:w-[500px] lg:w-[600px]">
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
@@ -131,9 +135,9 @@ const Layout: React.FC = () => {
                             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">YouTube</div>
+                          <div className="text-sm font-medium leading-none text-foreground">{t('youtube')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Video tutorial dan vlog kami.
+                            {t('youtube_desc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -146,9 +150,9 @@ const Layout: React.FC = () => {
                             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">TikTok</div>
+                          <div className="text-sm font-medium leading-none text-foreground">{t('tiktok')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Video singkat dan tips coding.
+                            {t('tiktok_desc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -157,8 +161,8 @@ const Layout: React.FC = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">Info</NavigationMenuTrigger> {/* Adjusted background to bg-background */}
-                <NavigationMenuContent className="bg-background text-foreground border-border"> {/* Light background for content */}
+                <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('info')}</NavigationMenuTrigger>
+                <NavigationMenuContent className="bg-background text-foreground border-border">
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                     <li>
                       <NavigationMenuLink asChild>
@@ -168,9 +172,9 @@ const Layout: React.FC = () => {
                             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">CONTACT US</div>
+                          <div className="text-sm font-medium leading-none text-foreground">{t('contact_us')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Hubungi kami untuk pertanyaan atau kolaborasi.
+                            {t('contact_us_desc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -183,9 +187,9 @@ const Layout: React.FC = () => {
                             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">PARTNERS</div>
+                          <div className="text-sm font-medium leading-none text-foreground">{t('partners')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Lihat mitra dan kolaborator kami.
+                            {t('partners_desc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -198,9 +202,9 @@ const Layout: React.FC = () => {
                             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">CALENDAR</div>
+                          <div className="text-sm font-medium leading-none text-foreground">{t('calendar')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            Lihat jadwal acara dan kelas kami.
+                            {t('calendar_desc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -211,8 +215,11 @@ const Layout: React.FC = () => {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Mobile Menu */}
-          <MobileNav />
+          {/* Language Switcher and Mobile Menu */}
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <MobileNav />
+          </div>
         </div>
       </header>
 
@@ -224,7 +231,7 @@ const Layout: React.FC = () => {
       {/* Footer */}
       <footer className="bg-footer py-4 text-center text-sm text-white border-t border-border">
         <div className="container mx-auto px-4">
-          © 2025 Copyright by ProCodeCG. All rights reserved.
+          {t('footer_text')}
         </div>
       </footer>
     </div>

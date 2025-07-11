@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 interface BlogPost {
   id: string;
@@ -12,7 +13,7 @@ interface BlogPost {
   image: string;
   category: string;
   author: string;
-  tags: string[]; // Tambahkan properti tags
+  tags: string[];
 }
 
 const dummyBlogPosts: BlogPost[] = [
@@ -72,20 +73,20 @@ const dummyBlogPosts: BlogPost[] = [
     excerpt: "Mulai perjalanan Anda di Data Science dengan Python.",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data",
-    category: "Dasar HTML", // Contoh kategori lain
+    category: "Dasar HTML",
     author: "Instruktur C",
     tags: ["Python", "data"],
   },
 ];
 
 const LatestBlogPosts: React.FC = () => {
-  // Ambil hanya 3 postingan terbaru untuk homepage
+  const { t } = useTranslation(); // Initialize useTranslation
   const latestPosts = dummyBlogPosts.slice(0, 3);
 
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Wawasan Terbaru dari Blog Kami</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest_blog_posts_title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {latestPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">
@@ -106,7 +107,7 @@ const LatestBlogPosts: React.FC = () => {
               <CardContent className="p-6 pt-0">
                 <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
                 <Link to={`/posts/${post.id}`}>
-                  <Button variant="outline" className="w-full">Baca Selengkapnya</Button>
+                  <Button variant="outline" className="w-full">{t('read_more')}</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -114,7 +115,7 @@ const LatestBlogPosts: React.FC = () => {
         </div>
         <div className="text-center mt-10">
           <Link to="/blog">
-            <Button size="lg" variant="default">Baca Semua Postingan</Button>
+            <Button size="lg" variant="default">{t('read_all_posts')}</Button>
           </Link>
         </div>
       </div>

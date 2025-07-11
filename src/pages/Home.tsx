@@ -3,9 +3,10 @@ import HeroSection from "@/components/HeroSection";
 import LatestBlogPosts from "@/components/LatestBlogPosts";
 import WhyProCodeCG from "@/components/WhyProCodeCG";
 import CallToActionSection from "@/components/CallToActionSection";
-import MediaCarousel from "@/components/MediaCarousel"; // Mengganti CombinedMediaSearch
+import MediaCarousel from "@/components/MediaCarousel";
 import FixedNewsSchedule from "@/components/FixedNewsSchedule";
 import ExternalArticlesFeed from "@/components/ExternalArticlesFeed";
+import FeaturedCourses from "@/components/FeaturedCourses"; // Import FeaturedCourses
 
 const Home: React.FC = () => {
   return (
@@ -13,8 +14,9 @@ const Home: React.FC = () => {
       <HeroSection />
       <WhyProCodeCG />
       <LatestBlogPosts />
-      <MediaCarousel /> {/* Menggunakan komponen carousel baru */}
+      <MediaCarousel />
       <FixedNewsSchedule />
+      <FeaturedCourses /> {/* Add FeaturedCourses component */}
       <ExternalArticlesFeed />
       <CallToActionSection />
     </div>

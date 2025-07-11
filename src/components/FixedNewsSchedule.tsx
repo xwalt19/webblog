@@ -1,14 +1,15 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { CalendarDays, BellRing } from "lucide-react";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 interface FixedItem {
   id: string;
   type: "news" | "schedule";
   title: string;
   description: string;
-  date?: string; // Opsional untuk berita, wajib untuk jadwal
-  time?: string; // Opsional untuk berita, wajib untuk jadwal
+  date?: string;
+  time?: string;
 }
 
 const dummyFixedItems: FixedItem[] = [
@@ -45,10 +46,12 @@ const dummyFixedItems: FixedItem[] = [
 ];
 
 const FixedNewsSchedule: React.FC = () => {
+  const { t } = useTranslation(); // Initialize useTranslation
+
   return (
     <section className="py-12 bg-background">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Berita & Jadwal Penting</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('fixed_news_schedule_title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {dummyFixedItems.map((item) => (
             <Card key={item.id} className="flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">

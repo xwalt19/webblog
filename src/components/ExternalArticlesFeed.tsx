@@ -2,7 +2,8 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Newspaper } from "lucide-react"; // Icon for articles
+import { Newspaper } from "lucide-react";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 interface ExternalArticle {
   id: string;
@@ -49,10 +50,12 @@ const dummyExternalArticles: ExternalArticle[] = [
 ];
 
 const ExternalArticlesFeed: React.FC = () => {
+  const { t } = useTranslation(); // Initialize useTranslation
+
   return (
     <section className="py-12 bg-background">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Artikel Pilihan dari Berbagai Sumber</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('external_articles_title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {dummyExternalArticles.map((article) => (
             <Card key={article.id} className="flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -68,16 +71,15 @@ const ExternalArticlesFeed: React.FC = () => {
               <CardContent className="flex-grow p-6 pt-0">
                 <p className="text-muted-foreground mb-4 line-clamp-2">{article.excerpt}</p>
                 <a href={article.url} target="_blank" rel="noopener noreferrer" className="w-full">
-                  <Button variant="outline" className="w-full">Baca Artikel</Button>
+                  <Button variant="outline" className="w-full">{t('read_article')}</Button>
                 </a>
               </CardContent>
             </Card>
           ))}
         </div>
         <div className="text-center mt-10">
-          {/* Anda bisa menambahkan tautan ke halaman 'Semua Artikel Eksternal' jika ada */}
-          <Link to="/blog"> {/* Mengarahkan ke blog internal sebagai placeholder */}
-            <Button size="lg" variant="default">Jelajahi Lebih Banyak Artikel</Button>
+          <Link to="/blog">
+            <Button size="lg" variant="default">{t('explore_more_articles')}</Button>
           </Link>
         </div>
       </div>

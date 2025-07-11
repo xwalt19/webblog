@@ -11,56 +11,58 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation(); // Initialize useTranslation
 
   const closeSheet = () => setIsOpen(false);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden text-foreground hover:bg-accent"> {/* Changed text color and hover */}
+        <Button variant="ghost" size="icon" className="md:hidden text-foreground hover:bg-accent">
           <Menu className="h-6 w-6" />
           <span className="sr-only">Toggle mobile menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-64 p-4 pt-10 bg-background text-foreground"> {/* Changed background to bg-background */}
-        <Link to="/" className="text-2xl font-bold text-primary mb-6 block" onClick={closeSheet}> {/* Changed text color */}
+      <SheetContent side="left" className="w-64 p-4 pt-10 bg-background text-foreground">
+        <Link to="/" className="text-2xl font-bold text-primary mb-6 block" onClick={closeSheet}>
           ProCodeCG
         </Link>
         <nav className="flex flex-col space-y-4">
-          <Link to="/" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}> {/* Changed text and hover colors */}
-            Home
+          <Link to="/" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+            {t('home')}
           </Link>
           <Link to="/about" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
-            About
+            {t('about')}
           </Link>
           <Link to="/blog" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
-            Blog
+            {t('blog')}
           </Link>
           <Link to="/archives" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
-            Archives
+            {t('archives')}
           </Link>
           
           {/* Activity with Accordion for sub-items */}
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1" className="border-b-0">
-              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors"> {/* Changed text and hover colors */}
-                Activity
+              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
+                {t('activity')}
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
                 <Link to="/info/programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  PROGRAMS
+                  {t('programs')}
                 </Link>
-                <Link to="/info/regular-events-classes" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}> {/* Adjusted text and hover colors */}
-                  REGULAR EVENTS & CLASSES
+                <Link to="/info/regular-events-classes" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  {t('regular_events_classes')}
                 </Link>
                 <Link to="/info/camps" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  CAMPS
+                  {t('camps')}
                 </Link>
                 <Link to="/info/training" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  TRAINING
+                  {t('training')}
                 </Link>
               </AccordionContent>
             </AccordionItem>
@@ -70,14 +72,14 @@ const MobileNav: React.FC = () => {
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-2" className="border-b-0">
               <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
-                Media
+                {t('media')}
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
                 <Link to="/media/youtube" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  YouTube
+                  {t('youtube')}
                 </Link>
                 <Link to="/media/tiktok" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  TikTok
+                  {t('tiktok')}
                 </Link>
               </AccordionContent>
             </AccordionItem>
@@ -85,19 +87,19 @@ const MobileNav: React.FC = () => {
 
           {/* Info with Accordion for sub-items */}
           <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-3" className="border-b-0"> {/* Changed value to item-3 to avoid conflict */}
-              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors"> {/* Changed text and hover colors */}
-                Info
+            <AccordionItem value="item-3" className="border-b-0">
+              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
+                {t('info')}
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
                 <Link to="/contact-us" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  CONTACT US
+                  {t('contact_us')}
                 </Link>
                 <Link to="/partners" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  PARTNERS
+                  {t('partners')}
                 </Link>
                 <Link to="/info/calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  CALENDAR
+                  {t('calendar')}
                 </Link>
               </AccordionContent>
             </AccordionItem>

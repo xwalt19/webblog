@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Youtube, Music, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 interface MediaItem {
   id: string;
@@ -187,6 +188,7 @@ const dummyTikTokVideos: MediaItem[] = [
 ];
 
 const MediaCarousel: React.FC = () => {
+  const { t } = useTranslation(); // Initialize useTranslation
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' });
   const [prevBtnDisabled, setPrevBtnDisabled] = React.useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = React.useState(true);
@@ -213,7 +215,6 @@ const MediaCarousel: React.FC = () => {
 
   const allMedia: MediaItem[] = useMemo(() => {
     const combined = [...dummyYouTubeVideos, ...dummyTikTokVideos];
-    // Sort by date descending and take the first 7
     return combined.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 7);
   }, []);
 
@@ -221,8 +222,8 @@ const MediaCarousel: React.FC = () => {
     return (
       <section className="py-12 bg-muted/40">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Video Terbaru Kami</h2>
-          <p className="text-center text-muted-foreground mt-8 text-lg">Tidak ada video yang tersedia saat ini.</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest_videos_title')}</h2>
+          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no_videos_available')}</p>
         </div>
       </section>
     );
@@ -231,12 +232,12 @@ const MediaCarousel: React.FC = () => {
   return (
     <section className="py-12 bg-muted/40">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Video Terbaru Kami</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest_videos_title')}</h2>
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex -ml-4"> {/* Adjust margin to compensate for slide padding */}
+            <div className="flex -ml-4">
               {allMedia.map((item) => (
-                <div key={item.id} className="flex-none w-full sm:w-1/2 lg:w-1/3 pl-4"> {/* Responsive width */}
+                <div key={item.id} className="flex-none w-full sm:w-1/2 lg:w-1/3 pl-4">
                   <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
                     <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center">
                       <img src={item.thumbnail} alt={item.title} className="w-full h-full object-cover" />
@@ -255,7 +256,7 @@ const MediaCarousel: React.FC = () => {
                     <CardContent className="p-6 pt-0">
                       <p className="text-muted-foreground mb-4 line-clamp-2">{item.description}</p>
                       <a href={item.url} target="_blank" rel="noopener noreferrer" className="w-full">
-                        <Button variant="outline" className="w-full">Lihat Video</Button>
+                        <Button variant="outline" className="w-full">{t('view_video')}</Button>
                       </a>
                     </CardContent>
                   </Card>
