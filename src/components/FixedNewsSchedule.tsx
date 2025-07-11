@@ -1,15 +1,16 @@
+"use client";
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { CalendarDays, BellRing } from "lucide-react";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 
 interface FixedItem {
   id: string;
   type: "news" | "schedule";
   titleKey: string;
   descriptionKey: string;
-  date?: string;
-  time?: string;
+  dateTime: string; // Combined date and time into a single ISO string
 }
 
 const dummyFixedItems: FixedItem[] = [
@@ -18,35 +19,59 @@ const dummyFixedItems: FixedItem[] = [
     type: "schedule",
     titleKey: "fixed_items.f1_title",
     descriptionKey: "fixed_items.f1_desc",
-    date: "1 April 2024",
-    time: "09:00 WIB",
+    dateTime: "2024-04-01T09:00:00", // ISO string for April 1, 2024, 09:00
   },
   {
     id: "f2",
     type: "news",
     titleKey: "fixed_items.f2_title",
     descriptionKey: "fixed_items.f2_desc",
-    date: "10 Maret 2024",
+    dateTime: "2024-03-10T00:00:00", // ISO string for March 10, 2024, no specific time
   },
   {
     id: "f3",
     type: "schedule",
     titleKey: "fixed_items.f3_title",
     descriptionKey: "fixed_items.f3_desc",
-    date: "20 April 2024",
-    time: "14:00 WIB",
+    dateTime: "2024-04-20T14:00:00", // ISO string for April 20, 2024, 14:00
   },
   {
     id: "f4",
     type: "news",
     titleKey: "fixed_items.f4_title",
     descriptionKey: "fixed_items.f4_desc",
-    date: "1 April 2024",
+    dateTime: "2024-04-01T00:00:00", // ISO string for April 1, 2024, no specific time
   },
 ];
 
 const FixedNewsSchedule: React.FC = () => {
-  const { t } = useTranslation(); // Initialize useTranslation
+  const { t, i18n } = useTranslation();
+
+  const formatDateTime = (isoString: string, type: "news" | "schedule") => {
+    const dateObj = new Date(isoString);
+    const dateOptions: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    };
+
+    let formattedDate = dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', dateOptions);
+
+    if (type === "schedule" && isoString.includes('T') && (dateObj.getHours() !== 0 || dateObj.getMinutes() !== 0 || dateObj.getSeconds() !== 0)) {
+      const timeOptions: Intl.DateTimeFormatOptions = {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false, // Use 24-hour format
+      };
+      const formattedTime = dateObj.toLocaleTimeString(i18n.language === 'id' ? 'id-ID' : 'en-US', timeOptions);
+      
+      if (i18n.language === 'id') {
+        return `${formattedDate} pukul ${formattedTime} WIB`;
+      }
+      return `${formattedDate} at ${formattedTime}`;
+    }
+    return formattedDate;
+  };
 
   return (
     <section className="py-12 bg-background">
@@ -64,11 +89,9 @@ const FixedNewsSchedule: React.FC = () => {
                   )}
                   <CardTitle className="text-xl font-semibold">{t(item.titleKey)}</CardTitle>
                 </div>
-                {(item.date || item.time) && (
-                  <CardDescription className="text-sm text-muted-foreground">
-                    {item.date} {item.time && `pukul ${item.time}`}
-                  </CardDescription>
-                )}
+                <CardDescription className="text-sm text-muted-foreground">
+                  {formatDateTime(item.dateTime, item.type)}
+                </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow p-6 pt-0">
                 <p className="text-muted-foreground">{t(item.descriptionKey)}</p>
