@@ -149,27 +149,27 @@ const POSTS_PER_PAGE = 6;
 
 const BlogPage: React.FC = () => {
   const { t, i18n } = useTranslation();
-  // Mengubah nilai awal agar sesuai dengan terjemahan "All"
-  const [selectedPeriod, setSelectedPeriod] = useState(t("all_time"));
-  const [selectedTag, setSelectedTag] = useState(t("tag"));
+  // Mengubah nilai awal agar sesuai dengan kunci internal
+  const [selectedPeriod, setSelectedPeriod] = useState("all");
+  const [selectedTag, setSelectedTag] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   // Effect untuk mereset filter saat bahasa berubah
   useEffect(() => {
-    setSelectedPeriod(t("all_time"));
-    setSelectedTag(t("tag"));
+    setSelectedPeriod("all"); // Reset ke kunci internal "all"
+    setSelectedTag("all");   // Reset ke kunci internal "all"
     setSearchTerm(""); // Reset search term as well
     setCurrentPage(1);
-  }, [i18n.language, t]);
+  }, [i18n.language]); // Hanya bergantung pada i18n.language
 
   const allTags: string[] = useMemo(() => {
     const tags = new Set<string>();
     dummyBlogPosts.forEach(post => {
-      post.tagsKeys.forEach(tagKey => tags.add(t(tagKey)));
+      post.tagsKeys.forEach(tagKey => tags.add(tagKey)); // Simpan kunci tag asli
     });
-    return [t("tag"), ...Array.from(tags)];
-  }, [i18n.language, t]); // Re-calculate when language changes
+    return ["all", ...Array.from(tags)]; // Gunakan "all" sebagai kunci internal
+  }, []); // Tidak bergantung pada i18n.language atau t, karena kunci bersifat independen bahasa
 
   const monthNames = [
     "", t("month_names.january"), t("month_names.february"), t("month_names.march"), t("month_names.april"), t("month_names.may"), t("month_names.june"),
@@ -187,11 +187,11 @@ const BlogPage: React.FC = () => {
       if (yearA !== yearB) return yearB - yearA;
       return monthB - monthA;
     });
-    return [t("all_time"), ...sortedPeriods];
-  }, [i18n.language, t]);
+    return ["all", ...sortedPeriods]; // Gunakan "all" sebagai kunci internal
+  }, []); // Tidak bergantung pada i18n.language atau t, karena kunci bersifat independen bahasa
 
   const getPeriodDisplayName = (period: string) => {
-    if (period === t("all_time")) return t("all_time");
+    if (period === "all") return t("all_time"); // Terjemahkan kunci "all"
     const [year, month] = period.split('-').map(Number);
     return `${year} - ${monthNames[month]}`;
   };
@@ -203,16 +203,16 @@ const BlogPage: React.FC = () => {
                             t(post.excerptKey).toLowerCase().includes(lowerCaseSearchTerm);
       
       let matchesPeriod = true;
-      if (selectedPeriod !== t("all_time")) {
+      if (selectedPeriod !== "all") { // Bandingkan dengan kunci internal
         const [filterYear, filterMonth] = selectedPeriod.split('-').map(Number);
         matchesPeriod = post.year === filterYear && post.month === filterMonth;
       }
 
-      const matchesTag = selectedTag === t("tag") || post.tagsKeys.map(key => t(key)).includes(selectedTag);
+      const matchesTag = selectedTag === "all" || post.tagsKeys.includes(selectedTag); // Bandingkan dengan kunci internal
 
       return matchesSearch && matchesPeriod && matchesTag;
     });
-  }, [selectedPeriod, selectedTag, searchTerm, i18n.language, t]);
+  }, [selectedPeriod, selectedTag, searchTerm, i18n.language, t]); // Tetap bergantung pada i18n.language dan t untuk terjemahan konten
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -254,9 +254,9 @@ const BlogPage: React.FC = () => {
             <SelectValue placeholder={t('tag')} />
           </SelectTrigger>
           <SelectContent>
-            {allTags.map(tag => (
-              <SelectItem key={tag} value={tag}>
-                {tag === t("tag") ? t("tag") : tag}
+            {allTags.map(tagKey => (
+              <SelectItem key={tagKey} value={tagKey}>
+                {tagKey === "all" ? t("tag") : t(tagKey)} {/* Tampilkan terjemahan tag */}
               </SelectItem>
             ))}
           </SelectContent>
