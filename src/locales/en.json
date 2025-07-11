@@ -412,7 +412,6 @@
     "yt6_desc": "Design and develop a sleek, responsive landing page using Tailwind CSS.",
     "yt7_title": "Algorithms & Data Structures Explained Visually",
     "yt7_desc": "Understand complex algorithms and data structures with easy-to-follow visual explanations.",
-    "yt8_title": "Debugging JavaScript Like a Pro: Tips & Tricks",
     "yt8_desc": "Learn professional debugging techniques to quickly find and fix errors in your JavaScript code.",
     "yt9_title": "CSS Animations & Transitions: Bring Your UI to Life",
     "yt9_desc": "Add stunning animations and smooth transitions to your web elements using CSS."
@@ -440,5 +439,15 @@
     "message_placeholder": "Type your message here...",
     "submit_button": "Send Message",
     "submission_success": "Your message has been sent successfully!"
+  },
+  "fixed_items": {
+    "f1_title": "Pendaftaran Kelas Coding Musim Panas Dibuka",
+    "f1_desc": "Jangan lewatkan kesempatan untuk bergabung dengan kelas coding musim panas kami! Daftar sekarang untuk mendapatkan diskon khusus.",
+    "f2_title": "Webinar Gratis: Pengantar AI untuk Pemula",
+    "f2_desc": "Ikuti webinar gratis kami untuk mempelajari dasar-dasar Kecerdasan Buatan dan bagaimana AI membentuk masa depan.",
+    "f3_title": "Sesi Tanya Jawab dengan Mentor ProCodeCG",
+    "f3_desc": "Bergabunglah dengan sesi live Q&A kami untuk mendapatkan jawaban atas pertanyaan coding Anda dari mentor ahli kami.",
+    "f4_title": "Pengumuman Program Beasiswa Coding",
+    "f4_desc": "Kami dengan bangga mengumumkan program beasiswa coding baru kami untuk siswa berprestasi. Kunjungi halaman program untuk detail lebih lanjut."
   }
 }
