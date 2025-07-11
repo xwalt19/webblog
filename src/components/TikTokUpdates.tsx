@@ -29,7 +29,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
     descriptionKey: "tiktok_videos.tk1_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?coding,tips",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1234567890",
-    date: "10 Maret 2024",
+    date: "2024-03-10", // Changed to YYYY-MM-DD for easier Date object creation
   },
   {
     id: "tk2",
@@ -37,7 +37,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
     descriptionKey: "tiktok_videos.tk2_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?challenge,code",
     videoUrl: "https://www.tiktok.com/@procodecg/video/0987654321",
-    date: "18 Maret 2024",
+    date: "2024-03-18",
   },
   {
     id: "tk3",
@@ -45,7 +45,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
     descriptionKey: "tiktok_videos.tk3_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?kids,coding",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334455",
-    date: "25 Maret 2024",
+    date: "2024-03-25",
   },
   {
     id: "tk4",
@@ -53,7 +53,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
     descriptionKey: "tiktok_videos.tk4_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?html,webdev",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334456",
-    date: "1 April 2024",
+    date: "2024-04-01",
   },
   {
     id: "tk5",
@@ -61,7 +61,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
     descriptionKey: "tiktok_videos.tk5_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,layout",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334457",
-    date: "8 April 2024",
+    date: "2024-04-08",
   },
   {
     id: "tk6",
@@ -69,7 +69,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
     descriptionKey: "tiktok_videos.tk6_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?javascript,array",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334458",
-    date: "15 April 2024",
+    date: "2024-04-15",
   },
   {
     id: "tk7",
@@ -77,7 +77,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
     descriptionKey: "tiktok_videos.tk7_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?react,hooks",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334459",
-    date: "22 April 2024",
+    date: "2024-04-22",
   },
   {
     id: "tk8",
@@ -85,7 +85,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
     descriptionKey: "tiktok_videos.tk8_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?python,automation",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334460",
-    date: "29 April 2024",
+    date: "2024-04-29",
   },
   {
     id: "tk9",
@@ -93,14 +93,14 @@ const dummyTikTokVideos: TikTokVideo[] = [
     descriptionKey: "tiktok_videos.tk9_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?git,github",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334461",
-    date: "6 Mei 2024",
+    date: "2024-05-06",
   },
 ];
 
 const VIDEOS_PER_PAGE = 6;
 
 const TikTokUpdates: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [videos, setVideos] = useState<TikTokVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -130,14 +130,14 @@ const TikTokUpdates: React.FC = () => {
       t(video.titleKey).toLowerCase().includes(lowerCaseSearchTerm) ||
       t(video.descriptionKey).toLowerCase().includes(lowerCaseSearchTerm)
     );
-  }, [videos, searchTerm, t]);
+  }, [videos, searchTerm, t, i18n.language]); // Add i18n.language to dependencies
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
   const currentVideos = useMemo(() => {
     const startIndex = (currentPage - 1) * VIDEOS_PER_PAGE;
     const endIndex = startIndex + VIDEOS_PER_PAGE;
     return filteredVideos.slice(startIndex, endIndex);
-  }, [filteredVideos, currentPage]);
+  }, [filteredVideos, currentPage, i18n.language]); // Add i18n.language to dependencies
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -146,7 +146,7 @@ const TikTokUpdates: React.FC = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm]);
+  }, [searchTerm, i18n.language]); // Add i18n.language to dependencies
 
   return (
     <section className="py-12 bg-muted/40">
@@ -175,7 +175,9 @@ const TikTokUpdates: React.FC = () => {
                 </div>
                 <CardHeader className="flex-grow">
                   <CardTitle className="text-xl">{t(video.titleKey)}</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">{video.date}</CardDescription>
+                  <CardDescription className="text-sm text-muted-foreground">
+                    {new Date(video.date).toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
                   <p className="text-muted-foreground mb-4 line-clamp-2">{t(video.descriptionKey)}</p>

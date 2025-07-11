@@ -29,7 +29,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     descriptionKey: "youtube_videos.yt1_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?html,coding",
     videoUrl: "https://www.youtube.com/watch?v=M_HTyO_y_0M", 
-    date: "1 Januari 2024",
+    date: "2024-01-01", // Changed to YYYY-MM-DD for easier Date object creation
   },
   {
     id: "yt2",
@@ -37,7 +37,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     descriptionKey: "youtube_videos.yt2_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,design",
     videoUrl: "https://www.youtube.com/watch?v=1Rs2ND1ryYc", 
-    date: "15 Januari 2024",
+    date: "2024-01-15",
   },
   {
     id: "yt3",
@@ -45,7 +45,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     descriptionKey: "youtube_videos.yt3_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?javascript,web",
     videoUrl: "https://www.youtube.com/watch?v=W6NZfCO5sks", 
-    date: "1 Februari 2024",
+    date: "2024-02-01",
   },
   {
     id: "yt4",
@@ -53,7 +53,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     descriptionKey: "youtube_videos.yt4_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?react,frontend",
     videoUrl: "https://www.youtube.com/watch?v=Tn6-PIqc4UM", 
-    date: "10 Februari 2024",
+    date: "2024-02-10",
   },
   {
     id: "yt5",
@@ -61,7 +61,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     descriptionKey: "youtube_videos.yt5_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?python,programming",
     videoUrl: "https://www.youtube.com/watch?v=rfscVS0vtbw", 
-    date: "20 Februari 2024",
+    date: "2024-02-20",
   },
   {
     id: "yt6",
@@ -69,7 +69,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     descriptionKey: "youtube_videos.yt6_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?tailwind,responsive",
     videoUrl: "https://www.youtube.com/watch?v=z_g_y_2_2_2", 
-    date: "5 Maret 2024",
+    date: "2024-03-05",
   },
   {
     id: "yt7",
@@ -77,7 +77,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     descriptionKey: "youtube_videos.yt7_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?algorithm,datastructure",
     videoUrl: "https://www.youtube.com/watch?v=BBpAmxU_NQ8", 
-    date: "15 Maret 2024",
+    date: "2024-03-15",
   },
   {
     id: "yt8",
@@ -85,7 +85,7 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     descriptionKey: "youtube_videos.yt8_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?debugging,javascript",
     videoUrl: "https://www.youtube.com/watch?v=gS_Y4_2_2_2", 
-    date: "25 Maret 2024",
+    date: "2024-03-25",
   },
   {
     id: "yt9",
@@ -93,14 +93,14 @@ const dummyYouTubeVideos: YouTubeVideo[] = [
     descriptionKey: "youtube_videos.yt9_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,animation",
     videoUrl: "https://www.youtube.com/watch?v=z_g_y_2_2_2", 
-    date: "5 April 2024",
+    date: "2024-04-05",
   },
 ];
 
 const VIDEOS_PER_PAGE = 6;
 
 const YouTubeUpdates: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -130,14 +130,14 @@ const YouTubeUpdates: React.FC = () => {
       t(video.titleKey).toLowerCase().includes(lowerCaseSearchTerm) ||
       t(video.descriptionKey).toLowerCase().includes(lowerCaseSearchTerm)
     );
-  }, [videos, searchTerm, t]);
+  }, [videos, searchTerm, t, i18n.language]); // Add i18n.language to dependencies
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
   const currentVideos = useMemo(() => {
     const startIndex = (currentPage - 1) * VIDEOS_PER_PAGE;
     const endIndex = startIndex + VIDEOS_PER_PAGE;
     return filteredVideos.slice(startIndex, endIndex);
-  }, [filteredVideos, currentPage]);
+  }, [filteredVideos, currentPage, i18n.language]); // Add i18n.language to dependencies
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -146,7 +146,7 @@ const YouTubeUpdates: React.FC = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm]);
+  }, [searchTerm, i18n.language]); // Add i18n.language to dependencies
 
   return (
     <section className="py-12 bg-muted/40">
@@ -175,7 +175,9 @@ const YouTubeUpdates: React.FC = () => {
                 </div>
                 <CardHeader className="flex-grow">
                   <CardTitle className="text-xl">{t(video.titleKey)}</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">{video.date}</CardDescription>
+                  <CardDescription className="text-sm text-muted-foreground">
+                    {new Date(video.date).toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
                   <p className="text-muted-foreground mb-4 line-clamp-2">{t(video.descriptionKey)}</p>

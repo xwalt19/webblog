@@ -169,12 +169,12 @@ const BlogPage: React.FC = () => {
       post.tagsKeys.forEach(tagKey => tags.add(tagKey)); // Simpan kunci tag asli
     });
     return ["all", ...Array.from(tags)]; // Gunakan "all" sebagai kunci internal
-  }, []); // Tidak bergantung pada i18n.language atau t, karena kunci bersifat independen bahasa
+  }, [i18n.language]); // Tambahkan i18n.language sebagai dependensi
 
-  const monthNames = [
+  const monthNames = useMemo(() => [
     "", t("month_names.january"), t("month_names.february"), t("month_names.march"), t("month_names.april"), t("month_names.may"), t("month_names.june"),
     t("month_names.july"), t("month_names.august"), t("month_names.september"), t("month_names.october"), t("month_names.november"), t("month_names.december")
-  ];
+  ], [i18n.language, t]); // Tambahkan i18n.language dan t sebagai dependensi
 
   const allPeriods: string[] = useMemo(() => {
     const periods = new Set<string>();
@@ -188,7 +188,7 @@ const BlogPage: React.FC = () => {
       return monthB - monthA;
     });
     return ["all", ...sortedPeriods]; // Gunakan "all" sebagai kunci internal
-  }, []); // Tidak bergantung pada i18n.language atau t, karena kunci bersifat independen bahasa
+  }, [i18n.language]); // Tambahkan i18n.language sebagai dependensi
 
   const getPeriodDisplayName = (period: string) => {
     if (period === "all") return t("all_time"); // Terjemahkan kunci "all"

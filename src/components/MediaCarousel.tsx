@@ -188,7 +188,7 @@ const dummyTikTokVideos: MediaItem[] = [
 ];
 
 const MediaCarousel: React.FC = () => {
-  const { t } = useTranslation(); // Initialize useTranslation
+  const { t, i18n } = useTranslation(); // Initialize useTranslation
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' });
   const [prevBtnDisabled, setPrevBtnDisabled] = React.useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = React.useState(true);
@@ -216,7 +216,7 @@ const MediaCarousel: React.FC = () => {
   const allMedia: MediaItem[] = useMemo(() => {
     const combined = [...dummyYouTubeVideos, ...dummyTikTokVideos];
     return combined.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 7);
-  }, []);
+  }, [i18n.language]); // Add i18n.language to dependencies
 
   if (allMedia.length === 0) {
     return (
@@ -250,7 +250,7 @@ const MediaCarousel: React.FC = () => {
                     <CardHeader className="flex-grow">
                       <CardTitle className="text-xl">{t(item.titleKey)}</CardTitle>
                       <CardDescription className="text-sm text-muted-foreground">
-                        {new Date(item.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })} - {item.type === 'youtube' ? 'YouTube' : 'TikTok'}
+                        {new Date(item.date).toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })} - {item.type === 'youtube' ? 'YouTube' : 'TikTok'}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="p-6 pt-0">
