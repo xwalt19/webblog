@@ -165,13 +165,21 @@ const Archives: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Effect untuk mereset filter saat bahasa berubah
+  useEffect(() => {
+    setSelectedPeriod(t("all_time"));
+    setSelectedTag(t("tag"));
+    setSearchTerm(""); // Reset search term as well
+    setCurrentPage(1);
+  }, [i18n.language, t]);
+
   const allTags: string[] = useMemo(() => {
     const tags = new Set<string>();
     dummyBlogPosts.forEach(post => {
       post.tagsKeys.forEach(tagKey => tags.add(t(tagKey)));
     });
     return [t("tag"), ...Array.from(tags)];
-  }, [i18n.language]);
+  }, [i18n.language, t]);
 
   const monthNames = [
     "", t("month_names.january"), t("month_names.february"), t("month_names.march"), t("month_names.april"), t("month_names.may"), t("month_names.june"),
@@ -190,7 +198,7 @@ const Archives: React.FC = () => {
       return monthB - monthA;
     });
     return [t("all_time"), ...sortedPeriods];
-  }, [i18n.language]);
+  }, [i18n.language, t]);
 
   const getPeriodDisplayName = (period: string) => {
     if (period === t("all_time")) return t("all_time");
@@ -214,7 +222,7 @@ const Archives: React.FC = () => {
 
       return matchesSearch && matchesPeriod && matchesTag;
     });
-  }, [selectedPeriod, selectedTag, searchTerm, i18n.language]);
+  }, [selectedPeriod, selectedTag, searchTerm, i18n.language, t]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -325,7 +333,7 @@ const Archives: React.FC = () => {
               <PaginationPrevious
                 onClick={() => handlePageChange(currentPage - 1)}
                 className={currentPage === 1 ? "pointer-events-none opacity-50" : undefined}
-              />
+                />
             </PaginationItem>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <PaginationItem key={page}>
@@ -341,7 +349,7 @@ const Archives: React.FC = () => {
               <PaginationNext
                 onClick={() => handlePageChange(currentPage + 1)}
                 className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined}
-                />
+              />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

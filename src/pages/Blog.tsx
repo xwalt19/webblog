@@ -155,13 +155,21 @@ const BlogPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Effect untuk mereset filter saat bahasa berubah
+  useEffect(() => {
+    setSelectedPeriod(t("all_time"));
+    setSelectedTag(t("tag"));
+    setSearchTerm(""); // Reset search term as well
+    setCurrentPage(1);
+  }, [i18n.language, t]);
+
   const allTags: string[] = useMemo(() => {
     const tags = new Set<string>();
     dummyBlogPosts.forEach(post => {
       post.tagsKeys.forEach(tagKey => tags.add(t(tagKey)));
     });
     return [t("tag"), ...Array.from(tags)];
-  }, [i18n.language]); // Re-calculate when language changes
+  }, [i18n.language, t]); // Re-calculate when language changes
 
   const monthNames = [
     "", t("month_names.january"), t("month_names.february"), t("month_names.march"), t("month_names.april"), t("month_names.may"), t("month_names.june"),
@@ -180,7 +188,7 @@ const BlogPage: React.FC = () => {
       return monthB - monthA;
     });
     return [t("all_time"), ...sortedPeriods];
-  }, [i18n.language]);
+  }, [i18n.language, t]);
 
   const getPeriodDisplayName = (period: string) => {
     if (period === t("all_time")) return t("all_time");
@@ -204,7 +212,7 @@ const BlogPage: React.FC = () => {
 
       return matchesSearch && matchesPeriod && matchesTag;
     });
-  }, [selectedPeriod, selectedTag, searchTerm, i18n.language]);
+  }, [selectedPeriod, selectedTag, searchTerm, i18n.language, t]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
