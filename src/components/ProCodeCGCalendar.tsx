@@ -65,6 +65,7 @@ const ProCodeCGCalendar: React.FC = () => {
                 borderRadius: '0.375rem', // rounded-md
               }
             }}
+            captionLayout="dropdown"
           />
         </CardContent>
         {/* Bagian detail acara untuk tanggal yang dipilih */}
