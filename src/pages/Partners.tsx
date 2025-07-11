@@ -16,37 +16,37 @@ interface Partner {
 const dummyPartners: Partner[] = [
   {
     id: "p1",
-    nameKey: "partnersdata.dycodename",
+    nameKey: "partners data.dycode name",
     logoUrl: "https://via.placeholder.com/150/0000FF/FFFFFF?text=DyCode",
-    descriptionKey: "partnersdata.dycodedesc",
+    descriptionKey: "partners data.dycode desc",
     type: "corporate",
   },
   {
     id: "p2",
-    nameKey: "partnersdata.codeintechname",
+    nameKey: "partners data.codeintech name",
     logoUrl: "https://via.placeholder.com/150/FF0000/FFFFFF?text=CodeinTech",
-    descriptionKey: "partnersdata.codeintechdesc",
+    descriptionKey: "partners data.codeintech desc",
     type: "community",
   },
   {
     id: "p3",
-    nameKey: "partnersdata.telkomuniversityname",
+    nameKey: "partners data.telkomuniversity name",
     logoUrl: "https://via.placeholder.com/150/00FF00/FFFFFF?text=Telkom+University",
-    descriptionKey: "partnersdata.telkomuniversitydesc",
+    descriptionKey: "partners data.telkomuniversity desc",
     type: "educational",
   },
   {
     id: "p4",
-    nameKey: "partnersdata.itbname",
+    nameKey: "partners data.itb name",
     logoUrl: "https://via.placeholder.com/150/FFFF00/000000?text=ITB",
-    descriptionKey: "partnersdata.itbdesc",
+    descriptionKey: "partners data.itb desc",
     type: "educational",
   },
   {
     id: "p5",
-    nameKey: "partnersdata.startupbandungname",
+    nameKey: "partners data.startupbandung name",
     logoUrl: "https://via.placeholder.com/150/FF00FF/FFFFFF?text=Startup+Bandung",
-    descriptionKey: "partnersdata.startupbandungdesc",
+    descriptionKey: "partners data.startupbandung desc",
     type: "community",
   },
 ];
@@ -70,9 +70,9 @@ const Partners: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('ourpartnerstitle')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('our partners title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('ourpartnerssubtitle')}
+          {t('our partners subtitle')}
         </p>
       </section>
 
@@ -93,7 +93,7 @@ const Partners: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('backtohome')}</Button>
+          <Button>{t('back to home')}</Button>
         </Link>
       </div>
     </div>

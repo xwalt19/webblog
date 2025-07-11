@@ -56,7 +56,7 @@ const MobileNav: React.FC = () => {
                   {t('programs')}
                 </Link>
                 <Link to="/info/regular-events-classes" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  {t('regulareventsclasses')}
+                  {t('regular events classes')}
                 </Link>
                 <Link to="/info/camps" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                   {t('camps')}
@@ -93,7 +93,7 @@ const MobileNav: React.FC = () => {
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
                 <Link to="/contact-us" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  {t('contactus')}
+                  {t('contact us')}
                 </Link>
                 <Link to="/partners" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                   {t('partners')}

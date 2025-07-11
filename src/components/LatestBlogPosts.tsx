@@ -19,63 +19,63 @@ interface BlogPost {
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
-    titleKey: "blogposts.post1title",
-    excerptKey: "blogposts.post1excerpt",
+    titleKey: "blog posts.post1 title",
+    excerptKey: "blog posts.post1 excerpt",
     date: "10 Oktober 2023",
     image: "https://source.unsplash.com/random/400x250/?blogging,writing",
-    categoryKey: "blogposts.post1category",
-    authorKey: "blogposts.post1author",
-    tagsKeys: ["blogposts.post1tags0", "blogposts.post1tags1", "blogposts.post1tags2"],
+    categoryKey: "blog posts.post1 category",
+    authorKey: "blog posts.post1 author",
+    tagsKeys: ["blog posts.post1 tags0", "blog posts.post1 tags1", "blog posts.post1 tags2"],
   },
   {
     id: "2",
-    titleKey: "blogposts.post2title",
-    excerptKey: "blogposts.post2excerpt",
+    titleKey: "blog posts.post2 title",
+    excerptKey: "blog posts.post2 excerpt",
     date: "15 November 2023",
     image: "https://source.unsplash.com/random/400x250/?content,marketing",
-    categoryKey: "blogposts.post2category",
-    authorKey: "blogposts.post2author",
-    tagsKeys: ["blogposts.post2tags0", "blogposts.post2tags1", "blogposts.post2tags2"],
+    categoryKey: "blog posts.post2 category",
+    authorKey: "blog posts.post2 author",
+    tagsKeys: ["blog posts.post2 tags0", "blog posts.post2 tags1", "blog posts.post2 tags2"],
   },
   {
     id: "3",
-    titleKey: "blogposts.post3title",
-    excerptKey: "blogposts.post3excerpt",
+    titleKey: "blog posts.post3 title",
+    excerptKey: "blog posts.post3 excerpt",
     date: "20 Desember 2023",
     image: "https://source.unsplash.com/random/400x250/?seo,optimization",
-    categoryKey: "blogposts.post3category",
-    authorKey: "blogposts.post3author",
-    tagsKeys: ["blogposts.post3tags0", "blogposts.post3tags1", "blogposts.post3tags2"],
+    categoryKey: "blog posts.post3 category",
+    authorKey: "blog posts.post3 author",
+    tagsKeys: ["blog posts.post3 tags0", "blog posts.post3 tags1", "blog posts.post3 tags2"],
   },
   {
     id: "4",
-    titleKey: "blogposts.post4title",
-    excerptKey: "blogposts.post4excerpt",
+    titleKey: "blog posts.post4 title",
+    excerptKey: "blog posts.post4 excerpt",
     date: "25 Januari 2024",
     image: "https://source.unsplash.com/random/400x250/?javascript,code",
-    categoryKey: "blogposts.post4category",
-    authorKey: "blogposts.post4author",
-    tagsKeys: ["blogposts.post4tags0", "blogposts.post4tags1", "blogposts.post4tags2"],
+    categoryKey: "blog posts.post4 category",
+    authorKey: "blog posts.post4 author",
+    tagsKeys: ["blog posts.post4 tags0", "blog posts.post4 tags1", "blog posts.post4 tags2"],
   },
   {
     id: "5",
-    titleKey: "blogposts.post5title",
-    excerptKey: "blogposts.post5excerpt",
+    titleKey: "blog posts.post5 title",
+    excerptKey: "blog posts.post5 excerpt",
     date: "01 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?reactjs,programming",
-    categoryKey: "blogposts.post5category",
-    authorKey: "blogposts.post5author",
-    tagsKeys: ["blogposts.post5tags0", "blogposts.post5tags1", "blogposts.post5tags2"],
+    categoryKey: "blog posts.post5 category",
+    authorKey: "blog posts.post5 author",
+    tagsKeys: ["blog posts.post5 tags0", "blog posts.post5 tags1", "blog posts.post5 tags2"],
   },
   {
     id: "6",
-    titleKey: "blogposts.post6title",
-    excerptKey: "blogposts.post6excerpt",
+    titleKey: "blog posts.post6 title",
+    excerptKey: "blog posts.post6 excerpt",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data",
-    categoryKey: "blogposts.post6category",
-    authorKey: "blogposts.post6author",
-    tagsKeys: ["blogposts.post6tags0", "blogposts.post6tags1", "blogposts.post6tags2"],
+    categoryKey: "blog posts.post6 category",
+    authorKey: "blog posts.post6 author",
+    tagsKeys: ["blog posts.post6 tags0", "blog posts.post6 tags1", "blog posts.post6 tags2"],
   },
 ];
 
@@ -86,7 +86,7 @@ const LatestBlogPosts: React.FC = () => {
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latestblogpoststitle')}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest blog posts title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {latestPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">
@@ -107,7 +107,7 @@ const LatestBlogPosts: React.FC = () => {
               <CardContent className="p-6 pt-0">
                 <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerptKey)}</p>
                 <Link to={`/posts/${post.id}`}>
-                  <Button variant="outline" className="w-full">{t('readmore')}</Button>
+                  <Button variant="outline" className="w-full">{t('read more')}</Button>
                 </Link>
               </CardContent>
             </Card>
@@ -115,7 +115,7 @@ const LatestBlogPosts: React.FC = () => {
         </div>
         <div className="text-center mt-10">
           <Link to="/blog">
-            <Button size="lg" variant="default">{t('readallposts')}</Button>
+            <Button size="lg" variant="default">{t('read all posts')}</Button>
           </Link>
         </div>
       </div>

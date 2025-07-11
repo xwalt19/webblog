@@ -10,9 +10,9 @@ const TikTokPage: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('tiktokpagetitle')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('tiktok page title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('tiktokpagesubtitle')}
+          {t('tiktok page subtitle')}
         </p>
       </section>
 
@@ -20,7 +20,7 @@ const TikTokPage: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('backtohome')}</Button>
+          <Button>{t('back to home')}</Button>
         </Link>
       </div>
     </div>

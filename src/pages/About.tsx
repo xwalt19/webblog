@@ -16,34 +16,34 @@ interface TeamMember {
 
 const dummyTeamMembers: TeamMember[] = [
   {
-    nameKey: "teammembers.marisaname",
-    roleKey: "teammembers.marisarole",
+    nameKey: "team members.marisa name",
+    roleKey: "team members.marisa role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Marisa",
-    descriptionKey: "teammembers.marisadesc",
+    descriptionKey: "team members.marisa desc",
   },
   {
-    nameKey: "teammembers.budiname",
-    roleKey: "teammembers.budirole",
+    nameKey: "team members.budi name",
+    roleKey: "team members.budi role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Budi",
-    descriptionKey: "teammembers.budidesc",
+    descriptionKey: "team members.budi desc",
   },
   {
-    nameKey: "teammembers.prayudiname",
-    roleKey: "teammembers.prayudirole",
+    nameKey: "team members.prayudi name",
+    roleKey: "team members.prayudi role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Prayudi",
-    descriptionKey: "teammembers.prayudidesc",
+    descriptionKey: "team members.prayudi desc",
   },
   {
-    nameKey: "teammembers.farisname",
-    roleKey: "teammembers.farisrole",
+    nameKey: "team members.faris name",
+    roleKey: "team members.faris role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Faris",
-    descriptionKey: "teammembers.farisdesc",
+    descriptionKey: "team members.faris desc",
   },
   {
-    nameKey: "teammembers.bullittname",
-    roleKey: "teammembers.bullittrole",
+    nameKey: "team members.bullitt name",
+    roleKey: "team members.bullitt role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Bullitt",
-    descriptionKey: "teammembers.bullittdesc",
+    descriptionKey: "team members.bullitt desc",
   },
 ];
 
@@ -53,9 +53,9 @@ const AboutPage: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
       <section className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('aboutprocodecgtitle')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('about procodecg title')}</h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          {t('aboutprocodecgsubtitle')}
+          {t('about procodecg subtitle')}
         </p>
       </section>
 
@@ -63,58 +63,58 @@ const AboutPage: React.FC = () => {
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="text-2xl font-semibold flex items-center gap-2">
-              <Lightbulb className="text-yellow-500" size={28} /> {t('ourmission')}
+              <Lightbulb className="text-yellow-500" size={28} /> {t('our mission')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              {t('ourmissiondesc')}
+              {t('our mission desc')}
             </p>
           </CardContent>
         </Card>
         <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="text-2xl font-semibold flex items-center gap-2">
-              <Users className="text-blue-500" size={28} /> {t('ourvision')}
+              <Users className="text-blue-500" size={28} /> {t('our vision')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              {t('ourvisiondesc')}
+              {t('our vision desc')}
             </p>
           </CardContent>
         </Card>
       </section>
 
       <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('ourvalues')}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('our values')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Handshake className="mx-auto mb-4 text-green-500" size={40} />
             <CardTitle className="text-xl mb-2">{t('accessibility')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              {t('accessibilitydesc')}
+              {t('accessibility desc')}
             </CardContent>
           </Card>
           <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Lightbulb className="mx-auto mb-4 text-purple-500" size={40} />
             <CardTitle className="text-xl mb-2">{t('innovation')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              {t('innovationdesc')}
+              {t('innovation desc')}
             </CardContent>
           </Card>
           <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Users className="mx-auto mb-4 text-red-500" size={40} />
             <CardTitle className="text-xl mb-2">{t('community')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              {t('communitydesc')}
+              {t('community desc')}
             </CardContent>
           </Card>
         </div>
       </section>
 
       <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('ourteam')}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('our team')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {dummyTeamMembers.map((member, index) => (
             <Card key={index} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -135,13 +135,13 @@ const AboutPage: React.FC = () => {
       <Separator className="my-16" />
 
       <section className="text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6">{t('readytostartlearningjourney')}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">{t('ready to start learning journey')}</h2>
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          {t('explorelatestinsightsfromblog')}
+          {t('explore latest insights from blog')}
         </p>
         <div className="flex justify-center">
           <Link to="/blog">
-            <Button size="lg">{t('visitblog')}</Button>
+            <Button size="lg">{t('visit blog')}</Button>
           </Link>
         </div>
       </section>

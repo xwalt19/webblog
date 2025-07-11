@@ -21,8 +21,8 @@ interface MediaItem {
 const dummyYouTubeVideos: MediaItem[] = [
   {
     id: "yt1",
-    titleKey: "youtubevideos.yt1title",
-    descriptionKey: "youtubevideos.yt1desc",
+    titleKey: "youtube videos.yt1 title",
+    descriptionKey: "youtube videos.yt1 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?html,coding",
     url: "https://www.youtube.com/watch?v=M_HTyO_y_0M",
     date: "2024-01-01",
@@ -30,8 +30,8 @@ const dummyYouTubeVideos: MediaItem[] = [
   },
   {
     id: "yt2",
-    titleKey: "youtubevideos.yt2title",
-    descriptionKey: "youtubevideos.yt2desc",
+    titleKey: "youtube videos.yt2 title",
+    descriptionKey: "youtube videos.yt2 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,design",
     url: "https://www.youtube.com/watch?v=1Rs2ND1ryYc",
     date: "2024-01-15",
@@ -39,8 +39,8 @@ const dummyYouTubeVideos: MediaItem[] = [
   },
   {
     id: "yt3",
-    titleKey: "youtubevideos.yt3title",
-    descriptionKey: "youtubevideos.yt3desc",
+    titleKey: "youtube videos.yt3 title",
+    descriptionKey: "youtube videos.yt3 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?javascript,web",
     url: "https://www.youtube.com/watch?v=W6NZfCO5sks",
     date: "2024-02-01",
@@ -48,8 +48,8 @@ const dummyYouTubeVideos: MediaItem[] = [
   },
   {
     id: "yt4",
-    titleKey: "youtubevideos.yt4title",
-    descriptionKey: "youtubevideos.yt4desc",
+    titleKey: "youtube videos.yt4 title",
+    descriptionKey: "youtube videos.yt4 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?react,frontend",
     url: "https://www.youtube.com/watch?v=Tn6-PIqc4UM",
     date: "2024-02-10",
@@ -57,8 +57,8 @@ const dummyYouTubeVideos: MediaItem[] = [
   },
   {
     id: "yt5",
-    titleKey: "youtubevideos.yt5title",
-    descriptionKey: "youtubevideos.yt5desc",
+    titleKey: "youtube videos.yt5 title",
+    descriptionKey: "youtube videos.yt5 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?python,programming",
     url: "https://www.youtube.com/watch?v=rfscVS0vtbw",
     date: "2024-02-20",
@@ -66,8 +66,8 @@ const dummyYouTubeVideos: MediaItem[] = [
   },
   {
     id: "yt6",
-    titleKey: "youtubevideos.yt6title",
-    descriptionKey: "youtubevideos.yt6desc",
+    titleKey: "youtube videos.yt6 title",
+    descriptionKey: "youtube videos.yt6 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?tailwind,responsive",
     url: "https://www.youtube.com/watch?v=z_g_y_2_2_2",
     date: "2024-03-05",
@@ -75,8 +75,8 @@ const dummyYouTubeVideos: MediaItem[] = [
   },
   {
     id: "yt7",
-    titleKey: "youtubevideos.yt7title",
-    descriptionKey: "youtubevideos.yt7desc",
+    titleKey: "youtube videos.yt7 title",
+    descriptionKey: "youtube videos.yt7 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?algorithm,datastructure",
     url: "https://www.youtube.com/watch?v=BBpAmxU_NQ8",
     date: "2024-03-15",
@@ -84,8 +84,8 @@ const dummyYouTubeVideos: MediaItem[] = [
   },
   {
     id: "yt8",
-    titleKey: "youtubevideos.yt8title",
-    descriptionKey: "youtubevideos.yt8desc",
+    titleKey: "youtube videos.yt8 title",
+    descriptionKey: "youtube videos.yt8 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?debugging,javascript",
     url: "https://www.youtube.com/watch?v=gS_Y4_2_2_2",
     date: "2024-03-25",
@@ -93,8 +93,8 @@ const dummyYouTubeVideos: MediaItem[] = [
   },
   {
     id: "yt9",
-    titleKey: "youtubevideos.yt9title",
-    descriptionKey: "youtubevideos.yt9desc",
+    titleKey: "youtube videos.yt9 title",
+    descriptionKey: "youtube videos.yt9 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,animation",
     url: "https://www.youtube.com/watch?v=z_g_y_2_2_2",
     date: "2024-04-05",
@@ -106,8 +106,8 @@ const dummyYouTubeVideos: MediaItem[] = [
 const dummyTikTokVideos: MediaItem[] = [
   {
     id: "tk1",
-    titleKey: "tiktokvideos.tk1title",
-    descriptionKey: "tiktokvideos.tk1desc",
+    titleKey: "tiktok videos.tk1 title",
+    descriptionKey: "tiktok videos.tk1 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?coding,tips",
     url: "https://www.tiktok.com/@procodecg/video/1234567890",
     date: "2024-03-10",
@@ -115,8 +115,8 @@ const dummyTikTokVideos: MediaItem[] = [
   },
   {
     id: "tk2",
-    titleKey: "tiktokvideos.tk2title",
-    descriptionKey: "tiktokvideos.tk2desc",
+    titleKey: "tiktok videos.tk2 title",
+    descriptionKey: "tiktok videos.tk2 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?challenge,code",
     url: "https://www.tiktok.com/@procodecg/video/0987654321",
     date: "2024-03-18",
@@ -124,8 +124,8 @@ const dummyTikTokVideos: MediaItem[] = [
   },
   {
     id: "tk3",
-    titleKey: "tiktokvideos.tk3title",
-    descriptionKey: "tiktokvideos.tk3desc",
+    titleKey: "tiktok videos.tk3 title",
+    descriptionKey: "tiktok videos.tk3 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?kids,coding",
     url: "https://www.tiktok.com/@procodecg/video/1122334455",
     date: "2024-03-25",
@@ -133,8 +133,8 @@ const dummyTikTokVideos: MediaItem[] = [
   },
   {
     id: "tk4",
-    titleKey: "tiktokvideos.tk4title",
-    descriptionKey: "tiktokvideos.tk4desc",
+    titleKey: "tiktok videos.tk4 title",
+    descriptionKey: "tiktok videos.tk4 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?html,webdev",
     url: "https://www.tiktok.com/@procodecg/video/1122334456",
     date: "2024-04-01",
@@ -142,8 +142,8 @@ const dummyTikTokVideos: MediaItem[] = [
   },
   {
     id: "tk5",
-    titleKey: "tiktokvideos.tk5title",
-    descriptionKey: "tiktokvideos.tk5desc",
+    titleKey: "tiktok videos.tk5 title",
+    descriptionKey: "tiktok videos.tk5 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,layout",
     url: "https://www.tiktok.com/@procodecg/video/1122334457",
     date: "2024-04-08",
@@ -151,8 +151,8 @@ const dummyTikTokVideos: MediaItem[] = [
   },
   {
     id: "tk6",
-    titleKey: "tiktokvideos.tk6title",
-    descriptionKey: "tiktokvideos.tk6desc",
+    titleKey: "tiktok videos.tk6 title",
+    descriptionKey: "tiktok videos.tk6 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?javascript,array",
     url: "https://www.tiktok.com/@procodecg/video/1122334458",
     date: "2024-04-15",
@@ -160,8 +160,8 @@ const dummyTikTokVideos: MediaItem[] = [
   },
   {
     id: "tk7",
-    titleKey: "tiktokvideos.tk7title",
-    descriptionKey: "tiktokvideos.tk7desc",
+    titleKey: "tiktok videos.tk7 title",
+    descriptionKey: "tiktok videos.tk7 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?react,hooks",
     url: "https://www.tiktok.com/@procodecg/video/1122334459",
     date: "2024-04-22",
@@ -169,8 +169,8 @@ const dummyTikTokVideos: MediaItem[] = [
   },
   {
     id: "tk8",
-    titleKey: "tiktokvideos.tk8title",
-    descriptionKey: "tiktokvideos.tk8desc",
+    titleKey: "tiktok videos.tk8 title",
+    descriptionKey: "tiktok videos.tk8 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?python,automation",
     url: "https://www.tiktok.com/@procodecg/video/1122334460",
     date: "2024-04-29",
@@ -178,8 +178,8 @@ const dummyTikTokVideos: MediaItem[] = [
   },
   {
     id: "tk9",
-    titleKey: "tiktokvideos.tk9title",
-    descriptionKey: "tiktokvideos.tk9desc",
+    titleKey: "tiktok videos.tk9 title",
+    descriptionKey: "tiktok videos.tk9 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?git,github",
     url: "https://www.tiktok.com/@procodecg/video/1122334461",
     date: "2024-05-06",
@@ -222,8 +222,8 @@ const MediaCarousel: React.FC = () => {
     return (
       <section className="py-12 bg-muted/40">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latestvideostitle')}</h2>
-          <p className="text-center text-muted-foreground mt-8 text-lg">{t('novideosavailable')}</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest videos title')}</h2>
+          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no videos available')}</p>
         </div>
       </section>
     );
@@ -232,7 +232,7 @@ const MediaCarousel: React.FC = () => {
   return (
     <section className="py-12 bg-muted/40">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latestvideostitle')}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest videos title')}</h2>
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex -ml-4">
@@ -256,7 +256,7 @@ const MediaCarousel: React.FC = () => {
                     <CardContent className="p-6 pt-0">
                       <p className="text-muted-foreground mb-4 line-clamp-2">{t(item.descriptionKey)}</p>
                       <a href={item.url} target="_blank" rel="noopener noreferrer" className="w-full">
-                        <Button variant="outline" className="w-full">{t('viewvideo')}</Button>
+                        <Button variant="outline" className="w-full">{t('view video')}</Button>
                       </a>
                     </CardContent>
                   </Card>

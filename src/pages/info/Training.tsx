@@ -17,23 +17,23 @@ interface TrainingProgram {
 const dummyTrainingPrograms: TrainingProgram[] = [
   {
     id: "1",
-    titleKey: "trainingdata.training1title",
+    titleKey: "training data.training1 title",
     dates: "10 - 12 Des 2014",
-    descriptionKey: "trainingdata.training1desc",
+    descriptionKey: "training data.training1 desc",
     icon: Gamepad,
   },
   {
     id: "2",
-    titleKey: "trainingdata.training2title",
+    titleKey: "training data.training2 title",
     dates: "18 Maret 2015",
-    descriptionKey: "trainingdata.training2desc",
+    descriptionKey: "training data.training2 desc",
     icon: Smartphone,
   },
   {
     id: "3",
-    titleKey: "trainingdata.training3title",
+    titleKey: "training data.training3 title",
     dates: "7 April 2015",
-    descriptionKey: "trainingdata.training3desc",
+    descriptionKey: "training data.training3 desc",
     icon: Code,
   },
 ];
@@ -44,9 +44,9 @@ const Training: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('trainingprogramtitle')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('training program title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('trainingprogramsubtitle')}
+          {t('training program subtitle')}
         </p>
       </section>
 
@@ -76,7 +76,7 @@ const Training: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('backtohome')}</Button>
+          <Button>{t('back to home')}</Button>
         </Link>
       </div>
     </div>

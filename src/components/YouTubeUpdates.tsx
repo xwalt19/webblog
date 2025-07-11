@@ -25,72 +25,72 @@ interface YouTubeVideo {
 const dummyYouTubeVideos: YouTubeVideo[] = [
   {
     id: "yt1",
-    titleKey: "youtubevideos.yt1title",
-    descriptionKey: "youtubevideos.yt1desc",
+    titleKey: "youtube videos.yt1 title",
+    descriptionKey: "youtube videos.yt1 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?html,coding",
     videoUrl: "https://www.youtube.com/watch?v=M_HTyO_y_0M", 
     date: "2024-01-01", // Changed to YYYY-MM-DD for easier Date object creation
   },
   {
     id: "yt2",
-    titleKey: "youtubevideos.yt2title",
-    descriptionKey: "youtubevideos.yt2desc",
+    titleKey: "youtube videos.yt2 title",
+    descriptionKey: "youtube videos.yt2 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,design",
     videoUrl: "https://www.youtube.com/watch?v=1Rs2ND1ryYc", 
     date: "2024-01-15",
   },
   {
     id: "yt3",
-    titleKey: "youtubevideos.yt3title",
-    descriptionKey: "youtubevideos.yt3desc",
+    titleKey: "youtube videos.yt3 title",
+    descriptionKey: "youtube videos.yt3 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?javascript,web",
     videoUrl: "https://www.youtube.com/watch?v=W6NZfCO5sks", 
     date: "2024-02-01",
   },
   {
     id: "yt4",
-    titleKey: "youtubevideos.yt4title",
-    descriptionKey: "youtubevideos.yt4desc",
+    titleKey: "youtube videos.yt4 title",
+    descriptionKey: "youtube videos.yt4 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?react,frontend",
     videoUrl: "https://www.youtube.com/watch?v=Tn6-PIqc4UM", 
     date: "2024-02-10",
   },
   {
     id: "yt5",
-    titleKey: "youtubevideos.yt5title",
-    descriptionKey: "youtubevideos.yt5desc",
+    titleKey: "youtube videos.yt5 title",
+    descriptionKey: "youtube videos.yt5 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?python,programming",
     videoUrl: "https://www.youtube.com/watch?v=rfscVS0vtbw", 
     date: "2024-02-20",
   },
   {
     id: "yt6",
-    titleKey: "youtubevideos.yt6title",
-    descriptionKey: "youtubevideos.yt6desc",
+    titleKey: "youtube videos.yt6 title",
+    descriptionKey: "youtube videos.yt6 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?tailwind,responsive",
     videoUrl: "https://www.youtube.com/watch?v=z_g_y_2_2_2", 
     date: "2024-03-05",
   },
   {
     id: "yt7",
-    titleKey: "youtubevideos.yt7title",
-    descriptionKey: "youtubevideos.yt7desc",
+    titleKey: "youtube videos.yt7 title",
+    descriptionKey: "youtube videos.yt7 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?algorithm,datastructure",
     videoUrl: "https://www.youtube.com/watch?v=BBpAmxU_NQ8", 
     date: "2024-03-15",
   },
   {
     id: "yt8",
-    titleKey: "youtubevideos.yt8title",
-    descriptionKey: "youtubevideos.yt8desc",
+    titleKey: "youtube videos.yt8 title",
+    descriptionKey: "youtube videos.yt8 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?debugging,javascript",
     videoUrl: "https://www.youtube.com/watch?v=gS_Y4_2_2_2", 
     date: "2024-03-25",
   },
   {
     id: "yt9",
-    titleKey: "youtubevideos.yt9title",
-    descriptionKey: "youtubevideos.yt9desc",
+    titleKey: "youtube videos.yt9 title",
+    descriptionKey: "youtube videos.yt9 desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,animation",
     videoUrl: "https://www.youtube.com/watch?v=z_g_y_2_2_2", 
     date: "2024-04-05",
@@ -114,7 +114,7 @@ const YouTubeUpdates: React.FC = () => {
         await new Promise<void>(resolve => setTimeout(resolve, 1000));
         setVideos(dummyYouTubeVideos);
       } catch (err) {
-        setError(t("failedtoloadvideos"));
+        setError(t("failed to load videos"));
         console.error("Error fetching YouTube videos:", err);
       } finally {
         setLoading(false);
@@ -154,7 +154,7 @@ const YouTubeUpdates: React.FC = () => {
         <div className="flex justify-center mb-8">
           <Input
             type="text"
-            placeholder={t('searchvideo')}
+            placeholder={t('search video')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full md:max-w-lg"
@@ -162,7 +162,7 @@ const YouTubeUpdates: React.FC = () => {
         </div>
 
         {loading ? (
-          <p className="text-center text-muted-foreground">{t('loadingvideos')}</p>
+          <p className="text-center text-muted-foreground">{t('loading videos')}</p>
         ) : error ? (
           <p className="text-center text-destructive">{error}</p>
         ) : currentVideos.length > 0 ? (
@@ -182,14 +182,14 @@ const YouTubeUpdates: React.FC = () => {
                 <CardContent className="p-6 pt-0">
                   <p className="text-muted-foreground mb-4 line-clamp-2">{t(video.descriptionKey)}</p>
                   <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button variant="outline" className="w-full">{t('viewvideo')}</Button>
+                    <Button variant="outline" className="w-full">{t('view video')}</Button>
                   </a>
                 </CardContent>
               </Card>
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground mt-8 text-lg">{t('nomatchingvideos')}</p>
+          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no matching videos')}</p>
         )}
 
         {totalPages > 1 && (

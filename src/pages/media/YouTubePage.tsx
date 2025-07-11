@@ -10,9 +10,9 @@ const YouTubePage: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('youtubepagetitle')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('youtube page title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('youtubepagesubtitle')}
+          {t('youtube page subtitle')}
         </p>
       </section>
 
@@ -20,7 +20,7 @@ const YouTubePage: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('backtohome')}</Button>
+          <Button>{t('back to home')}</Button>
         </Link>
       </div>
     </div>

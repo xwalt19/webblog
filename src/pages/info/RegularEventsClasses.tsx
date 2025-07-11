@@ -40,50 +40,50 @@ const RegularEventsClasses: React.FC = () => {
   const topics: Topic[] = [
     {
       icon: BookOpen,
-      titleKey: "regulareventsclassesdata.topic1title",
-      descriptionKey: "regulareventsclassesdata.topic1desc",
+      titleKey: "regular events classes data.topic1 title",
+      descriptionKey: "regular events classes data.topic1 desc",
     },
     {
       icon: Gamepad,
-      titleKey: "regulareventsclassesdata.topic2title",
-      descriptionKey: "regulareventsclassesdata.topic2desc",
+      titleKey: "regular events classes data.topic2 title",
+      descriptionKey: "regular events classes data.topic2 desc",
     },
     {
       icon: Globe,
-      titleKey: "regulareventsclassesdata.topic3title",
-      descriptionKey: "regulareventsclassesdata.topic3desc",
+      titleKey: "regular events classes data.topic3 title",
+      descriptionKey: "regular events classes data.topic3 desc",
     },
     {
       icon: Smartphone,
-      titleKey: "regulareventsclassesdata.topic4title",
-      descriptionKey: "regulareventsclassesdata.topic4desc",
+      titleKey: "regular events classes data.topic4 title",
+      descriptionKey: "regular events classes data.topic4 desc",
     },
     {
       icon: Lock,
-      titleKey: "regulareventsclassesdata.topic5title",
-      descriptionKey: "regulareventsclassesdata.topic5desc",
+      titleKey: "regular events classes data.topic5 title",
+      descriptionKey: "regular events classes data.topic5 desc",
     },
     {
       icon: Cpu,
-      titleKey: "regulareventsclassesdata.topic6title",
-      descriptionKey: "regulareventsclassesdata.topic6desc",
+      titleKey: "regular events classes data.topic6 title",
+      descriptionKey: "regular events classes data.topic6 desc",
     },
   ];
 
   const runningClasses: RunningClass[] = [
     {
-      nameKey: "regulareventsclassesdata.class1name",
-      scheduleKey: "regulareventsclassesdata.class1schedule",
-      descriptionKey: "regulareventsclassesdata.class1desc",
+      nameKey: "regular events classes data.class1 name",
+      scheduleKey: "regular events classes data.class1 schedule",
+      descriptionKey: "regular events classes data.class1 desc",
       icon: Code,
     },
   ];
 
   const regularEvents: RegularEvent[] = [
     {
-      nameKey: "regulareventsclassesdata.event1name",
-      scheduleKey: "regulareventsclassesdata.event1schedule",
-      descriptionKey: "regulareventsclassesdata.event1desc",
+      nameKey: "regular events classes data.event1 name",
+      scheduleKey: "regular events classes data.event1 schedule",
+      descriptionKey: "regular events classes data.event1 desc",
       icon: Users,
     },
   ];
@@ -91,28 +91,28 @@ const RegularEventsClasses: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('scheduleeventstitle')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('schedule events title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('scheduleeventssubtitle')}
+          {t('schedule events subtitle')}
         </p>
       </section>
 
       <div className="flex justify-center mb-10">
         <Select value={selectedActivityView} onValueChange={setSelectedActivityView}>
           <SelectTrigger className="w-full md:w-[250px]">
-            <SelectValue placeholder={t('selectactivity')} />
+            <SelectValue placeholder={t('select activity')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="allActivities">{t('allactivities')}</SelectItem>
-            <SelectItem value="runningClasses">{t('runningclasses')}</SelectItem>
-            <SelectItem value="regularEvents">{t('regularevents')}</SelectItem>
+            <SelectItem value="allActivities">{t('all activities')}</SelectItem>
+            <SelectItem value="runningClasses">{t('running classes')}</SelectItem>
+            <SelectItem value="regularEvents">{t('regular events')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && (
         <section className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('runningclassessectiontitle')}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('running classes section title')}</h2>
           <div className="grid grid-cols-1 gap-6"> 
             {runningClasses.map((cls, index) => (
               <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
@@ -138,7 +138,7 @@ const RegularEventsClasses: React.FC = () => {
 
       {(selectedActivityView === "allActivities" || selectedActivityView === "regularEvents") && (
         <section className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('regulareventssectiontitle')}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('regular events section title')}</h2>
           <div className="grid grid-cols-1 gap-6">
             {regularEvents.map((event, index) => (
               <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
@@ -162,7 +162,7 @@ const RegularEventsClasses: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('backtohome')}</Button>
+          <Button>{t('back to home')}</Button>
         </Link>
       </div>
     </div>
