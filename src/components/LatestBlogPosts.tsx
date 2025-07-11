@@ -7,75 +7,75 @@ import { useTranslation } from "react-i18next"; // Import useTranslation
 
 interface BlogPost {
   id: string;
-  title: string;
-  excerpt: string;
+  titleKey: string;
+  excerptKey: string;
   date: string;
   image: string;
-  category: string;
-  author: string;
-  tags: string[];
+  categoryKey: string;
+  authorKey: string;
+  tagsKeys: string[];
 }
 
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
-    title: "Yuk Bikin Blog Seru Pertamamu",
-    excerpt: "Panduan langkah demi langkah untuk membuat blog pertama Anda.",
+    titleKey: "blog_posts.post1_title",
+    excerptKey: "blog_posts.post1_excerpt",
     date: "10 Oktober 2023",
     image: "https://source.unsplash.com/random/400x250/?blogging,writing",
-    category: "Dasar HTML",
-    author: "Instruktur A",
-    tags: ["pemula", "blogging"],
+    categoryKey: "blog_posts.post1_category",
+    authorKey: "blog_posts.post1_author",
+    tagsKeys: ["blog_posts.post1_tags.0", "blog_posts.post1_tags.1", "blog_posts.post1_tags.2"],
   },
   {
     id: "2",
-    title: "Rahasia Menulis Cerita Blog yang Bikin Betah Baca",
-    excerpt: "Pelajari cara membuat postingan blog yang menarik perhatian pembaca.",
+    titleKey: "blog_posts.post2_title",
+    excerptKey: "blog_posts.post2_excerpt",
     date: "15 November 2023",
     image: "https://source.unsplash.com/random/400x250/?content,marketing",
-    category: "Styling CSS",
-    author: "Instruktur B",
-    tags: ["menulis", "konten"],
+    categoryKey: "blog_posts.post2_category",
+    authorKey: "blog_posts.post2_author",
+    tagsKeys: ["blog_posts.post2_tags.0", "blog_posts.post2_tags.1", "blog_posts.post2_tags.2"],
   },
   {
     id: "3",
-    title: "Biar Blogmu Gampang Ditemukan di Internet",
-    excerpt: "Strategi dasar SEO untuk meningkatkan visibilitas blog Anda.",
+    titleKey: "blog_posts.post3_title",
+    excerptKey: "blog_posts.post3_excerpt",
     date: "20 Desember 2023",
     image: "https://source.unsplash.com/random/400x250/?seo,optimization",
-    category: "JavaScript Interaktif",
-    author: "Instruktur C",
-    tags: ["SEO", "internet"],
+    categoryKey: "blog_posts.post3_category",
+    authorKey: "blog_posts.post3_author",
+    tagsKeys: ["blog_posts.post3_tags.0", "blog_posts.post3_tags.1", "blog_posts.post3_tags.2"],
   },
   {
     id: "4",
-    title: "Sihir JavaScript Bikin Website Jadi Hidup",
-    excerpt: "Pelajari JavaScript ES6+ untuk interaktivitas web.",
+    titleKey: "blog_posts.post4_title",
+    excerptKey: "blog_posts.post4_excerpt",
     date: "25 Januari 2024",
     image: "https://source.unsplash.com/random/400x250/?javascript,code",
-    category: "JavaScript Interaktif",
-    author: "Instruktur A",
-    tags: ["JavaScript", "web"],
+    categoryKey: "blog_posts.post4_category",
+    authorKey: "blog_posts.post4_author",
+    tagsKeys: ["blog_posts.post4_tags.0", "blog_posts.post4_tags.1", "blog_posts.post4_tags.2"],
   },
   {
     id: "5",
-    title: "Yuk Bikin Aplikasi Keren Pakai React",
-    excerpt: "Panduan lengkap membangun aplikasi web dinamis dengan React.js.",
+    titleKey: "blog_posts.post5_title",
+    excerptKey: "blog_posts.post5_excerpt",
     date: "01 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?reactjs,programming",
-    category: "Proyek Akhir",
-    author: "Instruktur B",
-    tags: ["React", "aplikasi"],
+    categoryKey: "blog_posts.post5_category",
+    authorKey: "blog_posts.post5_author",
+    tagsKeys: ["blog_posts.post5_tags.0", "blog_posts.post5_tags.1", "blog_posts.post5_tags.2"],
   },
   {
     id: "6",
-    title: "Python Si Pintar Pengolah Data",
-    excerpt: "Mulai perjalanan Anda di Data Science dengan Python.",
+    titleKey: "blog_posts.post6_title",
+    excerptKey: "blog_posts.post6_excerpt",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data",
-    category: "Dasar HTML",
-    author: "Instruktur C",
-    tags: ["Python", "data"],
+    categoryKey: "blog_posts.post6_category",
+    authorKey: "blog_posts.post6_author",
+    tagsKeys: ["blog_posts.post6_tags.0", "blog_posts.post6_tags.1", "blog_posts.post6_tags.2"],
   },
 ];
 
@@ -90,22 +90,22 @@ const LatestBlogPosts: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {latestPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">
-              <img src={post.image} alt={post.title} className="w-full h-48 object-cover" />
+              <img src={post.image} alt={t(post.titleKey)} className="w-full h-48 object-cover" />
               <CardHeader className="flex-grow">
                 <div className="flex justify-between items-center mb-2">
-                  <Badge variant="secondary">{post.category}</Badge>
+                  <Badge variant="secondary">{t(post.categoryKey)}</Badge>
                   <span className="text-sm text-muted-foreground">{post.date}</span>
                 </div>
-                <CardTitle className="text-xl">{post.title}</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">By {post.author}</CardDescription>
+                <CardTitle className="text-xl">{t(post.titleKey)}</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">{t('by')} {t(post.authorKey)}</CardDescription>
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {post.tags.map(tag => (
-                    <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                  {post.tagsKeys.map(tagKey => (
+                    <Badge key={tagKey} variant="outline" className="text-xs">{t(tagKey)}</Badge>
                   ))}
                 </div>
               </CardHeader>
               <CardContent className="p-6 pt-0">
-                <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
+                <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerptKey)}</p>
                 <Link to={`/posts/${post.id}`}>
                   <Button variant="outline" className="w-full">{t('read_more')}</Button>
                 </Link>

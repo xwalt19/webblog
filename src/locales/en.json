@@ -199,7 +199,7 @@
     "post8_tags": ["JavaScript", "asynchronous", "web performance"],
     "post9_title": "Become a Code Detective: Find and Fix Errors",
     "post9_excerpt": "Learn to be a reliable detective who can find and fix 'bugs' in your program.",
-    "post9_content": "<p>When we write code, sometimes there are small errors that make our programs not run as desired. These errors are often called 'bugs', like small insects that disrupt the system. Well, our job as programmers is to be code detectives to find and fix these bugs. This process of finding and fixing bugs is called 'debugging', and it is one of the most important skills a developer must have.</p><p>Debugging is like playing a challenging puzzle. We have to look at our code carefully, read error messages (if any), and try to understand where the error is. Sometimes, bugs can be very hidden and require extra patience to find them. We can use various techniques, such as adding 'console.log' to display variable values at certain points, or using advanced debugger tools to trace the code execution flow step by step.</p><p>Although sometimes frustrating, the debugging process is actually very educational. Every time you successfully find and fix a bug, you will learn more about how code works and how to write better code in the future. This will make you a smarter, more thorough programmer, and able to create programs that work perfectly. So, prepare your magnifying glass and let's hunt for bugs!</p>",
+    "post9_content": "<p>When we write code, sometimes there are small errors that make our programs not run as desired. These errors are often called 'bugs', like small insects that disrupt the system. Well, our job as programmers is to be code detectives to find and fix these bugs. This process of finding and fixing bugs is called 'debugging', and it is one of the most important skills a developer must have.</p><p>Although sometimes frustrating, the debugging process is actually very educational. Every time you successfully find and fix a bug, you will learn more about how code works and how to write better code in the future. This will make you a smarter, more thorough programmer, and able to create programs that work perfectly. So, prepare your magnifying glass and let's hunt for bugs!</p>",
     "post9_category": "Final Project",
     "post9_author": "Instructor C",
     "post9_tags": ["debugging", "programming", "error handling"]
@@ -400,7 +400,6 @@
     "yt6_desc": "Learn how to design websites that look good on all devices.",
     "yt7_title": "Introduction to Algorithms and Data Structures",
     "yt7_desc": "Understand the basic concepts of algorithms and data structures in programming.",
-    "yt8_title": "Tips and Tricks for Debugging JavaScript Code",
     "yt8_desc": "Effective ways to find and fix errors in your JavaScript code.",
     "yt9_title": "Creating Simple Animations with CSS",
     "yt9_desc": "Add attractive animation effects to your website using CSS."
@@ -438,5 +437,20 @@
     "c3_desc": "Build dynamic web applications with React.js.",
     "c4_title": "Python Basics for Data Science",
     "c4_desc": "Start your journey in Data Science with Python."
-  }
+  },
+  "month_names": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "by": "By"
 }

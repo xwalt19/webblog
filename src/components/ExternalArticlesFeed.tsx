@@ -7,45 +7,45 @@ import { useTranslation } from "react-i18next"; // Import useTranslation
 
 interface ExternalArticle {
   id: string;
-  title: string;
-  source: string;
+  titleKey: string;
+  sourceKey: string;
   date: string;
   url: string;
-  excerpt: string;
+  excerptKey: string;
 }
 
 const dummyExternalArticles: ExternalArticle[] = [
   {
     id: "ea1",
-    title: "Tren Teknologi 2024: AI dan Machine Learning Mendominasi",
-    source: "TechDaily",
+    titleKey: "external_articles.ea1_title",
+    sourceKey: "external_articles.ea1_source",
     date: "10 Mei 2024",
     url: "https://www.example.com/tech-trends-2024",
-    excerpt: "Analisis mendalam tentang bagaimana kecerdasan buatan dan pembelajaran mesin akan membentuk masa depan teknologi.",
+    excerptKey: "external_articles.ea1_desc",
   },
   {
     id: "ea2",
-    title: "Masa Depan Pendidikan Coding untuk Anak-anak",
-    source: "EduTech Insights",
+    titleKey: "external_articles.ea2_title",
+    sourceKey: "external_articles.ea2_source",
     date: "05 Mei 2024",
     url: "https://www.example.com/coding-for-kids-future",
-    excerpt: "Diskusi tentang pentingnya literasi digital dan coding sejak usia dini.",
+    excerptKey: "external_articles.ea2_desc",
   },
   {
     id: "ea3",
-    title: "Panduan Lengkap Memulai Karir di Bidang Data Science",
-    source: "DataPro Blog",
+    titleKey: "external_articles.ea3_title",
+    sourceKey: "external_articles.ea3_source",
     date: "01 Mei 2024",
     url: "https://www.example.com/data-science-career-guide",
-    excerpt: "Langkah-langkah praktis untuk pemula yang ingin berkarir sebagai ilmuwan data.",
+    excerptKey: "external_articles.ea3_desc",
   },
   {
     id: "ea4",
-    title: "Keamanan Siber: Ancaman Terbaru dan Cara Melindungi Diri",
-    source: "CyberGuard News",
+    titleKey: "external_articles.ea4_title",
+    sourceKey: "external_articles.ea4_source",
     date: "28 April 2024",
     url: "https://www.example.com/cybersecurity-threats",
-    excerpt: "Pembaruan tentang ancaman siber terkini dan tips untuk menjaga keamanan online Anda.",
+    excerptKey: "external_articles.ea4_desc",
   },
 ];
 
@@ -62,14 +62,14 @@ const ExternalArticlesFeed: React.FC = () => {
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-2">
                   <Newspaper className="text-primary" size={28} />
-                  <CardTitle className="text-xl font-semibold">{article.title}</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t(article.titleKey)}</CardTitle>
                 </div>
                 <CardDescription className="text-sm text-muted-foreground">
-                  {article.source} - {article.date}
+                  {t(article.sourceKey)} - {article.date}
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow p-6 pt-0">
-                <p className="text-muted-foreground mb-4 line-clamp-2">{article.excerpt}</p>
+                <p className="text-muted-foreground mb-4 line-clamp-2">{t(article.excerptKey)}</p>
                 <a href={article.url} target="_blank" rel="noopener noreferrer" className="w-full">
                   <Button variant="outline" className="w-full">{t('read_article')}</Button>
                 </a>

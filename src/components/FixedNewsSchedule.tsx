@@ -6,8 +6,8 @@ import { useTranslation } from "react-i18next"; // Import useTranslation
 interface FixedItem {
   id: string;
   type: "news" | "schedule";
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   date?: string;
   time?: string;
 }
@@ -16,31 +16,31 @@ const dummyFixedItems: FixedItem[] = [
   {
     id: "f1",
     type: "schedule",
-    title: "Pendaftaran Kelas Coding Angkatan Baru Dibuka!",
-    description: "Jangan lewatkan kesempatan untuk bergabung dengan kelas coding kami. Daftar sekarang!",
+    titleKey: "fixed_items.f1_title",
+    descriptionKey: "fixed_items.f1_desc",
     date: "1 April 2024",
     time: "09:00 WIB",
   },
   {
     id: "f2",
     type: "news",
-    title: "ProCodeCG Meraih Penghargaan Inovasi Pendidikan",
-    description: "Kami bangga mengumumkan ProCodeCG diakui atas kontribusinya dalam inovasi pendidikan teknologi.",
+    titleKey: "fixed_items.f2_title",
+    descriptionKey: "fixed_items.f2_desc",
     date: "10 Maret 2024",
   },
   {
     id: "f3",
     type: "schedule",
-    title: "Workshop Gratis: Pengantar AI untuk Anak",
-    description: "Ikuti workshop interaktif kami untuk mengenal dasar-dasar Kecerdasan Buatan.",
+    titleKey: "fixed_items.f3_title",
+    descriptionKey: "fixed_items.f3_desc",
     date: "20 April 2024",
     time: "14:00 WIB",
   },
   {
     id: "f4",
     type: "news",
-    title: "Kolaborasi Baru dengan Tech Startup Lokal",
-    description: "ProCodeCG menjalin kemitraan strategis untuk memperluas jangkauan program kami.",
+    titleKey: "fixed_items.f4_title",
+    descriptionKey: "fixed_items.f4_desc",
     date: "1 April 2024",
   },
 ];
@@ -62,7 +62,7 @@ const FixedNewsSchedule: React.FC = () => {
                   ) : (
                     <BellRing className="text-yellow-500" size={28} />
                   )}
-                  <CardTitle className="text-xl font-semibold">{item.title}</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t(item.titleKey)}</CardTitle>
                 </div>
                 {(item.date || item.time) && (
                   <CardDescription className="text-sm text-muted-foreground">
@@ -71,7 +71,7 @@ const FixedNewsSchedule: React.FC = () => {
                 )}
               </CardHeader>
               <CardContent className="flex-grow p-6 pt-0">
-                <p className="text-muted-foreground">{item.description}</p>
+                <p className="text-muted-foreground">{t(item.descriptionKey)}</p>
               </CardContent>
             </Card>
           ))}

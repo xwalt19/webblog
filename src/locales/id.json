@@ -199,7 +199,7 @@
     "post8_tags": ["JavaScript", "asynchronous", "web performance"],
     "post9_title": "Jadi Detektif Kode Cari dan Perbaiki Kesalahan",
     "post9_excerpt": "Belajar jadi detektif handal yang bisa menemukan dan memperbaiki 'bug' di programmu",
-    "post9_content": "<p>Saat kita menulis kode, kadang ada saja kesalahan kecil yang membuat program kita tidak berjalan sesuai keinginan. Kesalahan ini sering disebut \"bug\", seperti serangga kecil yang mengganggu sistem. Nah, tugas kita sebagai programmer adalah menjadi detektif kode untuk menemukan dan memperbaiki bug itu. Proses mencari dan memperbaiki bug ini namanya \"debugging\", dan ini adalah salah satu keterampilan paling penting yang harus dimiliki seorang pengembang.</p><p>Debugging itu seperti bermain teka-teki yang menantang. Kita harus melihat kode kita dengan teliti, membaca pesan kesalahan (jika ada), dan mencoba memahami di mana letak kesalahannya. Kadang, bug bisa sangat tersembunyi dan butuh kesabaran ekstra untuk menemukannya. Kita bisa menggunakan berbagai teknik, seperti menambahkan \"console.log\" untuk menampilkan nilai variabel di titik tertentu, atau menggunakan alat debugger yang canggih untuk melacak alur eksekusi kode langkah demi langkah.</p><p>Meskipun terkadang frustrasi, proses debugging sebenarnya sangat mendidik. Setiap kali kamu berhasil menemukan dan memperbaiki bug, kamu akan belajar lebih banyak tentang bagaimana kode bekerja dan bagaimana cara menulis kode yang lebih baik di masa depan. Ini akan membuatmu menjadi programmer yang lebih pintar, lebih teliti, dan mampu membuat program yang bekerja dengan sempurna. Jadi, siapkan kaca pembesarmu dan mari berburu bug.</p>",
+    "post9_content": "<p>Saat kita menulis kode, kadang ada saja kesalahan kecil yang membuat program kita tidak berjalan sesuai keinginan. Kesalahan ini sering disebut \"bug\", seperti serangga kecil yang mengganggu sistem. Well, tugas kita sebagai programmer adalah menjadi detektif kode untuk menemukan dan memperbaiki bug itu. Proses mencari dan memperbaiki bug ini namanya \"debugging\", dan ini adalah salah satu keterampilan paling penting yang harus dimiliki seorang pengembang.</p><p>Meskipun terkadang frustrasi, proses debugging sebenarnya sangat mendidik. Setiap kali kamu berhasil menemukan dan memperbaiki bug, kamu akan belajar lebih banyak tentang bagaimana kode bekerja dan bagaimana cara menulis kode yang lebih baik di masa depan. Ini akan membuatmu menjadi programmer yang lebih pintar, lebih teliti, dan mampu membuat program yang bekerja dengan sempurna. Jadi, siapkan kaca pembesarmu dan mari berburu bug.</p>",
     "post9_category": "Proyek Akhir",
     "post9_author": "Instruktur C",
     "post9_tags": ["debugging", "pemrograman", "error handling"]
@@ -438,5 +438,20 @@
     "c3_desc": "Bangun aplikasi web dinamis dengan React.js.",
     "c4_title": "Dasar-dasar Python untuk Data Science",
     "c4_desc": "Mulai perjalanan Anda di Data Science dengan Python."
-  }
+  },
+  "month_names": {
+    "january": "Januari",
+    "february": "Februari",
+    "march": "Maret",
+    "april": "April",
+    "may": "Mei",
+    "june": "Juni",
+    "july": "Juli",
+    "august": "Agustus",
+    "september": "September",
+    "october": "Oktober",
+    "november": "November",
+    "december": "Desember"
+  },
+  "by": "Oleh"
 }

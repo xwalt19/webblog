@@ -6,34 +6,34 @@ import { useTranslation } from "react-i18next"; // Import useTranslation
 
 interface Course {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   image: string;
 }
 
 const dummyCourses: Course[] = [
   {
     id: "c1",
-    title: "Belajar HTML & CSS dari Dasar",
-    description: "Kuasai dasar-dasar pengembangan web dengan HTML dan CSS.",
+    titleKey: "featured_courses.c1_title",
+    descriptionKey: "featured_courses.c1_desc",
     image: "/images/html-css-course.jpg",
   },
   {
     id: "c2",
-    title: "Pengantar JavaScript Modern",
-    description: "Pelajari JavaScript ES6+ untuk interaktivitas web.",
+    titleKey: "featured_courses.c2_title",
+    descriptionKey: "featured_courses.c2_desc",
     image: "/images/javascript-course.jpg",
   },
   {
     id: "c3",
-    title: "React.js untuk Pemula",
-    description: "Bangun aplikasi web dinamis dengan React.js.",
+    titleKey: "featured_courses.c3_title",
+    descriptionKey: "featured_courses.c3_desc",
     image: "/images/react-course.jpg",
   },
   {
     id: "c4",
-    title: "Dasar-dasar Python untuk Data Science",
-    description: "Mulai perjalanan Anda di Data Science dengan Python.",
+    titleKey: "featured_courses.c4_title",
+    descriptionKey: "featured_courses.c4_desc",
     image: "/images/python-course.jpg",
   },
 ];
@@ -48,10 +48,10 @@ const FeaturedCourses: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {dummyCourses.slice(0, 3).map((course) => (
             <Card key={course.id} className="flex flex-col overflow-hidden">
-              <img src={course.image} alt={course.title} className="w-full h-48 object-cover" />
+              <img src={course.image} alt={t(course.titleKey)} className="w-full h-48 object-cover" />
               <CardHeader className="flex-grow">
-                <CardTitle className="text-xl">{course.title}</CardTitle>
-                <CardDescription>{course.description}</CardDescription>
+                <CardTitle className="text-xl">{t(course.titleKey)}</CardTitle>
+                <CardDescription>{t(course.descriptionKey)}</CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <Link to={`/courses/${course.id}`}>
