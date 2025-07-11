@@ -25,72 +25,72 @@ interface TikTokVideo {
 const dummyTikTokVideos: TikTokVideo[] = [
   {
     id: "tk1",
-    titleKey: "tiktok_videos.tk1_title",
-    descriptionKey: "tiktok_videos.tk1_desc",
+    titleKey: "tiktokvideos.tk1title",
+    descriptionKey: "tiktokvideos.tk1desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?coding,tips",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1234567890",
     date: "2024-03-10", // Changed to YYYY-MM-DD for easier Date object creation
   },
   {
     id: "tk2",
-    titleKey: "tiktok_videos.tk2_title",
-    descriptionKey: "tiktok_videos.tk2_desc",
+    titleKey: "tiktokvideos.tk2title",
+    descriptionKey: "tiktokvideos.tk2desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?challenge,code",
     videoUrl: "https://www.tiktok.com/@procodecg/video/0987654321",
     date: "2024-03-18",
   },
   {
     id: "tk3",
-    titleKey: "tiktok_videos.tk3_title",
-    descriptionKey: "tiktok_videos.tk3_desc",
+    titleKey: "tiktokvideos.tk3title",
+    descriptionKey: "tiktokvideos.tk3desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?kids,coding",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334455",
     date: "2024-03-25",
   },
   {
     id: "tk4",
-    titleKey: "tiktok_videos.tk4_title",
-    descriptionKey: "tiktok_videos.tk4_desc",
+    titleKey: "tiktokvideos.tk4title",
+    descriptionKey: "tiktokvideos.tk4desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?html,webdev",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334456",
     date: "2024-04-01",
   },
   {
     id: "tk5",
-    titleKey: "tiktok_videos.tk5_title",
-    descriptionKey: "tiktok_videos.tk5_desc",
+    titleKey: "tiktokvideos.tk5title",
+    descriptionKey: "tiktokvideos.tk5desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,layout",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334457",
     date: "2024-04-08",
   },
   {
     id: "tk6",
-    titleKey: "tiktok_videos.tk6_title",
-    descriptionKey: "tiktok_videos.tk6_desc",
+    titleKey: "tiktokvideos.tk6title",
+    descriptionKey: "tiktokvideos.tk6desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?javascript,array",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334458",
     date: "2024-04-15",
   },
   {
     id: "tk7",
-    titleKey: "tiktok_videos.tk7_title",
-    descriptionKey: "tiktok_videos.tk7_desc",
+    titleKey: "tiktokvideos.tk7title",
+    descriptionKey: "tiktokvideos.tk7desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?react,hooks",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334459",
     date: "2024-04-22",
   },
   {
     id: "tk8",
-    titleKey: "tiktok_videos.tk8_title",
-    descriptionKey: "tiktok_videos.tk8_desc",
+    titleKey: "tiktokvideos.tk8title",
+    descriptionKey: "tiktokvideos.tk8desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?python,automation",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334460",
     date: "2024-04-29",
   },
   {
     id: "tk9",
-    titleKey: "tiktok_videos.tk9_title",
-    descriptionKey: "tiktok_videos.tk9_desc",
+    titleKey: "tiktokvideos.tk9title",
+    descriptionKey: "tiktokvideos.tk9desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?git,github",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334461",
     date: "2024-05-06",
@@ -114,7 +114,7 @@ const TikTokUpdates: React.FC = () => {
         await new Promise<void>(resolve => setTimeout(resolve, 1000));
         setVideos(dummyTikTokVideos);
       } catch (err) {
-        setError(t("failed_to_load_videos"));
+        setError(t("failedtoloadvideos"));
         console.error("Error fetching TikTok videos:", err);
       } finally {
         setLoading(false);
@@ -154,7 +154,7 @@ const TikTokUpdates: React.FC = () => {
         <div className="flex justify-center mb-8">
           <Input
             type="text"
-            placeholder={t('search_video')}
+            placeholder={t('searchvideo')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full md:max-w-lg"
@@ -162,7 +162,7 @@ const TikTokUpdates: React.FC = () => {
         </div>
 
         {loading ? (
-          <p className="text-center text-muted-foreground">{t('loading_videos')}</p>
+          <p className="text-center text-muted-foreground">{t('loadingvideos')}</p>
         ) : error ? (
           <p className="text-center text-destructive">{error}</p>
         ) : currentVideos.length > 0 ? (
@@ -182,14 +182,14 @@ const TikTokUpdates: React.FC = () => {
                 <CardContent className="p-6 pt-0">
                   <p className="text-muted-foreground mb-4 line-clamp-2">{t(video.descriptionKey)}</p>
                   <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button variant="outline" className="w-full">{t('view_video')}</Button>
+                    <Button variant="outline" className="w-full">{t('viewvideo')}</Button>
                   </a>
                 </CardContent>
               </Card>
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no_matching_videos')}</p>
+          <p className="text-center text-muted-foreground mt-8 text-lg">{t('nomatchingvideos')}</p>
         )}
 
         {totalPages > 1 && (

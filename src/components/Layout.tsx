@@ -69,7 +69,7 @@ const Layout: React.FC = () => {
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('programs')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('programs_desc')}
+                            {t('programsdesc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -82,9 +82,9 @@ const Layout: React.FC = () => {
                             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">{t('regular_events_classes')}</div>
+                          <div className="text-sm font-medium leading-none text-foreground">{t('regulareventsclasses')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('regular_events_classes_desc')}
+                            {t('regulareventsclassesdesc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -99,7 +99,7 @@ const Layout: React.FC = () => {
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('camps')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('camps_desc')}
+                            {t('campsdesc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -114,7 +114,7 @@ const Layout: React.FC = () => {
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('training')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('training_desc')}
+                            {t('trainingdesc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -137,7 +137,7 @@ const Layout: React.FC = () => {
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('youtube')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('youtube_desc')}
+                            {t('youtubedesc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -152,7 +152,7 @@ const Layout: React.FC = () => {
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('tiktok')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('tiktok_desc')}
+                            {t('tiktokdesc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -172,9 +172,9 @@ const Layout: React.FC = () => {
                             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           )}
                         >
-                          <div className="text-sm font-medium leading-none text-foreground">{t('contact_us')}</div>
+                          <div className="text-sm font-medium leading-none text-foreground">{t('contactus')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('contact_us_desc')}
+                            {t('contactusdesc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -189,7 +189,7 @@ const Layout: React.FC = () => {
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('partners')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('partners_desc')}
+                            {t('partnersdesc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -204,7 +204,7 @@ const Layout: React.FC = () => {
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('calendar')}</div>
                           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('calendar_desc')}
+                            {t('calendardesc')}
                           </p>
                         </Link>
                       </NavigationMenuLink>
@@ -231,7 +231,7 @@ const Layout: React.FC = () => {
       {/* Footer */}
       <footer className="bg-footer py-4 text-center text-sm text-white border-t border-border">
         <div className="container mx-auto px-4">
-          {t('footer_text')}
+          {t('footertext')}
         </div>
       </footer>
     </div>

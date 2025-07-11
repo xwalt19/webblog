@@ -50,7 +50,7 @@ const ContactForm: React.FC = () => {
     // This is where you would typically send the form data to a backend API.
     // For now, we'll just log the values and show a toast message.
     console.log("Form submitted with values:", values);
-    toast.success(t("contact_form.submission_success"));
+    toast.success(t("contactform.submissionsuccess"));
     form.reset(); // Reset the form after successful submission
   }
 
@@ -62,9 +62,9 @@ const ContactForm: React.FC = () => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("contact_form.name_label")}</FormLabel>
+              <FormLabel>{t("contactform.namelabel")}</FormLabel>
               <FormControl>
-                <Input placeholder={t("contact_form.name_placeholder")} {...field} />
+                <Input placeholder={t("contactform.nameplaceholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -75,9 +75,9 @@ const ContactForm: React.FC = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("contact_form.email_label")}</FormLabel>
+              <FormLabel>{t("contactform.emaillabel")}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder={t("contact_form.email_placeholder")} {...field} />
+                <Input type="email" placeholder={t("contactform.emailplaceholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -88,10 +88,10 @@ const ContactForm: React.FC = () => {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("contact_form.message_label")}</FormLabel>
+              <FormLabel>{t("contactform.messagelabel")}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder={t("contact_form.message_placeholder")}
+                  placeholder={t("contactform.messageplaceholder")}
                   className="min-h-[120px]"
                   {...field}
                 />
@@ -101,7 +101,7 @@ const ContactForm: React.FC = () => {
           )}
         />
         <Button type="submit" className="w-full">
-          {t("contact_form.submit_button")}
+          {t("contactform.submitbutton")}
         </Button>
       </form>
     </Form>

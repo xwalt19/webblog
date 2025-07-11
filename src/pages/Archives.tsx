@@ -38,120 +38,120 @@ interface BlogPost {
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
-    titleKey: "archive_posts.archive1_title",
-    excerptKey: "archive_posts.archive1_excerpt",
+    titleKey: "archiveposts.archive1title",
+    excerptKey: "archiveposts.archive1excerpt",
     date: "10 Oktober 2023",
     image: "https://source.unsplash.com/random/400x250/?html,css,project",
-    categoryKey: "archive_posts.archive1_category",
-    authorKey: "archive_posts.archive1_author",
+    categoryKey: "archiveposts.archive1category",
+    authorKey: "archiveposts.archive1author",
     year: 2023,
     month: 10,
     pdfLink: "https://docs.google.com/document/d/1_Galeri_Proyek_HTML_CSS/edit?usp=sharing",
-    tagsKeys: ["archive_posts.archive1_tags.0", "archive_posts.archive1_tags.1", "archive_posts.archive1_tags.2", "archive_posts.archive1_tags.3"],
+    tagsKeys: ["archiveposts.archive1tags0", "archiveposts.archive1tags1", "archiveposts.archive1tags2", "archiveposts.archive1tags3"],
   },
   {
     id: "2",
-    titleKey: "archive_posts.archive2_title",
-    excerptKey: "archive_posts.archive2_excerpt",
+    titleKey: "archiveposts.archive2title",
+    excerptKey: "archiveposts.archive2excerpt",
     date: "15 November 2023",
     image: "https://source.unsplash.com/random/400x250/?javascript,learning,fun",
-    categoryKey: "archive_posts.archive2_category",
-    authorKey: "archive_posts.archive2_author",
+    categoryKey: "archiveposts.archive2category",
+    authorKey: "archiveposts.archive2author",
     year: 2023,
     month: 11,
     pdfLink: "https://docs.google.com/document/d/1_Momen_Seru_JavaScript/edit?usp=sharing",
-    tagsKeys: ["archive_posts.archive2_tags.0", "archive_posts.archive2_tags.1", "archive_posts.archive2_tags.2", "archive_posts.archive2_tags.3"],
+    tagsKeys: ["archiveposts.archive2tags0", "archiveposts.archive2tags1", "archiveposts.archive2tags2", "archiveposts.archive2tags3"],
   },
   {
     id: "3",
-    titleKey: "archive_posts.archive3_title",
-    excerptKey: "archive_posts.archive3_excerpt",
+    titleKey: "archiveposts.archive3title",
+    excerptKey: "archiveposts.archive3excerpt",
     date: "20 Desember 2023",
     image: "https://source.unsplash.com/random/400x250/?reactjs,app,showcase",
-    categoryKey: "archive_posts.archive3_category",
-    authorKey: "archive_posts.archive3_author",
+    categoryKey: "archiveposts.archive3category",
+    authorKey: "archiveposts.archive3author",
     year: 2023,
     month: 12,
     pdfLink: "https://docs.google.com/document/d/1_Pameran_Aplikasi_React/edit?usp=sharing",
-    tagsKeys: ["archive_posts.archive3_tags.0", "archive_posts.archive3_tags.1", "archive_posts.archive3_tags.2", "archive_posts.archive3_tags.3"],
+    tagsKeys: ["archiveposts.archive3tags0", "archiveposts.archive3tags1", "archiveposts.archive3tags2", "archiveposts.archive3tags3"],
   },
   {
     id: "4",
-    titleKey: "archive_posts.archive4_title",
-    excerptKey: "archive_posts.archive4_excerpt",
+    titleKey: "archiveposts.archive4title",
+    excerptKey: "archiveposts.archive4excerpt",
     date: "25 Januari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data,reflection",
-    categoryKey: "archive_posts.archive4_category",
-    authorKey: "archive_posts.archive4_author",
+    categoryKey: "archiveposts.archive4category",
+    authorKey: "archiveposts.archive4author",
     year: 2024,
     month: 1,
     pdfLink: "https://docs.google.com/document/d/1_Refleksi_Python_Data_Science/edit?usp=sharing",
-    tagsKeys: ["archive_posts.archive4_tags.0", "archive_posts.archive4_tags.1", "archive_posts.archive4_tags.2", "archive_posts.archive4_tags.3"],
+    tagsKeys: ["archiveposts.archive4tags0", "archiveposts.archive4tags1", "archiveposts.archive4tags2", "archiveposts.archive4tags3"],
   },
   {
     id: "5",
-    titleKey: "archive_posts.archive5_title",
-    excerptKey: "archive_posts.archive5_excerpt",
+    titleKey: "archiveposts.archive5title",
+    excerptKey: "archiveposts.archive5excerpt",
     date: "01 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?tailwind,uiux,workshop",
-    categoryKey: "archive_posts.archive5_category",
-    authorKey: "archive_posts.archive5_author",
+    categoryKey: "archiveposts.archive5category",
+    authorKey: "archiveposts.archive5author",
     year: 2024,
     month: 2,
     pdfLink: "https://docs.google.com/document/d/1_Workshop_UIUX_Tailwind/edit?usp=sharing",
-    tagsKeys: ["archive_posts.archive5_tags.0", "archive_posts.archive5_tags.1", "archive_posts.archive5_tags.2", "archive_posts.archive5_tags.3"],
+    tagsKeys: ["archiveposts.archive5tags0", "archiveposts.archive5tags1", "archiveposts.archive5tags2", "archiveposts.archive5tags3"],
   },
   {
     id: "6",
-    titleKey: "archive_posts.archive6_title",
-    excerptKey: "archive_posts.archive6_excerpt",
+    titleKey: "archiveposts.archive6title",
+    excerptKey: "archiveposts.archive6excerpt",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?debugging,problemsolving",
-    categoryKey: "archive_posts.archive6_category",
-    authorKey: "archive_posts.archive6_author",
+    categoryKey: "archiveposts.archive6category",
+    authorKey: "archiveposts.archive6author",
     year: 2024,
     month: 2,
     pdfLink: "https://docs.google.com/document/d/1_Debugging_Kode/edit?usp=sharing",
-    tagsKeys: ["archive_posts.archive6_tags.0", "archive_posts.archive6_tags.1", "archive_posts.archive6_tags.2", "archive_posts.archive6_tags.3"],
+    tagsKeys: ["archiveposts.archive6tags0", "archiveposts.archive6tags1", "archiveposts.archive6tags2", "archiveposts.archive6tags3"],
   },
   {
     id: "7",
-    titleKey: "archive_posts.archive7_title",
-    excerptKey: "archive_posts.archive7_excerpt",
+    titleKey: "archiveposts.archive7title",
+    excerptKey: "archiveposts.archive7excerpt",
     date: "05 Maret 2024",
     image: "https://source.unsplash.com/random/400x250/?startup,industry,visit",
-    categoryKey: "archive_posts.archive7_category",
-    authorKey: "archive_posts.archive7_author",
+    categoryKey: "archiveposts.archive7category",
+    authorKey: "archiveposts.archive7author",
     year: 2024,
     month: 3,
     pdfLink: "https://docs.google.com/document/d/1_Kunjungan_Industri_Startup/edit?usp=sharing",
-    tagsKeys: ["archive_posts.archive7_tags.0", "archive_posts.archive7_tags.1", "archive_posts.archive7_tags.2", "archive_posts.archive7_tags.3"],
+    tagsKeys: ["archiveposts.archive7tags0", "archiveposts.archive7tags1", "archiveposts.archive7tags2", "archiveposts.archive7tags3"],
   },
   {
     id: "8",
-    titleKey: "archive_posts.archive8_title",
-    excerptKey: "archive_posts.archive8_excerpt",
+    titleKey: "archiveposts.archive8title",
+    excerptKey: "archiveposts.archive8excerpt",
     date: "12 April 2024",
     image: "https://source.unsplash.com/random/400x250/?hackathon,coding,challenge",
-    categoryKey: "archive_posts.archive8_category",
-    authorKey: "archive_posts.archive8_author",
+    categoryKey: "archiveposts.archive8category",
+    authorKey: "archiveposts.archive8author",
     year: 2024,
     month: 4,
     pdfLink: "https://docs.google.com/document/d/1_Hackathon_Mini_Coding/edit?usp=sharing",
-    tagsKeys: ["archive_posts.archive8_tags.0", "archive_posts.archive8_tags.1", "archive_posts.archive8_tags.2", "archive_posts.archive8_tags.3"],
+    tagsKeys: ["archiveposts.archive8tags0", "archiveposts.archive8tags1", "archiveposts.archive8tags2", "archiveposts.archive8tags3"],
   },
   {
     id: "9",
-    titleKey: "archive_posts.archive9_title",
-    excerptKey: "archive_posts.archive9_excerpt",
+    titleKey: "archiveposts.archive9title",
+    excerptKey: "archiveposts.archive9excerpt",
     date: "20 Mei 2025",
     image: "https://source.unsplash.com/random/400x250/?graduation,certificate,celebration",
-    categoryKey: "archive_posts.archive9_category",
-    authorKey: "archive_posts.archive9_author",
+    categoryKey: "archiveposts.archive9category",
+    authorKey: "archiveposts.archive9author",
     year: 2025,
     month: 5,
     pdfLink: "https://docs.google.com/document/d/1_Sertifikasi_Kelulusan/edit?usp=sharing",
-    tagsKeys: ["archive_posts.archive9_tags.0", "archive_posts.archive9_tags.1", "archive_posts.archive9_tags.2", "archive_posts.archive9_tags.3"],
+    tagsKeys: ["archiveposts.archive9tags0", "archiveposts.archive9tags1", "archiveposts.archive9tags2", "archiveposts.archive9tags3"],
   },
 ];
 
@@ -182,8 +182,8 @@ const Archives: React.FC = () => {
   }, [i18n.language]); // Tambahkan i18n.language sebagai dependensi
 
   const monthNames = useMemo(() => [
-    "", t("month_names.january"), t("month_names.february"), t("month_names.march"), t("month_names.april"), t("month_names.may"), t("month_names.june"),
-    t("month_names.july"), t("month_names.august"), t("month_names.september"), t("month_names.october"), t("month_names.november"), t("month_names.december")
+    "", t("monthnames.january"), t("monthnames.february"), t("monthnames.march"), t("monthnames.april"), t("monthnames.may"), t("monthnames.june"),
+    t("monthnames.july"), t("monthnames.august"), t("monthnames.september"), t("monthnames.october"), t("monthnames.november"), t("monthnames.december")
   ], [i18n.language, t]); // Tambahkan i18n.language dan t sebagai dependensi
 
   const allPeriods: string[] = useMemo(() => {
@@ -201,7 +201,7 @@ const Archives: React.FC = () => {
   }, [i18n.language]); // Tambahkan i18n.language sebagai dependensi
 
   const getPeriodDisplayName = (period: string) => {
-    if (period === "all") return t("all_time"); // Terjemahkan kunci "all"
+    if (period === "all") return t("alltime"); // Terjemahkan kunci "all"
     const [year, month] = period.split('-').map(Number);
     return `${year} - ${monthNames[month]}`;
   };
@@ -244,13 +244,13 @@ const Archives: React.FC = () => {
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">{t('archives')}</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
-        {t('archives_page_subtitle')}
+        {t('archivespagesubtitle')}
       </p>
 
       <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-10 flex-wrap">
         <Input
           type="text"
-          placeholder={t('search_post')}
+          placeholder={t('searchpost')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full md:max-w-xs"
@@ -277,7 +277,7 @@ const Archives: React.FC = () => {
           onValueChange={(value) => setSelectedPeriod(value)}
         >
           <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder={t('select_period')} />
+            <SelectValue placeholder={t('selectperiod')} />
           </SelectTrigger>
           <SelectContent>
             {allPeriods.map(period => (
@@ -311,11 +311,11 @@ const Archives: React.FC = () => {
                 <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerptKey)}</p>
                 {post.pdfLink ? (
                   <a href={post.pdfLink} target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button variant="outline" className="w-full">{t('read_more_pdf')}</Button>
+                    <Button variant="outline" className="w-full">{t('readmorepdf')}</Button>
                   </a>
                 ) : (
                   <Link to={`/posts/${post.id}`}>
-                    <Button variant="outline" className="w-full">{t('read_more')}</Button>
+                    <Button variant="outline" className="w-full">{t('readmore')}</Button>
                   </Link>
                 )}
               </CardContent>
@@ -323,7 +323,7 @@ const Archives: React.FC = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no_matching_posts')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('nomatchingposts')}</p>
       )}
 
       {totalPages > 1 && (

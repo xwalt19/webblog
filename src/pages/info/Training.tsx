@@ -17,23 +17,23 @@ interface TrainingProgram {
 const dummyTrainingPrograms: TrainingProgram[] = [
   {
     id: "1",
-    titleKey: "training_data.training1_title",
+    titleKey: "trainingdata.training1title",
     dates: "10 - 12 Des 2014",
-    descriptionKey: "training_data.training1_desc",
+    descriptionKey: "trainingdata.training1desc",
     icon: Gamepad,
   },
   {
     id: "2",
-    titleKey: "training_data.training2_title",
+    titleKey: "trainingdata.training2title",
     dates: "18 Maret 2015",
-    descriptionKey: "training_data.training2_desc",
+    descriptionKey: "trainingdata.training2desc",
     icon: Smartphone,
   },
   {
     id: "3",
-    titleKey: "training_data.training3_title",
+    titleKey: "trainingdata.training3title",
     dates: "7 April 2015",
-    descriptionKey: "training_data.training3_desc",
+    descriptionKey: "trainingdata.training3desc",
     icon: Code,
   },
 ];
@@ -44,9 +44,9 @@ const Training: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('training_program_title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('trainingprogramtitle')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('training_program_subtitle')}
+          {t('trainingprogramsubtitle')}
         </p>
       </section>
 
@@ -76,7 +76,7 @@ const Training: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back_to_home')}</Button>
+          <Button>{t('backtohome')}</Button>
         </Link>
       </div>
     </div>

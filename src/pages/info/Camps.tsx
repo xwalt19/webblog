@@ -18,9 +18,9 @@ interface Camp {
 const dummyCamps: Camp[] = [
   {
     id: "1",
-    titleKey: "camps_data.camp1_title",
+    titleKey: "campsdata.camp1title",
     dates: "29 – 30 Des 2014",
-    descriptionKey: "camps_data.camp1_desc",
+    descriptionKey: "campsdata.camp1desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -29,9 +29,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "2",
-    titleKey: "camps_data.camp2_title",
+    titleKey: "campsdata.camp2title",
     dates: "28 – 30 Juni 2015",
-    descriptionKey: "camps_data.camp2_desc",
+    descriptionKey: "campsdata.camp2desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -40,9 +40,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "3",
-    titleKey: "camps_data.camp3_title",
+    titleKey: "campsdata.camp3title",
     dates: "6 – 8 Juli 2015",
-    descriptionKey: "camps_data.camp3_desc",
+    descriptionKey: "campsdata.camp3desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -51,9 +51,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "4",
-    titleKey: "camps_data.camp4_title",
+    titleKey: "campsdata.camp4title",
     dates: "9 – 11 Juli 2015",
-    descriptionKey: "camps_data.camp4_desc",
+    descriptionKey: "campsdata.camp4desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2",
@@ -63,9 +63,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "5",
-    titleKey: "camps_data.camp5_title",
+    titleKey: "campsdata.camp5title",
     dates: "21 -23 Des 2015",
-    descriptionKey: "camps_data.camp5_desc",
+    descriptionKey: "campsdata.camp5desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -74,9 +74,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "6",
-    titleKey: "camps_data.camp6_title",
+    titleKey: "campsdata.camp6title",
     dates: "25 – 27 Des 2015",
-    descriptionKey: "camps_data.camp6_desc",
+    descriptionKey: "campsdata.camp6desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -85,9 +85,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "7",
-    titleKey: "camps_data.camp7_title",
+    titleKey: "campsdata.camp7title",
     dates: "28 – 30 Des 2015",
-    descriptionKey: "camps_data.camp7_desc",
+    descriptionKey: "campsdata.camp7desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -100,15 +100,15 @@ const Camps: React.FC = () => {
   const { t } = useTranslation();
 
   const handleDayLinkClick = (campTitle: string, dayLabel: string) => {
-    toast.info(t('details_coming_soon', { campTitle, dayLabel }));
+    toast.info(t('detailscomingsoon', { campTitle, dayLabel }));
   };
 
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('camps_program_title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('campprogramtitle')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('camps_program_subtitle')}
+          {t('campprogramsubtitle')}
         </p>
       </section>
 
@@ -151,7 +151,7 @@ const Camps: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back_to_home')}</Button>
+          <Button>{t('backtohome')}</Button>
         </Link>
       </div>
     </div>

@@ -37,111 +37,111 @@ interface BlogPost {
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
-    titleKey: "blog_posts.post1_title",
-    excerptKey: "blog_posts.post1_excerpt",
+    titleKey: "blogposts.post1title",
+    excerptKey: "blogposts.post1excerpt",
     date: "10 Oktober 2023",
     image: "https://source.unsplash.com/random/400x250/?blogging,writing",
-    categoryKey: "blog_posts.post1_category",
-    authorKey: "blog_posts.post1_author",
+    categoryKey: "blogposts.post1category",
+    authorKey: "blogposts.post1author",
     year: 2023,
     month: 10,
-    tagsKeys: ["blog_posts.post1_tags.0", "blog_posts.post1_tags.1", "blog_posts.post1_tags.2"],
+    tagsKeys: ["blogposts.post1tags0", "blogposts.post1tags1", "blogposts.post1tags2"],
   },
   {
     id: "2",
-    titleKey: "blog_posts.post2_title",
-    excerptKey: "blog_posts.post2_excerpt",
+    titleKey: "blogposts.post2title",
+    excerptKey: "blogposts.post2excerpt",
     date: "15 November 2023",
     image: "https://source.unsplash.com/random/400x250/?content,marketing",
-    categoryKey: "blog_posts.post2_category",
-    authorKey: "blog_posts.post2_author",
+    categoryKey: "blogposts.post2category",
+    authorKey: "blogposts.post2author",
     year: 2023,
     month: 11,
-    tagsKeys: ["blog_posts.post2_tags.0", "blog_posts.post2_tags.1", "blog_posts.post2_tags.2"],
+    tagsKeys: ["blogposts.post2tags0", "blogposts.post2tags1", "blogposts.post2tags2"],
   },
   {
     id: "3",
-    titleKey: "blog_posts.post3_title",
-    excerptKey: "blog_posts.post3_excerpt",
+    titleKey: "blogposts.post3title",
+    excerptKey: "blogposts.post3excerpt",
     date: "20 Desember 2023",
     image: "https://source.unsplash.com/random/400x250/?seo,optimization",
-    categoryKey: "blog_posts.post3_category",
-    authorKey: "blog_posts.post3_author",
+    categoryKey: "blogposts.post3category",
+    authorKey: "blogposts.post3author",
     year: 2023,
     month: 12,
-    tagsKeys: ["blog_posts.post3_tags.0", "blog_posts.post3_tags.1", "blog_posts.post3_tags.2"],
+    tagsKeys: ["blogposts.post3tags0", "blogposts.post3tags1", "blogposts.post3tags2"],
   },
   {
     id: "4",
-    titleKey: "blog_posts.post4_title",
-    excerptKey: "blog_posts.post4_excerpt",
+    titleKey: "blogposts.post4title",
+    excerptKey: "blogposts.post4excerpt",
     date: "25 Januari 2024",
     image: "https://source.unsplash.com/random/400x250/?javascript,code",
-    categoryKey: "blog_posts.post4_category",
-    authorKey: "blog_posts.post4_author",
+    categoryKey: "blogposts.post4category",
+    authorKey: "blogposts.post4author",
     year: 2024,
     month: 1,
-    tagsKeys: ["blog_posts.post4_tags.0", "blog_posts.post4_tags.1", "blog_posts.post4_tags.2"],
+    tagsKeys: ["blogposts.post4tags0", "blogposts.post4tags1", "blogposts.post4tags2"],
   },
   {
     id: "5",
-    titleKey: "blog_posts.post5_title",
-    excerptKey: "blog_posts.post5_excerpt",
+    titleKey: "blogposts.post5title",
+    excerptKey: "blogposts.post5excerpt",
     date: "01 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?reactjs,programming",
-    categoryKey: "blog_posts.post5_category",
-    authorKey: "blog_posts.post5_author",
+    categoryKey: "blogposts.post5category",
+    authorKey: "blogposts.post5author",
     year: 2024,
     month: 2,
-    tagsKeys: ["blog_posts.post5_tags.0", "blog_posts.post5_tags.1", "blog_posts.post5_tags.2"],
+    tagsKeys: ["blogposts.post5tags0", "blogposts.post5tags1", "blogposts.post5tags2"],
   },
   {
     id: "6",
-    titleKey: "blog_posts.post6_title",
-    excerptKey: "blog_posts.post6_excerpt",
+    titleKey: "blogposts.post6title",
+    excerptKey: "blogposts.post6excerpt",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data",
-    categoryKey: "blog_posts.post6_category",
-    authorKey: "blog_posts.post6_author",
+    categoryKey: "blogposts.post6category",
+    authorKey: "blogposts.post6author",
     year: 2024,
     month: 2,
-    tagsKeys: ["blog_posts.post6_tags.0", "blog_posts.post6_tags.1", "blog_posts.post6_tags.2"],
+    tagsKeys: ["blogposts.post6tags0", "blogposts.post6tags1", "blogposts.post6tags2"],
   },
   {
     id: "7",
-    titleKey: "blog_posts.post7_title",
-    excerptKey: "blog_posts.post7_excerpt",
+    titleKey: "blogposts.post7title",
+    excerptKey: "blogposts.post7excerpt",
     date: "05 Maret 2024",
     image: "https://source.unsplash.com/random/400x250/?tailwind,css",
-    categoryKey: "blog_posts.post7_category",
-    authorKey: "blog_posts.post7_author",
+    categoryKey: "blogposts.post7category",
+    authorKey: "blogposts.post7author",
     year: 2024,
     month: 3,
-    tagsKeys: ["blog_posts.post7_tags.0", "blog_posts.post7_tags.1", "blog_posts.post7_tags.2"],
+    tagsKeys: ["blogposts.post7tags0", "blogposts.post7tags1", "blogposts.post7tags2"],
   },
   {
     id: "8",
-    titleKey: "blog_posts.post8_title",
-    excerptKey: "blog_posts.post8_excerpt",
+    titleKey: "blogposts.post8title",
+    excerptKey: "blogposts.post8excerpt",
     date: "12 April 2024",
     image: "https://source.unsplash.com/random/400x250/?async,javascript",
-    categoryKey: "blog_posts.post8_category",
-    authorKey: "blog_posts.post8_author",
+    categoryKey: "blogposts.post8category",
+    authorKey: "blogposts.post8author",
     year: 2024,
     month: 4,
-    tagsKeys: ["blog_posts.post8_tags.0", "blog_posts.post8_tags.1", "blog_posts.post8_tags.2"],
+    tagsKeys: ["blogposts.post8tags0", "blogposts.post8tags1", "blogposts.post8tags2"],
   },
   {
     id: "9",
-    titleKey: "blog_posts.post9_title",
-    excerptKey: "blog_posts.post9_excerpt",
+    titleKey: "blogposts.post9title",
+    excerptKey: "blogposts.post9excerpt",
     date: "20 Mei 2025",
     image: "https://source.unsplash.com/random/400x250/?debugging,code",
-    categoryKey: "blog_posts.post9_category",
-    authorKey: "blog_posts.post9_author",
+    categoryKey: "blogposts.post9category",
+    authorKey: "blogposts.post9author",
     year: 2025,
     month: 5,
-    tagsKeys: ["blog_posts.post9_tags.0", "blog_posts.post9_tags.1", "blog_posts.post9_tags.2"],
+    tagsKeys: ["blogposts.post9tags0", "blogposts.post9tags1", "blogposts.post9tags2"],
   },
 ];
 
@@ -172,8 +172,8 @@ const BlogPage: React.FC = () => {
   }, [i18n.language]); // Tambahkan i18n.language sebagai dependensi
 
   const monthNames = useMemo(() => [
-    "", t("month_names.january"), t("month_names.february"), t("month_names.march"), t("month_names.april"), t("month_names.may"), t("month_names.june"),
-    t("month_names.july"), t("month_names.august"), t("month_names.september"), t("month_names.october"), t("month_names.november"), t("month_names.december")
+    "", t("monthnames.january"), t("monthnames.february"), t("monthnames.march"), t("monthnames.april"), t("monthnames.may"), t("monthnames.june"),
+    t("monthnames.july"), t("monthnames.august"), t("monthnames.september"), t("monthnames.october"), t("monthnames.november"), t("monthnames.december")
   ], [i18n.language, t]); // Tambahkan i18n.language dan t sebagai dependensi
 
   const allPeriods: string[] = useMemo(() => {
@@ -191,7 +191,7 @@ const BlogPage: React.FC = () => {
   }, [i18n.language]); // Tambahkan i18n.language sebagai dependensi
 
   const getPeriodDisplayName = (period: string) => {
-    if (period === "all") return t("all_time"); // Terjemahkan kunci "all"
+    if (period === "all") return t("alltime"); // Terjemahkan kunci "all"
     const [year, month] = period.split('-').map(Number);
     return `${year} - ${monthNames[month]}`;
   };
@@ -234,13 +234,13 @@ const BlogPage: React.FC = () => {
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">{t('blog')}</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
-        {t('blog_page_subtitle')}
+        {t('blogpagesubtitle')}
       </p>
 
       <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-10 flex-wrap">
         <Input
           type="text"
-          placeholder={t('search_post')}
+          placeholder={t('searchpost')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full md:max-w-xs"
@@ -267,7 +267,7 @@ const BlogPage: React.FC = () => {
           onValueChange={(value) => setSelectedPeriod(value)}
         >
           <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder={t('select_period')} />
+            <SelectValue placeholder={t('selectperiod')} />
           </SelectTrigger>
           <SelectContent>
             {allPeriods.map(period => (
@@ -300,14 +300,14 @@ const BlogPage: React.FC = () => {
               <CardContent className="p-6 pt-0">
                 <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerptKey)}</p>
                 <Link to={`/posts/${post.id}`}>
-                  <Button variant="outline" className="w-full">{t('read_more')}</Button>
+                  <Button variant="outline" className="w-full">{t('readmore')}</Button>
                 </Link>
               </CardContent>
             </Card>
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no_matching_posts')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('nomatchingposts')}</p>
       )}
 
       {totalPages > 1 && (
