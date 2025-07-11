@@ -11,95 +11,96 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useTranslation } from "react-i18next";
 
 interface YouTubeVideo {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   thumbnail: string;
   videoUrl: string; 
   date: string;
 }
 
-// Data dummy video YouTube yang lebih banyak untuk demonstrasi paginasi
 const dummyYouTubeVideos: YouTubeVideo[] = [
   {
     id: "yt1",
-    title: "Tutorial Coding untuk Pemula HTML Dasar",
-    description: "Pelajari dasar-dasar HTML untuk membuat struktur website pertamamu.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?html,coding", // Gambar placeholder baru
+    titleKey: "youtube_videos.yt1_title",
+    descriptionKey: "youtube_videos.yt1_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?html,coding",
     videoUrl: "https://www.youtube.com/watch?v=M_HTyO_y_0M", 
     date: "1 Januari 2024",
   },
   {
     id: "yt2",
-    title: "Mengenal CSS Styling Website Jadi Cantik",
-    description: "Bagaimana cara membuat website-mu terlihat menarik dengan CSS.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?css,design", // Gambar placeholder baru
+    titleKey: "youtube_videos.yt2_title",
+    descriptionKey: "youtube_videos.yt2_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?css,design",
     videoUrl: "https://www.youtube.com/watch?v=1Rs2ND1ryYc", 
     date: "15 Januari 2024",
   },
   {
     id: "yt3",
-    title: "JavaScript Interaktif Bikin Website Hidup",
-    description: "Tambahkan interaktivitas pada website-mu dengan JavaScript.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?javascript,web", // Gambar placeholder baru
+    titleKey: "youtube_videos.yt3_title",
+    descriptionKey: "youtube_videos.yt3_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?javascript,web",
     videoUrl: "https://www.youtube.com/watch?v=W6NZfCO5sks", 
     date: "1 Februari 2024",
   },
   {
     id: "yt4",
-    title: "React JS untuk Pemula Membangun Komponen Pertama",
-    description: "Langkah awal membangun aplikasi web modern dengan React JS.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?react,frontend", // Gambar placeholder baru
+    titleKey: "youtube_videos.yt4_title",
+    descriptionKey: "youtube_videos.yt4_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?react,frontend",
     videoUrl: "https://www.youtube.com/watch?v=Tn6-PIqc4UM", 
     date: "10 Februari 2024",
   },
   {
     id: "yt5",
-    title: "Dasar-dasar Python Variabel dan Tipe Data",
-    description: "Pengantar Python untuk pemula, memahami variabel dan tipe data.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?python,programming", // Gambar placeholder baru
+    titleKey: "youtube_videos.yt5_title",
+    descriptionKey: "youtube_videos.yt5_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?python,programming",
     videoUrl: "https://www.youtube.com/watch?v=rfscVS0vtbw", 
     date: "20 Februari 2024",
   },
   {
     id: "yt6",
-    title: "Membuat Website Responsif dengan Tailwind CSS",
-    description: "Pelajari cara mendesain website yang tampil baik di semua perangkat.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?tailwind,responsive", // Gambar placeholder baru
+    titleKey: "youtube_videos.yt6_title",
+    descriptionKey: "youtube_videos.yt6_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?tailwind,responsive",
     videoUrl: "https://www.youtube.com/watch?v=z_g_y_2_2_2", 
     date: "5 Maret 2024",
   },
   {
     id: "yt7",
-    title: "Pengenalan Algoritma dan Struktur Data",
-    description: "Pahami konsep dasar algoritma dan struktur data dalam pemrograman.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?algorithm,datastructure", // Gambar placeholder baru
+    titleKey: "youtube_videos.yt7_title",
+    descriptionKey: "youtube_videos.yt7_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?algorithm,datastructure",
     videoUrl: "https://www.youtube.com/watch?v=BBpAmxU_NQ8", 
     date: "15 Maret 2024",
   },
   {
     id: "yt8",
-    title: "Tips dan Trik Debugging Kode JavaScript",
-    description: "Cara efektif menemukan dan memperbaiki kesalahan dalam kode JavaScript Anda.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?debugging,javascript", // Gambar placeholder baru
+    titleKey: "youtube_videos.yt8_title",
+    descriptionKey: "youtube_videos.yt8_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?debugging,javascript",
     videoUrl: "https://www.youtube.com/watch?v=gS_Y4_2_2_2", 
     date: "25 Maret 2024",
   },
   {
     id: "yt9",
-    title: "Membuat Animasi Sederhana dengan CSS",
-    description: "Tambahkan efek animasi menarik ke website Anda menggunakan CSS.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?css,animation", // Gambar placeholder baru
+    titleKey: "youtube_videos.yt9_title",
+    descriptionKey: "youtube_videos.yt9_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?css,animation",
     videoUrl: "https://www.youtube.com/watch?v=z_g_y_2_2_2", 
     date: "5 April 2024",
   },
 ];
 
-const VIDEOS_PER_PAGE = 6; // Jumlah video per halaman
+const VIDEOS_PER_PAGE = 6;
 
 const YouTubeUpdates: React.FC = () => {
+  const { t } = useTranslation();
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -110,11 +111,10 @@ const YouTubeUpdates: React.FC = () => {
     const fetchYouTubeVideos = async () => {
       try {
         setLoading(true);
-        // Simulasi penundaan dan penggunaan data dummy
         await new Promise<void>(resolve => setTimeout(resolve, 1000));
         setVideos(dummyYouTubeVideos);
       } catch (err) {
-        setError("Gagal memuat video YouTube. Silakan coba lagi nanti.");
+        setError(t("failed_to_load_videos"));
         console.error("Error fetching YouTube videos:", err);
       } finally {
         setLoading(false);
@@ -127,10 +127,10 @@ const YouTubeUpdates: React.FC = () => {
   const filteredVideos = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return videos.filter(video =>
-      video.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-      video.description.toLowerCase().includes(lowerCaseSearchTerm)
+      t(video.titleKey).toLowerCase().includes(lowerCaseSearchTerm) ||
+      t(video.descriptionKey).toLowerCase().includes(lowerCaseSearchTerm)
     );
-  }, [videos, searchTerm]);
+  }, [videos, searchTerm, t]);
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
   const currentVideos = useMemo(() => {
@@ -141,10 +141,9 @@ const YouTubeUpdates: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on page change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Reset pagination whenever search term changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
@@ -152,13 +151,10 @@ const YouTubeUpdates: React.FC = () => {
   return (
     <section className="py-12 bg-muted/40">
       <div className="container mx-auto px-4">
-        {/* Judul "Video YouTube Terbaru" dihapus dari sini */}
-        
-        {/* Search Input */}
         <div className="flex justify-center mb-8">
           <Input
             type="text"
-            placeholder="Cari video..."
+            placeholder={t('search_video')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full md:max-w-lg"
@@ -166,7 +162,7 @@ const YouTubeUpdates: React.FC = () => {
         </div>
 
         {loading ? (
-          <p className="text-center text-muted-foreground">Memuat video...</p>
+          <p className="text-center text-muted-foreground">{t('loading_videos')}</p>
         ) : error ? (
           <p className="text-center text-destructive">{error}</p>
         ) : currentVideos.length > 0 ? (
@@ -174,29 +170,26 @@ const YouTubeUpdates: React.FC = () => {
             {currentVideos.map((video) => (
               <Card key={video.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center">
-                  <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
-                  {/* Tombol PlayCircle tetap ada, tetapi tautan ke video dihapus */}
+                  <img src={video.thumbnail} alt={t(video.titleKey)} className="w-full h-full object-cover" />
                   <PlayCircle className="absolute text-white/80 hover:text-white transition-colors" size={64} />
                 </div>
                 <CardHeader className="flex-grow">
-                  <CardTitle className="text-xl">{video.title}</CardTitle>
+                  <CardTitle className="text-xl">{t(video.titleKey)}</CardTitle>
                   <CardDescription className="text-sm text-muted-foreground">{video.date}</CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
-                  <p className="text-muted-foreground mb-4 line-clamp-2">{video.description}</p>
-                  {/* Tautan "Lihat Video" dikembalikan */}
+                  <p className="text-muted-foreground mb-4 line-clamp-2">{t(video.descriptionKey)}</p>
                   <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button variant="outline" className="w-full">Lihat Video</Button>
+                    <Button variant="outline" className="w-full">{t('view_video')}</Button>
                   </a>
                 </CardContent>
               </Card>
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground mt-8 text-lg">Tidak ada video yang cocok dengan pencarian Anda.</p>
+          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no_matching_videos')}</p>
         )}
 
-        {/* Paginasi */}
         {totalPages > 1 && (
           <Pagination className="mt-12">
             <PaginationContent>
@@ -225,8 +218,6 @@ const YouTubeUpdates: React.FC = () => {
             </PaginationContent>
           </Pagination>
         )}
-
-        {/* Tombol "Kunjungi Channel YouTube Kami" dihapus dari sini */}
       </div>
     </section>
   );

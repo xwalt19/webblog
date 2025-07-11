@@ -11,11 +11,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useTranslation } from "react-i18next";
 
 interface TikTokVideo {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   thumbnail: string;
   videoUrl: string;
   date: string;
@@ -24,72 +25,72 @@ interface TikTokVideo {
 const dummyTikTokVideos: TikTokVideo[] = [
   {
     id: "tk1",
-    title: "Tips Coding Cepat ala ProCodeCG",
-    description: "Pelajari trik coding yang akan mempercepat workflow Anda.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?coding,tips", // Placeholder thumbnail
-    videoUrl: "https://www.tiktok.com/@procodecg/video/1234567890", // Placeholder URL TikTok
+    titleKey: "tiktok_videos.tk1_title",
+    descriptionKey: "tiktok_videos.tk1_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?coding,tips",
+    videoUrl: "https://www.tiktok.com/@procodecg/video/1234567890",
     date: "10 Maret 2024",
   },
   {
     id: "tk2",
-    title: "Challenge Coding Seru Minggu Ini!",
-    description: "Ikuti challenge coding kami dan menangkan hadiah menarik.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?challenge,code", // Placeholder thumbnail
-    videoUrl: "https://www.tiktok.com/@procodecg/video/0987654321", // Placeholder URL TikTok
+    titleKey: "tiktok_videos.tk2_title",
+    descriptionKey: "tiktok_videos.tk2_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?challenge,code",
+    videoUrl: "https://www.tiktok.com/@procodecg/video/0987654321",
     date: "18 Maret 2024",
   },
   {
     id: "tk3",
-    title: "Behind The Scenes Kelas Coding Anak",
-    description: "Intip keseruan di balik layar kelas coding untuk anak-anak.",
-    thumbnail: "https://source.unsplash.com/random/400x250/?kids,coding", // Placeholder thumbnail
-    videoUrl: "https://www.tiktok.com/@procodecg/video/1122334455", // Placeholder URL TikTok
+    titleKey: "tiktok_videos.tk3_title",
+    descriptionKey: "tiktok_videos.tk3_desc",
+    thumbnail: "https://source.unsplash.com/random/400x250/?kids,coding",
+    videoUrl: "https://www.tiktok.com/@procodecg/video/1122334455",
     date: "25 Maret 2024",
   },
   {
     id: "tk4",
-    title: "Tutorial Singkat HTML Semantik",
-    description: "Pahami pentingnya HTML semantik untuk struktur web yang lebih baik.",
+    titleKey: "tiktok_videos.tk4_title",
+    descriptionKey: "tiktok_videos.tk4_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?html,webdev",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334456",
     date: "1 April 2024",
   },
   {
     id: "tk5",
-    title: "CSS Grid vs Flexbox Kapan Pakai yang Mana?",
-    description: "Perbandingan singkat antara CSS Grid dan Flexbox untuk layout responsif.",
+    titleKey: "tiktok_videos.tk5_title",
+    descriptionKey: "tiktok_videos.tk5_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?css,layout",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334457",
     date: "8 April 2024",
   },
   {
     id: "tk6",
-    title: "JavaScript Array Methods yang Wajib Kamu Tahu",
-    description: "Beberapa metode array JavaScript yang akan mempermudah codingmu.",
+    titleKey: "tiktok_videos.tk6_title",
+    descriptionKey: "tiktok_videos.tk6_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?javascript,array",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334458",
     date: "15 April 2024",
   },
   {
     id: "tk7",
-    title: "React Hooks useState dan useEffect",
-    description: "Pengenalan dasar React Hooks useState dan useEffect untuk pemula.",
+    titleKey: "tiktok_videos.tk7_title",
+    descriptionKey: "tiktok_videos.tk7_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?react,hooks",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334459",
     date: "22 April 2024",
   },
   {
     id: "tk8",
-    title: "Python untuk Otomatisasi Tugas Sehari-hari",
-    description: "Cara menggunakan Python untuk mengotomatisasi tugas-tugas repetitif.",
+    titleKey: "tiktok_videos.tk8_title",
+    descriptionKey: "tiktok_videos.tk8_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?python,automation",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334460",
     date: "29 April 2024",
   },
   {
     id: "tk9",
-    title: "Belajar Git dan GitHub dalam 60 Detik",
-    description: "Pengantar singkat tentang Git dan GitHub untuk kolaborasi kode.",
+    titleKey: "tiktok_videos.tk9_title",
+    descriptionKey: "tiktok_videos.tk9_desc",
     thumbnail: "https://source.unsplash.com/random/400x250/?git,github",
     videoUrl: "https://www.tiktok.com/@procodecg/video/1122334461",
     date: "6 Mei 2024",
@@ -99,6 +100,7 @@ const dummyTikTokVideos: TikTokVideo[] = [
 const VIDEOS_PER_PAGE = 6;
 
 const TikTokUpdates: React.FC = () => {
+  const { t } = useTranslation();
   const [videos, setVideos] = useState<TikTokVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,11 +111,10 @@ const TikTokUpdates: React.FC = () => {
     const fetchTikTokVideos = async () => {
       try {
         setLoading(true);
-        // Simulasi penundaan dan penggunaan data dummy
         await new Promise<void>(resolve => setTimeout(resolve, 1000));
         setVideos(dummyTikTokVideos);
       } catch (err) {
-        setError("Gagal memuat video TikTok. Silakan coba lagi nanti.");
+        setError(t("failed_to_load_videos"));
         console.error("Error fetching TikTok videos:", err);
       } finally {
         setLoading(false);
@@ -126,10 +127,10 @@ const TikTokUpdates: React.FC = () => {
   const filteredVideos = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return videos.filter(video =>
-      video.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-      video.description.toLowerCase().includes(lowerCaseSearchTerm)
+      t(video.titleKey).toLowerCase().includes(lowerCaseSearchTerm) ||
+      t(video.descriptionKey).toLowerCase().includes(lowerCaseSearchTerm)
     );
-  }, [videos, searchTerm]);
+  }, [videos, searchTerm, t]);
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
   const currentVideos = useMemo(() => {
@@ -153,7 +154,7 @@ const TikTokUpdates: React.FC = () => {
         <div className="flex justify-center mb-8">
           <Input
             type="text"
-            placeholder="Cari video..."
+            placeholder={t('search_video')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full md:max-w-lg"
@@ -161,7 +162,7 @@ const TikTokUpdates: React.FC = () => {
         </div>
 
         {loading ? (
-          <p className="text-center text-muted-foreground">Memuat video...</p>
+          <p className="text-center text-muted-foreground">{t('loading_videos')}</p>
         ) : error ? (
           <p className="text-center text-destructive">{error}</p>
         ) : currentVideos.length > 0 ? (
@@ -169,24 +170,24 @@ const TikTokUpdates: React.FC = () => {
             {currentVideos.map((video) => (
               <Card key={video.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center">
-                  <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
+                  <img src={video.thumbnail} alt={t(video.titleKey)} className="w-full h-full object-cover" />
                   <PlayCircle className="absolute text-white/80 hover:text-white transition-colors" size={64} />
                 </div>
                 <CardHeader className="flex-grow">
-                  <CardTitle className="text-xl">{video.title}</CardTitle>
+                  <CardTitle className="text-xl">{t(video.titleKey)}</CardTitle>
                   <CardDescription className="text-sm text-muted-foreground">{video.date}</CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
-                  <p className="text-muted-foreground mb-4 line-clamp-2">{video.description}</p>
+                  <p className="text-muted-foreground mb-4 line-clamp-2">{t(video.descriptionKey)}</p>
                   <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button variant="outline" className="w-full">Lihat Video</Button>
+                    <Button variant="outline" className="w-full">{t('view_video')}</Button>
                   </a>
                 </CardContent>
               </Card>
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground mt-8 text-lg">Tidak ada video yang cocok dengan pencarian Anda.</p>
+          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no_matching_videos')}</p>
         )}
 
         {totalPages > 1 && (

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next"; // Import useTranslation
 
 const ProCodeCGCalendar: React.FC = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const { t } = useTranslation(); // Initialize useTranslation
+  const { t, i18n } = useTranslation(); // Initialize useTranslation and destructure i18n
 
   // Dummy events for demonstration
   // Menggunakan tahun yang konsisten (misalnya, 2025) untuk semua acara agar lebih mudah dilihat

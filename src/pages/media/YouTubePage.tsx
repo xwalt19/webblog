@@ -1,15 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import YouTubeUpdates from "@/components/YouTubeUpdates"; // Import komponen YouTubeUpdates
+import YouTubeUpdates from "@/components/YouTubeUpdates";
+import { useTranslation } from "react-i18next";
 
 const YouTubePage: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Video YouTube Kami</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('youtube_page_title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          Jelajahi tutorial, vlog, dan konten edukasi terbaru dari channel YouTube kami.
+          {t('youtube_page_subtitle')}
         </p>
       </section>
 
@@ -17,7 +20,7 @@ const YouTubePage: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>Kembali ke Beranda</Button>
+          <Button>{t('back_to_home')}</Button>
         </Link>
       </div>
     </div>

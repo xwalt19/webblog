@@ -4,125 +4,128 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Lightbulb, Users, Handshake } from "lucide-react"; // Icons for values
+import { Lightbulb, Users, Handshake } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface TeamMember {
-  name: string;
-  role: string;
+  nameKey: string;
+  roleKey: string;
   avatarUrl: string;
-  description: string;
+  descriptionKey: string;
 }
 
 const dummyTeamMembers: TeamMember[] = [
   {
-    name: "Marisa Paryasto",
-    role: "Pendiri & CEO",
+    nameKey: "team_members.marisa_name",
+    roleKey: "team_members.marisa_role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Marisa",
-    description: "PhD Electrical Engineering Institute Technology Bandung. Seorang peneliti di ITB dan dosen paruh waktu di Telkom University. Berpengalaman dalam pengajaran dan pendidikan, ahli dalam rekayasa/ilmu komputer, pemrograman, dan kriptografi. Sangat mengagumi anak-anak.",
+    descriptionKey: "team_members.marisa_desc",
   },
   {
-    name: "Budi Rahardjo",
-    role: "Mentor",
+    nameKey: "team_members.budi_name",
+    roleKey: "team_members.budi_role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Budi",
-    description: "PhD, Fakultas Teknik Elektro Institut Teknologi Bandung. Berkontribusi dalam membimbing dan mengarahkan pengembangan program kami.",
+    descriptionKey: "team_members.budi_desc",
   },
   {
-    name: "Prayudi Utomo",
-    role: "CodeinTech Founder & Programmer",
+    nameKey: "team_members.prayudi_name",
+    roleKey: "team_members.prayudi_role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Prayudi",
-    description: "Pendiri CodeinTech dan seorang programmer berpengalaman yang bersemangat dalam inovasi teknologi.",
+    descriptionKey: "team_members.prayudi_desc",
   },
   {
-    name: "Faris Hafizhan Hakim",
-    role: "Asisten Pengajar",
+    nameKey: "team_members.faris_name",
+    roleKey: "team_members.faris_role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Faris",
-    description: "Salah satu kapten dan asisten pengajar kami yang berdedikasi untuk kelas anak-anak.",
+    descriptionKey: "team_members.faris_desc",
   },
   {
-    name: "Bullitt Zulfiqar",
-    role: "Asisten Pengajar",
+    nameKey: "team_members.bullitt_name",
+    roleKey: "team_members.bullitt_role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Bullitt",
-    description: "Kapten dan asisten pengajar yang antusias, membantu anak-anak mengembangkan keterampilan IT mereka.",
+    descriptionKey: "team_members.bullitt_desc",
   },
 ];
 
 const AboutPage: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
-    <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner"> {/* Added bg-muted/40 and shadow-inner */}
+    <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
       <section className="text-center mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Tentang ProCodeCG</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('about_procodecg_title')}</h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          ProCodeCG adalah startup yang berbasis di Bandung, berfokus pada teknologi, khususnya literasi pemrograman dan coding. Kami bersemangat membantu anak-anak membangun dan mengembangkan keterampilan mereka di lingkungan IT, karena kami menyadari bahwa anak-anak adalah investasi paling berharga untuk kebutuhan sumber daya manusia di masa depan. Kami membantu industri masa depan dengan membentuk keterampilan anak-anak sejak dini untuk memenuhi persyaratan lanskap industri teknologi, mengingat perubahan teknologi yang pesat di seluruh dunia.
+          {t('about_procodecg_subtitle')}
         </p>
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-        <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
+        <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="text-2xl font-semibold flex items-center gap-2">
-              <Lightbulb className="text-yellow-500" size={28} /> Misi Kami
+              <Lightbulb className="text-yellow-500" size={28} /> {t('our_mission')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Misi kami adalah memberdayakan generasi muda dengan literasi pemrograman dan coding, membantu mereka membangun keterampilan IT yang esensial untuk menghadapi tantangan dan peluang di industri teknologi yang terus berkembang.
+              {t('our_mission_desc')}
             </p>
           </CardContent>
         </Card>
-        <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
+        <Card className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader className="pb-4">
             <CardTitle className="text-2xl font-semibold flex items-center gap-2">
-              <Users className="text-blue-500" size={28} /> Visi Kami
+              <Users className="text-blue-500" size={28} /> {t('our_vision')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Kami juga berupaya mendukung industri kreatif dengan membangun komunitas 'Code Meet Up', tempat individu kreatif dengan beragam pengetahuan dapat berkumpul, berbagi, berkolaborasi, dan menciptakan inovasi bersama.
+              {t('our_vision_desc')}
             </p>
           </CardContent>
         </Card>
       </section>
 
       <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Nilai-nilai Kami</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('our_values')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
+          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Handshake className="mx-auto mb-4 text-green-500" size={40} />
-            <CardTitle className="text-xl mb-2">Aksesibilitas</CardTitle>
+            <CardTitle className="text-xl mb-2">{t('accessibility')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              Kami percaya pendidikan berkualitas harus dapat diakses oleh semua orang, tanpa memandang latar belakang atau lokasi.
+              {t('accessibility_desc')}
             </CardContent>
           </Card>
-          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
+          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Lightbulb className="mx-auto mb-4 text-purple-500" size={40} />
-            <CardTitle className="text-xl mb-2">Inovasi</CardTitle>
+            <CardTitle className="text-xl mb-2">{t('innovation')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              Kami terus berinovasi dalam metode pengajaran dan konten untuk memastikan Anda selalu mendapatkan informasi terbaru.
+              {t('innovation_desc')}
             </CardContent>
           </Card>
-          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
+          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Users className="mx-auto mb-4 text-red-500" size={40} />
-            <CardTitle className="text-xl mb-2">Komunitas</CardTitle>
+            <CardTitle className="text-xl mb-2">{t('community')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              Kami membangun komunitas yang mendukung di mana pembelajar dapat berinteraksi, berbagi, dan tumbuh bersama.
+              {t('community_desc')}
             </CardContent>
           </Card>
         </div>
       </section>
 
       <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Tim Kami</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('our_team')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {dummyTeamMembers.map((member, index) => (
-            <Card key={index} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"> {/* Added shadow and hover effect */}
+            <Card key={index} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <Avatar className="w-24 h-24 mb-4">
-                <AvatarImage src={member.avatarUrl} alt={member.name} />
-                <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                <AvatarImage src={member.avatarUrl} alt={t(member.nameKey)} />
+                <AvatarFallback>{t(member.nameKey).split(' ').map(n => n[0]).join('')}</AvatarFallback>
               </Avatar>
-              <CardTitle className="text-xl mb-1">{member.name}</CardTitle>
-              <p className="text-sm text-primary mb-3">{member.role}</p>
+              <CardTitle className="text-xl mb-1">{t(member.nameKey)}</CardTitle>
+              <p className="text-sm text-primary mb-3">{t(member.roleKey)}</p>
               <CardContent className="text-muted-foreground p-0">
-                {member.description}
+                {t(member.descriptionKey)}
               </CardContent>
             </Card>
           ))}
@@ -132,13 +135,13 @@ const AboutPage: React.FC = () => {
       <Separator className="my-16" />
 
       <section className="text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6">Siap Memulai Perjalanan Belajar Anda?</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">{t('ready_to_start_learning_journey')}</h2>
         <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Jelajahi wawasan terbaru dari blog kami.
+          {t('explore_latest_insights_from_blog')}
         </p>
         <div className="flex justify-center">
           <Link to="/blog">
-            <Button size="lg">Kunjungi Blog</Button>
+            <Button size="lg">{t('visit_blog')}</Button>
           </Link>
         </div>
       </section>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users } from "lucide-react"; // Icons for topics and activities
+import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -11,123 +11,121 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTranslation } from "react-i18next";
 
 interface Topic {
   icon: React.ElementType;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
 }
 
 interface RunningClass {
-  name: string;
-  schedule: string;
-  description: string;
+  nameKey: string;
+  scheduleKey: string;
+  descriptionKey: string;
   icon: React.ElementType;
 }
 
 interface RegularEvent {
-  name: string;
-  schedule: string;
-  description: string;
+  nameKey: string;
+  scheduleKey: string;
+  descriptionKey: string;
   icon: React.ElementType;
 }
 
 const RegularEventsClasses: React.FC = () => {
-  // State untuk mengontrol tampilan bagian 'Kegiatan' (Kelas & Acara)
-  // Mengubah nilai awal menjadi string kosong agar tidak ada yang terpilih secara default
+  const { t } = useTranslation();
   const [selectedActivityView, setSelectedActivityView] = useState(""); 
 
   const topics: Topic[] = [
     {
       icon: BookOpen,
-      title: "Algorithm & Data Structure",
-      description: "Pelajari dasar-dasar pemrograman, struktur pola pikir programmer dengan pengenalan Pemrograman Prosedural vs Pemrograman Berorientasi Objek, Design Pattern, dll.",
+      titleKey: "regular_events_classes_data.topic1_title",
+      descriptionKey: "regular_events_classes_data.topic1_desc",
     },
     {
       icon: Gamepad,
-      title: "Game Programming",
-      description: "Pelajari cara mengembangkan game menggunakan bahasa pemrograman sederhana.",
+      titleKey: "regular_events_classes_data.topic2_title",
+      descriptionKey: "regular_events_classes_data.topic2_desc",
     },
     {
       icon: Globe,
-      title: "Web Programming",
-      description: "Pelajari cara mengembangkan web untuk berbagai tujuan.",
+      titleKey: "regular_events_classes_data.topic3_title",
+      descriptionKey: "regular_events_classes_data.topic3_desc",
     },
     {
       icon: Smartphone,
-      title: "Application Programming",
-      description: "Pelajari cara merancang dan mengembangkan aplikasi di berbagai platform (iOS, Android, Blackberry, Windows).",
+      titleKey: "regular_events_classes_data.topic4_title",
+      descriptionKey: "regular_events_classes_data.topic4_desc",
     },
     {
       icon: Lock,
-      title: "Crypto Programming",
-      description: "Pelajari cara membuat kode untuk kriptografi, untuk mengamankan aplikasi, perangkat lunak, dan komputer.",
+      titleKey: "regular_events_classes_data.topic5_title",
+      descriptionKey: "regular_events_classes_data.topic5_desc",
     },
     {
       icon: Cpu,
-      title: "Basic Hardware Programming",
-      description: "Pelajari cara memprogram perangkat keras menggunakan Assembly atau C/C++.",
+      titleKey: "regular_events_classes_data.topic6_title",
+      descriptionKey: "regular_events_classes_data.topic6_desc",
     },
   ];
 
   const runningClasses: RunningClass[] = [
     {
-      name: "Programming for Kids",
-      schedule: "Setiap Sabtu, 09.00 – 11.00 WIB",
-      description: "Kelas yang dirancang khusus untuk memperkenalkan dasar-dasar pemrograman kepada anak-anak dengan cara yang menyenangkan dan interaktif.",
-      icon: Code, // Menambahkan ikon
+      nameKey: "regular_events_classes_data.class1_name",
+      scheduleKey: "regular_events_classes_data.class1_schedule",
+      descriptionKey: "regular_events_classes_data.class1_desc",
+      icon: Code,
     },
   ];
 
   const regularEvents: RegularEvent[] = [
     {
-      name: "ProCodeCG codeMeetUp()",
-      schedule: "Setiap Senin, 13.00 – 15.00 WIB",
-      description: "Acara pertemuan rutin untuk para pengembang dan penggemar coding untuk berbagi pengetahuan, berkolaborasi, dan berdiskusi tentang tren teknologi terbaru.",
-      icon: Users, // Menambahkan ikon
+      nameKey: "regular_events_classes_data.event1_name",
+      scheduleKey: "regular_events_classes_data.event1_schedule",
+      descriptionKey: "regular_events_classes_data.event1_desc",
+      icon: Users,
     },
   ];
 
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Jadwal & Acara ProCodeCG</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('schedule_events_title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          Temukan topik pembelajaran, kelas rutin, dan acara komunitas kami.
+          {t('schedule_events_subtitle')}
         </p>
       </section>
 
-      {/* Filter Dropdown for Activities */}
       <div className="flex justify-center mb-10">
         <Select value={selectedActivityView} onValueChange={setSelectedActivityView}>
           <SelectTrigger className="w-full md:w-[250px]">
-            <SelectValue placeholder="Pilih Kegiatan" />
+            <SelectValue placeholder={t('select_activity')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="allActivities">Semua Kegiatan</SelectItem>
-            <SelectItem value="runningClasses">Kelas yang Sedang Berjalan</SelectItem>
-            <SelectItem value="regularEvents">Acara Reguler</SelectItem>
+            <SelectItem value="allActivities">{t('all_activities')}</SelectItem>
+            <SelectItem value="runningClasses">{t('running_classes')}</SelectItem>
+            <SelectItem value="regularEvents">{t('regular_events')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      {/* Running Classes Section */}
       {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && (
         <section className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Kelas yang Sedang Berjalan</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('running_classes_section_title')}</h2>
           <div className="grid grid-cols-1 gap-6"> 
             {runningClasses.map((cls, index) => (
               <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
                 <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                  {cls.icon && <cls.icon className="text-primary" size={64} />} {/* Ikon lebih besar */}
+                  {cls.icon && <cls.icon className="text-primary" size={64} />}
                 </div>
                 <div className="flex-grow">
-                  <CardHeader className="pb-2 p-0"> {/* Menghapus padding default CardHeader */}
-                    <CardTitle className="text-2xl font-semibold">{cls.name}</CardTitle>
-                    <CardDescription className="text-primary font-medium">{cls.schedule}</CardDescription>
+                  <CardHeader className="pb-2 p-0">
+                    <CardTitle className="text-2xl font-semibold">{t(cls.nameKey)}</CardTitle>
+                    <CardDescription className="text-primary font-medium">{t(cls.scheduleKey)}</CardDescription>
                   </CardHeader>
-                  <CardContent className="text-muted-foreground p-0 pt-2"> {/* Menghapus padding default CardContent */}
-                    {cls.description}
+                  <CardContent className="text-muted-foreground p-0 pt-2">
+                    {t(cls.descriptionKey)}
                   </CardContent>
                 </div>
               </Card>
@@ -138,23 +136,22 @@ const RegularEventsClasses: React.FC = () => {
 
       {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && <Separator className="my-12" />}
 
-      {/* Regular Events Section */}
       {(selectedActivityView === "allActivities" || selectedActivityView === "regularEvents") && (
         <section className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">Acara Reguler</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('regular_events_section_title')}</h2>
           <div className="grid grid-cols-1 gap-6">
             {regularEvents.map((event, index) => (
               <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
                 <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                  {event.icon && <event.icon className="text-primary" size={64} />} {/* Ikon lebih besar */}
+                  {event.icon && <event.icon className="text-primary" size={64} />}
                 </div>
                 <div className="flex-grow">
-                  <CardHeader className="pb-2 p-0"> {/* Menghapus padding default CardHeader */}
-                    <CardTitle className="text-2xl font-semibold">{event.name}</CardTitle>
-                    <CardDescription className="text-primary font-medium">{event.schedule}</CardDescription>
+                  <CardHeader className="pb-2 p-0">
+                    <CardTitle className="text-2xl font-semibold">{t(event.nameKey)}</CardTitle>
+                    <CardDescription className="text-primary font-medium">{t(event.scheduleKey)}</CardDescription>
                   </CardHeader>
-                  <CardContent className="text-muted-foreground p-0 pt-2"> {/* Menghapus padding default CardContent */}
-                    {event.description}
+                  <CardContent className="text-muted-foreground p-0 pt-2">
+                    {t(event.descriptionKey)}
                   </CardContent>
                 </div>
               </Card>
@@ -165,7 +162,7 @@ const RegularEventsClasses: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>Kembali ke Beranda</Button>
+          <Button>{t('back_to_home')}</Button>
         </Link>
       </div>
     </div>

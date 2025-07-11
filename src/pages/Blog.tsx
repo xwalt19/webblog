@@ -18,162 +18,155 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Input } from "@/components/ui/input"; // Import Input component
+import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 interface BlogPost {
   id: string;
-  title: string;
-  excerpt: string;
+  titleKey: string;
+  excerptKey: string;
   date: string;
   image: string;
-  category: string;
-  author: string;
+  categoryKey: string;
+  authorKey: string;
   year: number;
-  month: number; // Properti bulan (1-12)
-  // pdfLink?: string; // Hapus properti untuk tautan PDF
-  tags: string[]; // Tambahkan properti tags
+  month: number;
+  tagsKeys: string[];
 }
 
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
-    title: "Yuk Bikin Blog Seru Pertamamu",
-    excerpt: "Panduan asyik buat kamu yang mau punya blog sendiri, gampang banget",
+    titleKey: "blog_posts.post1_title",
+    excerptKey: "blog_posts.post1_excerpt",
     date: "10 Oktober 2023",
     image: "https://source.unsplash.com/random/400x250/?blogging,writing",
-    category: "Dasar HTML",
-    author: "Instruktur A",
+    categoryKey: "blog_posts.post1_category",
+    authorKey: "blog_posts.post1_author",
     year: 2023,
-    month: 10, // Oktober
-    // pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
-    tags: ["pemula", "blogging", "menulis"],
+    month: 10,
+    tagsKeys: ["blog_posts.post1_tags.0", "blog_posts.post1_tags.1", "blog_posts.post1_tags.2"],
   },
   {
     id: "2",
-    title: "Rahasia Menulis Cerita Blog yang Bikin Betah Baca",
-    excerpt: "Mau tulisanmu dibaca banyak teman Ini dia tipsnya",
+    titleKey: "blog_posts.post2_title",
+    excerptKey: "blog_posts.post2_excerpt",
     date: "15 November 2023",
     image: "https://source.unsplash.com/random/400x250/?content,marketing",
-    category: "Styling CSS",
-    author: "Instruktur B",
+    categoryKey: "blog_posts.post2_category",
+    authorKey: "blog_posts.post2_author",
     year: 2023,
-    month: 11, // November
-    // pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
-    tags: ["konten", "menulis", "tips"],
+    month: 11,
+    tagsKeys: ["blog_posts.post2_tags.0", "blog_posts.post2_tags.1", "blog_posts.post2_tags.2"],
   },
   {
     id: "3",
-    title: "Biar Blogmu Gampang Ditemukan di Internet",
-    excerpt: "Pelajari cara biar blogmu muncul paling atas saat dicari teman-teman",
+    titleKey: "blog_posts.post3_title",
+    excerptKey: "blog_posts.post3_excerpt",
     date: "20 Desember 2023",
     image: "https://source.unsplash.com/random/400x250/?seo,optimization",
-    category: "JavaScript Interaktif",
-    author: "Instruktur C",
+    categoryKey: "blog_posts.post3_category",
+    authorKey: "blog_posts.post3_author",
     year: 2023,
-    month: 12, // Desember
-    // pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
-    tags: ["SEO", "internet", "visibilitas"],
+    month: 12,
+    tagsKeys: ["blog_posts.post3_tags.0", "blog_posts.post3_tags.1", "blog_posts.post3_tags.2"],
   },
   {
     id: "4",
-    title: "Sihir JavaScript Bikin Website Jadi Hidup",
-    excerpt: "Kenalan sama JavaScript, bahasa rahasia yang bikin website bisa bergerak dan interaktif",
+    titleKey: "blog_posts.post4_title",
+    excerptKey: "blog_posts.post4_excerpt",
     date: "25 Januari 2024",
     image: "https://source.unsplash.com/random/400x250/?javascript,code",
-    category: "JavaScript Interaktif",
-    author: "Instruktur A",
+    categoryKey: "blog_posts.post4_category",
+    authorKey: "blog_posts.post4_author",
     year: 2024,
-    month: 1, // Januari
-    // pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
-    tags: ["JavaScript", "web", "interaktif"],
+    month: 1,
+    tagsKeys: ["blog_posts.post4_tags.0", "blog_posts.post4_tags.1", "blog_posts.post4_tags.2"],
   },
   {
     id: "5",
-    title: "Yuk Bikin Aplikasi Keren Pakai React",
-    excerpt: "Belajar bikin aplikasi web yang canggih dan interaktif dengan React, seru banget",
+    titleKey: "blog_posts.post5_title",
+    excerptKey: "blog_posts.post5_excerpt",
     date: "01 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?reactjs,programming",
-    category: "Proyek Akhir",
-    author: "Instruktur B",
+    categoryKey: "blog_posts.post5_category",
+    authorKey: "blog_posts.post5_author",
     year: 2024,
-    month: 2, // Februari
-    // pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
-    tags: ["React", "aplikasi web", "pemrograman"],
+    month: 2,
+    tagsKeys: ["blog_posts.post5_tags.0", "blog_posts.post5_tags.1", "blog_posts.post5_tags.2"],
   },
   {
     id: "6",
-    title: "Python Si Pintar Pengolah Data",
-    excerpt: "Mulai petualanganmu di dunia data dengan Python, bahasa pemrograman yang jago hitung-hitungan",
+    titleKey: "blog_posts.post6_title",
+    excerptKey: "blog_posts.post6_excerpt",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data",
-    category: "Dasar HTML",
-    author: "Instruktur C",
+    categoryKey: "blog_posts.post6_category",
+    authorKey: "blog_posts.post6_author",
     year: 2024,
-    month: 2, // Februari
-    // pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
-    tags: ["Python", "data science", "pemrograman"],
+    month: 2,
+    tagsKeys: ["blog_posts.post6_tags.0", "blog_posts.post6_tags.1", "blog_posts.post6_tags.2"],
   },
   {
     id: "7",
-    title: "Tailwind CSS Bikin Tampilan Website Makin Cantik",
-    excerpt: "Rahasia bikin website jadi super keren dan rapi tanpa ribet",
+    titleKey: "blog_posts.post7_title",
+    excerptKey: "blog_posts.post7_excerpt",
     date: "05 Maret 2024",
     image: "https://source.unsplash.com/random/400x250/?tailwind,css",
-    category: "Styling CSS",
-    author: "Instruktur A",
+    categoryKey: "blog_posts.post7_category",
+    authorKey: "blog_posts.post7_author",
     year: 2024,
-    month: 3, // Maret
-    // pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
-    tags: ["Tailwind CSS", "desain web", "styling"],
+    month: 3,
+    tagsKeys: ["blog_posts.post7_tags.0", "blog_posts.post7_tags.1", "blog_posts.post7_tags.2"],
   },
   {
     id: "8",
-    title: "JavaScript Sabar Nunggu Dulu Baru Jalan",
-    excerpt: "Pernah lihat website loading Itu kerjaan JavaScript yang sabar menunggu",
+    titleKey: "blog_posts.post8_title",
+    excerptKey: "blog_posts.post8_excerpt",
     date: "12 April 2024",
     image: "https://source.unsplash.com/random/400x250/?async,javascript",
-    category: "JavaScript Interaktif",
-    author: "Instruktur B",
+    categoryKey: "blog_posts.post8_category",
+    authorKey: "blog_posts.post8_author",
     year: 2024,
-    month: 4, // April
-    // pdfLink: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", // Contoh tautan PDF
-    tags: ["JavaScript", "asynchronous", "web performance"],
+    month: 4,
+    tagsKeys: ["blog_posts.post8_tags.0", "blog_posts.post8_tags.1", "blog_posts.post8_tags.2"],
   },
   {
     id: "9",
-    title: "Jadi Detektif Kode Cari dan Perbaiki Kesalahan",
-    excerpt: "Belajar jadi detektif handal yang bisa menemukan dan memperbaiki 'bug' di programmu",
+    titleKey: "blog_posts.post9_title",
+    excerptKey: "blog_posts.post9_excerpt",
     date: "20 Mei 2025",
     image: "https://source.unsplash.com/random/400x250/?debugging,code",
-    category: "Proyek Akhir",
-    author: "Instruktur C",
+    categoryKey: "blog_posts.post9_category",
+    authorKey: "blog_posts.post9_author",
     year: 2025,
-    month: 5, // Mei
-    // pdfLink: "https://www.africau.edu/images/default/sample.pdf", // Contoh tautan PDF
-    tags: ["debugging", "pemrograman", "error handling"],
+    month: 5,
+    tagsKeys: ["blog_posts.post9_tags.0", "blog_posts.post9_tags.1", "blog_posts.post9_tags.2"],
   },
 ];
 
-// allCategories tidak lagi dibutuhkan karena filter dihapus
-// const allCategories = ["Semua", ...new Set(dummyBlogPosts.map(post => post.category))];
-const allTags: string[] = ["Semua", ...new Set(dummyBlogPosts.flatMap(post => post.tags))];
-
-const monthNames = [
-  "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-  "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-];
-
-const POSTS_PER_PAGE = 6; // Jumlah postingan per halaman
+const POSTS_PER_PAGE = 6;
 
 const BlogPage: React.FC = () => {
-  // State untuk filter kategori tidak lagi dibutuhkan
-  // const [selectedCategory, setSelectedCategory] = useState("Semua");
-  const [selectedPeriod, setSelectedPeriod] = useState("Semua"); // State baru untuk filter gabungan tahun-bulan
-  const [selectedTag, setSelectedTag] = useState("Semua"); // State baru untuk filter tag
+  const { t, i18n } = useTranslation();
+  const [selectedPeriod, setSelectedPeriod] = useState("Semua");
+  const [selectedTag, setSelectedTag] = useState("Semua");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Generate unique year-month periods
+  const allTags: string[] = useMemo(() => {
+    const tags = new Set<string>();
+    dummyBlogPosts.forEach(post => {
+      post.tagsKeys.forEach(tagKey => tags.add(t(tagKey)));
+    });
+    return [t("tag"), ...Array.from(tags)];
+  }, [i18n.language]); // Re-calculate when language changes
+
+  const monthNames = [
+    "", t("month_names.january"), t("month_names.february"), t("month_names.march"), t("month_names.april"), t("month_names.may"), t("month_names.june"),
+    t("month_names.july"), t("month_names.august"), t("month_names.september"), t("month_names.october"), t("month_names.november"), t("month_names.december")
+  ];
+
   const allPeriods: string[] = useMemo(() => {
     const periods = new Set<string>();
     dummyBlogPosts.forEach(post => {
@@ -182,14 +175,14 @@ const BlogPage: React.FC = () => {
     const sortedPeriods = Array.from(periods).sort((a, b) => {
       const [yearA, monthA] = a.split('-').map(Number);
       const [yearB, monthB] = b.split('-').map(Number);
-      if (yearA !== yearB) return yearB - yearA; // Sort by year descending
-      return monthB - monthA; // Then by month descending
+      if (yearA !== yearB) return yearB - yearA;
+      return monthB - monthA;
     });
-    return ["Semua", ...sortedPeriods];
-  }, []);
+    return [t("all_time"), ...sortedPeriods];
+  }, [i18n.language]);
 
   const getPeriodDisplayName = (period: string) => {
-    if (period === "Semua") return "Semua Waktu";
+    if (period === t("all_time")) return t("all_time");
     const [year, month] = period.split('-').map(Number);
     return `${year} - ${monthNames[month]}`;
   };
@@ -197,23 +190,20 @@ const BlogPage: React.FC = () => {
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return dummyBlogPosts.filter(post => {
-      // Filter kategori dihapus dari logika
-      // const matchesCategory = selectedCategory === "Semua" || post.category === selectedCategory;
-      const matchesSearch = post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-                            post.excerpt.toLowerCase().includes(lowerCaseSearchTerm);
+      const matchesSearch = t(post.titleKey).toLowerCase().includes(lowerCaseSearchTerm) ||
+                            t(post.excerptKey).toLowerCase().includes(lowerCaseSearchTerm);
       
       let matchesPeriod = true;
-      if (selectedPeriod !== "Semua") {
+      if (selectedPeriod !== t("all_time")) {
         const [filterYear, filterMonth] = selectedPeriod.split('-').map(Number);
         matchesPeriod = post.year === filterYear && post.month === filterMonth;
       }
 
-      const matchesTag = selectedTag === "Semua" || post.tags.includes(selectedTag);
+      const matchesTag = selectedTag === t("tag") || post.tagsKeys.map(key => t(key)).includes(selectedTag);
 
-      // Hanya menggunakan filter pencarian, periode, dan tag
       return matchesSearch && matchesPeriod && matchesTag;
     });
-  }, [selectedPeriod, selectedTag, searchTerm]); // Dependensi disesuaikan
+  }, [selectedPeriod, selectedTag, searchTerm, i18n.language]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -224,56 +214,51 @@ const BlogPage: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on page change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Reset pagination whenever filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPeriod, selectedTag, searchTerm]); // Dependensi disesuaikan
+  }, [selectedPeriod, selectedTag, searchTerm, i18n.language]);
 
   return (
-    <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner"> {/* Added bg-muted/40 and shadow-inner */}
-      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Blog Kami</h1>
+    <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
+      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">{t('blog')}</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
-        Temukan artikel dan tutorial terbaru kami tentang teknologi dan coding.
+        {t('blog_page_subtitle')}
       </p>
 
-      {/* Filter Area */}
       <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-10 flex-wrap">
-        {/* Search Input */}
         <Input
           type="text"
-          placeholder="Cari postingan..."
+          placeholder={t('search_post')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:max-w-xs" // Adjust width for better alignment
+          className="w-full md:max-w-xs"
         />
 
-        {/* Tag Filter (as Select) */}
         <Select
           value={selectedTag}
           onValueChange={(value) => setSelectedTag(value)}
         >
           <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Tag" />
+            <SelectValue placeholder={t('tag')} />
           </SelectTrigger>
           <SelectContent>
             {allTags.map(tag => (
               <SelectItem key={tag} value={tag}>
-                {tag === "Semua" ? "Tag" : tag} {/* Perubahan di sini */}
+                {tag === t("tag") ? t("tag") : tag}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        {/* Period Filter (Year and Month Combined) */}
         <Select
           value={selectedPeriod}
           onValueChange={(value) => setSelectedPeriod(value)}
         >
           <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Pilih Periode" />
+            <SelectValue placeholder={t('select_period')} />
           </SelectTrigger>
           <SelectContent>
             {allPeriods.map(period => (
@@ -285,40 +270,37 @@ const BlogPage: React.FC = () => {
         </Select>
       </div>
 
-      {/* Grid Postingan Blog */}
       {currentPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">
-              <img src={post.image} alt={post.title} className="w-full h-48 object-cover" />
+              <img src={post.image} alt={t(post.titleKey)} className="w-full h-48 object-cover" />
               <CardHeader className="flex-grow">
                 <div className="flex justify-between items-center mb-2">
-                  <Badge variant="secondary">{post.category}</Badge>
+                  <Badge variant="secondary">{t(post.categoryKey)}</Badge>
                   <span className="text-sm text-muted-foreground">{post.date}</span>
                 </div>
-                <CardTitle className="text-xl">{post.title}</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">By {post.author}</CardDescription>
+                <CardTitle className="text-xl">{t(post.titleKey)}</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">{t('by')} {t(post.authorKey)}</CardDescription>
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {post.tags.map(tag => (
-                    <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                  {post.tagsKeys.map(tagKey => (
+                    <Badge key={tagKey} variant="outline" className="text-xs">{t(tagKey)}</Badge>
                   ))}
                 </div>
               </CardHeader>
               <CardContent className="p-6 pt-0">
-                <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
-                {/* Mengubah Link menjadi tag <a> untuk membuka PDF */}
+                <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerptKey)}</p>
                 <Link to={`/posts/${post.id}`}>
-                  <Button variant="outline" className="w-full">Baca Selengkapnya</Button>
+                  <Button variant="outline" className="w-full">{t('read_more')}</Button>
                 </Link>
               </CardContent>
             </Card>
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">Tidak ada postingan yang cocok dengan filter Anda.</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no_matching_posts')}</p>
       )}
 
-      {/* Paginasi */}
       {totalPages > 1 && (
         <Pagination className="mt-12">
           <PaginationContent>

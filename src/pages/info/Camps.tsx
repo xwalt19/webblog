@@ -3,23 +3,24 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CalendarDays, Code } from "lucide-react"; // Icons for visual appeal
-import { toast } from "sonner"; // For placeholder action on day links
+import { CalendarDays, Code } from "lucide-react";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface Camp {
   id: string;
-  title: string;
+  titleKey: string;
   dates: string;
-  description: string;
+  descriptionKey: string;
   dayLinks: { label: string; url: string }[];
 }
 
 const dummyCamps: Camp[] = [
   {
     id: "1",
-    title: "Kids Half-Day Coding Camp",
+    titleKey: "camps_data.camp1_title",
     dates: "29 – 30 Des 2014",
-    description: "Camp coding setengah hari untuk anak-anak.",
+    descriptionKey: "camps_data.camp1_desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -28,9 +29,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "2",
-    title: "Kids Half-Day Coding Camp for Beginner",
+    titleKey: "camps_data.camp2_title",
     dates: "28 – 30 Juni 2015",
-    description: "Pengantar Game dan Membuat Game dengan Blockly dan Game Maker.",
+    descriptionKey: "camps_data.camp2_desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -39,9 +40,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "3",
-    title: "Kids Half-Day Coding Camp for Intermediate",
+    titleKey: "camps_data.camp3_title",
     dates: "6 – 8 Juli 2015",
-    description: "Coding dengan JavaScript dan Python.",
+    descriptionKey: "camps_data.camp3_desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -50,9 +51,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "4",
-    title: "Kids Half-Day Coding Camp for Advanced",
+    titleKey: "camps_data.camp4_title",
     dates: "9 – 11 Juli 2015",
-    description: "Minecraft Modding dengan ScriptCraft dan CanaryMod.",
+    descriptionKey: "camps_data.camp4_desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2",
@@ -62,9 +63,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "5",
-    title: "Kids Half-Day Coding Camp – Games Development",
+    titleKey: "camps_data.camp5_title",
     dates: "21 -23 Des 2015",
-    description: "Blockly, GameMaker, JavaScript, Python, Minecraft Modding.",
+    descriptionKey: "camps_data.camp5_desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -73,9 +74,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "6",
-    title: "Kids Half-Day Coding Camp – Cryptography",
+    titleKey: "camps_data.camp6_title",
     dates: "25 – 27 Des 2015",
-    description: "Pengantar Python, Caesar Cipher, Vigenere Cipher.",
+    descriptionKey: "camps_data.camp6_desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -84,9 +85,9 @@ const dummyCamps: Camp[] = [
   },
   {
     id: "7",
-    title: "Kids Half-Day Coding Camp – Virus Antivirus",
+    titleKey: "camps_data.camp7_title",
     dates: "28 – 30 Des 2015",
-    description: "Pengantar Python, Virus dan Antivirus Sederhana, Virus Enkripsi dan AntiVirus.",
+    descriptionKey: "camps_data.camp7_desc",
     dayLinks: [
       { label: "Day 1", url: "#" },
       { label: "Day 2", url: "#" },
@@ -96,16 +97,18 @@ const dummyCamps: Camp[] = [
 ];
 
 const Camps: React.FC = () => {
+  const { t } = useTranslation();
+
   const handleDayLinkClick = (campTitle: string, dayLabel: string) => {
-    toast.info(`Detail untuk ${campTitle} - ${dayLabel} akan segera tersedia!`);
+    toast.info(t('details_coming_soon', { campTitle, dayLabel }));
   };
 
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Program Camps</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('camps_program_title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          Jelajahi program kamp coding intensif kami yang dirancang untuk berbagai tingkat keahlian.
+          {t('camps_program_subtitle')}
         </p>
       </section>
 
@@ -116,7 +119,7 @@ const Camps: React.FC = () => {
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-2">
                   <Code className="text-primary" size={28} />
-                  <CardTitle className="text-xl font-semibold">{camp.title}</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t(camp.titleKey)}</CardTitle>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <CalendarDays size={16} />
@@ -125,7 +128,7 @@ const Camps: React.FC = () => {
               </CardHeader>
               <CardContent className="flex-grow p-6 pt-0">
                 <CardDescription className="mb-4 text-muted-foreground">
-                  {camp.description}
+                  {t(camp.descriptionKey)}
                 </CardDescription>
                 <div className="flex flex-wrap gap-2 mt-4">
                   {camp.dayLinks.map((day, index) => (
@@ -133,7 +136,7 @@ const Camps: React.FC = () => {
                       key={index}
                       variant="outline"
                       size="sm"
-                      onClick={() => handleDayLinkClick(camp.title, day.label)}
+                      onClick={() => handleDayLinkClick(t(camp.titleKey), day.label)}
                       className="hover:bg-accent hover:text-accent-foreground"
                     >
                       {day.label}
@@ -148,7 +151,7 @@ const Camps: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>Kembali ke Beranda</Button>
+          <Button>{t('back_to_home')}</Button>
         </Link>
       </div>
     </div>

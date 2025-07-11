@@ -19,165 +19,164 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 interface BlogPost {
   id: string;
-  title: string;
-  excerpt: string;
+  titleKey: string;
+  excerptKey: string;
   date: string;
   image: string;
-  category: string;
-  author: string;
+  categoryKey: string;
+  authorKey: string;
   year: number;
-  month: number; // Properti bulan (1-12)
-  pdfLink?: string; // Properti baru untuk tautan PDF
-  tags: string[]; // Tambahkan properti tags
+  month: number;
+  pdfLink?: string;
+  tagsKeys: string[];
 }
 
-// Data dummy postingan blog
-// CATATAN UNTUK ADMIN:
-// Di aplikasi nyata, data postingan blog ini (termasuk tautan PDF)
-// akan diambil dari database melalui API, bukan dari data dummy.
-// Admin dapat mengelola postingan dan mengunggah file PDF melalui
-// antarmuka admin yang terpisah.
-// Tautan Google Drive di bawah ini adalah contoh placeholder.
-// Anda perlu menggantinya dengan tautan asli file PDF Anda di Google Drive.
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",
-    title: "Galeri Proyek Akhir HTML & CSS Angkatan 2023",
-    excerpt: "Lihat hasil karya menakjubkan siswa kami dalam membangun website pertama mereka.",
+    titleKey: "archive_posts.archive1_title",
+    excerptKey: "archive_posts.archive1_excerpt",
     date: "10 Oktober 2023",
     image: "https://source.unsplash.com/random/400x250/?html,css,project",
-    category: "Proyek Siswa",
-    author: "Tim Pengajar",
+    categoryKey: "archive_posts.archive1_category",
+    authorKey: "archive_posts.archive1_author",
     year: 2023,
-    month: 10, // Oktober
-    pdfLink: "https://docs.google.com/document/d/1_Galeri_Proyek_HTML_CSS/edit?usp=sharing", // Contoh tautan Google Drive
-    tags: ["proyek", "HTML", "CSS", "galeri"],
+    month: 10,
+    pdfLink: "https://docs.google.com/document/d/1_Galeri_Proyek_HTML_CSS/edit?usp=sharing",
+    tagsKeys: ["archive_posts.archive1_tags.0", "archive_posts.archive1_tags.1", "archive_posts.archive1_tags.2", "archive_posts.archive1_tags.3"],
   },
   {
     id: "2",
-    title: "Momen Seru Belajar JavaScript Interaktif",
-    excerpt: "Kompilasi foto dan cerita dari sesi praktik JavaScript yang penuh tawa dan penemuan.",
+    titleKey: "archive_posts.archive2_title",
+    excerptKey: "archive_posts.archive2_excerpt",
     date: "15 November 2023",
     image: "https://source.unsplash.com/random/400x250/?javascript,learning,fun",
-    category: "Kegiatan Kelas",
-    author: "Instruktur B",
+    categoryKey: "archive_posts.archive2_category",
+    authorKey: "archive_posts.archive2_author",
     year: 2023,
-    month: 11, // November
-    pdfLink: "https://docs.google.com/document/d/1_Momen_Seru_JavaScript/edit?usp=sharing", // Contoh tautan Google Drive
-    tags: ["JavaScript", "interaktif", "belajar", "momen"],
+    month: 11,
+    pdfLink: "https://docs.google.com/document/d/1_Momen_Seru_JavaScript/edit?usp=sharing",
+    tagsKeys: ["archive_posts.archive2_tags.0", "archive_posts.archive2_tags.1", "archive_posts.archive2_tags.2", "archive_posts.archive2_tags.3"],
   },
   {
     id: "3",
-    title: "Pameran Aplikasi Web React Terbaik",
-    excerpt: "Saksikan inovasi siswa kami dalam menciptakan aplikasi web dinamis menggunakan React.",
+    titleKey: "archive_posts.archive3_title",
+    excerptKey: "archive_posts.archive3_excerpt",
     date: "20 Desember 2023",
     image: "https://source.unsplash.com/random/400x250/?reactjs,app,showcase",
-    category: "Proyek Siswa",
-    author: "Tim Pengajar",
+    categoryKey: "archive_posts.archive3_category",
+    authorKey: "archive_posts.archive3_author",
     year: 2023,
-    month: 12, // Desember
-    pdfLink: "https://docs.google.com/document/d/1_Pameran_Aplikasi_React/edit?usp=sharing", // Contoh tautan Google Drive
-    tags: ["React", "aplikasi", "inovasi", "pameran"],
+    month: 12,
+    pdfLink: "https://docs.google.com/document/d/1_Pameran_Aplikasi_React/edit?usp=sharing",
+    tagsKeys: ["archive_posts.archive3_tags.0", "archive_posts.archive3_tags.1", "archive_posts.archive3_tags.2", "archive_posts.archive3_tags.3"],
   },
   {
     id: "4",
-    title: "Refleksi Belajar Python untuk Data Science",
-    excerpt: "Cerita dan pengalaman siswa dalam mengolah data menggunakan Python.",
+    titleKey: "archive_posts.archive4_title",
+    excerptKey: "archive_posts.archive4_excerpt",
     date: "25 Januari 2024",
     image: "https://source.unsplash.com/random/400x250/?python,data,reflection",
-    category: "Refleksi Belajar",
-    author: "Instruktur A",
+    categoryKey: "archive_posts.archive4_category",
+    authorKey: "archive_posts.archive4_author",
     year: 2024,
-    month: 1, // Januari
-    pdfLink: "https://docs.google.com/document/d/1_Refleksi_Python_Data_Science/edit?usp=sharing", // Contoh tautan Google Drive
-    tags: ["Python", "data science", "refleksi", "pengalaman"],
+    month: 1,
+    pdfLink: "https://docs.google.com/document/d/1_Refleksi_Python_Data_Science/edit?usp=sharing",
+    tagsKeys: ["archive_posts.archive4_tags.0", "archive_posts.archive4_tags.1", "archive_posts.archive4_tags.2", "archive_posts.archive4_tags.3"],
   },
   {
     id: "5",
-    title: "Workshop Desain UI/UX dengan Tailwind CSS",
-    excerpt: "Dokumentasi workshop praktis tentang mendesain antarmuka pengguna yang responsif.",
+    titleKey: "archive_posts.archive5_title",
+    excerptKey: "archive_posts.archive5_excerpt",
     date: "01 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?tailwind,uiux,workshop",
-    category: "Workshop",
-    author: "Instruktur B",
+    categoryKey: "archive_posts.archive5_category",
+    authorKey: "archive_posts.archive5_author",
     year: 2024,
-    month: 2, // Februari
-    pdfLink: "https://docs.google.com/document/d/1_Workshop_UIUX_Tailwind/edit?usp=sharing", // Contoh tautan Google Drive
-    tags: ["Tailwind CSS", "UI/UX", "desain", "workshop"],
+    month: 2,
+    pdfLink: "https://docs.google.com/document/d/1_Workshop_UIUX_Tailwind/edit?usp=sharing",
+    tagsKeys: ["archive_posts.archive5_tags.0", "archive_posts.archive5_tags.1", "archive_posts.archive5_tags.2", "archive_posts.archive5_tags.3"],
   },
   {
     id: "6",
-    title: "Sesi Pemecahan Masalah Debugging Kode",
-    excerpt: "Cuplikan dari sesi interaktif di mana siswa belajar menjadi detektif kode.",
+    titleKey: "archive_posts.archive6_title",
+    excerptKey: "archive_posts.archive6_excerpt",
     date: "10 Februari 2024",
     image: "https://source.unsplash.com/random/400x250/?debugging,problemsolving",
-    category: "Kegiatan Kelas",
-    author: "Instruktur C",
+    categoryKey: "archive_posts.archive6_category",
+    authorKey: "archive_posts.archive6_author",
     year: 2024,
-    month: 2, // Februari
-    pdfLink: "https://docs.google.com/document/d/1_Debugging_Kode/edit?usp=sharing", // Contoh tautan Google Drive
-    tags: ["debugging", "pemecahan masalah", "kode", "praktik"],
+    month: 2,
+    pdfLink: "https://docs.google.com/document/d/1_Debugging_Kode/edit?usp=sharing",
+    tagsKeys: ["archive_posts.archive6_tags.0", "archive_posts.archive6_tags.1", "archive_posts.archive6_tags.2", "archive_posts.archive6_tags.3"],
   },
   {
     id: "7",
-    title: "Kunjungan Industri Mengenal Dunia Startup",
-    excerpt: "Laporan kunjungan siswa ke startup teknologi terkemuka di Bandung.",
+    titleKey: "archive_posts.archive7_title",
+    excerptKey: "archive_posts.archive7_excerpt",
     date: "05 Maret 2024",
     image: "https://source.unsplash.com/random/400x250/?startup,industry,visit",
-    category: "Kegiatan Eksternal",
-    author: "Tim Pengajar",
+    categoryKey: "archive_posts.archive7_category",
+    authorKey: "archive_posts.archive7_author",
     year: 2024,
-    month: 3, // Maret
-    pdfLink: "https://docs.google.com/document/d/1_Kunjungan_Industri_Startup/edit?usp=sharing", // Contoh tautan Google Drive
-    tags: ["kunjungan", "industri", "startup", "pengalaman"],
+    month: 3,
+    pdfLink: "https://docs.google.com/document/d/1_Kunjungan_Industri_Startup/edit?usp=sharing",
+    tagsKeys: ["archive_posts.archive7_tags.0", "archive_posts.archive7_tags.1", "archive_posts.archive7_tags.2", "archive_posts.archive7_tags.3"],
   },
   {
     id: "8",
-    title: "Hackathon Mini Tantangan Coding Seru",
-    excerpt: "Ringkasan hackathon mini yang menguji kemampuan coding dan kolaborasi siswa.",
+    titleKey: "archive_posts.archive8_title",
+    excerptKey: "archive_posts.archive8_excerpt",
     date: "12 April 2024",
     image: "https://source.unsplash.com/random/400x250/?hackathon,coding,challenge",
-    category: "Kompetisi",
-    author: "Instruktur B",
+    categoryKey: "archive_posts.archive8_category",
+    authorKey: "archive_posts.archive8_author",
     year: 2024,
-    month: 4, // April
-    pdfLink: "https://docs.google.com/document/d/1_Hackathon_Mini_Coding/edit?usp=sharing", // Contoh tautan Google Drive
-    tags: ["hackathon", "coding", "tantangan", "kolaborasi"],
+    month: 4,
+    pdfLink: "https://docs.google.com/document/d/1_Hackathon_Mini_Coding/edit?usp=sharing",
+    tagsKeys: ["archive_posts.archive8_tags.0", "archive_posts.archive8_tags.1", "archive_posts.archive8_tags.2", "archive_posts.archive8_tags.3"],
   },
   {
     id: "9",
-    title: "Sertifikasi Kelulusan Angkatan Terbaru",
-    excerpt: "Perayaan kelulusan dan penyerahan sertifikat bagi siswa yang telah menyelesaikan kursus.",
+    titleKey: "archive_posts.archive9_title",
+    excerptKey: "archive_posts.archive9_excerpt",
     date: "20 Mei 2025",
     image: "https://source.unsplash.com/random/400x250/?graduation,certificate,celebration",
-    category: "Acara Spesial",
-    author: "Manajemen",
+    categoryKey: "archive_posts.archive9_category",
+    authorKey: "archive_posts.archive9_author",
     year: 2025,
-    month: 5, // Mei
-    pdfLink: "https://docs.google.com/document/d/1_Sertifikasi_Kelulusan/edit?usp=sharing", // Contoh tautan Google Drive
-    tags: ["kelulusan", "sertifikasi", "perayaan", "prestasi"],
+    month: 5,
+    pdfLink: "https://docs.google.com/document/d/1_Sertifikasi_Kelulusan/edit?usp=sharing",
+    tagsKeys: ["archive_posts.archive9_tags.0", "archive_posts.archive9_tags.1", "archive_posts.archive9_tags.2", "archive_posts.archive9_tags.3"],
   },
 ];
 
-const allTags: string[] = ["Semua", ...new Set(dummyBlogPosts.flatMap(post => post.tags))];
-
-const monthNames = [
-  "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-  "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-];
-
-const POSTS_PER_PAGE = 6; // Jumlah postingan per halaman
+const POSTS_PER_PAGE = 6;
 
 const Archives: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [selectedPeriod, setSelectedPeriod] = useState("Semua");
   const [selectedTag, setSelectedTag] = useState("Semua");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Generate unique year-month periods
+  const allTags: string[] = useMemo(() => {
+    const tags = new Set<string>();
+    dummyBlogPosts.forEach(post => {
+      post.tagsKeys.forEach(tagKey => tags.add(t(tagKey)));
+    });
+    return [t("tag"), ...Array.from(tags)];
+  }, [i18n.language]);
+
+  const monthNames = [
+    "", t("month_names.january"), t("month_names.february"), t("month_names.march"), t("month_names.april"), t("month_names.may"), t("month_names.june"),
+    t("month_names.july"), t("month_names.august"), t("month_names.september"), t("month_names.october"), t("month_names.november"), t("month_names.december")
+  ];
+
   const allPeriods: string[] = useMemo(() => {
     const periods = new Set<string>();
     dummyBlogPosts.forEach(post => {
@@ -186,14 +185,14 @@ const Archives: React.FC = () => {
     const sortedPeriods = Array.from(periods).sort((a, b) => {
       const [yearA, monthA] = a.split('-').map(Number);
       const [yearB, monthB] = b.split('-').map(Number);
-      if (yearA !== yearB) return yearB - yearA; // Sort by year descending
-      return monthB - monthA; // Then by month descending
+      if (yearA !== yearB) return yearB - yearA;
+      return monthB - monthA;
     });
-    return ["Semua", ...sortedPeriods];
-  }, []);
+    return [t("all_time"), ...sortedPeriods];
+  }, [i18n.language]);
 
   const getPeriodDisplayName = (period: string) => {
-    if (period === "Semua") return "Semua Waktu";
+    if (period === t("all_time")) return t("all_time");
     const [year, month] = period.split('-').map(Number);
     return `${year} - ${monthNames[month]}`;
   };
@@ -201,20 +200,20 @@ const Archives: React.FC = () => {
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return dummyBlogPosts.filter(post => {
-      const matchesSearch = post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-                            post.excerpt.toLowerCase().includes(lowerCaseSearchTerm);
+      const matchesSearch = t(post.titleKey).toLowerCase().includes(lowerCaseSearchTerm) ||
+                            t(post.excerptKey).toLowerCase().includes(lowerCaseSearchTerm);
       
       let matchesPeriod = true;
-      if (selectedPeriod !== "Semua") {
+      if (selectedPeriod !== t("all_time")) {
         const [filterYear, filterMonth] = selectedPeriod.split('-').map(Number);
         matchesPeriod = post.year === filterYear && post.month === filterMonth;
       }
 
-      const matchesTag = selectedTag === "Semua" || post.tags.includes(selectedTag);
+      const matchesTag = selectedTag === t("tag") || post.tagsKeys.map(key => t(key)).includes(selectedTag);
 
       return matchesSearch && matchesPeriod && matchesTag;
     });
-  }, [selectedPeriod, selectedTag, searchTerm]);
+  }, [selectedPeriod, selectedTag, searchTerm, i18n.language]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -225,56 +224,51 @@ const Archives: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top on page change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Reset pagination whenever filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPeriod, selectedTag, searchTerm]);
+  }, [selectedPeriod, selectedTag, searchTerm, i18n.language]);
 
   return (
-    <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner"> {/* Added bg-muted/40 and shadow-inner */}
-      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">Archives</h1>
+    <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
+      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">{t('archives')}</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
-        Temukan momen berharga dan pengalaman belajar kami. Filter berdasarkan periode, tag, atau cari dengan kata kunci.
+        {t('archives_page_subtitle')}
       </p>
 
-      {/* Filter Area */}
       <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-10 flex-wrap">
-        {/* Search Input */}
         <Input
           type="text"
-          placeholder="Cari postingan..."
+          placeholder={t('search_post')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full md:max-w-xs"
         />
 
-        {/* Tag Filter (as Select) */}
         <Select
           value={selectedTag}
           onValueChange={(value) => setSelectedTag(value)}
         >
           <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Tag" />
+            <SelectValue placeholder={t('tag')} />
           </SelectTrigger>
           <SelectContent>
             {allTags.map(tag => (
               <SelectItem key={tag} value={tag}>
-                {tag === "Semua" ? "Tag" : tag}
+                {tag === t("tag") ? t("tag") : tag}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
 
-        {/* Period Filter (Year and Month Combined) */}
         <Select
           value={selectedPeriod}
           onValueChange={(value) => setSelectedPeriod(value)}
         >
           <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Pilih Periode" />
+            <SelectValue placeholder={t('select_period')} />
           </SelectTrigger>
           <SelectContent>
             {allPeriods.map(period => (
@@ -286,34 +280,33 @@ const Archives: React.FC = () => {
         </Select>
       </div>
 
-      {/* Grid Postingan Blog */}
       {currentPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">
-              <img src={post.image} alt={post.title} className="w-full h-48 object-cover" />
+              <img src={post.image} alt={t(post.titleKey)} className="w-full h-48 object-cover" />
               <CardHeader className="flex-grow">
                 <div className="flex justify-between items-center mb-2">
-                  <Badge variant="secondary">{post.category}</Badge>
+                  <Badge variant="secondary">{t(post.categoryKey)}</Badge>
                   <span className="text-sm text-muted-foreground">{post.date}</span>
                 </div>
-                <CardTitle className="text-xl">{post.title}</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">By {post.author}</CardDescription>
+                <CardTitle className="text-xl">{t(post.titleKey)}</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">{t('by')} {t(post.authorKey)}</CardDescription>
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {post.tags.map(tag => (
-                    <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                  {post.tagsKeys.map(tagKey => (
+                    <Badge key={tagKey} variant="outline" className="text-xs">{t(tagKey)}</Badge>
                   ))}
                 </div>
               </CardHeader>
               <CardContent className="p-6 pt-0">
-                <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
+                <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerptKey)}</p>
                 {post.pdfLink ? (
                   <a href={post.pdfLink} target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button variant="outline" className="w-full">Baca Selengkapnya (PDF)</Button>
+                    <Button variant="outline" className="w-full">{t('read_more_pdf')}</Button>
                   </a>
                 ) : (
                   <Link to={`/posts/${post.id}`}>
-                    <Button variant="outline" className="w-full">Baca Selengkapnya</Button>
+                    <Button variant="outline" className="w-full">{t('read_more')}</Button>
                   </Link>
                 )}
               </CardContent>
@@ -321,10 +314,9 @@ const Archives: React.FC = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">Tidak ada postingan yang cocok dengan filter Anda.</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no_matching_posts')}</p>
       )}
 
-      {/* Paginasi */}
       {totalPages > 1 && (
         <Pagination className="mt-12">
           <PaginationContent>

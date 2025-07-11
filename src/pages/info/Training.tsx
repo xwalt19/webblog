@@ -3,47 +3,50 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CalendarDays, Code, Gamepad, Smartphone } from "lucide-react"; // Icons for visual appeal
+import { CalendarDays, Code, Gamepad, Smartphone } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface TrainingProgram {
   id: string;
-  title: string;
+  titleKey: string;
   dates: string;
-  description: string;
-  icon: React.ElementType; // Icon component from lucide-react
+  descriptionKey: string;
+  icon: React.ElementType;
 }
 
 const dummyTrainingPrograms: TrainingProgram[] = [
   {
     id: "1",
-    title: "Training on Games Development",
+    titleKey: "training_data.training1_title",
     dates: "10 - 12 Des 2014",
-    description: "Pelatihan intensif untuk mengembangkan game interaktif menggunakan teknologi terbaru.",
+    descriptionKey: "training_data.training1_desc",
     icon: Gamepad,
   },
   {
     id: "2",
-    title: "Intensive Training on Apps Development",
+    titleKey: "training_data.training2_title",
     dates: "18 Maret 2015",
-    description: "Program pelatihan mendalam untuk membangun aplikasi lintas platform yang responsif dan fungsional.",
+    descriptionKey: "training_data.training2_desc",
     icon: Smartphone,
   },
   {
     id: "3",
-    title: "iOS App Development Training with DyCode",
+    titleKey: "training_data.training3_title",
     dates: "7 April 2015",
-    description: "Pelatihan khusus pengembangan aplikasi iOS bekerja sama dengan DyCode, fokus pada Swift dan Xcode.",
-    icon: Code, // Menggunakan ikon Code sebagai placeholder untuk pengembangan aplikasi
+    descriptionKey: "training_data.training3_desc",
+    icon: Code,
   },
 ];
 
 const Training: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">Program Training</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('training_program_title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          Jelajahi program pelatihan khusus kami yang dirancang untuk meningkatkan keahlian Anda di berbagai bidang teknologi.
+          {t('training_program_subtitle')}
         </p>
       </section>
 
@@ -54,7 +57,7 @@ const Training: React.FC = () => {
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-3 mb-2">
                   <program.icon className="text-primary" size={28} />
-                  <CardTitle className="text-xl font-semibold">{program.title}</CardTitle>
+                  <CardTitle className="text-xl font-semibold">{t(program.titleKey)}</CardTitle>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <CalendarDays size={16} />
@@ -63,7 +66,7 @@ const Training: React.FC = () => {
               </CardHeader>
               <CardContent className="flex-grow p-6 pt-0">
                 <CardDescription className="mb-4 text-muted-foreground">
-                  {program.description}
+                  {t(program.descriptionKey)}
                 </CardDescription>
               </CardContent>
             </Card>
@@ -73,7 +76,7 @@ const Training: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>Kembali ke Beranda</Button>
+          <Button>{t('back_to_home')}</Button>
         </Link>
       </div>
     </div>
