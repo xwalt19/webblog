@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Mail, Facebook, Whatsapp, Globe } from "lucide-react"; // Menggunakan ikon Whatsapp yang benar
+import { Mail, Facebook, SquareWhatsapp, Globe } from "lucide-react"; // Mengubah Whatsapp menjadi SquareWhatsapp
 import { useTranslation } from "react-i18next";
 import ContactForm from "@/components/ContactForm";
 
@@ -38,7 +38,7 @@ const ContactUs: React.FC = () => {
           </Card>
 
           <Card className="flex flex-col items-center text-center p-6 bg-muted/30 hover:bg-muted/50 transition-colors duration-200 shadow-lg hover:shadow-xl">
-            <Whatsapp className="text-green-500 mb-4" size={48} /> {/* Menggunakan ikon Whatsapp */}
+            <SquareWhatsapp className="text-green-500 mb-4" size={48} /> {/* Menggunakan SquareWhatsapp */}
             <div>
               <h3 className="text-xl font-semibold mb-2">{t('whatsapp us')}</h3>
               <a href="https://wa.me/628122015409" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-lg">
