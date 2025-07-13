@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Mail, Facebook, Twitter, Globe } from "lucide-react";
+import { Mail, Facebook, Whatsapp, Globe } from "lucide-react"; // Menggunakan ikon Whatsapp yang benar
 import { useTranslation } from "react-i18next";
-import ContactForm from "@/components/ContactForm"; // Import the new ContactForm component
+import ContactForm from "@/components/ContactForm";
 
 const ContactUs: React.FC = () => {
   const { t } = useTranslation();
@@ -38,11 +38,11 @@ const ContactUs: React.FC = () => {
           </Card>
 
           <Card className="flex flex-col items-center text-center p-6 bg-muted/30 hover:bg-muted/50 transition-colors duration-200 shadow-lg hover:shadow-xl">
-            <Twitter className="text-blue-400 mb-4" size={48} />
+            <Whatsapp className="text-green-500 mb-4" size={48} /> {/* Menggunakan ikon Whatsapp */}
             <div>
-              <h3 className="text-xl font-semibold mb-2">{t('mention us on twitter')}</h3>
-              <a href="https://twitter.com/procodecg" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-lg">
-                @procodecg
+              <h3 className="text-xl font-semibold mb-2">{t('whatsapp us')}</h3>
+              <a href="https://wa.me/628122015409" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-lg">
+                (+62)8122015409
               </a>
             </div>
           </Card>
