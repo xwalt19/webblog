@@ -5,7 +5,6 @@ import WhyProCodeCG from "@/components/WhyProCodeCG";
 import CallToActionSection from "@/components/CallToActionSection";
 import MediaCarousel from "@/components/MediaCarousel";
 import FixedNewsSchedule from "@/components/FixedNewsSchedule";
-import ExternalArticlesFeed from "@/components/ExternalArticlesFeed";
 import FeaturedCourses from "@/components/FeaturedCourses"; // Import FeaturedCourses
 
 const Home: React.FC = () => {
@@ -17,7 +16,7 @@ const Home: React.FC = () => {
       <MediaCarousel />
       <FixedNewsSchedule />
       <FeaturedCourses /> {/* Add FeaturedCourses component */}
-      <ExternalArticlesFeed />
+      {/* ExternalArticlesFeed dihapus */}
       <CallToActionSection />
     </div>
   );
