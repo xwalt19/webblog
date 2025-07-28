@@ -21,6 +21,7 @@ import CalendarPage from "./pages/info/CalendarPage";
 import UploadContent from "./pages/UploadContent";
 import ContentList from "./pages/ContentList";
 import MigrateBlogPosts from "./pages/MigrateBlogPosts";
+import UploadBlogPost from "./pages/UploadBlogPost"; // Import halaman UploadBlogPost
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login"; // Import halaman Login
 import { SessionProvider } from "./components/SessionProvider"; // Import SessionProvider
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="upload-content" element={<UploadContent />} />
               <Route path="content" element={<ContentList />} />
               <Route path="migrate-blog-posts" element={<MigrateBlogPosts />} />
+              <Route path="upload-blog-post" element={<UploadBlogPost />} /> {/* Rute baru untuk upload blog post */}
               {/* TAMBAHKAN SEMUA RUTE KUSTOM DI ATAS RUTE CATCH-ALL "*" */}
               <Route path="*" element={<NotFound />} />
             </Route>

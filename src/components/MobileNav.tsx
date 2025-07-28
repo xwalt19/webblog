@@ -116,6 +116,9 @@ const MobileNav: React.FC = () => {
                     <Link to="/content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                       {t('content list.nav title')}
                     </Link>
+                    <Link to="/upload-blog-post" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                      {t('blog post.nav title')}
+                    </Link>
                     <Link to="/migrate-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                       {t('migration.blog posts migration title')}
                     </Link>
