@@ -198,6 +198,7 @@
   "blog post.content label": "Konten (HTML)",
   "blog post.content placeholder": "Masukkan konten HTML lengkap posting blog di sini.",
   "blog post.content description": "Masukkan konten HTML lengkap posting blog. Anda dapat menggunakan tag HTML untuk pemformatan.",
+  "blog post.content html tip": "Tip: Untuk hasil terbaik, bungkus seluruh konten HTML Anda dalam satu elemen akar, contoh: <div>...</div>",
   "blog post.pdf link label": "Tautan PDF (Opsional)",
   "blog post.pdf link placeholder": "Masukkan URL untuk arsip PDF",
   "blog post.pdf link description": "Jika ini adalah posting arsip, berikan tautan langsung ke PDF.",

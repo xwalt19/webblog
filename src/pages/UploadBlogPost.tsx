@@ -307,6 +307,10 @@ const UploadBlogPost: React.FC = () => {
                     </FormControl>
                     <FormDescription>
                       {t("blog post.content description")} {/* Updated description */}
+                      <br />
+                      <span className="text-sm text-yellow-600">
+                        {t("blog post.content html tip")}
+                      </span>
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

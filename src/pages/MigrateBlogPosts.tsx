@@ -47,7 +47,16 @@ const MigrateBlogPosts: React.FC = () => {
         }
 
         // Get the actual content from i18n using the contentKey
-        const actualContent = post.contentKey ? i18n.t(post.contentKey) : null;
+        let actualContent = post.contentKey ? i18n.t(post.contentKey) : null;
+        
+        // Ensure content is wrapped in a single root element (e.g., a div)
+        if (actualContent && !actualContent.trim().startsWith('<div') && !actualContent.trim().startsWith('<p')) {
+          actualContent = `<div>${actualContent}</div>`;
+        } else if (actualContent && actualContent.trim().startsWith('<p') && actualContent.trim().split('<p').length > 2) {
+          // If it starts with <p> but has multiple root <p> tags, wrap it
+          actualContent = `<div>${actualContent}</div>`;
+        }
+
 
         const { error: insertError } = await supabase
           .from('blog_posts')
