@@ -19,7 +19,6 @@ import TikTokPage from "./pages/media/TikTokPage";
 import CalendarPage from "./pages/info/CalendarPage";
 import UploadBlogPost from "./pages/UploadBlogPost"; // This component now handles both add and edit
 import ContentList from "./pages/ContentList";
-import MigrateBlogPosts from "./pages/MigrateBlogPosts";
 import ManageCalendar from "./pages/admin/ManageCalendar";
 import ManageArchives from "./pages/admin/ManageArchives";
 import ManageBlogPosts from "./pages/admin/ManageBlogPosts"; // New import
@@ -59,7 +58,6 @@ const App = () => (
               <Route path="admin/blog-posts/:id/edit" element={<UploadBlogPost />} /> {/* For editing existing posts */}
               <Route path="admin/manage-blog-posts" element={<ManageBlogPosts />} /> {/* New route for listing/managing blog posts */}
               <Route path="content" element={<ContentList />} /> {/* Keep ContentList for general overview if needed */}
-              <Route path="migrate-blog-posts" element={<MigrateBlogPosts />} />
               <Route path="admin/manage-calendar" element={<ManageCalendar />} />
               <Route path="admin/manage-archives" element={<ManageArchives />} />
               <Route path="*" element={<NotFound />} />
