@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,10 +13,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string | null;
+  content: string | null;
+  created_at: string;
+  image_url: string | null;
+  category: string | null;
+  author: string | null;
+  tags: string[] | null;
+  pdf_link: string | null;
+}
+
 const UploadBlogPost: React.FC = () => {
+  const { id: postId } = useParams<{ id: string }>(); // Get post ID from URL for editing
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { session, profile, loading } = useSession();
+  const { session, profile, loading: sessionLoading } = useSession();
+  
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
@@ -26,22 +41,62 @@ const UploadBlogPost: React.FC = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [initialImageUrl, setInitialImageUrl] = useState<string | null>(null);
+  const [initialPdfLink, setInitialPdfLink] = useState<string | null>(null);
+  const [dataLoading, setDataLoading] = useState(true);
 
   const categories = [
-    "Programming", "Technology", "Education", "Data Science", "Cybersecurity", "Mobile Development", "Cloud Computing"
+    "Programming", "Technology", "Education", "Data Science", "Cybersecurity", "Mobile Development", "Cloud Computing", "History", "Retro Tech", "Programming History"
   ];
 
   useEffect(() => {
-    if (!loading) {
+    if (!sessionLoading) {
       if (!session) {
         toast.error(t('auth.login required'));
         navigate('/login');
       } else if (profile?.role !== 'admin') {
         toast.error(t('auth.admin access required'));
         navigate('/');
+      } else {
+        if (postId) {
+          fetchPostData(postId);
+        } else {
+          setDataLoading(false); // Ready for new post if no ID
+        }
       }
     }
-  }, [session, profile, loading, navigate, t]);
+  }, [session, profile, sessionLoading, navigate, t, postId]);
+
+  const fetchPostData = async (id: string) => {
+    setDataLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+      if (data) {
+        setTitle(data.title || "");
+        setExcerpt(data.excerpt || "");
+        setContent(data.content || "");
+        setCategory(data.category || "");
+        setAuthor(data.author || "");
+        setTagsInput(data.tags?.join(', ') || "");
+        setInitialImageUrl(data.image_url || null);
+        setInitialPdfLink(data.pdf_link || null);
+      }
+    } catch (err: any) {
+      console.error("Error fetching post data:", err);
+      toast.error(t("upload blog post.fetch error", { error: err.message }));
+      navigate('/content'); // Redirect if post not found or error
+    } finally {
+      setDataLoading(false);
+    }
+  };
 
   const handleImageFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -79,6 +134,20 @@ const UploadBlogPost: React.FC = () => {
     return publicUrlData.publicUrl;
   };
 
+  const deleteFileFromStorage = async (url: string, bucket: string) => {
+    try {
+      const path = url.split(`/${bucket}/`)[1];
+      if (path) {
+        const { error } = await supabase.storage.from(bucket).remove([path]);
+        if (error) {
+          console.warn(`Failed to delete old file from ${bucket}:`, error.message);
+        }
+      }
+    } catch (e) {
+      console.warn("Error parsing file URL for deletion:", e);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setUploading(true);
@@ -89,62 +158,94 @@ const UploadBlogPost: React.FC = () => {
       return;
     }
 
-    let imageUrl: string | null = null;
-    let pdfUrl: string | null = null;
+    let currentImageUrl = initialImageUrl;
+    let currentPdfLink = initialPdfLink;
 
     try {
+      // Handle image upload/update
       if (imageFile) {
-        imageUrl = await uploadFile(imageFile, 'images', 'blog_thumbnails');
+        if (initialImageUrl) {
+          await deleteFileFromStorage(initialImageUrl, 'images');
+        }
+        currentImageUrl = await uploadFile(imageFile, 'images', 'blog_thumbnails');
+      } else if (postId && !initialImageUrl) {
+        // If editing and no initial image but no new file, ensure image_url is null
+        currentImageUrl = null;
       }
 
+      // Handle PDF upload/update
       if (pdfFile) {
-        pdfUrl = await uploadFile(pdfFile, 'pdfs', 'blog_pdfs');
+        if (initialPdfLink) {
+          await deleteFileFromStorage(initialPdfLink, 'pdfs');
+        }
+        currentPdfLink = await uploadFile(pdfFile, 'pdfs', 'blog_pdfs');
+      } else if (postId && !initialPdfLink) {
+        // If editing and no initial PDF but no new file, ensure pdf_link is null
+        currentPdfLink = null;
       }
 
       const tagsArray = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
 
-      const { error: insertError } = await supabase
-        .from('blog_posts')
-        .insert([{
-          title,
-          excerpt,
-          content: content || null,
-          image_url: imageUrl,
-          category,
-          author,
-          tags: tagsArray,
-          pdf_link: pdfUrl,
-          created_at: new Date().toISOString(),
-        }]);
+      const postData = {
+        title,
+        excerpt,
+        content: content || null,
+        image_url: currentImageUrl,
+        category,
+        author,
+        tags: tagsArray,
+        pdf_link: currentPdfLink,
+      };
 
-      if (insertError) {
-        throw insertError;
+      let error;
+      if (postId) {
+        // Update existing post
+        const { error: updateError } = await supabase
+          .from('blog_posts')
+          .update(postData)
+          .eq('id', postId);
+        error = updateError;
+      } else {
+        // Insert new post
+        const { error: insertError } = await supabase
+          .from('blog_posts')
+          .insert([{ ...postData, created_at: new Date().toISOString() }]);
+        error = insertError;
       }
 
-      toast.success(t("upload blog post.post uploaded successfully"));
-      setTitle("");
-      setExcerpt("");
-      setContent("");
-      setCategory("");
-      setAuthor("");
-      setTagsInput("");
-      setImageFile(null);
-      setPdfFile(null);
-      // Clear file inputs
-      const imageInput = document.getElementById("image-upload") as HTMLInputElement;
-      if (imageInput) imageInput.value = "";
-      const pdfInput = document.getElementById("pdf-upload") as HTMLInputElement;
-      if (pdfInput) pdfInput.value = "";
+      if (error) {
+        throw error;
+      }
+
+      toast.success(postId ? t("upload blog post.post updated successfully") : t("upload blog post.post uploaded successfully"));
+      
+      // Reset form or navigate
+      if (!postId) {
+        setTitle("");
+        setExcerpt("");
+        setContent("");
+        setCategory("");
+        setAuthor("");
+        setTagsInput("");
+        setImageFile(null);
+        setPdfFile(null);
+        const imageInput = document.getElementById("image-upload") as HTMLInputElement;
+        if (imageInput) imageInput.value = "";
+        const pdfInput = document.getElementById("pdf-upload") as HTMLInputElement;
+        if (pdfInput) pdfInput.value = "";
+      } else {
+        navigate('/admin/manage-blog-posts'); // Go back to list after edit
+      }
 
     } catch (err: any) {
-      console.error("Error uploading blog post:", err);
+      console.error("Error saving blog post:", err);
       toast.error(t("upload blog post.upload failed", { error: err.message }));
     } finally {
       setUploading(false);
     }
   };
 
-  if (loading || (!session && !loading) || (session && profile?.role !== 'admin')) {
+  if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading')}</p>
@@ -155,17 +256,21 @@ const UploadBlogPost: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('upload blog post title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">
+          {postId ? t('upload blog post.edit blog post title') : t('upload blog post title')}
+        </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('upload blog post subtitle')}
+          {postId ? t('upload blog post.edit blog post subtitle') : t('upload blog post subtitle')}
         </p>
       </section>
 
       <Card className="max-w-3xl mx-auto p-6 md:p-8 shadow-lg">
         <CardHeader className="text-center pb-6">
-          <CardTitle className="text-2xl font-bold mb-2">{t('add new blog post')}</CardTitle>
+          <CardTitle className="text-2xl font-bold mb-2">
+            {postId ? t('upload blog post.edit blog post') : t('add new blog post')}
+          </CardTitle>
           <CardDescription className="text-muted-foreground">
-            {t('fill form to upload blog post')}
+            {postId ? t('upload blog post.fill form to edit blog post') : t('fill form to upload blog post')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -248,9 +353,13 @@ const UploadBlogPost: React.FC = () => {
                 onChange={handleImageFileChange}
                 className="mt-1"
               />
-              {imageFile && (
+              {imageFile ? (
                 <p className="text-sm text-muted-foreground mt-2">
                   {t('upload blog post.selected image')}: {imageFile.name}
+                </p>
+              ) : initialImageUrl && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  {t('upload blog post.current image')}: <a href={initialImageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialImageUrl.split('/').pop()}</a>
                 </p>
               )}
             </div>
@@ -263,22 +372,26 @@ const UploadBlogPost: React.FC = () => {
                 onChange={handlePdfFileChange}
                 className="mt-1"
               />
-              {pdfFile && (
+              {pdfFile ? (
                 <p className="text-sm text-muted-foreground mt-2">
                   {t('upload blog post.selected pdf')}: {pdfFile.name}
+                </p>
+              ) : initialPdfLink && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  {t('upload blog post.current pdf')}: <a href={initialPdfLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialPdfLink.split('/').pop()}</a>
                 </p>
               )}
             </div>
             <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('uploading') : t('upload blog post.submit button')}
+              {uploading ? t('uploading') : (postId ? t('upload blog post.save changes') : t('upload blog post.submit button'))}
             </Button>
           </form>
         </CardContent>
       </Card>
 
       <div className="text-center mt-12">
-        <Link to="/">
-          <Button>{t('back to home')}</Button>
+        <Link to="/admin/manage-blog-posts">
+          <Button>{t('back to blog posts list')}</Button>
         </Link>
       </div>
     </div>

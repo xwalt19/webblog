@@ -17,11 +17,12 @@ import Partners from "./pages/Partners";
 import YouTubePage from "./pages/media/YouTubePage";
 import TikTokPage from "./pages/media/TikTokPage";
 import CalendarPage from "./pages/info/CalendarPage";
-import UploadBlogPost from "./pages/UploadBlogPost";
+import UploadBlogPost from "./pages/UploadBlogPost"; // This component now handles both add and edit
 import ContentList from "./pages/ContentList";
 import MigrateBlogPosts from "./pages/MigrateBlogPosts";
-import ManageCalendar from "./pages/admin/ManageCalendar.tsx";
-import ManageArchives from "./pages/admin/ManageArchives.tsx"; // New import
+import ManageCalendar from "./pages/admin/ManageCalendar";
+import ManageArchives from "./pages/admin/ManageArchives";
+import ManageBlogPosts from "./pages/admin/ManageBlogPosts"; // New import
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { SessionProvider } from "./components/SessionProvider";
@@ -53,11 +54,14 @@ const App = () => (
               <Route path="media/youtube" element={<YouTubePage />} />
               <Route path="media/tiktok" element={<TikTokPage />} />
               <Route path="info/calendar" element={<CalendarPage />} />
-              <Route path="upload-blog-post" element={<UploadBlogPost />} />
-              <Route path="content" element={<ContentList />} />
+              {/* Admin Routes */}
+              <Route path="admin/blog-posts/new" element={<UploadBlogPost />} /> {/* For adding new posts */}
+              <Route path="admin/blog-posts/:id/edit" element={<UploadBlogPost />} /> {/* For editing existing posts */}
+              <Route path="admin/manage-blog-posts" element={<ManageBlogPosts />} /> {/* New route for listing/managing blog posts */}
+              <Route path="content" element={<ContentList />} /> {/* Keep ContentList for general overview if needed */}
               <Route path="migrate-blog-posts" element={<MigrateBlogPosts />} />
               <Route path="admin/manage-calendar" element={<ManageCalendar />} />
-              <Route path="admin/manage-archives" element={<ManageArchives />} /> {/* New route */}
+              <Route path="admin/manage-archives" element={<ManageArchives />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
