@@ -1,22 +1,57 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
-import { dummyCalendarEvents, CalendarEvent } from "@/data/calendarEvents";
+import { supabase } from "@/integrations/supabase/client"; // Import supabase
+
+interface CalendarEvent {
+  id: string;
+  title: string;
+  description: string | null;
+  date: string; // ISO string from database
+}
 
 const ProCodeCGCalendar: React.FC = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const { t, i18n } = useTranslation();
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const events = dummyCalendarEvents.map(event => ({
+  useEffect(() => {
+    const fetchCalendarEvents = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error } = await supabase
+          .from('calendar_events')
+          .select('*')
+          .order('date', { ascending: true });
+
+        if (error) {
+          throw error;
+        }
+        setEvents(data || []);
+      } catch (err: any) {
+        console.error("Error fetching calendar events:", err);
+        setError(t("calendar.fetch error", { error: err.message }));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCalendarEvents();
+  }, [t]);
+
+  const parsedEvents = events.map(event => ({
     ...event,
     date: new Date(event.date) // Ensure Date objects are created
   }));
 
   const getDayEvents = (day: Date) => {
-    return events.filter(event => 
+    return parsedEvents.filter(event => 
       event.date.getDate() === day.getDate() &&
       event.date.getMonth() === day.getMonth() &&
       event.date.getFullYear() === day.getFullYear()
@@ -30,24 +65,30 @@ const ProCodeCGCalendar: React.FC = () => {
           <CardTitle className="text-2xl font-bold text-center">{t('procodecg calendar title')}</CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="rounded-md border shadow"
-            modifiers={{
-              hasEvent: events.map(event => event.date)
-            }}
-            modifiersStyles={{
-              hasEvent: {
-                fontWeight: 'bold',
-                color: 'hsl(var(--primary))',
-                backgroundColor: 'hsl(var(--accent))',
-                borderRadius: '0.375rem',
-              }
-            }}
-            captionLayout="dropdown"
-          />
+          {loading ? (
+            <p className="text-center text-muted-foreground">{t('loading events')}</p>
+          ) : error ? (
+            <p className="text-center text-destructive">{error}</p>
+          ) : (
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              className="rounded-md border shadow"
+              modifiers={{
+                hasEvent: parsedEvents.map(event => event.date)
+              }}
+              modifiersStyles={{
+                hasEvent: {
+                  fontWeight: 'bold',
+                  color: 'hsl(var(--primary))',
+                  backgroundColor: 'hsl(var(--accent))',
+                  borderRadius: '0.375rem',
+                }
+              }}
+              captionLayout="dropdown"
+            />
+          )}
         </CardContent>
         {date && (
           <div className="mt-6 p-4 border-t border-border">
@@ -57,7 +98,7 @@ const ProCodeCGCalendar: React.FC = () => {
             {getDayEvents(date).length > 0 ? (
               <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
                 {getDayEvents(date).map((event, index) => (
-                  <li key={index}>{t(event.title)}</li>
+                  <li key={index}>{event.title} - {event.description}</li>
                 ))}
               </ul>
             ) : (

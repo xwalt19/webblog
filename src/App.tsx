@@ -20,6 +20,7 @@ import CalendarPage from "./pages/info/CalendarPage";
 import UploadContent from "./pages/UploadContent";
 import ContentList from "./pages/ContentList";
 import MigrateBlogPosts from "./pages/MigrateBlogPosts";
+import ManageCalendar from "./pages/admin/ManageCalendar.tsx"; // Import the new admin page
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { SessionProvider } from "./components/SessionProvider";
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="upload-content" element={<UploadContent />} />
               <Route path="content" element={<ContentList />} />
               <Route path="migrate-blog-posts" element={<MigrateBlogPosts />} />
+              <Route path="admin/manage-calendar" element={<ManageCalendar />} /> {/* New admin route */}
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
