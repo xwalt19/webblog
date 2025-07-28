@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client"; // Import supabase client
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -46,12 +47,29 @@ const ContactForm: React.FC = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // This is where you would typically send the form data to a backend API.
-    // For now, we'll just log the values and show a toast message.
-    console.log("Form submitted with values:", values);
-    toast.success(t("contact form.submission success"));
-    form.reset(); // Reset the form after successful submission
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const toastId = toast.loading(t("contact form.sending email")); // Show loading toast
+
+    try {
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: values,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Check for application-level errors returned by the edge function
+      if (data && data.error) {
+        throw new Error(data.error);
+      }
+
+      toast.success(t("contact form.email sent success"), { id: toastId });
+      form.reset(); // Reset the form after successful submission
+    } catch (err: any) {
+      console.error("Error sending contact form:", err);
+      toast.error(t("contact form.email send error", { error: err.message }), { id: toastId });
+    }
   }
 
   return (
