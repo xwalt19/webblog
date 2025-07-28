@@ -28,8 +28,7 @@ const TikTokUpdates: React.FC = () => {
     const fetchTikTokVideos = async () => {
       try {
         setLoading(true);
-        // Simulate API call
-        await new Promise<void>(resolve => setTimeout(resolve, 1000));
+        // Simulate API call - REMOVED ARTIFICIAL DELAY
         setVideos(dummyTikTokVideos);
       } catch (err) {
         setError(t("failed to load videos"));

@@ -28,8 +28,7 @@ const YouTubeUpdates: React.FC = () => {
     const fetchYouTubeVideos = async () => {
       try {
         setLoading(true);
-        // Simulate API call
-        await new Promise<void>(resolve => setTimeout(resolve, 1000));
+        // Simulate API call - REMOVED ARTIFICIAL DELAY
         setVideos(dummyYouTubeVideos);
       } catch (err) {
         setError(t("failed to load videos"));
