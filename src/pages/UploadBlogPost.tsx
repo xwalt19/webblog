@@ -24,6 +24,7 @@ interface BlogPost {
   author: string | null;
   tags: string[] | null;
   pdf_link: string | null;
+  created_by: string | null; // Add created_by to interface
 }
 
 const UploadBlogPost: React.FC = () => {
@@ -195,6 +196,7 @@ const UploadBlogPost: React.FC = () => {
         author,
         tags: tagsArray,
         pdf_link: currentPdfLink,
+        ...(postId ? {} : { created_by: session?.user?.id }), // Add created_by only for new posts
       };
 
       let error;
