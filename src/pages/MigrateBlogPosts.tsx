@@ -47,7 +47,7 @@ const MigrateBlogPosts: React.FC = () => {
         }
 
         // Get the actual content from i18n using the contentKey
-        let actualContent = post.contentKey ? i18n.t(post.contentKey) : null;
+        let actualContent = post.contentKey ? String(i18n.t(post.contentKey)) : null; // Explicitly cast to String
         
         // Always ensure content is wrapped in a single root element for React's Children.only validation.
         // This might result in nested divs (e.g., <div><div>...</div></div>) but guarantees a single root.
