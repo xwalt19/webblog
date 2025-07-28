@@ -28,47 +28,46 @@ const MigrateBlogPosts: React.FC = () => {
 
     for (const post of allPostsToMigrate) {
       try {
-        // Cek apakah post sudah ada berdasarkan title_key untuk mencegah duplikasi
+        // Cek apakah post sudah ada berdasarkan title untuk mencegah duplikasi
+        const translatedTitle = i18n.t(post.titleKey);
         const { data: existingPost, error: fetchError } = await supabase
           .from('blog_posts')
           .select('id')
-          .eq('title_key', post.titleKey)
+          .eq('title', translatedTitle)
           .single();
 
-        if (fetchError && fetchError.code !== 'PGRST116') {
+        if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 means "no rows found"
           throw fetchError;
         }
 
         if (existingPost) {
-          console.log(`Post with titleKey "${post.titleKey}" already exists. Skipping.`);
+          console.log(`Post with title "${translatedTitle}" already exists. Skipping.`);
           successCount++;
           setMigratedCount(prev => prev + 1);
           continue;
         }
 
-        // Get the actual content from i18n using the contentKey
-        let actualContent = post.contentKey ? String(i18n.t(post.contentKey)) : null; // Explicitly cast to String
+        // Translate all keys to their actual string values
+        const translatedPost = {
+          title: i18n.t(post.titleKey),
+          excerpt: i18n.t(post.excerptKey),
+          created_at: new Date(post.date).toISOString(),
+          image_url: post.image,
+          category: i18n.t(post.categoryKey),
+          author: i18n.t(post.authorKey),
+          tags: post.tagsKeys.map(tagKey => i18n.t(tagKey)), // Translate each tag
+          content: post.contentKey ? String(i18n.t(post.contentKey)) : null,
+          pdf_link: post.pdfLink,
+        };
         
-        // Always ensure content is wrapped in a single root element for React's Children.only validation.
-        // This might result in nested divs (e.g., <div><div>...</div></div>) but guarantees a single root.
-        if (actualContent) {
-          actualContent = `<div>${actualContent}</div>`;
+        // Ensure content is wrapped in a single root element if it exists
+        if (translatedPost.content) {
+          translatedPost.content = `<div>${translatedPost.content}</div>`;
         }
-
 
         const { error: insertError } = await supabase
           .from('blog_posts')
-          .insert({
-            title_key: post.titleKey,
-            excerpt_key: post.excerptKey,
-            created_at: new Date(post.date).toISOString(),
-            image_url: post.image,
-            category_key: post.categoryKey,
-            author_key: post.authorKey,
-            tags_keys: post.tagsKeys,
-            content_key: actualContent, // Store actual content
-            pdf_link: post.pdfLink,
-          });
+          .insert(translatedPost);
 
         if (insertError) {
           throw insertError;

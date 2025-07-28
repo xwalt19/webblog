@@ -8,14 +8,14 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface BlogPost {
   id: string;
-  title_key: string;
-  excerpt_key: string;
+  title: string;
+  excerpt: string;
   created_at: string;
   image_url: string;
-  category_key: string;
-  author_key: string;
-  tags_keys: string[];
-  content_key?: string; // This will now hold direct content
+  category: string;
+  author: string;
+  tags: string[];
+  content?: string;
   pdf_link?: string;
 }
 
@@ -94,23 +94,22 @@ const PostDetail: React.FC = () => {
   return (
     <Card className="max-w-3xl mx-auto">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold">{t(post.title_key)}</CardTitle>
+        <CardTitle className="text-3xl font-bold">{post.title}</CardTitle>
         <p className="text-sm text-muted-foreground">{formatDate(post.created_at)}</p>
         <div className="flex flex-wrap gap-1 mt-2">
-          {post.tags_keys?.map(tagKey => (
-            <Badge key={tagKey} variant="outline" className="text-xs">{t(tagKey)}</Badge>
+          {post.tags?.map(tag => (
+            <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
           ))}
         </div>
       </CardHeader>
       <CardContent>
-        {/* Wrap all content inside CardContent with a single div */}
         <div>
           {post.image_url && (
             <div className="relative w-full h-auto max-h-96 overflow-hidden mb-6 rounded-md">
-              <img src={post.image_url} alt={t(post.title_key)} className="w-full h-full object-cover" />
+              <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
             </div>
           )}
-          <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post.content_key || '' }} />
+          <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post.content || '' }} />
           <div className="mt-8">
             <Link to="/blog">
               <Button variant="outline">{t('return to post list')}</Button>

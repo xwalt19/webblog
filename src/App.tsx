@@ -17,10 +17,10 @@ import Partners from "./pages/Partners";
 import YouTubePage from "./pages/media/YouTubePage";
 import TikTokPage from "./pages/media/TikTokPage";
 import CalendarPage from "./pages/info/CalendarPage";
-import UploadContent from "./pages/UploadContent";
+import UploadBlogPost from "./pages/UploadBlogPost"; // Updated import
 import ContentList from "./pages/ContentList";
 import MigrateBlogPosts from "./pages/MigrateBlogPosts";
-import ManageCalendar from "./pages/admin/ManageCalendar.tsx"; // Import the new admin page
+import ManageCalendar from "./pages/admin/ManageCalendar.tsx";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { SessionProvider } from "./components/SessionProvider";
@@ -52,10 +52,10 @@ const App = () => (
               <Route path="media/youtube" element={<YouTubePage />} />
               <Route path="media/tiktok" element={<TikTokPage />} />
               <Route path="info/calendar" element={<CalendarPage />} />
-              <Route path="upload-content" element={<UploadContent />} />
+              <Route path="upload-blog-post" element={<UploadBlogPost />} /> {/* Updated route */}
               <Route path="content" element={<ContentList />} />
               <Route path="migrate-blog-posts" element={<MigrateBlogPosts />} />
-              <Route path="admin/manage-calendar" element={<ManageCalendar />} /> {/* New admin route */}
+              <Route path="admin/manage-calendar" element={<ManageCalendar />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

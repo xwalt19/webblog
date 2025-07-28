@@ -6,23 +6,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { Image, FileText, CalendarDays } from "lucide-react";
-import { useSession } from "@/components/SessionProvider"; // Import useSession
+import { Image, FileText, CalendarDays, Trash } from "lucide-react"; // Import Trash icon
+import { useSession } from "@/components/SessionProvider";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
-interface ContentItem {
+interface BlogPost {
   id: string;
   title: string;
-  description: string | null;
+  excerpt: string | null;
   image_url: string | null;
   created_at: string;
+  category: string;
+  author: string;
+  tags: string[];
+  pdf_link: string | null;
 }
 
 const ContentList: React.FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { session, profile, loading } = useSession();
-  const [content, setContent] = useState<ContentItem[]>([]);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,29 +40,50 @@ const ContentList: React.FC = () => {
         toast.error(t('auth.admin access required'));
         navigate('/');
       } else {
-        fetchContent();
+        fetchBlogPosts();
       }
     }
   }, [session, profile, loading, navigate, t]);
 
-  const fetchContent = async () => {
+  const fetchBlogPosts = async () => {
     setDataLoading(true);
     setError(null);
     try {
       const { data, error } = await supabase
-        .from('content')
+        .from('blog_posts')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
         throw error;
       }
-      setContent(data || []);
+      setBlogPosts(data || []);
     } catch (err: any) {
-      console.error("Error fetching content:", err);
+      console.error("Error fetching blog posts:", err);
       setError(t("content list.fetch error", { error: err.message }));
     } finally {
       setDataLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm(t("content list.confirm delete"))) {
+      return;
+    }
+    try {
+      const { error } = await supabase
+        .from('blog_posts')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        throw error;
+      }
+      toast.success(t("content list.post deleted successfully"));
+      fetchBlogPosts(); // Refresh the list
+    } catch (err: any) {
+      console.error("Error deleting post:", err);
+      toast.error(t("content list.delete error", { error: err.message }));
     }
   };
 
@@ -95,27 +121,38 @@ const ContentList: React.FC = () => {
         <p className="text-center text-muted-foreground">{t('content list.loading')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
-      ) : content.length > 0 ? (
+      ) : blogPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {content.map((item) => (
-            <Card key={item.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-              {item.image_url && (
+          {blogPosts.map((post) => (
+            <Card key={post.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+              {post.image_url && (
                 <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center">
-                  <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
+                  <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
                 </div>
               )}
               <CardHeader className="flex-grow">
-                <CardTitle className="text-xl">{item.title}</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground flex items-center gap-1">
-                  <CalendarDays size={14} /> {formatDateTime(item.created_at)}
-                </CardDescription>
+                <div className="flex justify-between items-center mb-2">
+                  <Badge variant="secondary">{post.category}</Badge>
+                  <span className="text-sm text-muted-foreground">{formatDateTime(post.created_at)}</span>
+                </div>
+                <CardTitle className="text-xl">{post.title}</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">{t('by')} {post.author}</CardDescription>
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {post.tags?.map(tag => (
+                    <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                  ))}
+                </div>
               </CardHeader>
               <CardContent className="p-6 pt-0">
-                <p className="text-muted-foreground mb-4 line-clamp-3">{item.description}</p>
-                {/* You might want a detail page for each content item later */}
-                {/* <Link to={`/content/${item.id}`}>
-                  <Button variant="outline" className="w-full">{t('view details')}</Button>
-                </Link> */}
+                <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
+                <div className="flex gap-2">
+                  <Link to={`/posts/${post.id}`} className="flex-grow">
+                    <Button variant="outline" className="w-full">{t('view details')}</Button>
+                  </Link>
+                  <Button variant="destructive" onClick={() => handleDelete(post.id)}>
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}

@@ -226,14 +226,14 @@ const Layout: React.FC = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            to="/upload-content"
+                            to="/upload-blog-post" // Updated link
                             className={cn(
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('upload content')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('upload blog post title')}</div> {/* Updated text */}
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('upload content desc')}
+                              {t('upload blog post subtitle')} {/* Updated text */}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -268,7 +268,7 @@ const Layout: React.FC = () => {
                           </Link>
                         </NavigationMenuLink>
                       </li>
-                      <li> {/* New link for Manage Calendar */}
+                      <li>
                         <NavigationMenuLink asChild>
                           <Link
                             to="/admin/manage-calendar"

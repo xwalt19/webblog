@@ -20,18 +20,18 @@ import {
 } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client"; // Import supabase
+import { supabase } from "@/integrations/supabase/client";
 
 interface BlogPost {
   id: string;
-  title_key: string;
-  excerpt_key: string;
+  title: string;
+  excerpt: string;
   created_at: string;
   image_url: string;
-  category_key: string;
-  author_key: string;
-  tags_keys: string[];
-  content_key?: string;
+  category: string;
+  author: string;
+  tags: string[];
+  content?: string;
   pdf_link?: string;
 }
 
@@ -78,12 +78,12 @@ const Archives: React.FC = () => {
     setSelectedTag("all");
     setSearchTerm("");
     setCurrentPage(1);
-  }, [i18n.language, allArchivePosts]); // Reset filters when language or posts change
+  }, [i18n.language, allArchivePosts]);
 
   const allTags: string[] = useMemo(() => {
     const tags = new Set<string>();
     allArchivePosts.forEach(post => {
-      post.tags_keys?.forEach(tagKey => tags.add(tagKey));
+      post.tags?.forEach(tag => tags.add(tag));
     });
     return ["all", ...Array.from(tags)];
   }, [allArchivePosts]);
@@ -117,8 +117,8 @@ const Archives: React.FC = () => {
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return allArchivePosts.filter(post => {
-      const matchesSearch = t(post.title_key).toLowerCase().includes(lowerCaseSearchTerm) ||
-                            t(post.excerpt_key).toLowerCase().includes(lowerCaseSearchTerm);
+      const matchesSearch = post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+                            post.excerpt.toLowerCase().includes(lowerCaseSearchTerm);
       
       let matchesPeriod = true;
       if (selectedPeriod !== "all") {
@@ -127,7 +127,7 @@ const Archives: React.FC = () => {
         matchesPeriod = postDate.getFullYear() === filterYear && (postDate.getMonth() + 1) === filterMonth;
       }
 
-      const matchesTag = selectedTag === "all" || post.tags_keys?.includes(selectedTag);
+      const matchesTag = selectedTag === "all" || post.tags?.includes(selectedTag);
 
       return matchesSearch && matchesPeriod && matchesTag;
     });
@@ -190,9 +190,9 @@ const Archives: React.FC = () => {
             <SelectValue placeholder={t('tag')} />
           </SelectTrigger>
           <SelectContent>
-            {allTags.map(tagKey => (
-              <SelectItem key={tagKey} value={tagKey}>
-                {tagKey === "all" ? t("tag") : t(tagKey)}
+            {allTags.map(tag => (
+              <SelectItem key={tag} value={tag}>
+                {tag === "all" ? t("tag") : tag}
               </SelectItem>
             ))}
           </SelectContent>
@@ -219,22 +219,22 @@ const Archives: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">
-              <img src={post.image_url} alt={t(post.title_key)} className="w-full h-48 object-cover" />
+              <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover" />
               <CardHeader className="flex-grow">
                 <div className="flex justify-between items-center mb-2">
-                  <Badge variant="secondary">{t(post.category_key)}</Badge>
+                  <Badge variant="secondary">{post.category}</Badge>
                   <span className="text-sm text-muted-foreground">{formatDate(post.created_at)}</span>
                 </div>
-                <CardTitle className="text-xl">{t(post.title_key)}</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">{t('by')} {t(post.author_key)}</CardDescription>
+                <CardTitle className="text-xl">{post.title}</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">{t('by')} {post.author}</CardDescription>
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {post.tags_keys?.map(tagKey => (
-                    <Badge key={tagKey} variant="outline" className="text-xs">{t(tagKey)}</Badge>
+                  {post.tags?.map(tag => (
+                    <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
                   ))}
                 </div>
               </CardHeader>
               <CardContent className="p-6 pt-0">
-                <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerpt_key)}</p>
+                <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
                 {post.pdf_link ? (
                   <a href={post.pdf_link} target="_blank" rel="noopener noreferrer" className="w-full">
                     <Button variant="outline" className="w-full">{t('read more pdf')}</Button>

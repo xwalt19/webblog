@@ -6,18 +6,18 @@ import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client"; // Import supabase
+import { supabase } from "@/integrations/supabase/client";
 
 interface BlogPost {
   id: string;
-  title_key: string;
-  excerpt_key: string;
+  title: string;
+  excerpt: string;
   created_at: string;
   image_url: string;
-  category_key: string;
-  author_key: string;
-  tags_keys: string[];
-  content_key?: string;
+  category: string;
+  author: string;
+  tags: string[];
+  content?: string;
   pdf_link?: string;
 }
 
@@ -58,8 +58,9 @@ const LatestBlogPosts: React.FC = () => {
         const { data, error } = await supabase
           .from('blog_posts')
           .select('*')
+          .is('pdf_link', null) // Only fetch blog posts (not archives)
           .order('created_at', { ascending: false })
-          .limit(7); // Ambil 7 postingan terbaru untuk carousel
+          .limit(7);
 
         if (error) {
           throw error;
@@ -124,22 +125,22 @@ const LatestBlogPosts: React.FC = () => {
               {latestPosts.map((post) => (
                 <div key={post.id} className="flex-none w-full sm:w-1/2 lg:w-1/3 pl-4">
                   <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
-                    <img src={post.image_url} alt={t(post.title_key)} className="w-full h-48 object-cover" />
+                    <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover" />
                     <CardHeader className="flex-grow">
                       <div className="flex justify-between items-center mb-2">
-                        <Badge variant="secondary">{t(post.category_key)}</Badge>
+                        <Badge variant="secondary">{post.category}</Badge>
                         <span className="text-sm text-muted-foreground">{formatDate(post.created_at)}</span>
                       </div>
-                      <CardTitle className="text-xl">{t(post.title_key)}</CardTitle>
-                      <CardDescription className="text-sm text-muted-foreground">{t('by')} {t(post.author_key)}</CardDescription>
+                      <CardTitle className="text-xl">{post.title}</CardTitle>
+                      <CardDescription className="text-sm text-muted-foreground">{t('by')} {post.author}</CardDescription>
                       <div className="flex flex-wrap gap-1 mt-2">
-                        {post.tags_keys?.map(tagKey => (
-                          <Badge key={tagKey} variant="outline" className="text-xs">{t(tagKey)}</Badge>
+                        {post.tags?.map(tag => (
+                          <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
                         ))}
                       </div>
                     </CardHeader>
                     <CardContent className="p-6 pt-0">
-                      <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerpt_key)}</p>
+                      <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
                       <Link to={`/posts/${post.id}`}>
                         <Button variant="outline" className="w-full">{t('read more')}</Button>
                       </Link>

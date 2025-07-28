@@ -119,8 +119,8 @@ const MobileNav: React.FC = () => {
                   {t('admin tools')}
                 </AccordionTrigger>
                 <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
-                  <Link to="/upload-content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('upload content')}
+                  <Link to="/upload-blog-post" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}> {/* Updated link */}
+                    {t('upload blog post title')} {/* Updated text */}
                   </Link>
                   <Link to="/content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('content list.nav title')}
@@ -128,7 +128,7 @@ const MobileNav: React.FC = () => {
                   <Link to="/migrate-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('migration.blog posts migration title')}
                   </Link>
-                  <Link to="/admin/manage-calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}> {/* New link */}
+                  <Link to="/admin/manage-calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('manage calendar.nav title')}
                   </Link>
                 </AccordionContent>
