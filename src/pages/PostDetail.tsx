@@ -103,14 +103,19 @@ const PostDetail: React.FC = () => {
         </div>
       </CardHeader>
       <CardContent>
-        {post.image_url && (
-          <img src={post.image_url} alt={t(post.title_key)} className="w-full h-auto object-cover mb-6 rounded-md" />
-        )}
-        <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post.content_key || '' }} /> {/* Directly render content_key */}
-        <div className="mt-8">
-          <Link to="/blog">
-            <Button variant="outline">{t('return to post list')}</Button>
-          </Link>
+        {/* Wrap all content inside CardContent with a single div */}
+        <div>
+          {post.image_url && (
+            <div className="relative w-full h-auto max-h-96 overflow-hidden mb-6 rounded-md">
+              <img src={post.image_url} alt={t(post.title_key)} className="w-full h-full object-cover" />
+            </div>
+          )}
+          <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post.content_key || '' }} />
+          <div className="mt-8">
+            <Link to="/blog">
+              <Button variant="outline">{t('return to post list')}</Button>
+            </Link>
+          </div>
         </div>
       </CardContent>
     </Card>
