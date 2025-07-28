@@ -20,6 +20,7 @@ import TikTokPage from "./pages/media/TikTokPage";   // Import halaman TikTok
 import CalendarPage from "./pages/info/CalendarPage"; // Import halaman CalendarPage
 import UploadContent from "./pages/UploadContent"; // Import halaman UploadContent
 import ContentList from "./pages/ContentList"; // Import halaman ContentList
+import MigrateBlogPosts from "./pages/MigrateBlogPosts"; // Import halaman MigrateBlogPosts
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="info/calendar" element={<CalendarPage />} /> {/* Rute untuk halaman CalendarPage */}
             <Route path="upload-content" element={<UploadContent />} /> {/* Rute untuk halaman UploadContent */}
             <Route path="content" element={<ContentList />} /> {/* Rute untuk halaman ContentList */}
+            <Route path="migrate-blog-posts" element={<MigrateBlogPosts />} /> {/* Rute untuk halaman MigrateBlogPosts */}
             {/* TAMBAHKAN SEMUA RUTE KUSTOM DI ATAS RUTE CATCH-ALL "*" */}
             <Route path="*" element={<NotFound />} />
           </Route>
