@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import {
@@ -277,15 +275,13 @@ const Layout: React.FC = () => {
             <LanguageSwitcher />
             {!loading && (
               session ? (
-                <Button variant="ghost" size="icon" onClick={handleLogout} className="text-foreground hover:bg-accent">
-                  <LogOut className="h-6 w-6" />
-                  <span className="sr-only">{t('auth.logout')}</span>
+                <Button variant="ghost" onClick={handleLogout} className="text-foreground hover:bg-accent">
+                  <LogOut className="h-5 w-5 mr-2" /> {t('auth.logout')}
                 </Button>
               ) : (
                 <Link to="/login">
-                  <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent">
-                    <LogIn className="h-6 w-6" />
-                    <span className="sr-only">{t('auth.login')}</span>
+                  <Button variant="ghost" className="text-foreground hover:bg-accent">
+                    <LogIn className="h-5 w-5 mr-2" /> {t('auth.login')}
                   </Button>
                 </Link>
               )
