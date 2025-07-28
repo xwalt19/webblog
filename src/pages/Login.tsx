@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button'; // Import Button
+import { Button } from '@/components/ui/button';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -16,8 +16,9 @@ const Login: React.FC = () => {
   const [view, setView] = useState<'sign_in' | 'sign_up'>('sign_in'); // State untuk mengelola tampilan
 
   useEffect(() => {
+    // Jika sesi ada dan tidak sedang memuat, arahkan ke beranda
     if (session && !loading) {
-      navigate('/'); // Redirect ke home jika sudah login
+      navigate('/');
     }
   }, [session, loading, navigate]);
 
@@ -29,6 +30,12 @@ const Login: React.FC = () => {
     );
   }
 
+  // Jika tidak memuat dan sesi ada, jangan render komponen Auth
+  // useEffect di atas akan menangani navigasi.
+  if (session) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg border border-border">
@@ -36,6 +43,7 @@ const Login: React.FC = () => {
           {view === 'sign_in' ? t('auth.login title') : t('auth.register title')}
         </h1>
         <Auth
+          key={view} // Menambahkan key untuk memaksa re-mount saat tampilan berubah
           supabaseClient={supabase}
           appearance={{
             theme: ThemeSupa,
@@ -59,10 +67,10 @@ const Login: React.FC = () => {
               },
             },
           }}
-          theme="light" // Gunakan tema terang
-          providers={[]} // Tidak ada penyedia pihak ketiga untuk saat ini
-          redirectTo={window.location.origin} // Redirect ke home setelah aksi otentikasi
-          view={view} // Atur tampilan secara dinamis
+          theme="light"
+          providers={[]}
+          redirectTo={window.location.origin}
+          view={view}
         />
         <div className="mt-4 text-center">
           {view === 'sign_in' ? (
