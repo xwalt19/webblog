@@ -3,55 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Newspaper } from "lucide-react";
-import { useTranslation } from "react-i18next"; // Import useTranslation
-
-interface ExternalArticle {
-  id: string;
-  titleKey: string;
-  sourceKey: string;
-  date: string;
-  url: string;
-  excerptKey: string;
-}
-
-// TODO: Replace with data fetched from Supabase
-const dummyExternalArticles: ExternalArticle[] = [
-  {
-    id: "ea1",
-    titleKey: "external articles.ea1 title",
-    sourceKey: "external articles.ea1 source",
-    date: "10 Mei 2024",
-    url: "https://www.example.com/tech-trends-2024",
-    excerptKey: "external articles.ea1 desc",
-  },
-  {
-    id: "ea2",
-    titleKey: "external articles.ea2 title",
-    sourceKey: "external articles.ea2 source",
-    date: "05 Mei 2024",
-    url: "https://www.example.com/coding-for-kids-future",
-    excerptKey: "external articles.ea2 desc",
-  },
-  {
-    id: "ea3",
-    titleKey: "external articles.ea3 title",
-    sourceKey: "external articles.ea3 source",
-    date: "01 Mei 2024",
-    url: "https://www.example.com/data-science-career-guide",
-    excerptKey: "external articles.ea3 desc",
-  },
-  {
-    id: "ea4",
-    titleKey: "external articles.ea4 title",
-    sourceKey: "external articles.ea4 source",
-    date: "28 April 2024",
-    url: "https://www.example.com/cybersecurity-threats",
-    excerptKey: "external articles.ea4 desc",
-  },
-];
+import { useTranslation } from "react-i18next";
+import { dummyExternalArticles, ExternalArticle } from "@/data/externalArticles";
 
 const ExternalArticlesFeed: React.FC = () => {
-  const { t } = useTranslation(); // Initialize useTranslation
+  const { t } = useTranslation();
 
   return (
     <section className="py-12 bg-background">

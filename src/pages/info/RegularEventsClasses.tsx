@@ -12,81 +12,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
-
-interface Topic {
-  icon: React.ElementType;
-  titleKey: string;
-  descriptionKey: string;
-}
-
-interface RunningClass {
-  nameKey: string;
-  scheduleKey: string;
-  descriptionKey: string;
-  icon: React.ElementType;
-}
-
-interface RegularEvent {
-  nameKey: string;
-  scheduleKey: string;
-  descriptionKey: string;
-  icon: React.ElementType;
-}
+import { topics, runningClasses, regularEvents, Topic, RunningClass, RegularEvent } from "@/data/programs";
 
 const RegularEventsClasses: React.FC = () => {
   const { t } = useTranslation();
   const [selectedActivityView, setSelectedActivityView] = useState(""); 
-
-  const topics: Topic[] = [
-    {
-      icon: BookOpen,
-      titleKey: "regular events classes data.topic1 title",
-      descriptionKey: "regular events classes data.topic1 desc",
-    },
-    {
-      icon: Gamepad,
-      titleKey: "regular events classes data.topic2 title",
-      descriptionKey: "regular events classes data.topic2 desc",
-    },
-    {
-      icon: Globe,
-      titleKey: "regular events classes data.topic3 title",
-      descriptionKey: "regular events classes data.topic3 desc",
-    },
-    {
-      icon: Smartphone,
-      titleKey: "regular events classes data.topic4 title",
-      descriptionKey: "regular events classes data.topic4 desc",
-    },
-    {
-      icon: Lock,
-      titleKey: "regular events classes data.topic5 title",
-      descriptionKey: "regular events classes data.topic5 desc",
-    },
-    {
-      icon: Cpu,
-      titleKey: "regular events classes data.topic6 title",
-      descriptionKey: "regular events classes data.topic6 desc",
-    },
-  ];
-
-  const runningClasses: RunningClass[] = [
-    {
-      nameKey: "regular events classes data.class1 name",
-      scheduleKey: "regular events classes data.class1 schedule",
-      descriptionKey: "regular events classes data.class1 desc",
-      icon: Code,
-    },
-  ];
-
-  const regularEvents: RegularEvent[] = [
-    {
-      nameKey: "regular events classes data.event1 name",
-      scheduleKey: "regular events classes data.event1 schedule",
-      descriptionKey: "regular events classes data.event1 desc",
-      icon: Users,
-    },
-  ];
 
   return (
     <div className="container mx-auto py-10 px-4">

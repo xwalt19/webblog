@@ -4,83 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
-import useEmblaCarousel from "embla-carousel-react"; // Import useEmblaCarousel
-import { ChevronLeft, ChevronRight } from "lucide-react"; // Import ikon navigasi
-
-interface BlogPost {
-  id: string;
-  titleKey: string;
-  excerptKey: string;
-  date: string;
-  image: string;
-  categoryKey: string;
-  authorKey: string;
-  tagsKeys: string[];
-}
-
-// TODO: Replace with data fetched from Supabase
-const dummyBlogPosts: BlogPost[] = [
-  {
-    id: "1",
-    titleKey: "blog posts.post1 title",
-    excerptKey: "blog posts.post1 excerpt",
-    date: "10 Oktober 2023",
-    image: "https://source.unsplash.com/random/400x250/?blogging,writing",
-    categoryKey: "blog posts.post1 category",
-    authorKey: "blog posts.post1 author",
-    tagsKeys: ["blog posts.post1 tags0", "blog posts.post1 tags1", "blog posts.post1 tags2"],
-  },
-  {
-    id: "2",
-    titleKey: "blog posts.post2 title",
-    excerptKey: "blog posts.post2 excerpt",
-    date: "15 November 2023",
-    image: "https://source.unsplash.com/random/400x250/?content,marketing",
-    categoryKey: "blog posts.post2 category",
-    authorKey: "blog posts.post2 author",
-    tagsKeys: ["blog posts.post2 tags0", "blog posts.post2 tags1", "blog posts.post2 tags2"],
-  },
-  {
-    id: "3",
-    titleKey: "blog posts.post3 title",
-    excerptKey: "blog posts.post3 excerpt",
-    date: "20 Desember 2023",
-    image: "https://source.unsplash.com/random/400x250/?seo,optimization",
-    categoryKey: "blog posts.post3 category",
-    authorKey: "blog posts.post3 author",
-    tagsKeys: ["blog posts.post3 tags0", "blog posts.post3 tags1", "blog posts.post3 tags2"],
-  },
-  {
-    id: "4",
-    titleKey: "blog posts.post4 title",
-    excerptKey: "blog posts.post4 excerpt",
-    date: "25 Januari 2024",
-    image: "https://source.unsplash.com/random/400x250/?javascript,code",
-    categoryKey: "blog posts.post4 category",
-    authorKey: "blog posts.post4 author",
-    tagsKeys: ["blog posts.post4 tags0", "blog posts.post4 tags1", "blog posts.post4 tags2"],
-  },
-  {
-    id: "5",
-    titleKey: "blog posts.post5 title",
-    excerptKey: "blog posts.post5 excerpt",
-    date: "01 Februari 2024",
-    image: "https://source.unsplash.com/random/400x250/?reactjs,programming",
-    categoryKey: "blog posts.post5 category",
-    authorKey: "blog posts.post5 author",
-    tagsKeys: ["blog posts.post5 tags0", "blog posts.post5 tags1", "blog posts.post5 tags2"],
-  },
-  {
-    id: "6",
-    titleKey: "blog posts.post6 title",
-    excerptKey: "blog posts.post6 excerpt",
-    date: "10 Februari 2024",
-    image: "https://source.unsplash.com/random/400x250/?python,data",
-    categoryKey: "blog posts.post6 category",
-    authorKey: "blog posts.post6 author",
-    tagsKeys: ["blog posts.post6 tags0", "blog posts.post6 tags1", "blog posts.post6 tags2"],
-  },
-];
+import useEmblaCarousel from "embla-carousel-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { dummyBlogPosts, BlogPost } from "@/data/blogPosts";
 
 const LatestBlogPosts: React.FC = () => {
   const { t } = useTranslation();
@@ -108,7 +34,6 @@ const LatestBlogPosts: React.FC = () => {
     emblaApi.on("select", onSelect);
   }, [emblaApi, onSelect]);
 
-  // Menggunakan semua postingan blog untuk carousel
   const allPosts = dummyBlogPosts;
 
   return (

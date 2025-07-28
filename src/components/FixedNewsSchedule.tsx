@@ -4,46 +4,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { CalendarDays, BellRing } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-interface FixedItem {
-  id: string;
-  type: "news" | "schedule";
-  titleKey: string;
-  descriptionKey: string;
-  dateTime: string; // Combined date and time into a single ISO string
-}
-
-// TODO: Replace with data fetched from Supabase
-const dummyFixedItems: FixedItem[] = [
-  {
-    id: "f1",
-    type: "schedule",
-    titleKey: "fixed items.f1 title",
-    descriptionKey: "fixed items.f1 desc",
-    dateTime: "2024-04-01T09:00:00", // ISO string for April 1, 2024, 09:00
-  },
-  {
-    id: "f2",
-    type: "news",
-    titleKey: "fixed items.f2 title",
-    descriptionKey: "fixed items.f2 desc",
-    dateTime: "2024-03-10T00:00:00", // ISO string for March 10, 2024, no specific time
-  },
-  {
-    id: "f3",
-    type: "schedule",
-    titleKey: "fixed items.f3 title",
-    descriptionKey: "fixed items.f3 desc",
-    dateTime: "2024-04-20T14:00:00", // ISO string for April 20, 2024, 14:00
-  },
-  {
-    id: "f4",
-    type: "news",
-    titleKey: "fixed items.f4 title",
-    descriptionKey: "fixed items.f4 desc",
-    dateTime: "2024-04-01T00:00:00", // ISO string for April 1, 2024, no specific time
-  },
-];
+import { dummyFixedItems, FixedItem } from "@/data/fixedItems";
 
 const FixedNewsSchedule: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -62,7 +23,7 @@ const FixedNewsSchedule: React.FC = () => {
       const timeOptions: Intl.DateTimeFormatOptions = {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false, // Use 24-hour format
+        hour12: false,
       };
       const formattedTime = dateObj.toLocaleTimeString(i18n.language === 'id' ? 'id-ID' : 'en-US', timeOptions);
       
