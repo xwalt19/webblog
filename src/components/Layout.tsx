@@ -215,73 +215,78 @@ const Layout: React.FC = () => {
                         </Link>
                       </NavigationMenuLink>
                     </li>
-                    {isAdmin && (
-                      <>
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              to="/upload-content"
-                              className={cn(
-                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                              )}
-                            >
-                              <div className="text-sm font-medium leading-none text-foreground">{t('upload content')}</div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                {t('upload content desc')}
-                              </p>
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              to="/content"
-                              className={cn(
-                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                              )}
-                            >
-                              <div className="text-sm font-medium leading-none text-foreground">{t('content list.nav title')}</div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                {t('content list.nav desc')}
-                              </p>
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              to="/upload-blog-post" // Tautan baru untuk upload blog post
-                              className={cn(
-                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                              )}
-                            >
-                              <div className="text-sm font-medium leading-none text-foreground">{t('blog post.nav title')}</div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                {t('blog post.nav desc')}
-                              </p>
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-                        <li>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              to="/migrate-blog-posts"
-                              className={cn(
-                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                              )}
-                            >
-                              <div className="text-sm font-medium leading-none text-foreground">{t('migration.blog posts migration title')}</div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                {t('migration.blog posts migration subtitle')}
-                              </p>
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-                      </>
-                    )}
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+              {isAdmin && (
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('admin tools')}</NavigationMenuTrigger>
+                  <NavigationMenuContent className="bg-background text-foreground border-border">
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/upload-content"
+                            className={cn(
+                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            )}
+                          >
+                            <div className="text-sm font-medium leading-none text-foreground">{t('upload content')}</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              {t('upload content desc')}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/content"
+                            className={cn(
+                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            )}
+                          >
+                            <div className="text-sm font-medium leading-none text-foreground">{t('content list.nav title')}</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              {t('content list.nav desc')}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/upload-blog-post"
+                            className={cn(
+                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            )}
+                          >
+                            <div className="text-sm font-medium leading-none text-foreground">{t('blog post.nav title')}</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              {t('blog post.nav desc')}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/migrate-blog-posts"
+                            className={cn(
+                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            )}
+                          >
+                            <div className="text-sm font-medium leading-none text-foreground">{t('migration.blog posts migration title')}</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              {t('migration.blog posts migration subtitle')}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              )}
             </NavigationMenuList>
           </NavigationMenu>
 

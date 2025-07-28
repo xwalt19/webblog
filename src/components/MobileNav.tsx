@@ -108,25 +108,33 @@ const MobileNav: React.FC = () => {
                 <Link to="/info/calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                   {t('calendar')}
                 </Link>
-                {isAdmin && (
-                  <>
-                    <Link to="/upload-content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                      {t('upload content')}
-                    </Link>
-                    <Link to="/content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                      {t('content list.nav title')}
-                    </Link>
-                    <Link to="/upload-blog-post" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                      {t('blog post.nav title')}
-                    </Link>
-                    <Link to="/migrate-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                      {t('migration.blog posts migration title')}
-                    </Link>
-                  </>
-                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+
+          {isAdmin && (
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-4" className="border-b-0">
+                <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
+                  {t('admin tools')}
+                </AccordionTrigger>
+                <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
+                  <Link to="/upload-content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('upload content')}
+                  </Link>
+                  <Link to="/content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('content list.nav title')}
+                  </Link>
+                  <Link to="/upload-blog-post" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('blog post.nav title')}
+                  </Link>
+                  <Link to="/migrate-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('migration.blog posts migration title')}
+                  </Link>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
 
           {/* Auth Buttons for Mobile */}
           {!loading && (
