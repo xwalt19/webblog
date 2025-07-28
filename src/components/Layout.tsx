@@ -275,19 +275,20 @@ const Layout: React.FC = () => {
             <LanguageSwitcher />
             {!loading && (
               session ? (
-                <Button variant="ghost" onClick={handleLogout} className="text-foreground hover:bg-accent">
+                <Button variant="outline" onClick={handleLogout} className="text-foreground hover:bg-accent px-4 py-2">
                   <LogOut className="h-5 w-5 mr-2" /> {t('auth.logout')}
                 </Button>
               ) : (
                 <Link to="/login">
-                  <Button variant="ghost" className="text-foreground hover:bg-accent">
+                  <Button variant="outline" className="text-foreground hover:bg-accent px-4 py-2">
                     <LogIn className="h-5 w-5 mr-2" /> {t('auth.login')}
                   </Button>
                 </Link>
               )
             )}
-            <MobileNav />
           </div>
+          {/* MobileNav moved outside to prevent it from affecting desktop layout */}
+          <MobileNav />
         </div>
       </header>
 
