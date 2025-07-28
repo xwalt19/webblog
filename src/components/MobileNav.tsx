@@ -9,13 +9,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useTranslation } from "react-i18next"; // Import useTranslation
-import { useSession } from "@/components/SessionProvider"; // Import useSession
-import { supabase } from "@/integrations/supabase/client"; // Import supabase client
+import { useTranslation } from "react-i18next";
+import { useSession } from "@/components/SessionProvider";
+import { supabase } from "@/integrations/supabase/client";
 
 const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { t } = useTranslation(); // Initialize useTranslation
+  const { t } = useTranslation();
   const { session, profile, loading } = useSession();
   const isAdmin = profile?.role === 'admin';
 
@@ -124,9 +124,6 @@ const MobileNav: React.FC = () => {
                   </Link>
                   <Link to="/content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('content list.nav title')}
-                  </Link>
-                  <Link to="/upload-blog-post" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('blog post.nav title')}
                   </Link>
                   <Link to="/migrate-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('migration.blog posts migration title')}

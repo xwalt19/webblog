@@ -12,12 +12,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Facebook, Instagram, Linkedin, Twitter, LogOut, LogIn } from "lucide-react";
-import MobileNav from "./MobileNav"; // Import MobileNav component
-import { cn } from "@/lib/utils"; // Import cn utility
-import LanguageSwitcher from "./LanguageSwitcher"; // Import LanguageSwitcher
-import { useTranslation } from "react-i18next"; // Import useTranslation
-import { useSession } from "@/components/SessionProvider"; // Import useSession
-import { supabase } from "@/integrations/supabase/client"; // Import supabase client
+import MobileNav from "./MobileNav";
+import { cn } from "@/lib/utils";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useTranslation } from "react-i18next";
+import { useSession } from "@/components/SessionProvider";
+import { supabase } from "@/integrations/supabase/client";
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
@@ -249,21 +249,6 @@ const Layout: React.FC = () => {
                             <div className="text-sm font-medium leading-none text-foreground">{t('content list.nav title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               {t('content list.nav desc')}
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/upload-blog-post"
-                            className={cn(
-                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            )}
-                          >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('blog post.nav title')}</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('blog post.nav desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>
