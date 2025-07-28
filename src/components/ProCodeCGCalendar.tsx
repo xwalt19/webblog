@@ -9,6 +9,7 @@ const ProCodeCGCalendar: React.FC = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const { t, i18n } = useTranslation(); // Initialize useTranslation and destructure i18n
 
+  // TODO: Replace with data fetched from Supabase
   // Dummy events for demonstration
   // Menggunakan tahun yang konsisten (misalnya, 2025) untuk semua acara agar lebih mudah dilihat
   const events = [

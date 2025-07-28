@@ -22,6 +22,7 @@ interface TikTokVideo {
   date: string;
 }
 
+// TODO: Replace with data fetched from Supabase
 const dummyTikTokVideos: TikTokVideo[] = [
   {
     id: "tk1",
@@ -111,6 +112,7 @@ const TikTokUpdates: React.FC = () => {
     const fetchTikTokVideos = async () => {
       try {
         setLoading(true);
+        // Simulate API call
         await new Promise<void>(resolve => setTimeout(resolve, 1000));
         setVideos(dummyTikTokVideos);
       } catch (err) {
@@ -130,14 +132,14 @@ const TikTokUpdates: React.FC = () => {
       t(video.titleKey).toLowerCase().includes(lowerCaseSearchTerm) ||
       t(video.descriptionKey).toLowerCase().includes(lowerCaseSearchTerm)
     );
-  }, [videos, searchTerm, t, i18n.language]); // Add i18n.language to dependencies
+  }, [videos, searchTerm, i18n.language]); // Removed 't' from dependencies
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
   const currentVideos = useMemo(() => {
     const startIndex = (currentPage - 1) * VIDEOS_PER_PAGE;
     const endIndex = startIndex + VIDEOS_PER_PAGE;
     return filteredVideos.slice(startIndex, endIndex);
-  }, [filteredVideos, currentPage, i18n.language]); // Add i18n.language to dependencies
+  }, [filteredVideos, currentPage, i18n.language]); // Removed 't' from dependencies
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

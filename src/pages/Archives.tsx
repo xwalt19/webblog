@@ -184,7 +184,7 @@ const Archives: React.FC = () => {
   const monthNames = useMemo(() => [
     "", t("month names.january"), t("month names.february"), t("month names.march"), t("month names.april"), t("month names.may"), t("month names.june"),
     t("month names.july"), t("month names.august"), t("month names.september"), t("month names.october"), t("month names.november"), t("month names.december")
-  ], [i18n.language, t]); // Tambahkan i18n.language dan t sebagai dependensi
+  ], [i18n.language]); // Removed 't' from dependencies
 
   const allPeriods: string[] = useMemo(() => {
     const periods = new Set<string>();
@@ -222,7 +222,7 @@ const Archives: React.FC = () => {
 
       return matchesSearch && matchesPeriod && matchesTag;
     });
-  }, [selectedPeriod, selectedTag, searchTerm, i18n.language, t]); // Tetap bergantung pada i18n.language dan t untuk terjemahan konten
+  }, [selectedPeriod, selectedTag, searchTerm, i18n.language]); // Removed 't' from dependencies
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {

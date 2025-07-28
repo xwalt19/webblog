@@ -13,6 +13,7 @@ interface FixedItem {
   dateTime: string; // Combined date and time into a single ISO string
 }
 
+// TODO: Replace with data fetched from Supabase
 const dummyFixedItems: FixedItem[] = [
   {
     id: "f1",

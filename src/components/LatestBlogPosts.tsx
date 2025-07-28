@@ -18,6 +18,7 @@ interface BlogPost {
   tagsKeys: string[];
 }
 
+// TODO: Replace with data fetched from Supabase
 const dummyBlogPosts: BlogPost[] = [
   {
     id: "1",

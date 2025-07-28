@@ -17,6 +17,7 @@ interface MediaItem {
   type: 'youtube' | 'tiktok';
 }
 
+// TODO: Replace with data fetched from Supabase
 // Dummy data for YouTube videos
 const dummyYouTubeVideos: MediaItem[] = [
   {
@@ -102,6 +103,7 @@ const dummyYouTubeVideos: MediaItem[] = [
   },
 ];
 
+// TODO: Replace with data fetched from Supabase
 // Dummy data for TikTok videos
 const dummyTikTokVideos: MediaItem[] = [
   {

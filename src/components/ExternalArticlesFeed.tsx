@@ -14,6 +14,7 @@ interface ExternalArticle {
   excerptKey: string;
 }
 
+// TODO: Replace with data fetched from Supabase
 const dummyExternalArticles: ExternalArticle[] = [
   {
     id: "ea1",

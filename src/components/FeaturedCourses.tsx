@@ -15,6 +15,7 @@ interface Course {
   image: string;
 }
 
+// TODO: Replace with data fetched from Supabase
 const dummyCourses: Course[] = [
   {
     id: "c1",
