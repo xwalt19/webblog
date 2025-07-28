@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client"; // Import supabase
+import { supabase } from "@/integrations/supabase/client";
 
 interface BlogPost {
   id: string;
@@ -15,7 +15,7 @@ interface BlogPost {
   category_key: string;
   author_key: string;
   tags_keys: string[];
-  content_key?: string;
+  content_key?: string; // This will now hold direct content
   pdf_link?: string;
 }
 
@@ -106,7 +106,7 @@ const PostDetail: React.FC = () => {
         {post.image_url && (
           <img src={post.image_url} alt={t(post.title_key)} className="w-full h-auto object-cover mb-6 rounded-md" />
         )}
-        <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: t(post.content_key || '') }} />
+        <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post.content_key || '' }} /> {/* Directly render content_key */}
         <div className="mt-8">
           <Link to="/blog">
             <Button variant="outline">{t('return to post list')}</Button>

@@ -13,7 +13,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription, // Import FormDescription
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,11 +29,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Card, // Import Card
-  CardContent, // Import CardContent
-  CardHeader, // Import CardHeader
-  CardTitle, // Import CardTitle
-  CardDescription, // Import CardDescription
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 
 // Define categories and authors for selection (can be fetched from DB later if dynamic)
@@ -45,7 +45,7 @@ const blogCategories = [
   "blog posts.category cybersecurity",
   "blog posts.category mobile development",
   "blog posts.category cloud computing",
-  "archives.category history", // Include archive categories if they can be used for new posts
+  "archives.category history",
   "archives.category retro tech",
   "archives.category programming history",
 ];
@@ -58,11 +58,11 @@ const blogAuthors = [
 const formSchema = z.object({
   titleKey: z.string().min(1, { message: "Title is required." }),
   excerptKey: z.string().min(1, { message: "Excerpt is required." }),
-  imageFile: z.any().optional(), // File object for image upload
+  imageFile: z.any().optional(),
   categoryKey: z.string().min(1, { message: "Category is required." }),
   authorKey: z.string().min(1, { message: "Author is required." }),
-  tagsKeys: z.string().optional(), // Comma-separated string for tags
-  contentKey: z.string().min(1, { message: "Content is required." }),
+  tagsKeys: z.string().optional(),
+  content: z.string().min(1, { message: "Content is required." }), // Changed from contentKey
   pdfLink: z.string().url({ message: "Must be a valid URL." }).optional().or(z.literal('')),
 });
 
@@ -80,7 +80,7 @@ const UploadBlogPost: React.FC = () => {
       categoryKey: "",
       authorKey: "",
       tagsKeys: "",
-      contentKey: "",
+      content: "", // Changed from contentKey
       pdfLink: "",
     },
   });
@@ -105,10 +105,10 @@ const UploadBlogPost: React.FC = () => {
       const imageFile = values.imageFile[0];
       const fileExtension = imageFile.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
-      const filePath = `blog_images/${fileName}`; // Store blog images in a separate folder
+      const filePath = `blog_images/${fileName}`;
 
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('images') // Assuming 'images' bucket exists
+        .from('images')
         .upload(filePath, imageFile, {
           cacheControl: '3600',
           upsert: false,
@@ -132,12 +132,12 @@ const UploadBlogPost: React.FC = () => {
       .insert({
         title_key: values.titleKey,
         excerpt_key: values.excerptKey,
-        created_at: new Date().toISOString(), // Current timestamp
+        created_at: new Date().toISOString(),
         image_url: imageUrl,
         category_key: values.categoryKey,
         author_key: values.authorKey,
         tags_keys: tagsArray,
-        content_key: values.contentKey,
+        content_key: values.content, // Directly use values.content
         pdf_link: values.pdfLink || null,
       });
 
@@ -146,8 +146,7 @@ const UploadBlogPost: React.FC = () => {
       toast.error(t("blog post.post upload failed", { error: insertError.message }));
     } else {
       toast.success(t("blog post.post uploaded successfully"));
-      form.reset(); // Reset the form after successful submission
-      // Clear file input manually as form.reset() doesn't handle file inputs
+      form.reset();
       const fileInput = document.getElementById("imageFile") as HTMLInputElement;
       if (fileInput) fileInput.value = "";
     }
@@ -299,15 +298,15 @@ const UploadBlogPost: React.FC = () => {
               />
               <FormField
                 control={form.control}
-                name="contentKey"
+                name="content" // Changed from contentKey
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("blog post.content key label")}</FormLabel>
+                    <FormLabel>{t("blog post.content label")}</FormLabel> {/* Updated label */}
                     <FormControl>
-                      <Textarea placeholder={t("blog post.content key placeholder")} className="min-h-[200px]" {...field} />
+                      <Textarea placeholder={t("blog post.content placeholder")} className="min-h-[200px]" {...field} /> {/* Updated placeholder */}
                     </FormControl>
                     <FormDescription>
-                      {t("blog post.content key description")}
+                      {t("blog post.content description")} {/* Updated description */}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

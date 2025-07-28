@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { dummyBlogPosts, dummyArchivePosts } from "@/data/blogPosts"; // Tetap import untuk migrasi
+import { dummyBlogPosts, dummyArchivePosts } from "@/data/blogPosts";
+import i18n from "@/i18n"; // Import i18n instance
 
 const MigrateBlogPosts: React.FC = () => {
   const { t } = useTranslation();
@@ -19,7 +20,6 @@ const MigrateBlogPosts: React.FC = () => {
     setMigrationStatus("migrating");
     setMigratedCount(0);
 
-    // Gabungkan kedua array dummy untuk migrasi
     const allPostsToMigrate = [...dummyBlogPosts, ...dummyArchivePosts];
     setTotalToMigrate(allPostsToMigrate.length);
 
@@ -35,7 +35,7 @@ const MigrateBlogPosts: React.FC = () => {
           .eq('title_key', post.titleKey)
           .single();
 
-        if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 berarti tidak ada baris ditemukan
+        if (fetchError && fetchError.code !== 'PGRST116') {
           throw fetchError;
         }
 
@@ -46,18 +46,21 @@ const MigrateBlogPosts: React.FC = () => {
           continue;
         }
 
+        // Get the actual content from i18n using the contentKey
+        const actualContent = post.contentKey ? i18n.t(post.contentKey) : null;
+
         const { error: insertError } = await supabase
           .from('blog_posts')
           .insert({
             title_key: post.titleKey,
             excerpt_key: post.excerptKey,
-            created_at: new Date(post.date).toISOString(), // Konversi string tanggal ke ISO untuk timestamp
+            created_at: new Date(post.date).toISOString(),
             image_url: post.image,
             category_key: post.categoryKey,
             author_key: post.authorKey,
             tags_keys: post.tagsKeys,
-            content_key: post.contentKey,
-            pdf_link: post.pdfLink, // Tambahkan pdf_link
+            content_key: actualContent, // Store actual content
+            pdf_link: post.pdfLink,
           });
 
         if (insertError) {
