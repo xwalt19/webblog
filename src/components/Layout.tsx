@@ -226,27 +226,12 @@ const Layout: React.FC = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            to="/admin/blog-posts/new"
-                            className={cn(
-                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            )}
-                          >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('upload blog post title')}</div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('upload blog post subtitle')}
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
                             to="/admin/manage-blog-posts"
                             className={cn(
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage blog posts.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('blog posts')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                               {t('manage blog posts.nav desc')}
                             </p>
