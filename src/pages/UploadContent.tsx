@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,13 +10,28 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/components/SessionProvider"; // Import useSession
 
 const UploadContent: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { session, profile, loading } = useSession();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  useEffect(() => {
+    if (!loading) {
+      if (!session) {
+        toast.error(t('auth.login required'));
+        navigate('/login');
+      } else if (profile?.role !== 'admin') {
+        toast.error(t('auth.admin access required'));
+        navigate('/');
+      }
+    }
+  }, [session, profile, loading, navigate, t]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -28,11 +43,11 @@ const UploadContent: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setLoading(true);
+    setUploading(true);
 
     if (!title) {
       toast.error(t("upload content.title required"));
-      setLoading(false);
+      setUploading(false);
       return;
     }
 
@@ -53,7 +68,7 @@ const UploadContent: React.FC = () => {
       if (uploadError) {
         console.error("Error uploading image:", uploadError);
         toast.error(t("upload content.image upload failed", { error: uploadError.message }));
-        setLoading(false);
+        setUploading(false);
         return;
       }
       
@@ -78,8 +93,16 @@ const UploadContent: React.FC = () => {
       const fileInput = document.getElementById("image-upload") as HTMLInputElement;
       if (fileInput) fileInput.value = "";
     }
-    setLoading(false);
+    setUploading(false);
   };
+
+  if (loading || (!session && !loading) || (session && profile?.role !== 'admin')) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-foreground">{t('loading')}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-10 px-4">
@@ -135,8 +158,8 @@ const UploadContent: React.FC = () => {
                 </p>
               )}
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? t('uploading') : t('upload content.submit button')}
+            <Button type="submit" className="w-full" disabled={uploading}>
+              {uploading ? t('uploading') : t('upload content.submit button')}
             </Button>
           </form>
         </CardContent>

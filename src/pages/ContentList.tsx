@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Image, FileText, CalendarDays } from "lucide-react";
+import { useSession } from "@/components/SessionProvider"; // Import useSession
+import { toast } from "sonner";
 
 interface ContentItem {
   id: string;
@@ -18,34 +20,46 @@ interface ContentItem {
 
 const ContentList: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { session, profile, loading } = useSession();
   const [content, setContent] = useState<ContentItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchContent = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const { data, error } = await supabase
-          .from('content')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          throw error;
-        }
-        setContent(data || []);
-      } catch (err: any) {
-        console.error("Error fetching content:", err);
-        setError(t("content list.fetch error", { error: err.message }));
-      } finally {
-        setLoading(false);
+    if (!loading) {
+      if (!session) {
+        toast.error(t('auth.login required'));
+        navigate('/login');
+      } else if (profile?.role !== 'admin') {
+        toast.error(t('auth.admin access required'));
+        navigate('/');
+      } else {
+        fetchContent();
       }
-    };
+    }
+  }, [session, profile, loading, navigate, t]);
 
-    fetchContent();
-  }, [t]);
+  const fetchContent = async () => {
+    setDataLoading(true);
+    setError(null);
+    try {
+      const { data, error } = await supabase
+        .from('content')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        throw error;
+      }
+      setContent(data || []);
+    } catch (err: any) {
+      console.error("Error fetching content:", err);
+      setError(t("content list.fetch error", { error: err.message }));
+    } finally {
+      setDataLoading(false);
+    }
+  };
 
   const formatDateTime = (isoString: string) => {
     const dateObj = new Date(isoString);
@@ -60,6 +74,14 @@ const ContentList: React.FC = () => {
     return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', dateOptions);
   };
 
+  if (loading || (!session && !loading) || (session && profile?.role !== 'admin')) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-foreground">{t('loading')}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -69,7 +91,7 @@ const ContentList: React.FC = () => {
         </p>
       </section>
 
-      {loading ? (
+      {dataLoading ? (
         <p className="text-center text-muted-foreground">{t('content list.loading')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>

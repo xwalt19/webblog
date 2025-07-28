@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -6,13 +6,29 @@ import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { dummyBlogPosts, BlogPost } from "@/data/blogPosts";
+import { supabase } from "@/integrations/supabase/client"; // Import supabase
+
+interface BlogPost {
+  id: string;
+  title_key: string;
+  excerpt_key: string;
+  created_at: string;
+  image_url: string;
+  category_key: string;
+  author_key: string;
+  tags_keys: string[];
+  content_key?: string;
+  pdf_link?: string;
+}
 
 const LatestBlogPosts: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' });
   const [prevBtnDisabled, setPrevBtnDisabled] = React.useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = React.useState(true);
+  const [latestPosts, setLatestPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -34,7 +50,69 @@ const LatestBlogPosts: React.FC = () => {
     emblaApi.on("select", onSelect);
   }, [emblaApi, onSelect]);
 
-  const allPosts = dummyBlogPosts;
+  useEffect(() => {
+    const fetchLatestPosts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(7); // Ambil 7 postingan terbaru untuk carousel
+
+        if (error) {
+          throw error;
+        }
+        setLatestPosts(data || []);
+      } catch (err: any) {
+        console.error("Error fetching latest blog posts:", err);
+        setError(t("failed to load posts", { error: err.message }));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLatestPosts();
+  }, [t]);
+
+  const formatDate = (isoString: string) => {
+    const dateObj = new Date(isoString);
+    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  if (loading) {
+    return (
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest blog posts title')}</h2>
+          <p className="text-center text-muted-foreground">{t('loading posts')}</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest blog posts title')}</h2>
+          <p className="text-center text-destructive">{error}</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (latestPosts.length === 0) {
+    return (
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest blog posts title')}</h2>
+          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no posts available')}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-12">
@@ -43,25 +121,25 @@ const LatestBlogPosts: React.FC = () => {
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex -ml-4">
-              {allPosts.map((post) => (
+              {latestPosts.map((post) => (
                 <div key={post.id} className="flex-none w-full sm:w-1/2 lg:w-1/3 pl-4">
                   <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
-                    <img src={post.image} alt={t(post.titleKey)} className="w-full h-48 object-cover" />
+                    <img src={post.image_url} alt={t(post.title_key)} className="w-full h-48 object-cover" />
                     <CardHeader className="flex-grow">
                       <div className="flex justify-between items-center mb-2">
-                        <Badge variant="secondary">{t(post.categoryKey)}</Badge>
-                        <span className="text-sm text-muted-foreground">{post.date}</span>
+                        <Badge variant="secondary">{t(post.category_key)}</Badge>
+                        <span className="text-sm text-muted-foreground">{formatDate(post.created_at)}</span>
                       </div>
-                      <CardTitle className="text-xl">{t(post.titleKey)}</CardTitle>
-                      <CardDescription className="text-sm text-muted-foreground">{t('by')} {t(post.authorKey)}</CardDescription>
+                      <CardTitle className="text-xl">{t(post.title_key)}</CardTitle>
+                      <CardDescription className="text-sm text-muted-foreground">{t('by')} {t(post.author_key)}</CardDescription>
                       <div className="flex flex-wrap gap-1 mt-2">
-                        {post.tagsKeys.map(tagKey => (
+                        {post.tags_keys?.map(tagKey => (
                           <Badge key={tagKey} variant="outline" className="text-xs">{t(tagKey)}</Badge>
                         ))}
                       </div>
                     </CardHeader>
                     <CardContent className="p-6 pt-0">
-                      <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerptKey)}</p>
+                      <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerpt_key)}</p>
                       <Link to={`/posts/${post.id}`}>
                         <Button variant="outline" className="w-full">{t('read more')}</Button>
                       </Link>

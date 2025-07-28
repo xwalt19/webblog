@@ -13,14 +13,22 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Twitter, LogOut, LogIn } from "lucide-react";
 import MobileNav from "./MobileNav"; // Import MobileNav component
 import { cn } from "@/lib/utils"; // Import cn utility
 import LanguageSwitcher from "./LanguageSwitcher"; // Import LanguageSwitcher
 import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useSession } from "@/components/SessionProvider"; // Import useSession
+import { supabase } from "@/integrations/supabase/client"; // Import supabase client
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
+  const { session, profile, loading } = useSession();
+  const isAdmin = profile?.role === 'admin';
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -209,47 +217,79 @@ const Layout: React.FC = () => {
                         </Link>
                       </NavigationMenuLink>
                     </li>
-                    {/* New link for Upload Content */}
-                    <li>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          to="/upload-content"
-                          className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          )}
-                        >
-                          <div className="text-sm font-medium leading-none text-foreground">{t('upload content')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('upload content desc')}
-                          </p>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                    {/* New link for Content List */}
-                    <li>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          to="/content"
-                          className={cn(
-                            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          )}
-                        >
-                          <div className="text-sm font-medium leading-none text-foreground">{t('content list.nav title')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('content list.nav desc')}
-                          </p>
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
+                    {isAdmin && (
+                      <>
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to="/upload-content"
+                              className={cn(
+                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                              )}
+                            >
+                              <div className="text-sm font-medium leading-none text-foreground">{t('upload content')}</div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                {t('upload content desc')}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to="/content"
+                              className={cn(
+                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                              )}
+                            >
+                              <div className="text-sm font-medium leading-none text-foreground">{t('content list.nav title')}</div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                {t('content list.nav desc')}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to="/migrate-blog-posts"
+                              className={cn(
+                                "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                              )}
+                            >
+                              <div className="text-sm font-medium leading-none text-foreground">{t('migration.blog posts migration title')}</div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                {t('migration.blog posts migration subtitle')}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      </>
+                    )}
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Language Switcher and Mobile Menu */}
+          {/* Language Switcher and Auth Buttons */}
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
+            {!loading && (
+              session ? (
+                <Button variant="ghost" size="icon" onClick={handleLogout} className="text-foreground hover:bg-accent">
+                  <LogOut className="h-6 w-6" />
+                  <span className="sr-only">{t('auth.logout')}</span>
+                </Button>
+              ) : (
+                <Link to="/login">
+                  <Button variant="ghost" size="icon" className="text-foreground hover:bg-accent">
+                    <LogIn className="h-6 w-6" />
+                    <span className="sr-only">{t('auth.login')}</span>
+                  </Button>
+                </Link>
+              )
+            )}
             <MobileNav />
           </div>
         </div>

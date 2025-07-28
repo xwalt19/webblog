@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, LogOut, LogIn } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -12,12 +12,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useSession } from "@/components/SessionProvider"; // Import useSession
+import { supabase } from "@/integrations/supabase/client"; // Import supabase client
 
 const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation(); // Initialize useTranslation
+  const { session, profile, loading } = useSession();
+  const isAdmin = profile?.role === 'admin';
 
   const closeSheet = () => setIsOpen(false);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    closeSheet();
+  };
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -101,9 +110,37 @@ const MobileNav: React.FC = () => {
                 <Link to="/info/calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                   {t('calendar')}
                 </Link>
+                {isAdmin && (
+                  <>
+                    <Link to="/upload-content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                      {t('upload content')}
+                    </Link>
+                    <Link to="/content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                      {t('content list.nav title')}
+                    </Link>
+                    <Link to="/migrate-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                      {t('migration.blog posts migration title')}
+                    </Link>
+                  </>
+                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+
+          {/* Auth Buttons for Mobile */}
+          {!loading && (
+            session ? (
+              <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={handleLogout}>
+                <LogOut className="h-5 w-5 mr-2" /> {t('auth.logout')}
+              </Button>
+            ) : (
+              <Link to="/login" onClick={closeSheet}>
+                <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors">
+                  <LogIn className="h-5 w-5 mr-2" /> {t('auth.login')}
+                </Button>
+              </Link>
+            )
+          )}
         </nav>
       </SheetContent>
     </Sheet>

@@ -20,31 +20,73 @@ import {
 } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
-import { dummyBlogPosts, BlogPost } from "@/data/blogPosts";
+import { supabase } from "@/integrations/supabase/client"; // Import supabase
+
+interface BlogPost {
+  id: string;
+  title_key: string;
+  excerpt_key: string;
+  created_at: string;
+  image_url: string;
+  category_key: string;
+  author_key: string;
+  tags_keys: string[];
+  content_key?: string;
+  pdf_link?: string;
+}
 
 const POSTS_PER_PAGE = 6;
 
 const BlogPage: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    const fetchBlogPosts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .select('*')
+          .is('pdf_link', null) // Hanya ambil postingan blog (yang tidak punya pdf_link)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          throw error;
+        }
+        setAllPosts(data || []);
+      } catch (err: any) {
+        console.error("Error fetching blog posts:", err);
+        setError(t("failed to load posts", { error: err.message }));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogPosts();
+  }, [t]);
+
+  useEffect(() => {
     setSelectedPeriod("all");
     setSelectedTag("all");
     setSearchTerm("");
     setCurrentPage(1);
-  }, [i18n.language]);
+  }, [i18n.language, allPosts]); // Reset filters when language or posts change
 
   const allTags: string[] = useMemo(() => {
     const tags = new Set<string>();
-    dummyBlogPosts.forEach(post => {
-      post.tagsKeys.forEach(tagKey => tags.add(tagKey));
+    allPosts.forEach(post => {
+      post.tags_keys?.forEach(tagKey => tags.add(tagKey));
     });
     return ["all", ...Array.from(tags)];
-  }, [i18n.language]);
+  }, [allPosts]);
 
   const monthNames = useMemo(() => [
     "", t("month names.january"), t("month names.february"), t("month names.march"), t("month names.april"), t("month names.may"), t("month names.june"),
@@ -53,8 +95,9 @@ const BlogPage: React.FC = () => {
 
   const allPeriods: string[] = useMemo(() => {
     const periods = new Set<string>();
-    dummyBlogPosts.forEach(post => {
-      periods.add(`${post.year}-${post.month}`);
+    allPosts.forEach(post => {
+      const date = new Date(post.created_at);
+      periods.add(`${date.getFullYear()}-${date.getMonth() + 1}`);
     });
     const sortedPeriods = Array.from(periods).sort((a, b) => {
       const [yearA, monthA] = a.split('-').map(Number);
@@ -63,7 +106,7 @@ const BlogPage: React.FC = () => {
       return monthB - monthA;
     });
     return ["all", ...sortedPeriods];
-  }, [i18n.language]);
+  }, [allPosts]);
 
   const getPeriodDisplayName = (period: string) => {
     if (period === "all") return t("all time");
@@ -73,21 +116,22 @@ const BlogPage: React.FC = () => {
 
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    return dummyBlogPosts.filter(post => {
-      const matchesSearch = t(post.titleKey).toLowerCase().includes(lowerCaseSearchTerm) ||
-                            t(post.excerptKey).toLowerCase().includes(lowerCaseSearchTerm);
+    return allPosts.filter(post => {
+      const matchesSearch = t(post.title_key).toLowerCase().includes(lowerCaseSearchTerm) ||
+                            t(post.excerpt_key).toLowerCase().includes(lowerCaseSearchTerm);
       
       let matchesPeriod = true;
       if (selectedPeriod !== "all") {
         const [filterYear, filterMonth] = selectedPeriod.split('-').map(Number);
-        matchesPeriod = post.year === filterYear && post.month === filterMonth;
+        const postDate = new Date(post.created_at);
+        matchesPeriod = postDate.getFullYear() === filterYear && (postDate.getMonth() + 1) === filterMonth;
       }
 
-      const matchesTag = selectedTag === "all" || post.tagsKeys.includes(selectedTag);
+      const matchesTag = selectedTag === "all" || post.tags_keys?.includes(selectedTag);
 
       return matchesSearch && matchesPeriod && matchesTag;
     });
-  }, [selectedPeriod, selectedTag, searchTerm, i18n.language]);
+  }, [allPosts, selectedPeriod, selectedTag, searchTerm, i18n.language]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -101,9 +145,26 @@ const BlogPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedPeriod, selectedTag, searchTerm, i18n.language]);
+  const formatDate = (isoString: string) => {
+    const dateObj = new Date(isoString);
+    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
+        <p className="text-center text-muted-foreground">{t('loading posts')}</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
+        <p className="text-center text-destructive">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -158,22 +219,22 @@ const BlogPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">
-              <img src={post.image} alt={t(post.titleKey)} className="w-full h-48 object-cover" />
+              <img src={post.image_url} alt={t(post.title_key)} className="w-full h-48 object-cover" />
               <CardHeader className="flex-grow">
                 <div className="flex justify-between items-center mb-2">
-                  <Badge variant="secondary">{t(post.categoryKey)}</Badge>
-                  <span className="text-sm text-muted-foreground">{post.date}</span>
+                  <Badge variant="secondary">{t(post.category_key)}</Badge>
+                  <span className="text-sm text-muted-foreground">{formatDate(post.created_at)}</span>
                 </div>
-                <CardTitle className="text-xl">{t(post.titleKey)}</CardTitle>
-                <CardDescription className="text-sm text-muted-foreground">{t('by')} {t(post.authorKey)}</CardDescription>
+                <CardTitle className="text-xl">{t(post.title_key)}</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">{t('by')} {t(post.author_key)}</CardDescription>
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {post.tagsKeys.map(tagKey => (
+                  {post.tags_keys?.map(tagKey => (
                     <Badge key={tagKey} variant="outline" className="text-xs">{t(tagKey)}</Badge>
                   ))}
                 </div>
               </CardHeader>
               <CardContent className="p-6 pt-0">
-                <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerptKey)}</p>
+                <p className="text-muted-foreground mb-4 line-clamp-2">{t(post.excerpt_key)}</p>
                 <Link to={`/posts/${post.id}`}>
                   <Button variant="outline" className="w-full">{t('read more')}</Button>
                 </Link>
