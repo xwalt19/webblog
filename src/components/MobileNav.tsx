@@ -29,6 +29,7 @@ const MobileNav: React.FC = () => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
+        {/* This button is now explicitly hidden on desktop */}
         <Button variant="ghost" size="icon" className="md:hidden text-foreground hover:bg-accent">
           <Menu className="h-6 w-6" />
           <span className="sr-only">Toggle mobile menu</span>
