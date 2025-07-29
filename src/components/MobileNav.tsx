@@ -158,7 +158,7 @@ const MobileNav: React.FC = () => {
           {!loading && (
             session ? (
               <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={handleLogout}>
-                <LogOut className="h-5 w-5 mr-2" /> {t('signed out successfully')}
+                <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
               </Button>
             ) : (
               <Link to="/login" onClick={closeSheet}>

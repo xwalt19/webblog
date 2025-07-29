@@ -338,7 +338,7 @@ const Layout: React.FC = () => {
             {!loading && (
               session ? (
                 <Button variant="default" onClick={handleLogout} className="px-4 py-2">
-                  <LogOut className="h-5 w-5 mr-2" /> {t('signed out successfully')}
+                  <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
                 </Button>
               ) : (
                 <Link to="/login">
