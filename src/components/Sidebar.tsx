@@ -7,7 +7,7 @@ import { useSession } from "@/components/SessionProvider";
 import { cn } from "@/lib/utils";
 import {
   Home, Info, BookOpen, Archive, Mail, Handshake, CalendarDays,
-  GraduationCap, Users, Tent, Cpu, Youtube, Music, FileText, Code, BellRing,
+  GraduationCap, Users, Tent, Cpu, Youtube, Music, FileText, Code, BellRing, LayoutDashboard,
 } from "lucide-react";
 
 interface SidebarLinkProps {
@@ -64,6 +64,7 @@ const Sidebar: React.FC = () => {
   ];
 
   const adminLinks = [
+    { to: "/admin", labelKey: "dashboard", icon: LayoutDashboard }, // New Dashboard Link
     { to: "/admin/manage-blog-posts", labelKey: "blog posts", icon: FileText },
     { to: "/admin/manage-archives", labelKey: "archives", icon: Archive },
     { to: "/admin/manage-calendar", labelKey: "calendar", icon: CalendarDays },

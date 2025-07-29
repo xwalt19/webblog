@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, LogIn } from "lucide-react";
+import { Menu, LogOut, LogIn, LayoutDashboard } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -119,6 +119,9 @@ const MobileNav: React.FC = () => {
                   {t('admin tools')}
                 </AccordionTrigger>
                 <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
+                  <Link to="/admin" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    <LayoutDashboard className="h-4 w-4 inline-block mr-2" /> {t('dashboard')}
+                  </Link>
                   <Link to="/admin/manage-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('blog posts')}
                   </Link>

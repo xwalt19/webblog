@@ -40,6 +40,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { SessionProvider } from "./components/SessionProvider";
 import React from "react";
+import AdminDashboard from "./pages/admin/Dashboard"; // Import new Dashboard
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,7 @@ const App = () => (
               <Route path="media/tiktok" element={<TikTokPage />} />
               <Route path="info/calendar" element={<CalendarPage />} />
               {/* Admin Routes */}
+              <Route path="admin" element={<AdminDashboard />} /> {/* New Admin Dashboard Route */}
               <Route path="admin/blog-posts/new" element={<UploadBlogPost />} />
               <Route path="admin/blog-posts/:id/edit" element={<UploadBlogPost />} />
               <Route path="admin/manage-blog-posts" element={<ManageBlogPosts />} />
