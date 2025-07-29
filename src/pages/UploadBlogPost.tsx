@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import MultiSelectTags from "@/components/MultiSelectTags"; // Import MultiSelectTags
 
 interface BlogPost {
   id: string;
@@ -44,14 +45,16 @@ const UploadBlogPost: React.FC = () => {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [author, setAuthor] = useState("");
-  const [tagsInput, setTagsInput] = useState(""); // Comma-separated tags
+  const [selectedTags, setSelectedTags] = useState<string[]>([]); // Changed from tagsInput
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [initialImageUrl, setInitialImageUrl] = useState<string | null>(null);
   const [initialPdfLink, setInitialPdfLink] = useState<string | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
-  const [formCreatedAt, setFormCreatedAt] = useState<Date | undefined>(undefined); // New state for created_at
+  const [formCreatedAt, setFormCreatedAt] = useState<Date | undefined>(undefined);
+
+  const [allPossibleTags, setAllPossibleTags] = useState<string[]>([]); // New state for all tags
 
   const categories = [
     "Programming", "Technology", "Education", "Data Science", "Cybersecurity", "Mobile Development", "Cloud Computing", "History", "Retro Tech", "Programming History"
@@ -72,6 +75,7 @@ const UploadBlogPost: React.FC = () => {
           setFormCreatedAt(new Date()); // Set current date/time for new post
           setDataLoading(false); // Ready for new post if no ID
         }
+        fetchAllTags(); // Fetch all tags when admin is authenticated
       }
     }
   }, [session, profile, sessionLoading, navigate, t, postId]);
@@ -94,7 +98,7 @@ const UploadBlogPost: React.FC = () => {
         setContent(data.content || "");
         setCategory(data.category || "");
         setAuthor(data.author || "");
-        setTagsInput(data.tags?.map(cleanTagForStorage).join(', ') || "");
+        setSelectedTags(data.tags?.map(cleanTagForStorage) || []); // Set selected tags from fetched data
         setInitialImageUrl(data.image_url || null);
         setInitialPdfLink(data.pdf_link || null);
         setFormCreatedAt(new Date(data.created_at)); // Set existing date/time for edit
@@ -105,6 +109,24 @@ const UploadBlogPost: React.FC = () => {
       navigate('/content'); // Redirect if post not found or error
     } finally {
       setDataLoading(false);
+    }
+  };
+
+  const fetchAllTags = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('tags');
+      
+      if (error) throw error;
+
+      const uniqueTags = new Set<string>();
+      data.forEach(post => {
+        post.tags?.forEach(tag => uniqueTags.add(cleanTagForStorage(tag)));
+      });
+      setAllPossibleTags(Array.from(uniqueTags).sort());
+    } catch (err) {
+      console.error("Error fetching all tags:", err);
     }
   };
 
@@ -194,8 +216,6 @@ const UploadBlogPost: React.FC = () => {
         currentPdfLink = null;
       }
 
-      const tagsArray = tagsInput.split(',').map(tag => cleanTagForStorage(tag.trim())).filter(tag => tag.length > 0);
-
       const postData = {
         title,
         excerpt,
@@ -203,7 +223,7 @@ const UploadBlogPost: React.FC = () => {
         image_url: currentImageUrl,
         category,
         author,
-        tags: tagsArray,
+        tags: selectedTags, // Use selectedTags directly
         pdf_link: currentPdfLink,
         created_at: formCreatedAt.toISOString(), // Use selected date
         ...(postId ? {} : { created_by: session?.user?.id }), // created_at is now explicitly set
@@ -238,7 +258,7 @@ const UploadBlogPost: React.FC = () => {
         setContent("");
         setCategory("");
         setAuthor("");
-        setTagsInput("");
+        setSelectedTags([]); // Reset selected tags
         setImageFile(null);
         setPdfFile(null);
         setFormCreatedAt(new Date()); // Reset to current date/time for next new post
@@ -345,13 +365,10 @@ const UploadBlogPost: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="tags">{t('tags label')}</Label>
-              <Input
-                id="tags"
-                type="text"
-                placeholder={t('tags placeholder')}
-                value={tagsInput}
-                onChange={(e) => setTagsInput(e.target.value)}
-                className="mt-1"
+              <MultiSelectTags
+                initialTags={selectedTags}
+                onTagsChange={setSelectedTags}
+                allAvailableTags={allPossibleTags}
               />
               <p className="text-sm text-muted-foreground mt-1">
                 {t('tags hint')}

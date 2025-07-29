@@ -21,6 +21,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import MultiSelectTags from "@/components/MultiSelectTags"; // Import MultiSelectTags
 
 interface ArchivePost {
   id: string;
@@ -51,10 +52,12 @@ const ManageArchives: React.FC = () => {
   const [formExcerpt, setFormExcerpt] = useState("");
   const [formCategory, setFormCategory] = useState("");
   const [formAuthor, setFormAuthor] = useState("");
-  const [formTagsInput, setFormTagsInput] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]); // Changed from formTagsInput
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState(false);
-  const [formCreatedAt, setFormCreatedAt] = useState<Date | undefined>(undefined); // New state for created_at
+  const [formCreatedAt, setFormCreatedAt] = useState<Date | undefined>(undefined);
+
+  const [allPossibleTags, setAllPossibleTags] = useState<string[]>([]); // New state for all tags
 
   useEffect(() => {
     if (!sessionLoading) {
@@ -66,6 +69,7 @@ const ManageArchives: React.FC = () => {
         navigate('/');
       } else {
         fetchArchives();
+        fetchAllTags(); // Fetch all tags when admin is authenticated
       }
     }
   }, [session, isAdmin, sessionLoading, navigate, t]);
@@ -89,6 +93,24 @@ const ManageArchives: React.FC = () => {
       setError(t("fetch data error", { error: err.message }));
     } finally {
       setDataLoading(false);
+    }
+  };
+
+  const fetchAllTags = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('tags');
+      
+      if (error) throw error;
+
+      const uniqueTags = new Set<string>();
+      data.forEach(post => {
+        post.tags?.forEach(tag => uniqueTags.add(cleanTagForStorage(tag)));
+      });
+      setAllPossibleTags(Array.from(uniqueTags).sort());
+    } catch (err) {
+      console.error("Error fetching all tags:", err);
     }
   };
 
@@ -134,14 +156,12 @@ const ManageArchives: React.FC = () => {
       return;
     }
 
-    const tagsArray = formTagsInput.split(',').map(tag => cleanTagForStorage(tag.trim())).filter(tag => tag.length > 0);
-
     const archiveData = {
       title: formTitle,
       excerpt: formExcerpt,
       category: formCategory,
       author: formAuthor,
-      tags: tagsArray,
+      tags: selectedTags, // Use selectedTags directly
       pdf_link: newPdfLink,
       created_at: formCreatedAt.toISOString(), // Use selected date
       image_url: null, // Archives typically don't have images in this context
@@ -219,7 +239,7 @@ const ManageArchives: React.FC = () => {
     setFormExcerpt("");
     setFormCategory("");
     setFormAuthor("");
-    setFormTagsInput("");
+    setSelectedTags([]); // Reset selected tags
     setPdfFile(null);
     setFormCreatedAt(new Date()); // Set current date/time for new entry
     const pdfInput = document.getElementById("pdf-upload-dialog") as HTMLInputElement;
@@ -233,7 +253,7 @@ const ManageArchives: React.FC = () => {
     setFormExcerpt(archive.excerpt || "");
     setFormCategory(archive.category || "");
     setFormAuthor(archive.author || "");
-    setFormTagsInput(archive.tags?.map(cleanTagForStorage).join(', ') || "");
+    setSelectedTags(archive.tags?.map(cleanTagForStorage) || []); // Set selected tags from fetched data
     setPdfFile(null); // Clear file input for edit, user must re-upload if changing
     setFormCreatedAt(new Date(archive.created_at)); // Set existing date/time for edit
     const pdfInput = document.getElementById("pdf-upload-dialog") as HTMLInputElement;
@@ -389,27 +409,16 @@ const ManageArchives: React.FC = () => {
               </select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="author" className="text-right">
-                {t('author label')}
-              </Label>
-              <Input
-                id="author"
-                value={formAuthor}
-                onChange={(e) => setFormAuthor(e.target.value)}
-                className="col-span-3"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="tags" className="text-right">
                 {t('tags label')}
               </Label>
-              <Input
-                id="tags"
-                value={formTagsInput}
-                onChange={(e) => setFormTagsInput(e.target.value)}
-                placeholder={t('tags placeholder')}
-                className="col-span-3"
-              />
+              <div className="col-span-3">
+                <MultiSelectTags
+                  initialTags={selectedTags}
+                  onTagsChange={setSelectedTags}
+                  allAvailableTags={allPossibleTags}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="created_at" className="text-right">
