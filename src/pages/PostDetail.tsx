@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslatedTag } from "@/utils/i18nUtils";
 
 interface BlogPost {
   id: string;
@@ -22,6 +23,7 @@ interface BlogPost {
 const PostDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { t, i18n } = useTranslation();
+  const { getTranslatedTag } = useTranslatedTag();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -98,7 +100,7 @@ const PostDetail: React.FC = () => {
         <p className="text-sm text-muted-foreground">{formatDate(post.created_at)}</p>
         <div className="flex flex-wrap gap-1 mt-2">
           {post.tags?.map(tag => (
-            <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+            <Badge key={tag} variant="outline" className="text-xs">{getTranslatedTag(tag)}</Badge>
           ))}
         </div>
       </CardHeader>

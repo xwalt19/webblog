@@ -10,6 +10,7 @@ import { Image, FileText, CalendarDays, Trash } from "lucide-react";
 import { useSession } from "@/components/SessionProvider";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { useTranslatedTag } from "@/utils/i18nUtils";
 
 interface BlogPost {
   id: string;
@@ -25,6 +26,7 @@ interface BlogPost {
 
 const ContentList: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { getTranslatedTag } = useTranslatedTag();
   const navigate = useNavigate();
   const { session, profile, loading } = useSession();
 
@@ -140,7 +142,7 @@ const ContentList: React.FC = () => {
                 <CardDescription className="text-sm text-muted-foreground">{t('by')} {post.author}</CardDescription>
                 <div className="flex flex-wrap gap-1 mt-2">
                   {post.tags?.map(tag => (
-                    <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                    <Badge key={tag} variant="outline" className="text-xs">{getTranslatedTag(tag)}</Badge>
                   ))}
                 </div>
               </CardHeader>

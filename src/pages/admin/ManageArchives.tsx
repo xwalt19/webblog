@@ -15,6 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { FileText, Edit, Trash, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
 
 interface ArchivePost {
   id: string;
@@ -30,6 +31,7 @@ interface ArchivePost {
 
 const ManageArchives: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { getTranslatedTag } = useTranslatedTag();
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';
@@ -126,7 +128,7 @@ const ManageArchives: React.FC = () => {
       return;
     }
 
-    const tagsArray = formTagsInput.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+    const tagsArray = formTagsInput.split(',').map(tag => cleanTagForStorage(tag.trim())).filter(tag => tag.length > 0);
 
     const archiveData = {
       title: formTitle,
@@ -224,7 +226,7 @@ const ManageArchives: React.FC = () => {
     setFormExcerpt(archive.excerpt || "");
     setFormCategory(archive.category || "");
     setFormAuthor(archive.author || "");
-    setFormTagsInput(archive.tags?.join(', ') || "");
+    setFormTagsInput(archive.tags?.map(cleanTagForStorage).join(', ') || "");
     setPdfFile(null); // Clear file input for edit, user must re-upload if changing
     const pdfInput = document.getElementById("pdf-upload-dialog") as HTMLInputElement;
     if (pdfInput) pdfInput.value = "";
@@ -304,6 +306,11 @@ const ManageArchives: React.FC = () => {
                       ) : (
                         <span className="text-muted-foreground">{t('no pdf')}</span>
                       )}
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {archive.tags?.map(tag => (
+                          <Badge key={tag} variant="outline" className="text-xs">{getTranslatedTag(tag)}</Badge>
+                        ))}
+                      </div>
                     </TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="icon" onClick={() => openDialogForEdit(archive)} className="mr-2">

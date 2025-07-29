@@ -21,6 +21,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
 
 interface BlogPost {
   id: string;
@@ -38,6 +39,7 @@ const POSTS_PER_PAGE = 10; // Number of posts to display per page
 
 const ManageBlogPosts: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { getTranslatedTag } = useTranslatedTag();
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';
@@ -58,7 +60,7 @@ const ManageBlogPosts: React.FC = () => {
   const allTags = useMemo(() => {
     const tags = new Set<string>();
     blogPosts.forEach(post => {
-      post.tags?.forEach(tag => tags.add(tag));
+      post.tags?.forEach(tag => tags.add(cleanTagForStorage(tag)));
     });
     return ["all", ...Array.from(tags).sort()];
   }, [blogPosts]); // Recalculate when blogPosts change
@@ -227,7 +229,7 @@ const ManageBlogPosts: React.FC = () => {
             <SelectContent>
               {allTags.map(tag => (
                 <SelectItem key={tag} value={tag}>
-                  {tag === "all" ? t("all tags") : tag}
+                  {tag === "all" ? t("all tags") : getTranslatedTag(tag)}
                 </SelectItem>
               ))}
             </SelectContent>

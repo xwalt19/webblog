@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
 
 interface BlogPost {
   id: string;
@@ -39,6 +40,7 @@ const POSTS_PER_PAGE = 6;
 
 const Archives: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { getTranslatedTag } = useTranslatedTag();
   const [allArchivePosts, setAllArchivePosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -83,7 +85,7 @@ const Archives: React.FC = () => {
   const allTags: string[] = useMemo(() => {
     const tags = new Set<string>();
     allArchivePosts.forEach(post => {
-      post.tags?.forEach(tag => tags.add(tag));
+      post.tags?.forEach(tag => tags.add(cleanTagForStorage(tag)));
     });
     return ["all", ...Array.from(tags)];
   }, [allArchivePosts]);
@@ -127,7 +129,7 @@ const Archives: React.FC = () => {
         matchesPeriod = postDate.getFullYear() === filterYear && (postDate.getMonth() + 1) === filterMonth;
       }
 
-      const matchesTag = selectedTag === "all" || post.tags?.includes(selectedTag);
+      const matchesTag = selectedTag === "all" || post.tags?.map(cleanTagForStorage).includes(selectedTag);
 
       return matchesSearch && matchesPeriod && matchesTag;
     });
@@ -192,7 +194,7 @@ const Archives: React.FC = () => {
           <SelectContent>
             {allTags.map(tag => (
               <SelectItem key={tag} value={tag}>
-                {tag === "all" ? t("tag placeholder") : tag}
+                {tag === "all" ? t("tag placeholder") : getTranslatedTag(tag)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -229,7 +231,7 @@ const Archives: React.FC = () => {
                 <CardDescription className="text-sm text-muted-foreground">{t('by')} {post.author}</CardDescription>
                 <div className="flex flex-wrap gap-1 mt-2">
                   {post.tags?.map(tag => (
-                    <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                    <Badge key={tag} variant="outline" className="text-xs">{getTranslatedTag(tag)}</Badge>
                   ))}
                 </div>
               </CardHeader>

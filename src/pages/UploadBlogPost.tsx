@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cleanTagForStorage } from "@/utils/i18nUtils";
 
 interface BlogPost {
   id: string;
@@ -86,7 +87,7 @@ const UploadBlogPost: React.FC = () => {
         setContent(data.content || "");
         setCategory(data.category || "");
         setAuthor(data.author || "");
-        setTagsInput(data.tags?.join(', ') || "");
+        setTagsInput(data.tags?.map(cleanTagForStorage).join(', ') || "");
         setInitialImageUrl(data.image_url || null);
         setInitialPdfLink(data.pdf_link || null);
       }
@@ -185,7 +186,7 @@ const UploadBlogPost: React.FC = () => {
         currentPdfLink = null;
       }
 
-      const tagsArray = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+      const tagsArray = tagsInput.split(',').map(tag => cleanTagForStorage(tag.trim())).filter(tag => tag.length > 0);
 
       const postData = {
         title,

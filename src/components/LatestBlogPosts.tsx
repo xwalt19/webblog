@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslatedTag } from "@/utils/i18nUtils";
 
 interface BlogPost {
   id: string;
@@ -23,6 +24,7 @@ interface BlogPost {
 
 const LatestBlogPosts: React.FC = () => {
   const { t, i18n } = useTranslation();
+  const { getTranslatedTag } = useTranslatedTag();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' });
   const [prevBtnDisabled, setPrevBtnDisabled] = React.useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = React.useState(true);
@@ -135,7 +137,7 @@ const LatestBlogPosts: React.FC = () => {
                       <CardDescription className="text-sm text-muted-foreground">{t('by')} {post.author}</CardDescription>
                       <div className="flex flex-wrap gap-1 mt-2">
                         {post.tags?.map(tag => (
-                          <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
+                          <Badge key={tag} variant="outline" className="text-xs">{getTranslatedTag(tag)}</Badge>
                         ))}
                       </div>
                     </CardHeader>
