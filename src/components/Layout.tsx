@@ -64,7 +64,7 @@ const Layout: React.FC = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('activity')}</NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-background text-foreground border-border">
-                  <ul className="grid w-[300px] gap-2 p-3 md:w-[400px] md:grid-cols-2 lg:w-[450px] ">
+                  <ul className="flex flex-col w-[200px] gap-1 p-2"> {/* Changed to flex-col, adjusted width, gap, and padding */}
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
@@ -120,7 +120,7 @@ const Layout: React.FC = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('media')}</NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-background text-foreground border-border">
-                  <ul className="flex flex-col gap-1 p-2 w-[160px]"> {/* Adjusted width, gap, and padding */}
+                  <ul className="flex flex-col gap-1 p-2 w-[160px]"> {/* Already adjusted, keeping consistent */}
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
@@ -151,7 +151,7 @@ const Layout: React.FC = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('info')}</NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-background text-foreground border-border">
-                  <ul className="grid w-[300px] gap-2 p-3 md:w-[400px] md:grid-cols-2 lg:w-[450px] ">
+                  <ul className="flex flex-col w-[200px] gap-1 p-2"> {/* Changed to flex-col, adjusted width, gap, and padding */}
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
@@ -195,7 +195,7 @@ const Layout: React.FC = () => {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('admin tools')}</NavigationMenuTrigger>
                   <NavigationMenuContent className="bg-background text-foreground border-border">
-                    <ul className="grid w-[300px] gap-2 p-3 md:w-[400px] md:grid-cols-2 lg:w-[450px] ">
+                    <ul className="flex flex-col w-[250px] gap-1 p-2"> {/* Changed to flex-col, adjusted width, gap, and padding */}
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
