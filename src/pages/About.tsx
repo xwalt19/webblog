@@ -22,13 +22,17 @@ const AboutPage: React.FC = () => {
 
       <section className="mb-16 prose dark:prose-invert max-w-none mx-auto">
         <p className="text-lg text-muted-foreground mb-4">
-          {t('about page intro paragraph 1')}
+          <span className="inline-flex items-center gap-2 font-semibold text-foreground mb-2">
+            <MapPin className="h-6 w-6 text-primary" /> {t('headquarter label')}: {t('bandung indonesia')}
+          </span>
+          <br />
+          ProCodeCG adalah startup yang berbasis di Bandung yang bergerak di bidang teknologi, khususnya literasi pemrograman dan coding. Kami senang membantu anak-anak membangun dan mengembangkan keterampilan mereka di lingkungan IT, karena kami menyadari bahwa anak-anak adalah investasi paling berharga dalam memenuhi kebutuhan sumber daya manusia. Kami membantu industri masa depan dengan membentuk keterampilan anak-anak sedini mungkin untuk memenuhi persyaratan lanskap industri teknologi, karena perubahan teknologi yang cepat di seluruh dunia.
         </p>
         <p className="text-lg text-muted-foreground mb-4">
-          {t('about page intro paragraph 2')}
+          Tidak hanya untuk anak-anak, kami juga membantu lingkungan industri kreatif dengan membangun komunitas bernama Code Meet Up. Komunitas ini terdiri dari orang-orang kreatif dengan pengetahuan lintas bidang yang peduli terhadap teknologi dan bisnis. Kami berkumpul, berbagi, berkolaborasi, dan menciptakan sesuatu yang luar biasa bersama orang-orang super kreatif lainnya seperti Anda. Dan bagian terbaiknya, ini gratis. Jika Anda adalah orang yang berpikiran terbuka, kreatif, dan bersemangat, datang dan bergabunglah dengan kami di komunitas Code Meet Up.
         </p>
         <p className="text-lg text-muted-foreground">
-          {t('about page intro paragraph 3')}
+          Kami sangat bangga menggabungkan talenta terbaik dari berbagai disiplin ilmu dan menyatukan orang-orang dengan satu arahan sederhana: berkolaborasi dan berkreasi.
         </p>
       </section>
 
@@ -75,12 +79,6 @@ const AboutPage: React.FC = () => {
               </CardContent>
             </Card>
           ))}
-        </div>
-        <div className="text-center mt-8 p-4">
-          <p className="text-lg text-muted-foreground flex items-center justify-center gap-2">
-            <MapPin className="h-6 w-6 text-primary" />
-            <span className="font-semibold text-foreground">{t('headquarter label')}:</span> {t('bandung indonesia')}
-          </p>
         </div>
       </section>
 
