@@ -114,9 +114,14 @@ const MobileNav: React.FC = () => {
 
           {/* User Profile Link */}
           {!loading && session && (
-            <Link to="/profile" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
-              <User className="h-5 w-5 inline-block mr-2" /> {t('my profile')}
-            </Link>
+            <>
+              <Link to="/dashboard" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+                <LayoutDashboard className="h-5 w-5 inline-block mr-2" /> {t('dashboard')}
+              </Link>
+              <Link to="/profile" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+                <User className="h-5 w-5 inline-block mr-2" /> {t('my profile')}
+              </Link>
+            </>
           )}
 
           {isAdmin && (
@@ -127,7 +132,7 @@ const MobileNav: React.FC = () => {
                 </AccordionTrigger>
                 <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
                   <Link to="/admin" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    <LayoutDashboard className="h-4 w-4 inline-block mr-2" /> {t('dashboard')}
+                    <LayoutDashboard className="h-4 w-4 inline-block mr-2" /> {t('admin dashboard')}
                   </Link>
                   <Link to="/admin/manage-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('blog posts')}

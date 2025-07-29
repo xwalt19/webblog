@@ -42,7 +42,8 @@ import { SessionProvider } from "./components/SessionProvider";
 import React from "react";
 import AdminDashboard from "./pages/admin/Dashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
-import UserProfile from "./pages/UserProfile"; // Import new UserProfile
+import UserProfile from "./pages/UserProfile";
+import MemberDashboard from "./pages/MemberDashboard"; // Import MemberDashboard
 
 const queryClient = new QueryClient();
 
@@ -70,7 +71,8 @@ const App = () => (
               <Route path="media/youtube" element={<YouTubePage />} />
               <Route path="media/tiktok" element={<TikTokPage />} />
               <Route path="info/calendar" element={<CalendarPage />} />
-              <Route path="profile" element={<UserProfile />} /> {/* New User Profile Route */}
+              <Route path="profile" element={<UserProfile />} />
+              <Route path="dashboard" element={<MemberDashboard />} /> {/* New Member Dashboard Route */}
               {/* Admin Routes */}
               <Route path="admin" element={<AdminDashboard />} />
               <Route path="admin/blog-posts/new" element={<UploadBlogPost />} />
