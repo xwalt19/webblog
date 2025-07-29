@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, LogIn, LayoutDashboard } from "lucide-react";
+import { Menu, LogOut, LogIn, LayoutDashboard, Users } from "lucide-react"; // Import Users icon
 import {
   Accordion,
   AccordionContent,
@@ -151,6 +151,9 @@ const MobileNav: React.FC = () => {
                   </Link>
                   <Link to="/admin/manage-tiktok-videos" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('tiktok videos')}
+                  </Link>
+                  <Link to="/admin/manage-users" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    <Users className="h-4 w-4 inline-block mr-2" /> {t('manage users')}
                   </Link>
                 </AccordionContent>
               </AccordionItem>

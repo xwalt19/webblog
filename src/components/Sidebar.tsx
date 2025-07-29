@@ -64,7 +64,7 @@ const Sidebar: React.FC = () => {
   ];
 
   const adminLinks = [
-    { to: "/admin", labelKey: "dashboard", icon: LayoutDashboard }, // New Dashboard Link
+    { to: "/admin", labelKey: "dashboard", icon: LayoutDashboard },
     { to: "/admin/manage-blog-posts", labelKey: "blog posts", icon: FileText },
     { to: "/admin/manage-archives", labelKey: "archives", icon: Archive },
     { to: "/admin/manage-calendar", labelKey: "calendar", icon: CalendarDays },
@@ -75,18 +75,19 @@ const Sidebar: React.FC = () => {
     { to: "/admin/manage-training-programs", labelKey: "training programs", icon: Cpu },
     { to: "/admin/manage-youtube-videos", labelKey: "youtube videos", icon: Youtube },
     { to: "/admin/manage-tiktok-videos", labelKey: "tiktok videos", icon: Music },
+    { to: "/admin/manage-users", labelKey: "manage users", icon: Users }, // New User Management Link
   ];
 
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col flex-shrink-0 bg-sidebar border-r border-sidebar-border py-4 transition-all duration-300 ease-in-out overflow-y-auto", // Menambahkan flex-shrink-0, menghapus max-h-full
+        "hidden md:flex flex-col flex-shrink-0 bg-sidebar border-r border-sidebar-border py-4 transition-all duration-300 ease-in-out overflow-y-auto",
         isExpanded ? "w-64" : "w-20"
       )}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
-      <div className="flex-grow px-3 space-y-4"> {/* Div ini akan mengisi tinggi yang tersedia di dalam aside */}
+      <div className="flex-grow px-3 space-y-4">
         {/* Main Navigation */}
         <div className="space-y-1">
           {isExpanded && <h3 className="text-sm font-semibold text-muted-foreground px-3 mb-2">{t('main navigation')}</h3>}
