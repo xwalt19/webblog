@@ -63,8 +63,8 @@ const Sidebar: React.FC = () => {
     { to: "/media/tiktok", labelKey: "tiktok", icon: Music },
   ];
 
+  // Hanya menyertakan link profil untuk pengguna yang login
   const userLinks = [
-    { to: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
     { to: "/profile", labelKey: "my profile", icon: User },
   ];
 
