@@ -60,33 +60,6 @@ const AboutPage: React.FC = () => {
       </section>
 
       <section className="mb-16">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('our values')}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <Handshake className="mx-auto mb-4 text-green-500" size={40} />
-            <CardTitle className="text-xl mb-2">{t('accessibility')}</CardTitle>
-            <CardContent className="text-muted-foreground p-0">
-              {t('accessibility description')}
-            </CardContent>
-          </Card>
-          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <Lightbulb className="mx-auto mb-4 text-purple-500" size={40} />
-            <CardTitle className="text-xl mb-2">{t('innovation')}</CardTitle>
-            <CardContent className="text-muted-foreground p-0">
-              {t('innovation description')}
-            </CardContent>
-          </Card>
-          <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <Users className="mx-auto mb-4 text-red-500" size={40} />
-            <CardTitle className="text-xl mb-2">{t('community')}</CardTitle>
-            <CardContent className="text-muted-foreground p-0">
-              {t('community description')}
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      <section className="mb-16">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('our team')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {dummyTeamMembers.map((member, index) => (
@@ -103,16 +76,14 @@ const AboutPage: React.FC = () => {
             </Card>
           ))}
         </div>
-        <Card className="mt-8 p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 max-w-md mx-auto text-center">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-2xl font-semibold flex items-center justify-center gap-2 text-primary">
-              <MapPin className="h-7 w-7" /> {t('headquarter label')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-lg text-muted-foreground">
+        <div className="text-center mt-8 p-4"> {/* Added padding for spacing */}
+          <h3 className="text-2xl font-semibold flex items-center justify-center gap-2 text-primary">
+            <MapPin className="h-7 w-7" /> {t('headquarter label')}
+          </h3>
+          <p className="text-lg text-muted-foreground">
             {t('bandung indonesia')}
-          </CardContent>
-        </Card>
+          </p>
+        </div>
       </section>
 
       <Separator className="my-16" />
