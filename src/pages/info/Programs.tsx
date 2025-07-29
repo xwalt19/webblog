@@ -216,9 +216,9 @@ const ProgramsPage: React.FC = () => {
                   </div>
                 )}
                 <div className="mt-6">
-                  <Link to="/contact-us">
+                  <a href="https://wa.me/628122015409" target="_blank" rel="noopener noreferrer" className="w-full">
                     <Button className="w-full">{t('register now button')}</Button>
-                  </Link>
+                  </a>
                 </div>
               </CardContent>
             </Card>
