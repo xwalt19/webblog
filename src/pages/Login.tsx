@@ -65,7 +65,7 @@ const Login: React.FC = () => {
             },
           }}
           theme="light"
-          providers={[]}
+          providers={['google']}
           redirectTo={window.location.origin}
           view={view}
         />
