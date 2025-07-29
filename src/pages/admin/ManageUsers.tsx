@@ -83,6 +83,7 @@ const ManageUsers: React.FC = () => {
   const fetchUsers = async () => {
     setDataLoading(true);
     setError(null);
+    console.time("Fetch users data"); // Start timer
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -98,6 +99,7 @@ const ManageUsers: React.FC = () => {
       setError(t("fetch data error", { error: err.message }));
     } finally {
       setDataLoading(false);
+      console.timeEnd("Fetch users data"); // End timer
     }
   };
 
