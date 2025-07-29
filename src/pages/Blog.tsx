@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -81,7 +83,7 @@ const BlogPage: React.FC = () => {
         { event: '*', schema: 'public', table: 'blog_posts' },
         (payload) => {
           // Only process changes for non-PDF posts (actual blog posts)
-          if (payload.new?.pdf_link === null || payload.old?.pdf_link === null) {
+          if ((payload.new as BlogPost)?.pdf_link === null || (payload.old as BlogPost)?.pdf_link === null) {
             if (payload.eventType === 'INSERT') {
               setAllPosts((prev) => [payload.new as BlogPost, ...prev]);
             } else if (payload.eventType === 'UPDATE') {
