@@ -7,7 +7,7 @@ import { useSession } from "@/components/SessionProvider";
 import { cn } from "@/lib/utils";
 import {
   Home, Info, BookOpen, Archive, Mail, Handshake, CalendarDays,
-  GraduationCap, Users, Tent, Cpu, Youtube, Music, FileText, Code, BellRing, LayoutDashboard,
+  GraduationCap, Users, Tent, Cpu, Youtube, Music, FileText, Code, BellRing, LayoutDashboard, User,
 } from "lucide-react";
 
 interface SidebarLinkProps {
@@ -37,7 +37,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon: Icon, label, isExpa
 
 const Sidebar: React.FC = () => {
   const { t } = useTranslation();
-  const { profile, loading } = useSession();
+  const { profile, loading, session } = useSession(); // Add session to dependencies
   const isAdmin = profile?.role === 'admin';
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -63,8 +63,13 @@ const Sidebar: React.FC = () => {
     { to: "/media/tiktok", labelKey: "tiktok", icon: Music },
   ];
 
+  const userLinks = [
+    { to: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
+    { to: "/profile", labelKey: "my profile", icon: User },
+  ];
+
   const adminLinks = [
-    { to: "/admin", labelKey: "dashboard", icon: LayoutDashboard },
+    { to: "/admin", labelKey: "admin dashboard", icon: LayoutDashboard }, // Changed labelKey for clarity
     { to: "/admin/manage-blog-posts", labelKey: "blog posts", icon: FileText },
     { to: "/admin/manage-archives", labelKey: "archives", icon: Archive },
     { to: "/admin/manage-calendar", labelKey: "calendar", icon: CalendarDays },
@@ -75,7 +80,7 @@ const Sidebar: React.FC = () => {
     { to: "/admin/manage-training-programs", labelKey: "training programs", icon: Cpu },
     { to: "/admin/manage-youtube-videos", labelKey: "youtube videos", icon: Youtube },
     { to: "/admin/manage-tiktok-videos", labelKey: "tiktok videos", icon: Music },
-    { to: "/admin/manage-users", labelKey: "manage users", icon: Users }, // New User Management Link
+    { to: "/admin/manage-users", labelKey: "manage users", icon: Users },
   ];
 
   return (
@@ -129,6 +134,22 @@ const Sidebar: React.FC = () => {
             />
           ))}
         </div>
+
+        {/* User Account (Conditional) */}
+        {!loading && session && (
+          <div className="space-y-1 pt-4 border-t border-sidebar-border">
+            {isExpanded && <h3 className="text-sm font-semibold text-muted-foreground px-3 mb-2">{t('my account')}</h3>}
+            {userLinks.map((link) => (
+              <SidebarLink
+                key={link.to}
+                to={link.to}
+                icon={link.icon}
+                label={t(link.labelKey)}
+                isExpanded={isExpanded}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Admin Tools (Conditional) */}
         {!loading && isAdmin && (
