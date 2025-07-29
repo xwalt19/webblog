@@ -7,14 +7,20 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
 import { iconMap } from "@/utils/iconMap";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button"; // Import Button component
 
 interface ProgramFormFieldsProps {
   title: string;
   setTitle: (value: string) => void;
   description: string;
   setDescription: (value: string) => void;
-  schedule: string;
-  setSchedule: (value: string) => void;
+  schedule: Date | undefined; // Changed to Date | undefined
+  setSchedule: (value: Date | undefined) => void; // Changed to Date | undefined
   registrationFee: string;
   setRegistrationFee: (value: string) => void;
   price: string;
@@ -101,14 +107,49 @@ const ProgramFormFields: React.FC<ProgramFormFieldsProps> = ({
       </div>
       <div>
         <Label htmlFor="schedule">{t('schedule label')}</Label>
-        <Input
-          id="schedule"
-          type="text"
-          placeholder={t('schedule placeholder')}
-          value={schedule}
-          onChange={(e) => setSchedule(e.target.value)}
-          className="mt-1"
-        />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={"outline"}
+              className={cn(
+                "w-full justify-start text-left font-normal mt-1",
+                !schedule && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {schedule ? format(schedule, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={schedule}
+              onSelect={setSchedule}
+              initialFocus
+            />
+            <div className="p-3 border-t border-border">
+              <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
+              <Input
+                id="time-input"
+                type="time"
+                value={schedule ? format(schedule, "HH:mm") : ""}
+                onChange={(e) => {
+                  const [hours, minutes] = e.target.value.split(':').map(Number);
+                  if (schedule) {
+                    const newDate = new Date(schedule);
+                    newDate.setHours(hours, minutes);
+                    setSchedule(newDate);
+                  } else {
+                    const newDate = new Date();
+                    newDate.setHours(hours, minutes);
+                    setSchedule(newDate);
+                  }
+                }}
+                className="w-full"
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
       <div>
         <Label htmlFor="registrationFee">{t('registration fee label')}</Label>

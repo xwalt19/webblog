@@ -78,6 +78,8 @@ const ManagePrograms: React.FC = () => {
       // Delete related price tiers and topics first due to foreign key constraints
       await supabase.from('program_price_tiers').delete().eq('program_id', id);
       await supabase.from('program_topics').delete().eq('program_id', id);
+      // Delete associated calendar events
+      await supabase.from('calendar_events').delete().eq('program_id', id);
 
       const { error } = await supabase
         .from('programs')

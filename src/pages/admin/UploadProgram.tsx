@@ -16,7 +16,7 @@ interface Program {
   id: string;
   title: string;
   description: string;
-  schedule: string | null;
+  schedule: string | null; // Still string from DB, will be parsed to Date
   registration_fee: string | null;
   price: string | null;
   type: "kids" | "private" | "professional";
@@ -48,7 +48,7 @@ const UploadProgram: React.FC = () => {
   
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [schedule, setSchedule] = useState("");
+  const [schedule, setSchedule] = useState<Date | undefined>(undefined); // Changed to Date | undefined
   const [registrationFee, setRegistrationFee] = useState("");
   const [price, setPrice] = useState("");
   const [type, setType] = useState<"kids" | "private" | "professional">("kids");
@@ -90,7 +90,7 @@ const UploadProgram: React.FC = () => {
       if (programData) {
         setTitle(programData.title || "");
         setDescription(programData.description || "");
-        setSchedule(programData.schedule || "");
+        setSchedule(programData.schedule ? new Date(programData.schedule) : undefined); // Parse schedule to Date
         setRegistrationFee(programData.registration_fee || "");
         setPrice(programData.price || "");
         setType(programData.type || "kids");
@@ -140,7 +140,7 @@ const UploadProgram: React.FC = () => {
       const programData = {
         title,
         description,
-        schedule: schedule || null,
+        schedule: schedule ? schedule.toISOString() : null, // Convert Date to ISO string
         registration_fee: registrationFee || null,
         price: price || null,
         type,
@@ -169,6 +169,48 @@ const UploadProgram: React.FC = () => {
 
       if (error) throw error;
       if (!currentProgramId) throw new Error("Program ID not found after save.");
+
+      // Handle calendar event creation/update
+      if (schedule) {
+        const calendarEventData = {
+          title: title,
+          description: description,
+          date: schedule.toISOString(),
+          created_by: session?.user?.id,
+          program_id: currentProgramId, // Link to program
+        };
+
+        const { data: existingEvent, error: fetchEventError } = await supabase
+          .from('calendar_events')
+          .select('id')
+          .eq('program_id', currentProgramId)
+          .single();
+
+        if (fetchEventError && fetchEventError.code !== 'PGRST116') { // PGRST116 means no rows found
+          throw fetchEventError;
+        }
+
+        if (existingEvent) {
+          // Update existing calendar event
+          const { error: updateEventError } = await supabase
+            .from('calendar_events')
+            .update(calendarEventData)
+            .eq('id', existingEvent.id);
+          if (updateEventError) throw updateEventError;
+        } else {
+          // Insert new calendar event
+          const { error: insertEventError } = await supabase
+            .from('calendar_events')
+            .insert([calendarEventData]);
+          if (insertEventError) throw insertEventError;
+        }
+      } else {
+        // If schedule is cleared, delete associated calendar event
+        await supabase
+          .from('calendar_events')
+          .delete()
+          .eq('program_id', currentProgramId);
+      }
 
       await supabase.from('program_price_tiers').delete().eq('program_id', currentProgramId);
       if (priceTables.length > 0) {
