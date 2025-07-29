@@ -6,7 +6,7 @@ import CallToActionSection from "@/components/CallToActionSection";
 import MediaCarousel from "@/components/MediaCarousel";
 import FixedNewsSchedule from "@/components/FixedNewsSchedule";
 import FeaturedCourses from "@/components/FeaturedCourses";
-import SimpleExternalArticlesDisplay from "@/components/SimpleExternalArticlesDisplay";
+// import SimpleExternalArticlesDisplay from "@/components/SimpleExternalArticlesDisplay"; // Menghapus import
 
 const Home: React.FC = () => {
   return (
@@ -17,7 +17,7 @@ const Home: React.FC = () => {
       <MediaCarousel />
       <FixedNewsSchedule />
       <FeaturedCourses />
-      <SimpleExternalArticlesDisplay />
+      {/* <SimpleExternalArticlesDisplay /> */} {/* Menghapus penggunaan komponen */}
       <CallToActionSection />
     </div>
   );
