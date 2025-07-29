@@ -76,12 +76,10 @@ const AboutPage: React.FC = () => {
             </Card>
           ))}
         </div>
-        <div className="text-center mt-8 p-4"> {/* Added padding for spacing */}
-          <h3 className="text-2xl font-semibold flex items-center justify-center gap-2 text-primary">
-            <MapPin className="h-7 w-7" /> {t('headquarter label')}
-          </h3>
-          <p className="text-lg text-muted-foreground">
-            {t('bandung indonesia')}
+        <div className="text-center mt-8 p-4">
+          <p className="text-lg text-muted-foreground flex items-center justify-center gap-2">
+            <MapPin className="h-6 w-6 text-primary" />
+            <span className="font-semibold text-foreground">{t('headquarter label')}:</span> {t('bandung indonesia')}
           </p>
         </div>
       </section>
