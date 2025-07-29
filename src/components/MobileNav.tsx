@@ -122,15 +122,26 @@ const MobileNav: React.FC = () => {
                   <Link to="/admin/manage-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('blog posts')}
                   </Link>
-                  <Link to="/content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('content list.nav title')}
+                  <Link to="/admin/manage-archives" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('manage archives.nav title')}
                   </Link>
-                  {/* Removed MigrateBlogPosts link */}
                   <Link to="/admin/manage-calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('manage calendar.nav title')}
                   </Link>
-                  <Link to="/admin/manage-archives" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('manage archives.nav title')}
+                  <Link to="/admin/manage-programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('manage programs.nav title')}
+                  </Link>
+                  <Link to="/admin/manage-running-classes" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('manage running classes.nav title')}
+                  </Link>
+                  <Link to="/admin/manage-regular-events" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('manage regular events.nav title')}
+                  </Link>
+                  <Link to="/admin/manage-camps" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('manage camps.nav title')}
+                  </Link>
+                  <Link to="/admin/manage-training-programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('manage training programs.nav title')}
                   </Link>
                 </AccordionContent>
               </AccordionItem>

@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -12,11 +11,84 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
-import { topics, runningClasses, regularEvents, Topic, RunningClass, RegularEvent } from "@/data/programs";
+import { supabase } from "@/integrations/supabase/client";
+import { getIconComponent } from "@/utils/iconMap";
+
+interface SupabaseRunningClass {
+  id: string;
+  name: string;
+  schedule: string;
+  description: string;
+  icon_name: string | null;
+  created_by: string | null;
+  created_at: string;
+}
+
+interface SupabaseRegularEvent {
+  id: string;
+  name: string;
+  schedule: string;
+  description: string;
+  icon_name: string | null;
+  created_by: string | null;
+  created_at: string;
+}
 
 const RegularEventsClasses: React.FC = () => {
   const { t } = useTranslation();
-  const [selectedActivityView, setSelectedActivityView] = useState(""); 
+  const [selectedActivityView, setSelectedActivityView] = useState("allActivities"); 
+  const [runningClasses, setRunningClasses] = useState<SupabaseRunningClass[]>([]);
+  const [regularEvents, setRegularEvents] = useState<SupabaseRegularEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data: runningData, error: runningError } = await supabase
+          .from('running_classes')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (runningError) throw runningError;
+        setRunningClasses(runningData || []);
+
+        const { data: eventData, error: eventError } = await supabase
+          .from('regular_events')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (eventError) throw eventError;
+        setRegularEvents(eventData || []);
+
+      } catch (err: any) {
+        console.error("Error fetching activities:", err);
+        setError(t("regular events classes.fetch error", { error: err.message }));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivities();
+  }, [t]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
+        <p className="text-center text-muted-foreground">{t('loading activities')}</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
+        <p className="text-center text-destructive">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-10 px-4">
@@ -43,24 +115,31 @@ const RegularEventsClasses: React.FC = () => {
       {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('running classes section title')}</h2>
-          <div className="grid grid-cols-1 gap-6"> 
-            {runningClasses.map((cls, index) => (
-              <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
-                <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                  {cls.icon && <cls.icon className="text-primary" size={64} />}
-                </div>
-                <div className="flex-grow">
-                  <CardHeader className="pb-2 p-0">
-                    <CardTitle className="text-2xl font-semibold">{t(cls.nameKey)}</CardTitle>
-                    <CardDescription className="text-primary font-medium">{t(cls.scheduleKey)}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="text-muted-foreground p-0 pt-2">
-                    {t(cls.descriptionKey)}
-                  </CardContent>
-                </div>
-              </Card>
-            ))}
-          </div>
+          {runningClasses.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6"> 
+              {runningClasses.map((cls) => {
+                const ClassIcon = getIconComponent(cls.icon_name);
+                return (
+                  <Card key={cls.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
+                    <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                      {ClassIcon && <ClassIcon className="text-primary" size={64} />}
+                    </div>
+                    <div className="flex-grow">
+                      <CardHeader className="pb-2 p-0">
+                        <CardTitle className="text-2xl font-semibold">{cls.name}</CardTitle>
+                        <CardDescription className="text-primary font-medium">{cls.schedule}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-muted-foreground p-0 pt-2">
+                        {cls.description}
+                      </CardContent>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-muted-foreground mt-8 text-lg">{t('no running classes available')}</p>
+          )}
         </section>
       )}
 
@@ -69,24 +148,31 @@ const RegularEventsClasses: React.FC = () => {
       {(selectedActivityView === "allActivities" || selectedActivityView === "regularEvents") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('regular events section title')}</h2>
-          <div className="grid grid-cols-1 gap-6">
-            {regularEvents.map((event, index) => (
-              <Card key={index} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
-                <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                  {event.icon && <event.icon className="text-primary" size={64} />}
-                </div>
-                <div className="flex-grow">
-                  <CardHeader className="pb-2 p-0">
-                    <CardTitle className="text-2xl font-semibold">{t(event.nameKey)}</CardTitle>
-                    <CardDescription className="text-primary font-medium">{t(event.scheduleKey)}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="text-muted-foreground p-0 pt-2">
-                    {t(event.descriptionKey)}
-                  </CardContent>
-                </div>
-              </Card>
-            ))}
-          </div>
+          {regularEvents.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6">
+              {regularEvents.map((event) => {
+                const EventIcon = getIconComponent(event.icon_name);
+                return (
+                  <Card key={event.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
+                    <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
+                      {EventIcon && <EventIcon className="text-primary" size={64} />}
+                    </div>
+                    <div className="flex-grow">
+                      <CardHeader className="pb-2 p-0">
+                        <CardTitle className="text-2xl font-semibold">{event.name}</CardTitle>
+                        <CardDescription className="text-primary font-medium">{event.schedule}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-muted-foreground p-0 pt-2">
+                        {event.description}
+                      </CardContent>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-center text-muted-foreground mt-8 text-lg">{t('no regular events available')}</p>
+          )}
         </section>
       )}
 

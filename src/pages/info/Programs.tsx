@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -19,20 +19,96 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users, GraduationCap, DollarSign, CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { programs, Program, PriceTier, Topic } from "@/data/programs";
+import { supabase } from "@/integrations/supabase/client";
+import { getIconComponent } from "@/utils/iconMap"; // Import the new utility
+
+interface SupabasePriceTier {
+  id: string;
+  program_id: string;
+  header_key_col1: string;
+  header_key_col2: string;
+  participants_key: string;
+  price: string;
+}
+
+interface SupabaseTopic {
+  id: string;
+  program_id: string;
+  icon_name: string;
+  title: string;
+  description: string;
+}
+
+interface SupabaseProgram {
+  id: string;
+  title: string;
+  description: string;
+  schedule: string | null;
+  registration_fee: string | null;
+  price: string | null;
+  type: "kids" | "private" | "professional";
+  icon_name: string | null;
+  created_by: string | null;
+  created_at: string;
+  program_price_tiers: SupabasePriceTier[]; // Joined data
+  program_topics: SupabaseTopic[]; // Joined data
+}
 
 const ProgramsPage: React.FC = () => {
   const { t } = useTranslation();
   const [selectedProgramType, setSelectedProgramType] = useState("all");
+  const [allPrograms, setAllPrograms] = useState<SupabaseProgram[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error } = await supabase
+          .from('programs')
+          .select('*, program_price_tiers(*), program_topics(*)')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          throw error;
+        }
+        setAllPrograms(data || []);
+      } catch (err: any) {
+        console.error("Error fetching programs:", err);
+        setError(t("programs page.fetch error", { error: err.message }));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrograms();
+  }, [t]);
 
   const filteredPrograms = useMemo(() => {
     if (selectedProgramType === "all") {
-      return programs;
+      return allPrograms;
     }
-    return programs.filter(program => program.type === selectedProgramType);
-  }, [selectedProgramType]);
+    return allPrograms.filter(program => program.type === selectedProgramType);
+  }, [selectedProgramType, allPrograms]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
+        <p className="text-center text-muted-foreground">{t('loading programs')}</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
+        <p className="text-center text-destructive">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -58,58 +134,62 @@ const ProgramsPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-8">
-        {filteredPrograms.map((program) => (
-          <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
-            <CardHeader className="pb-4 flex-grow">
-              <div className="flex items-center gap-4 mb-2">
-                {program.icon && <program.icon className="text-primary" size={40} />}
-                <CardTitle className="text-2xl font-bold">{t(program.titleKey)}</CardTitle>
-              </div>
-              <CardDescription className="text-muted-foreground">
-                {t(program.descriptionKey)}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-0 pt-4">
-              {program.scheduleKey && (
-                <p className="text-md text-foreground mb-2 flex items-center gap-2">
-                  <CalendarDays size={18} className="text-muted-foreground" />
-                  {t('schedule')}: <span className="font-medium">{t(program.scheduleKey)}</span>
-                </p>
-              )}
-              {program.registrationFee && (
-                <p className="text-md text-foreground mb-4 flex items-center gap-2">
-                  <DollarSign size={18} className="text-muted-foreground" />
-                  {t('registration fee')}: <span className="font-medium">{program.registrationFee}</span>
-                </p>
-              )}
+        {filteredPrograms.map((program) => {
+          const ProgramIcon = getIconComponent(program.icon_name);
+          return (
+            <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+              <CardHeader className="pb-4 flex-grow">
+                <div className="flex items-center gap-4 mb-2">
+                  {ProgramIcon && <ProgramIcon className="text-primary" size={40} />}
+                  <CardTitle className="text-2xl font-bold">{program.title}</CardTitle>
+                </div>
+                <CardDescription className="text-muted-foreground">
+                  {program.description}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0 pt-4">
+                {program.schedule && (
+                  <p className="text-md text-foreground mb-2 flex items-center gap-2">
+                    {/* CalendarDays icon is not dynamic, so import it directly if needed or remove */}
+                    {t('schedule')}: <span className="font-medium">{program.schedule}</span>
+                  </p>
+                )}
+                {program.registration_fee && (
+                  <p className="text-md text-foreground mb-4 flex items-center gap-2">
+                    {/* DollarSign icon is not dynamic, so import it directly if needed or remove */}
+                    {t('registration fee')}: <span className="font-medium">{program.registration_fee}</span>
+                  </p>
+                )}
 
-              {program.price && (
-                <p className="text-md text-foreground mb-4 flex items-center gap-2">
-                  <DollarSign size={18} className="text-muted-foreground" />
-                  {t('price')}: <span className="font-medium">{program.price}</span>
-                </p>
-              )}
+                {program.price && (
+                  <p className="text-md text-foreground mb-4 flex items-center gap-2">
+                    {/* DollarSign icon is not dynamic, so import it directly if needed or remove */}
+                    {t('price')}: <span className="font-medium">{program.price}</span>
+                  </p>
+                )}
 
-              {!program.price && program.priceTable && program.priceTable.length > 0 && (
-                <div className="mt-4">
-                  <h3 className="text-lg font-semibold text-primary mb-2">{t('price details')}</h3>
-                  {program.priceTable.map((table, idx) => (
-                    <Card key={idx} className="mb-4 shadow-sm">
+                {!program.price && program.program_price_tiers && program.program_price_tiers.length > 0 && (
+                  <div className="mt-4">
+                    <h3 className="text-lg font-semibold text-primary mb-2">{t('price details')}</h3>
+                    {/* Group price tiers by header_key_col1 if needed, or display as is */}
+                    {/* For simplicity, assuming price_tiers are already structured for display */}
+                    <Card className="mb-4 shadow-sm">
                       <CardHeader className="p-3 pb-2">
-                        <CardTitle className="text-lg font-semibold">{t(table.headerKeys[1])}</CardTitle>
+                        {/* Assuming all price tiers for a program share the same header structure */}
+                        <CardTitle className="text-lg font-semibold">{program.program_price_tiers[0]?.header_key_col2}</CardTitle>
                       </CardHeader>
                       <CardContent className="p-0">
                         <Table className="w-full">
                           <TableHeader>
                             <TableRow>
-                              <TableHead className="w-[150px]">{t(table.headerKeys[0])}</TableHead>
-                              <TableHead className="text-right">{t(table.headerKeys[1])}</TableHead>
+                              <TableHead className="w-[150px]">{program.program_price_tiers[0]?.header_key_col1}</TableHead>
+                              <TableHead className="text-right">{program.program_price_tiers[0]?.header_key_col2}</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {table.rows.map((row, rowIndex) => (
+                            {program.program_price_tiers.map((row, rowIndex) => (
                               <TableRow key={rowIndex}>
-                                <TableCell className="font-medium">{t(row.participantsKey)}</TableCell>
+                                <TableCell className="font-medium">{row.participants_key}</TableCell>
                                 <TableCell className="text-right">{row.price}</TableCell>
                               </TableRow>
                             ))}
@@ -117,31 +197,34 @@ const ProgramsPage: React.FC = () => {
                         </Table>
                       </CardContent>
                     </Card>
-                  ))}
-                </div>
-              )}
-
-              {program.topics && program.topics.length > 0 && (
-                <div className="mt-4">
-                  <h3 className="text-lg font-semibold text-primary mb-4">{t('topics included')}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {program.topics.map((topic, topicIdx) => (
-                      <Card key={topicIdx} className="p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
-                        <CardHeader className="p-0 pb-2 flex flex-row items-center gap-3">
-                          {topic.icon && <topic.icon size={24} className="text-primary flex-shrink-0" />}
-                          <CardTitle className="text-base font-semibold">{t(topic.titleKey)}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-0 text-sm text-muted-foreground">
-                          {t(topic.descriptionKey)}
-                        </CardContent>
-                      </Card>
-                    ))}
                   </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+                )}
+
+                {program.program_topics && program.program_topics.length > 0 && (
+                  <div className="mt-4">
+                    <h3 className="text-lg font-semibold text-primary mb-4">{t('topics included')}</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {program.program_topics.map((topic, topicIdx) => {
+                        const TopicIcon = getIconComponent(topic.icon_name);
+                        return (
+                          <Card key={topicIdx} className="p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                            <CardHeader className="p-0 pb-2 flex flex-row items-center gap-3">
+                              {TopicIcon && <TopicIcon size={24} className="text-primary flex-shrink-0" />}
+                              <CardTitle className="text-base font-semibold">{topic.title}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0 text-sm text-muted-foreground">
+                              {topic.description}
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {filteredPrograms.length === 0 && (

@@ -241,19 +241,18 @@ const Layout: React.FC = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            to="/content"
+                            to="/admin/manage-archives"
                             className={cn(
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('content list.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('manage archives.nav title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('content list.nav desc')}
+                              {t('manage archives.nav desc')}
                             </p>
                           </Link>
-                        </NavigationMenuLink>
+                        </Link>
                       </li>
-                      {/* Removed MigrateBlogPosts link */}
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
@@ -272,14 +271,74 @@ const Layout: React.FC = () => {
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
-                            to="/admin/manage-archives"
+                            to="/admin/manage-programs"
                             className={cn(
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage archives.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('manage programs.nav title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage archives.nav desc')}
+                              {t('manage programs.nav desc')}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/admin/manage-running-classes"
+                            className={cn(
+                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            )}
+                          >
+                            <div className="text-sm font-medium leading-none text-foreground">{t('manage running classes.nav title')}</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              {t('manage running classes.nav desc')}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/admin/manage-regular-events"
+                            className={cn(
+                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            )}
+                          >
+                            <div className="text-sm font-medium leading-none text-foreground">{t('manage regular events.nav title')}</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              {t('manage regular events.nav desc')}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/admin/manage-camps"
+                            className={cn(
+                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            )}
+                          >
+                            <div className="text-sm font-medium leading-none text-foreground">{t('manage camps.nav title')}</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              {t('manage camps.nav desc')}
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/admin/manage-training-programs"
+                            className={cn(
+                              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            )}
+                          >
+                            <div className="text-sm font-medium leading-none text-foreground">{t('manage training programs.nav title')}</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              {t('manage training programs.nav desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>

@@ -17,11 +17,21 @@ import Partners from "./pages/Partners";
 import YouTubePage from "./pages/media/YouTubePage";
 import TikTokPage from "./pages/media/TikTokPage";
 import CalendarPage from "./pages/info/CalendarPage";
-import UploadBlogPost from "./pages/UploadBlogPost"; // This component now handles both add and edit
+import UploadBlogPost from "./pages/UploadBlogPost";
 import ContentList from "./pages/ContentList";
 import ManageCalendar from "./pages/admin/ManageCalendar";
 import ManageArchives from "./pages/admin/ManageArchives";
-import ManageBlogPosts from "./pages/admin/ManageBlogPosts"; // New import
+import ManageBlogPosts from "./pages/admin/ManageBlogPosts";
+import ManagePrograms from "./pages/admin/ManagePrograms"; // New import
+import UploadProgram from "./pages/admin/UploadProgram"; // New import
+import ManageRunningClasses from "./pages/admin/ManageRunningClasses"; // New import
+import UploadRunningClass from "./pages/admin/UploadRunningClass"; // New import
+import ManageRegularEvents from "./pages/admin/ManageRegularEvents"; // New import
+import UploadRegularEvent from "./pages/admin/UploadRegularEvent"; // New import
+import ManageCamps from "./pages/admin/ManageCamps"; // New import
+import UploadCamp from "./pages/admin/UploadCamp"; // New import
+import ManageTrainingPrograms from "./pages/admin/ManageTrainingPrograms"; // New import
+import UploadTrainingProgram from "./pages/admin/UploadTrainingProgram"; // New import
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { SessionProvider } from "./components/SessionProvider";
@@ -54,10 +64,25 @@ const App = () => (
               <Route path="media/tiktok" element={<TikTokPage />} />
               <Route path="info/calendar" element={<CalendarPage />} />
               {/* Admin Routes */}
-              <Route path="admin/blog-posts/new" element={<UploadBlogPost />} /> {/* For adding new posts */}
-              <Route path="admin/blog-posts/:id/edit" element={<UploadBlogPost />} /> {/* For editing existing posts */}
-              <Route path="admin/manage-blog-posts" element={<ManageBlogPosts />} /> {/* New route for listing/managing blog posts */}
-              <Route path="content" element={<ContentList />} /> {/* Keep ContentList for general overview if needed */}
+              <Route path="admin/blog-posts/new" element={<UploadBlogPost />} />
+              <Route path="admin/blog-posts/:id/edit" element={<UploadBlogPost />} />
+              <Route path="admin/manage-blog-posts" element={<ManageBlogPosts />} />
+              <Route path="admin/programs/new" element={<UploadProgram />} /> {/* New */}
+              <Route path="admin/programs/:id/edit" element={<UploadProgram />} /> {/* New */}
+              <Route path="admin/manage-programs" element={<ManagePrograms />} /> {/* New */}
+              <Route path="admin/running-classes/new" element={<UploadRunningClass />} /> {/* New */}
+              <Route path="admin/running-classes/:id/edit" element={<UploadRunningClass />} /> {/* New */}
+              <Route path="admin/manage-running-classes" element={<ManageRunningClasses />} /> {/* New */}
+              <Route path="admin/regular-events/new" element={<UploadRegularEvent />} /> {/* New */}
+              <Route path="admin/regular-events/:id/edit" element={<UploadRegularEvent />} /> {/* New */}
+              <Route path="admin/manage-regular-events" element={<ManageRegularEvents />} /> {/* New */}
+              <Route path="admin/camps/new" element={<UploadCamp />} /> {/* New */}
+              <Route path="admin/camps/:id/edit" element={<UploadCamp />} /> {/* New */}
+              <Route path="admin/manage-camps" element={<ManageCamps />} /> {/* New */}
+              <Route path="admin/training-programs/new" element={<UploadTrainingProgram />} /> {/* New */}
+              <Route path="admin/training-programs/:id/edit" element={<UploadTrainingProgram />} /> {/* New */}
+              <Route path="admin/manage-training-programs" element={<ManageTrainingPrograms />} /> {/* New */}
+              <Route path="content" element={<ContentList />} />
               <Route path="admin/manage-calendar" element={<ManageCalendar />} />
               <Route path="admin/manage-archives" element={<ManageArchives />} />
               <Route path="*" element={<NotFound />} />
