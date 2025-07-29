@@ -13,13 +13,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cleanTagForStorage } from "@/utils/i18nUtils";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface BlogPost {
   id: string;
   title: string;
   excerpt: string | null;
   content: string | null;
-  created_at: string;
+  created_at: string; // This is the field to control
   image_url: string | null;
   category: string | null;
   author: string | null;
@@ -46,6 +51,7 @@ const UploadBlogPost: React.FC = () => {
   const [initialImageUrl, setInitialImageUrl] = useState<string | null>(null);
   const [initialPdfLink, setInitialPdfLink] = useState<string | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
+  const [formCreatedAt, setFormCreatedAt] = useState<Date | undefined>(undefined); // New state for created_at
 
   const categories = [
     "Programming", "Technology", "Education", "Data Science", "Cybersecurity", "Mobile Development", "Cloud Computing", "History", "Retro Tech", "Programming History"
@@ -63,6 +69,7 @@ const UploadBlogPost: React.FC = () => {
         if (postId) {
           fetchPostData(postId);
         } else {
+          setFormCreatedAt(new Date()); // Set current date/time for new post
           setDataLoading(false); // Ready for new post if no ID
         }
       }
@@ -90,6 +97,7 @@ const UploadBlogPost: React.FC = () => {
         setTagsInput(data.tags?.map(cleanTagForStorage).join(', ') || "");
         setInitialImageUrl(data.image_url || null);
         setInitialPdfLink(data.pdf_link || null);
+        setFormCreatedAt(new Date(data.created_at)); // Set existing date/time for edit
       }
     } catch (err: any) {
       console.error("Error fetching post data:", err);
@@ -154,7 +162,7 @@ const UploadBlogPost: React.FC = () => {
     event.preventDefault();
     setUploading(true);
 
-    if (!title || !excerpt || !category || !author) {
+    if (!title || !excerpt || !category || !author || !formCreatedAt) {
       toast.error(t("required fields missing"));
       setUploading(false);
       return;
@@ -197,7 +205,8 @@ const UploadBlogPost: React.FC = () => {
         author,
         tags: tagsArray,
         pdf_link: currentPdfLink,
-        ...(postId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
+        created_at: formCreatedAt.toISOString(), // Use selected date
+        ...(postId ? {} : { created_by: session?.user?.id }), // created_at is now explicitly set
       };
 
       let error;
@@ -212,7 +221,7 @@ const UploadBlogPost: React.FC = () => {
         // Insert new post
         const { error: insertError } = await supabase
           .from('blog_posts')
-          .insert([{ ...postData, created_at: new Date().toISOString() }]);
+          .insert([postData]);
         error = insertError;
       }
 
@@ -232,6 +241,7 @@ const UploadBlogPost: React.FC = () => {
         setTagsInput("");
         setImageFile(null);
         setPdfFile(null);
+        setFormCreatedAt(new Date()); // Reset to current date/time for next new post
         const imageInput = document.getElementById("image-upload") as HTMLInputElement;
         if (imageInput) imageInput.value = "";
         const pdfInput = document.getElementById("pdf-upload") as HTMLInputElement;
@@ -346,6 +356,52 @@ const UploadBlogPost: React.FC = () => {
               <p className="text-sm text-muted-foreground mt-1">
                 {t('tags hint')}
               </p>
+            </div>
+            <div>
+              <Label htmlFor="created_at">{t('created at label')}</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal mt-1",
+                      !formCreatedAt && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {formCreatedAt ? format(formCreatedAt, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={formCreatedAt}
+                    onSelect={setFormCreatedAt}
+                    initialFocus
+                  />
+                  <div className="p-3 border-t border-border">
+                    <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
+                    <Input
+                      id="time-input"
+                      type="time"
+                      value={formCreatedAt ? format(formCreatedAt, "HH:mm") : ""}
+                      onChange={(e) => {
+                        const [hours, minutes] = e.target.value.split(':').map(Number);
+                        if (formCreatedAt) {
+                          const newDate = new Date(formCreatedAt);
+                          newDate.setHours(hours, minutes);
+                          setFormCreatedAt(newDate);
+                        } else {
+                          const newDate = new Date();
+                          newDate.setHours(hours, minutes);
+                          setFormCreatedAt(newDate);
+                        }
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <div>
               <Label htmlFor="image-upload">{t('image label')}</Label>

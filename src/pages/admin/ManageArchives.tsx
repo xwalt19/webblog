@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,6 +16,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { FileText, Edit, Trash, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface ArchivePost {
   id: string;
@@ -49,6 +54,7 @@ const ManageArchives: React.FC = () => {
   const [formTagsInput, setFormTagsInput] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [formCreatedAt, setFormCreatedAt] = useState<Date | undefined>(undefined); // New state for created_at
 
   useEffect(() => {
     if (!sessionLoading) {
@@ -110,7 +116,7 @@ const ManageArchives: React.FC = () => {
   };
 
   const handleAddEdit = async () => {
-    if (!formTitle || !formExcerpt || !formCategory || !formAuthor) {
+    if (!formTitle || !formExcerpt || !formCategory || !formAuthor || !formCreatedAt) {
       toast.error(t("required fields missing"));
       return;
     }
@@ -137,7 +143,7 @@ const ManageArchives: React.FC = () => {
       author: formAuthor,
       tags: tagsArray,
       pdf_link: newPdfLink,
-      created_at: currentArchive ? currentArchive.created_at : new Date().toISOString(),
+      created_at: formCreatedAt.toISOString(), // Use selected date
       image_url: null, // Archives typically don't have images in this context
       content: null, // Archives typically don't have direct content in this context
     };
@@ -215,6 +221,7 @@ const ManageArchives: React.FC = () => {
     setFormAuthor("");
     setFormTagsInput("");
     setPdfFile(null);
+    setFormCreatedAt(new Date()); // Set current date/time for new entry
     const pdfInput = document.getElementById("pdf-upload-dialog") as HTMLInputElement;
     if (pdfInput) pdfInput.value = "";
     setIsDialogOpen(true);
@@ -228,6 +235,7 @@ const ManageArchives: React.FC = () => {
     setFormAuthor(archive.author || "");
     setFormTagsInput(archive.tags?.map(cleanTagForStorage).join(', ') || "");
     setPdfFile(null); // Clear file input for edit, user must re-upload if changing
+    setFormCreatedAt(new Date(archive.created_at)); // Set existing date/time for edit
     const pdfInput = document.getElementById("pdf-upload-dialog") as HTMLInputElement;
     if (pdfInput) pdfInput.value = "";
     setIsDialogOpen(true);
@@ -247,6 +255,9 @@ const ManageArchives: React.FC = () => {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false, // Use 24-hour format
     });
   };
 
@@ -399,6 +410,54 @@ const ManageArchives: React.FC = () => {
                 placeholder={t('tags placeholder')}
                 className="col-span-3"
               />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="created_at" className="text-right">
+                {t('created at label')}
+              </Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "col-span-3 justify-start text-left font-normal",
+                      !formCreatedAt && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {formCreatedAt ? format(formCreatedAt, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={formCreatedAt}
+                    onSelect={setFormCreatedAt}
+                    initialFocus
+                  />
+                  <div className="p-3 border-t border-border">
+                    <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
+                    <Input
+                      id="time-input"
+                      type="time"
+                      value={formCreatedAt ? format(formCreatedAt, "HH:mm") : ""}
+                      onChange={(e) => {
+                        const [hours, minutes] = e.target.value.split(':').map(Number);
+                        if (formCreatedAt) {
+                          const newDate = new Date(formCreatedAt);
+                          newDate.setHours(hours, minutes);
+                          setFormCreatedAt(newDate);
+                        } else {
+                          const newDate = new Date();
+                          newDate.setHours(hours, minutes);
+                          setFormCreatedAt(newDate);
+                        }
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="pdf-upload-dialog" className="text-right">

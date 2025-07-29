@@ -81,7 +81,7 @@ const LatestBlogPosts: React.FC = () => {
 
   const formatDate = (isoString: string) => {
     const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
   if (loading) {
