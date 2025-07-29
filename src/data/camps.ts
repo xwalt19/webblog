@@ -10,7 +10,7 @@ export const dummyCamps: Camp[] = [
   {
     id: "1",
     titleKey: "camp 1 title",
-    dates: "29 – 30 Des 2014",
+    dates: "29 – 30 Des 2025",
     descriptionKey: "camp 1 description",
     dayLinks: [
       { label: "Day 1", url: "#" },
@@ -21,7 +21,7 @@ export const dummyCamps: Camp[] = [
   {
     id: "2",
     titleKey: "camp 2 title",
-    dates: "28 – 30 Juni 2015",
+    dates: "28 – 30 Juni 2025",
     descriptionKey: "camp 2 description",
     dayLinks: [
       { label: "Day 1", url: "#" },
@@ -32,7 +32,7 @@ export const dummyCamps: Camp[] = [
   {
     id: "3",
     titleKey: "camp 3 title",
-    dates: "6 – 8 Juli 2015",
+    dates: "6 – 8 Juli 2025",
     descriptionKey: "camp 3 description",
     dayLinks: [
       { label: "Day 1", url: "#" },
@@ -43,7 +43,7 @@ export const dummyCamps: Camp[] = [
   {
     id: "4",
     titleKey: "camp 4 title",
-    dates: "9 – 11 Juli 2015",
+    dates: "9 – 11 Juli 2025",
     descriptionKey: "camp 4 description",
     dayLinks: [
       { label: "Day 1", url: "#" },
@@ -55,7 +55,7 @@ export const dummyCamps: Camp[] = [
   {
     id: "5",
     titleKey: "camp 5 title",
-    dates: "21 -23 Des 2015",
+    dates: "21 -23 Des 2025",
     descriptionKey: "camp 5 description",
     dayLinks: [
       { label: "Day 1", url: "#" },
@@ -66,7 +66,7 @@ export const dummyCamps: Camp[] = [
   {
     id: "6",
     titleKey: "camp 6 title",
-    dates: "25 – 27 Des 2015",
+    dates: "25 – 27 Des 2025",
     descriptionKey: "camp 6 description",
     dayLinks: [
       { label: "Day 1", url: "#" },
@@ -77,7 +77,7 @@ export const dummyCamps: Camp[] = [
   {
     id: "7",
     titleKey: "camp 7 title",
-    dates: "28 – 30 Des 2015",
+    dates: "28 – 30 Des 2025",
     descriptionKey: "camp 7 description",
     dayLinks: [
       { label: "Day 1", url: "#" },
