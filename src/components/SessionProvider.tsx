@@ -49,15 +49,15 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setLoading(false);
 
       if (event === 'SIGNED_IN') {
-        toast.success(t('auth.signed in success'));
+        toast.success(t('signed in successfully'));
         if (location.pathname === '/login') {
-          navigate('/'); // Redirect to home after login
+          navigate('/');
         }
       } else if (event === 'SIGNED_OUT') {
-        toast.info(t('auth.signed out success'));
-        navigate('/login'); // Redirect to login after logout
+        toast.info(t('signed out successfully'));
+        navigate('/login');
       } else if (event === 'USER_UPDATED') {
-        toast.info(t('auth.profile updated'));
+        toast.info(t('profile updated'));
         if (session?.user) {
           await fetchProfile(session.user.id);
         }

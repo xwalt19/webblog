@@ -6,7 +6,7 @@ import CallToActionSection from "@/components/CallToActionSection";
 import MediaCarousel from "@/components/MediaCarousel";
 import FixedNewsSchedule from "@/components/FixedNewsSchedule";
 import FeaturedCourses from "@/components/FeaturedCourses";
-import SimpleExternalArticlesDisplay from "@/components/SimpleExternalArticlesDisplay"; // Import the new component
+import SimpleExternalArticlesDisplay from "@/components/SimpleExternalArticlesDisplay";
 
 const Home: React.FC = () => {
   return (
@@ -17,7 +17,7 @@ const Home: React.FC = () => {
       <MediaCarousel />
       <FixedNewsSchedule />
       <FeaturedCourses />
-      <SimpleExternalArticlesDisplay /> {/* Add the new component */}
+      <SimpleExternalArticlesDisplay />
       <CallToActionSection />
     </div>
   );

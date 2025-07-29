@@ -2,10 +2,10 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 
 const CallToActionSection: React.FC = () => {
-  const { t } = useTranslation(); // Initialize useTranslation
+  const { t } = useTranslation();
 
   return (
     <section className="py-16 bg-primary text-primary-foreground">
@@ -13,20 +13,20 @@ const CallToActionSection: React.FC = () => {
         <Card className="bg-card text-card-foreground p-8 md:p-12 shadow-xl rounded-lg max-w-4xl mx-auto">
           <CardContent className="p-0">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {t('call to action title')}
+              {t('join community call to action')}
             </h2>
             <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-              {t('call to action subtitle')}
+              {t('join community call to action subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/blog">
                 <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg">
-                  {t('visit blog')}
+                  {t('visit blog button')}
                 </Button>
               </Link>
               <Link to="/archives">
                 <Button size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50 hover:text-blue-700 px-8 py-6 text-lg">
-                  {t('view archives')}
+                  {t('view archives button')}
                 </Button>
               </Link>
             </div>

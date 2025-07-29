@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client"; // Import supabase client
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -48,7 +48,7 @@ const ContactForm: React.FC = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const toastId = toast.loading(t("contact form.sending email")); // Show loading toast
+    const toastId = toast.loading(t("contact form sending email"));
 
     try {
       const { data, error } = await supabase.functions.invoke('send-contact-email', {
@@ -59,16 +59,15 @@ const ContactForm: React.FC = () => {
         throw error;
       }
 
-      // Check for application-level errors returned by the edge function
       if (data && data.error) {
         throw new Error(data.error);
       }
 
-      toast.success(t("contact form.email sent success"), { id: toastId });
-      form.reset(); // Reset the form after successful submission
+      toast.success(t("contact form email sent success"), { id: toastId });
+      form.reset();
     } catch (err: any) {
       console.error("Error sending contact form:", err);
-      toast.error(t("contact form.email send error", { error: err.message }), { id: toastId });
+      toast.error(t("contact form email send error", { error: err.message }), { id: toastId });
     }
   }
 
@@ -80,9 +79,9 @@ const ContactForm: React.FC = () => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("contact form.name label")}</FormLabel>
+              <FormLabel>{t("contact form name label")}</FormLabel>
               <FormControl>
-                <Input placeholder={t("contact form.name placeholder")} {...field} />
+                <Input placeholder={t("contact form name placeholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -93,9 +92,9 @@ const ContactForm: React.FC = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("contact form.email label")}</FormLabel>
+              <FormLabel>{t("contact form email label")}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder={t("contact form.email placeholder")} {...field} />
+                <Input type="email" placeholder={t("contact form email placeholder")} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -106,10 +105,10 @@ const ContactForm: React.FC = () => {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t("contact form.message label")}</FormLabel>
+              <FormLabel>{t("contact form message label")}</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder={t("contact form.message placeholder")}
+                  placeholder={t("contact form message placeholder")}
                   className="min-h-[120px]"
                   {...field}
                 />
@@ -119,7 +118,7 @@ const ContactForm: React.FC = () => {
           )}
         />
         <Button type="submit" className="w-full">
-          {t("contact form.submit button")}
+          {t("contact form submit button")}
         </Button>
       </form>
     </Form>

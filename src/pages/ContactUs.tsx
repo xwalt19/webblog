@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Mail, Facebook, MessageSquare, Globe } from "lucide-react"; // Mengubah SquareWhatsapp menjadi MessageSquare
+import { Mail, Facebook, MessageSquare, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ContactForm from "@/components/ContactForm";
 
@@ -12,9 +12,9 @@ const ContactUs: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('contact us title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('contact us page title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('contact us subtitle')}
+          {t('contact us page subtitle')}
         </p>
       </section>
 
@@ -38,7 +38,7 @@ const ContactUs: React.FC = () => {
           </Card>
 
           <Card className="flex flex-col items-center text-center p-6 bg-muted/30 hover:bg-muted/50 transition-colors duration-200 shadow-lg hover:shadow-xl">
-            <MessageSquare className="text-green-500 mb-4" size={48} /> {/* Menggunakan MessageSquare */}
+            <MessageSquare className="text-green-500 mb-4" size={48} />
             <div>
               <h3 className="text-xl font-semibold mb-2">{t('whatsapp us')}</h3>
               <a href="https://wa.me/628122015409" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline text-lg">
@@ -76,7 +76,7 @@ const ContactUs: React.FC = () => {
           {t('explore more or send message')}
         </p>
         <Link to="/">
-          <Button size="lg">{t('back to home')}</Button>
+          <Button size="lg">{t('return to home')}</Button>
         </Link>
       </section>
     </div>

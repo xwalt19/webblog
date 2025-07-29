@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { getIconComponent } from "@/utils/iconMap"; // Import the new utility
+import { getIconComponent } from "@/utils/iconMap";
 
 interface SupabasePriceTier {
   id: string;
@@ -51,8 +51,8 @@ interface SupabaseProgram {
   icon_name: string | null;
   created_by: string | null;
   created_at: string;
-  program_price_tiers: SupabasePriceTier[]; // Joined data
-  program_topics: SupabaseTopic[]; // Joined data
+  program_price_tiers: SupabasePriceTier[];
+  program_topics: SupabaseTopic[];
 }
 
 const ProgramsPage: React.FC = () => {
@@ -78,7 +78,7 @@ const ProgramsPage: React.FC = () => {
         setAllPrograms(data || []);
       } catch (err: any) {
         console.error("Error fetching programs:", err);
-        setError(t("programs page.fetch error", { error: err.message }));
+        setError(t("fetch data error", { error: err.message }));
       } finally {
         setLoading(false);
       }
@@ -113,9 +113,9 @@ const ProgramsPage: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('programs page title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('our programs page title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('programs page subtitle')}
+          {t('our programs page subtitle')}
         </p>
       </section>
 
@@ -150,32 +150,26 @@ const ProgramsPage: React.FC = () => {
               <CardContent className="p-0 pt-4">
                 {program.schedule && (
                   <p className="text-md text-foreground mb-2 flex items-center gap-2">
-                    {/* CalendarDays icon is not dynamic, so import it directly if needed or remove */}
-                    {t('schedule')}: <span className="font-medium">{program.schedule}</span>
+                    {t('schedule label')}: <span className="font-medium">{program.schedule}</span>
                   </p>
                 )}
                 {program.registration_fee && (
                   <p className="text-md text-foreground mb-4 flex items-center gap-2">
-                    {/* DollarSign icon is not dynamic, so import it directly if needed or remove */}
-                    {t('registration fee')}: <span className="font-medium">{program.registration_fee}</span>
+                    {t('registration fee label')}: <span className="font-medium">{program.registration_fee}</span>
                   </p>
                 )}
 
                 {program.price && (
                   <p className="text-md text-foreground mb-4 flex items-center gap-2">
-                    {/* DollarSign icon is not dynamic, so import it directly if needed or remove */}
-                    {t('price')}: <span className="font-medium">{program.price}</span>
+                    {t('price label')}: <span className="font-medium">{program.price}</span>
                   </p>
                 )}
 
                 {!program.price && program.program_price_tiers && program.program_price_tiers.length > 0 && (
                   <div className="mt-4">
                     <h3 className="text-lg font-semibold text-primary mb-2">{t('price details')}</h3>
-                    {/* Group price tiers by header_key_col1 if needed, or display as is */}
-                    {/* For simplicity, assuming price_tiers are already structured for display */}
                     <Card className="mb-4 shadow-sm">
                       <CardHeader className="p-3 pb-2">
-                        {/* Assuming all price tiers for a program share the same header structure */}
                         <CardTitle className="text-lg font-semibold">{program.program_price_tiers[0]?.header_key_col2}</CardTitle>
                       </CardHeader>
                       <CardContent className="p-0">
@@ -237,7 +231,7 @@ const ProgramsPage: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('return to home')}</Button>
         </Link>
       </div>
     </div>

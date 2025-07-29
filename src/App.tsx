@@ -34,8 +34,8 @@ import ManageTrainingPrograms from "./pages/admin/ManageTrainingPrograms";
 import UploadTrainingProgram from "./pages/admin/UploadTrainingProgram";
 import ManageYouTubeVideos from "./pages/admin/ManageYouTubeVideos";
 import UploadYouTubeVideo from "./pages/admin/UploadYouTubeVideo";
-import ManageTikTokVideos from "./pages/admin/ManageTikTokVideos"; // New import
-import UploadTikTokVideo from "./pages/admin/UploadTikTokVideo"; // New import
+import ManageTikTokVideos from "./pages/admin/ManageTikTokVideos";
+import UploadTikTokVideo from "./pages/admin/UploadTikTokVideo";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { SessionProvider } from "./components/SessionProvider";
@@ -89,9 +89,9 @@ const App = () => (
               <Route path="admin/youtube-videos/new" element={<UploadYouTubeVideo />} />
               <Route path="admin/youtube-videos/:id/edit" element={<UploadYouTubeVideo />} />
               <Route path="admin/manage-youtube-videos" element={<ManageYouTubeVideos />} />
-              <Route path="admin/tiktok-videos/new" element={<UploadTikTokVideo />} /> {/* New */}
-              <Route path="admin/tiktok-videos/:id/edit" element={<UploadTikTokVideo />} /> {/* New */}
-              <Route path="admin/manage-tiktok-videos" element={<ManageTikTokVideos />} /> {/* New */}
+              <Route path="admin/tiktok-videos/new" element={<UploadTikTokVideo />} />
+              <Route path="admin/tiktok-videos/:id/edit" element={<UploadTikTokVideo />} />
+              <Route path="admin/manage-tiktok-videos" element={<ManageTikTokVideos />} />
               <Route path="content" element={<ContentList />} />
               <Route path="admin/manage-calendar" element={<ManageCalendar />} />
               <Route path="admin/manage-archives" element={<ManageArchives />} />

@@ -19,10 +19,10 @@ const SimpleExternalArticlesDisplay: React.FC = () => {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground mb-6">
-              {t('external articles placeholder desc')}
+              {t('external articles placeholder description')}
             </p>
             <Link to="/blog">
-              <Button>{t('explore blog')}</Button>
+              <Button>{t('explore blog button')}</Button>
             </Link>
           </CardContent>
         </Card>

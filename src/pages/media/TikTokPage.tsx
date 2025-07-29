@@ -20,7 +20,7 @@ const TikTokPage: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('return to home')}</Button>
         </Link>
       </div>
     </div>

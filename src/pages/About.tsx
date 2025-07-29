@@ -29,7 +29,7 @@ const AboutPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              {t('our mission desc')}
+              {t('our mission description')}
             </p>
           </CardContent>
         </Card>
@@ -41,7 +41,7 @@ const AboutPage: React.FC = () => {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              {t('our vision desc')}
+              {t('our vision description')}
             </p>
           </CardContent>
         </Card>
@@ -54,21 +54,21 @@ const AboutPage: React.FC = () => {
             <Handshake className="mx-auto mb-4 text-green-500" size={40} />
             <CardTitle className="text-xl mb-2">{t('accessibility')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              {t('accessibility desc')}
+              {t('accessibility description')}
             </CardContent>
           </Card>
           <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Lightbulb className="mx-auto mb-4 text-purple-500" size={40} />
             <CardTitle className="text-xl mb-2">{t('innovation')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              {t('innovation desc')}
+              {t('innovation description')}
             </CardContent>
           </Card>
           <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Users className="mx-auto mb-4 text-red-500" size={40} />
             <CardTitle className="text-xl mb-2">{t('community')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              {t('community desc')}
+              {t('community description')}
             </CardContent>
           </Card>
         </div>
@@ -102,7 +102,7 @@ const AboutPage: React.FC = () => {
         </p>
         <div className="flex justify-center">
           <Link to="/blog">
-            <Button size="lg">{t('visit blog')}</Button>
+            <Button size="lg">{t('visit blog button')}</Button>
           </Link>
         </div>
       </section>

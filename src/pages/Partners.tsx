@@ -25,9 +25,9 @@ const Partners: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('our partners title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('our partners page title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('our partners subtitle')}
+          {t('our partners page subtitle')}
         </p>
       </section>
 
@@ -48,7 +48,7 @@ const Partners: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('return to home')}</Button>
         </Link>
       </div>
     </div>

@@ -1,10 +1,10 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lightbulb, Users, GraduationCap } from "lucide-react";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 
 const WhyProCodeCG: React.FC = () => {
-  const { t } = useTranslation(); // Initialize useTranslation
+  const { t } = useTranslation();
 
   return (
     <section className="py-12 bg-background">
@@ -17,21 +17,21 @@ const WhyProCodeCG: React.FC = () => {
               <CardTitle className="text-xl mb-2">{t('relevant curriculum')}</CardTitle>
             </CardHeader>
             <CardContent className="text-muted-foreground p-0">
-              {t('relevant curriculum desc')}
+              {t('relevant curriculum description')}
             </CardContent>
           </Card>
           <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Lightbulb className="mx-auto mb-4 text-yellow-500" size={48} />
             <CardTitle className="text-xl mb-2">{t('fun learning')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              {t('fun learning desc')}
+              {t('fun learning description')}
             </CardContent>
           </Card>
           <Card className="text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <Users className="mx-auto mb-4 text-blue-500" size={48} />
             <CardTitle className="text-xl mb-2">{t('active community')}</CardTitle>
             <CardContent className="text-muted-foreground p-0">
-              {t('active community desc')}
+              {t('active community description')}
             </CardContent>
           </Card>
         </div>

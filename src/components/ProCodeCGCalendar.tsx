@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client"; // Import supabase
+import { supabase } from "@/integrations/supabase/client";
 
 interface CalendarEvent {
   id: string;
@@ -36,7 +36,7 @@ const ProCodeCGCalendar: React.FC = () => {
         setEvents(data || []);
       } catch (err: any) {
         console.error("Error fetching calendar events:", err);
-        setError(t("calendar.fetch error", { error: err.message }));
+        setError(t("fetch calendar events error", { error: err.message }));
       } finally {
         setLoading(false);
       }
@@ -47,7 +47,7 @@ const ProCodeCGCalendar: React.FC = () => {
 
   const parsedEvents = events.map(event => ({
     ...event,
-    date: new Date(event.date) // Ensure Date objects are created
+    date: new Date(event.date)
   }));
 
   const getDayEvents = (day: Date) => {

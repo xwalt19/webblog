@@ -58,7 +58,7 @@ const LatestBlogPosts: React.FC = () => {
         const { data, error } = await supabase
           .from('blog_posts')
           .select('*')
-          .is('pdf_link', null) // Only fetch blog posts (not archives)
+          .is('pdf_link', null)
           .order('created_at', { ascending: false })
           .limit(7);
 

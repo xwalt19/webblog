@@ -55,7 +55,7 @@ const BlogPage: React.FC = () => {
         const { data, error } = await supabase
           .from('blog_posts')
           .select('*')
-          .is('pdf_link', null) // Hanya ambil postingan blog (yang tidak punya pdf_link)
+          .is('pdf_link', null)
           .order('created_at', { ascending: false });
 
         if (error) {
@@ -89,8 +89,8 @@ const BlogPage: React.FC = () => {
   }, [allPosts]);
 
   const monthNames = useMemo(() => [
-    "", t("month names.january"), t("month names.february"), t("month names.march"), t("month names.april"), t("month names.may"), t("month names.june"),
-    t("month names.july"), t("month names.august"), t("month names.september"), t("month names.october"), t("month names.november"), t("month names.december")
+    "", t("january month name"), t("february month name"), t("march month name"), t("april month name"), t("may month name"), t("june month name"),
+    t("july month name"), t("august month name"), t("september month name"), t("october month name"), t("november month name"), t("december month name")
   ], [i18n.language]);
 
   const allPeriods: string[] = useMemo(() => {
@@ -109,7 +109,7 @@ const BlogPage: React.FC = () => {
   }, [allPosts]);
 
   const getPeriodDisplayName = (period: string) => {
-    if (period === "all") return t("all time");
+    if (period === "all") return t("all time period");
     const [year, month] = period.split('-').map(Number);
     return `${year} - ${monthNames[month]}`;
   };
@@ -176,7 +176,7 @@ const BlogPage: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-10 flex-wrap">
         <Input
           type="text"
-          placeholder={t('search post')}
+          placeholder={t('search post placeholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full md:max-w-xs"
@@ -187,12 +187,12 @@ const BlogPage: React.FC = () => {
           onValueChange={(value) => setSelectedTag(value)}
         >
           <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder={t('tag')} />
+            <SelectValue placeholder={t('tag placeholder')} />
           </SelectTrigger>
           <SelectContent>
             {allTags.map(tag => (
               <SelectItem key={tag} value={tag}>
-                {tag === "all" ? t("tag") : tag}
+                {tag === "all" ? t("tag placeholder") : tag}
               </SelectItem>
             ))}
           </SelectContent>
@@ -203,7 +203,7 @@ const BlogPage: React.FC = () => {
           onValueChange={(value) => setSelectedPeriod(value)}
         >
           <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder={t('select period')} />
+            <SelectValue placeholder={t('select period placeholder')} />
           </SelectTrigger>
           <SelectContent>
             {allPeriods.map(period => (
@@ -243,7 +243,7 @@ const BlogPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no matching posts')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no matching posts found')}</p>
       )}
 
       {totalPages > 1 && (

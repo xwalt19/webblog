@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { Image, FileText, CalendarDays, Trash } from "lucide-react"; // Import Trash icon
+import { Image, FileText, CalendarDays, Trash } from "lucide-react";
 import { useSession } from "@/components/SessionProvider";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,7 @@ const ContentList: React.FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { session, profile, loading } = useSession();
+
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,10 +35,10 @@ const ContentList: React.FC = () => {
   useEffect(() => {
     if (!loading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('login required'));
         navigate('/login');
       } else if (profile?.role !== 'admin') {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('admin required'));
         navigate('/');
       } else {
         fetchBlogPosts();
@@ -60,14 +61,14 @@ const ContentList: React.FC = () => {
       setBlogPosts(data || []);
     } catch (err: any) {
       console.error("Error fetching blog posts:", err);
-      setError(t("content list.fetch error", { error: err.message }));
+      setError(t("fetch content error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t("content list.confirm delete"))) {
+    if (!window.confirm(t("confirm delete content"))) {
       return;
     }
     try {
@@ -79,11 +80,11 @@ const ContentList: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("content list.post deleted successfully"));
-      fetchBlogPosts(); // Refresh the list
+      toast.success(t("content deleted successfully"));
+      fetchBlogPosts();
     } catch (err: any) {
       console.error("Error deleting post:", err);
-      toast.error(t("content list.delete error", { error: err.message }));
+      toast.error(t("delete content error", { error: err.message }));
     }
   };
 
@@ -103,7 +104,7 @@ const ContentList: React.FC = () => {
   if (loading || (!session && !loading) || (session && profile?.role !== 'admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
   }
@@ -111,14 +112,14 @@ const ContentList: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('content list.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('content list title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('content list.subtitle')}
+          {t('content list subtitle')}
         </p>
       </section>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('content list.loading')}</p>
+        <p className="text-center text-muted-foreground">{t('loading content')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : blogPosts.length > 0 ? (
@@ -158,12 +159,12 @@ const ContentList: React.FC = () => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('content list.no content')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no content found')}</p>
       )}
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('return to home')}</Button>
         </Link>
       </div>
     </div>

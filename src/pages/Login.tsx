@@ -13,10 +13,9 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { session, loading } = useSession();
   const { t } = useTranslation();
-  const [view, setView] = useState<'sign_in' | 'sign_up'>('sign_in'); // State untuk mengelola tampilan
+  const [view, setView] = useState<'sign_in' | 'sign_up'>('sign_in');
 
   useEffect(() => {
-    // Jika sesi ada dan tidak sedang memuat, arahkan ke beranda
     if (session && !loading) {
       navigate('/');
     }
@@ -25,13 +24,11 @@ const Login: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
   }
 
-  // Jika tidak memuat dan sesi ada, jangan render komponen Auth
-  // useEffect di atas akan menangani navigasi.
   if (session) {
     return null;
   }
@@ -40,10 +37,10 @@ const Login: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg border border-border">
         <h1 className="text-3xl font-bold text-center text-primary mb-6">
-          {view === 'sign_in' ? t('auth.login title') : t('auth.register title')}
+          {view === 'sign_in' ? t('login page title') : t('register page title')}
         </h1>
         <Auth
-          key={view} // Menambahkan key untuk memaksa re-mount saat tampilan berubah
+          key={view}
           supabaseClient={supabase}
           appearance={{
             theme: ThemeSupa,
@@ -75,16 +72,16 @@ const Login: React.FC = () => {
         <div className="mt-4 text-center">
           {view === 'sign_in' ? (
             <p className="text-muted-foreground">
-              {t('auth.no account yet')}
+              {t('no account yet')}
               <Button variant="link" onClick={() => setView('sign_up')} className="p-0 h-auto ml-1 text-primary hover:text-primary-foreground">
-                {t('auth.sign up')}
+                {t('sign up')}
               </Button>
             </p>
           ) : (
             <p className="text-muted-foreground">
-              {t('auth.already have account')}
+              {t('already have account')}
               <Button variant="link" onClick={() => setView('sign_in')} className="p-0 h-auto ml-1 text-primary hover:text-primary-foreground">
-                {t('auth.sign in')}
+                {t('sign in')}
               </Button>
             </p>
           )}
