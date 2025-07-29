@@ -63,7 +63,7 @@ const Layout: React.FC = () => {
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('activity')}</NavigationMenuTrigger>
-                <NavigationMenuContent className="bg-background text-foreground border-border left-[var(--radix-navigation-menu-trigger-x)] -translate-x-1/2">
+                <NavigationMenuContent className="bg-background text-foreground border-border !left-[var(--radix-navigation-menu-trigger-x)]">
                   <ul className="flex flex-col w-max gap-1 p-2">
                     <li>
                       <NavigationMenuLink asChild>
@@ -119,7 +119,7 @@ const Layout: React.FC = () => {
               {/* New Media Navigation Item */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('media')}</NavigationMenuTrigger>
-                <NavigationMenuContent className="bg-background text-foreground border-border left-[var(--radix-navigation-menu-trigger-x)] -translate-x-1/2">
+                <NavigationMenuContent className="bg-background text-foreground border-border !left-[var(--radix-navigation-menu-trigger-x)]">
                   <ul className="flex flex-col w-max gap-1 p-2">
                     <li>
                       <NavigationMenuLink asChild>
@@ -150,7 +150,7 @@ const Layout: React.FC = () => {
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('info')}</NavigationMenuTrigger>
-                <NavigationMenuContent className="bg-background text-foreground border-border left-[var(--radix-navigation-menu-trigger-x)] -translate-x-1/2">
+                <NavigationMenuContent className="bg-background text-foreground border-border !left-[var(--radix-navigation-menu-trigger-x)]">
                   <ul className="flex flex-col w-max gap-1 p-2">
                     <li>
                       <NavigationMenuLink asChild>
@@ -194,7 +194,7 @@ const Layout: React.FC = () => {
               {isAdmin && (
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('admin tools')}</NavigationMenuTrigger>
-                  <NavigationMenuContent className="bg-background text-foreground border-border left-[var(--radix-navigation-menu-trigger-x)] -translate-x-1/2">
+                  <NavigationMenuContent className="bg-background text-foreground border-border !left-[var(--radix-navigation-menu-trigger-x)]">
                     <ul className="flex flex-col w-max gap-1 p-2">
                       <li>
                         <NavigationMenuLink asChild>
