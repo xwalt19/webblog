@@ -1,4 +1,8 @@
 {
-  "footer text": "© 2025 ProCodeCG. Hak Cipta Dilindungi.",
-  // ... konten terjemahan lainnya
+  "footer text": "© 2025 ProCodeCG. Hak Cipta Dilindungi."
+  // Pastikan Anda menambahkan kembali konten terjemahan lainnya di sini,
+  // tanpa komentar JavaScript (//) di dalam objek JSON.
+  // Contoh:
+  // "home": "Beranda",
+  // "about": "Tentang Kami"
 }
