@@ -22,16 +22,20 @@ import ContentList from "./pages/ContentList";
 import ManageCalendar from "./pages/admin/ManageCalendar";
 import ManageArchives from "./pages/admin/ManageArchives";
 import ManageBlogPosts from "./pages/admin/ManageBlogPosts";
-import ManagePrograms from "./pages/admin/ManagePrograms"; // New import
-import UploadProgram from "./pages/admin/UploadProgram"; // New import
-import ManageRunningClasses from "./pages/admin/ManageRunningClasses"; // New import
-import UploadRunningClass from "./pages/admin/UploadRunningClass"; // New import
-import ManageRegularEvents from "./pages/admin/ManageRegularEvents"; // New import
-import UploadRegularEvent from "./pages/admin/UploadRegularEvent"; // New import
-import ManageCamps from "./pages/admin/ManageCamps"; // New import
-import UploadCamp from "./pages/admin/UploadCamp"; // New import
-import ManageTrainingPrograms from "./pages/admin/ManageTrainingPrograms"; // New import
-import UploadTrainingProgram from "./pages/admin/UploadTrainingProgram"; // New import
+import ManagePrograms from "./pages/admin/ManagePrograms";
+import UploadProgram from "./pages/admin/UploadProgram";
+import ManageRunningClasses from "./pages/admin/ManageRunningClasses";
+import UploadRunningClass from "./pages/admin/UploadRunningClass";
+import ManageRegularEvents from "./pages/admin/ManageRegularEvents";
+import UploadRegularEvent from "./pages/admin/UploadRegularEvent";
+import ManageCamps from "./pages/admin/ManageCamps";
+import UploadCamp from "./pages/admin/UploadCamp";
+import ManageTrainingPrograms from "./pages/admin/ManageTrainingPrograms";
+import UploadTrainingProgram from "./pages/admin/UploadTrainingProgram";
+import ManageYouTubeVideos from "./pages/admin/ManageYouTubeVideos";
+import UploadYouTubeVideo from "./pages/admin/UploadYouTubeVideo";
+import ManageTikTokVideos from "./pages/admin/ManageTikTokVideos"; // New import
+import UploadTikTokVideo from "./pages/admin/UploadTikTokVideo"; // New import
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { SessionProvider } from "./components/SessionProvider";
@@ -67,21 +71,27 @@ const App = () => (
               <Route path="admin/blog-posts/new" element={<UploadBlogPost />} />
               <Route path="admin/blog-posts/:id/edit" element={<UploadBlogPost />} />
               <Route path="admin/manage-blog-posts" element={<ManageBlogPosts />} />
-              <Route path="admin/programs/new" element={<UploadProgram />} /> {/* New */}
-              <Route path="admin/programs/:id/edit" element={<UploadProgram />} /> {/* New */}
-              <Route path="admin/manage-programs" element={<ManagePrograms />} /> {/* New */}
-              <Route path="admin/running-classes/new" element={<UploadRunningClass />} /> {/* New */}
-              <Route path="admin/running-classes/:id/edit" element={<UploadRunningClass />} /> {/* New */}
-              <Route path="admin/manage-running-classes" element={<ManageRunningClasses />} /> {/* New */}
-              <Route path="admin/regular-events/new" element={<UploadRegularEvent />} /> {/* New */}
-              <Route path="admin/regular-events/:id/edit" element={<UploadRegularEvent />} /> {/* New */}
-              <Route path="admin/manage-regular-events" element={<ManageRegularEvents />} /> {/* New */}
-              <Route path="admin/camps/new" element={<UploadCamp />} /> {/* New */}
-              <Route path="admin/camps/:id/edit" element={<UploadCamp />} /> {/* New */}
-              <Route path="admin/manage-camps" element={<ManageCamps />} /> {/* New */}
-              <Route path="admin/training-programs/new" element={<UploadTrainingProgram />} /> {/* New */}
-              <Route path="admin/training-programs/:id/edit" element={<UploadTrainingProgram />} /> {/* New */}
-              <Route path="admin/manage-training-programs" element={<ManageTrainingPrograms />} /> {/* New */}
+              <Route path="admin/programs/new" element={<UploadProgram />} />
+              <Route path="admin/programs/:id/edit" element={<UploadProgram />} />
+              <Route path="admin/manage-programs" element={<ManagePrograms />} />
+              <Route path="admin/running-classes/new" element={<UploadRunningClass />} />
+              <Route path="admin/running-classes/:id/edit" element={<UploadRunningClass />} />
+              <Route path="admin/manage-running-classes" element={<ManageRunningClasses />} />
+              <Route path="admin/regular-events/new" element={<UploadRegularEvent />} />
+              <Route path="admin/regular-events/:id/edit" element={<UploadRegularEvent />} />
+              <Route path="admin/manage-regular-events" element={<ManageRegularEvents />} />
+              <Route path="admin/camps/new" element={<UploadCamp />} />
+              <Route path="admin/camps/:id/edit" element={<UploadCamp />} />
+              <Route path="admin/manage-camps" element={<ManageCamps />} />
+              <Route path="admin/training-programs/new" element={<UploadTrainingProgram />} />
+              <Route path="admin/training-programs/:id/edit" element={<UploadTrainingProgram />} />
+              <Route path="admin/manage-training-programs" element={<ManageTrainingPrograms />} />
+              <Route path="admin/youtube-videos/new" element={<UploadYouTubeVideo />} />
+              <Route path="admin/youtube-videos/:id/edit" element={<UploadYouTubeVideo />} />
+              <Route path="admin/manage-youtube-videos" element={<ManageYouTubeVideos />} />
+              <Route path="admin/tiktok-videos/new" element={<UploadTikTokVideo />} /> {/* New */}
+              <Route path="admin/tiktok-videos/:id/edit" element={<UploadTikTokVideo />} /> {/* New */}
+              <Route path="admin/manage-tiktok-videos" element={<ManageTikTokVideos />} /> {/* New */}
               <Route path="content" element={<ContentList />} />
               <Route path="admin/manage-calendar" element={<ManageCalendar />} />
               <Route path="admin/manage-archives" element={<ManageArchives />} />

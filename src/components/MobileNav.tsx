@@ -143,6 +143,12 @@ const MobileNav: React.FC = () => {
                   <Link to="/admin/manage-training-programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('manage training programs.nav title')}
                   </Link>
+                  <Link to="/admin/manage-youtube-videos" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('manage youtube videos.nav title')}
+                  </Link>
+                  <Link to="/admin/manage-tiktok-videos" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    {t('manage tiktok videos.nav title')}
+                  </Link>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

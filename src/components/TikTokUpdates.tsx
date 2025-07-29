@@ -12,7 +12,16 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useTranslation } from "react-i18next";
-import { dummyTikTokVideos, TikTokVideo } from "@/data/tiktokVideos";
+import { supabase } from "@/integrations/supabase/client"; // Import supabase
+
+interface TikTokVideo {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail_url: string;
+  video_url: string;
+  published_at: string; // Use string for ISO date from DB
+}
 
 const VIDEOS_PER_PAGE = 6;
 
@@ -26,12 +35,20 @@ const TikTokUpdates: React.FC = () => {
 
   useEffect(() => {
     const fetchTikTokVideos = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        setLoading(true);
-        // Simulate API call - REMOVED ARTIFICIAL DELAY
-        setVideos(dummyTikTokVideos);
-      } catch (err) {
-        setError(t("failed to load videos"));
+        const { data, error } = await supabase
+          .from('tiktok_videos')
+          .select('*')
+          .order('published_at', { ascending: false });
+
+        if (error) {
+          throw error;
+        }
+        setVideos(data || []);
+      } catch (err: any) {
+        setError(t("failed to load videos", { error: err.message }));
         console.error("Error fetching TikTok videos:", err);
       } finally {
         setLoading(false);
@@ -39,22 +56,22 @@ const TikTokUpdates: React.FC = () => {
     };
 
     fetchTikTokVideos();
-  }, []);
+  }, [t]); // Depend on t to refetch if language changes
 
   const filteredVideos = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     return videos.filter(video =>
-      t(video.titleKey).toLowerCase().includes(lowerCaseSearchTerm) ||
-      t(video.descriptionKey).toLowerCase().includes(lowerCaseSearchTerm)
+      video.title.toLowerCase().includes(lowerCaseSearchTerm) ||
+      video.description.toLowerCase().includes(lowerCaseSearchTerm)
     );
-  }, [videos, searchTerm, i18n.language]);
+  }, [videos, searchTerm]); // No need for i18n.language here as data is already fetched
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
   const currentVideos = useMemo(() => {
     const startIndex = (currentPage - 1) * VIDEOS_PER_PAGE;
     const endIndex = startIndex + VIDEOS_PER_PAGE;
     return filteredVideos.slice(startIndex, endIndex);
-  }, [filteredVideos, currentPage, i18n.language]);
+  }, [filteredVideos, currentPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -63,7 +80,12 @@ const TikTokUpdates: React.FC = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, i18n.language]);
+  }, [searchTerm]); // Reset page when search term changes
+
+  const formatDate = (isoString: string) => {
+    const dateObj = new Date(isoString);
+    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
 
   return (
     <section className="py-12 bg-muted/40">
@@ -87,18 +109,18 @@ const TikTokUpdates: React.FC = () => {
             {currentVideos.map((video) => (
               <Card key={video.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center">
-                  <img src={video.thumbnail} alt={t(video.titleKey)} className="w-full h-full object-cover" />
+                  <img src={video.thumbnail_url} alt={video.title} className="w-full h-full object-cover" />
                   <PlayCircle className="absolute text-white/80 hover:text-white transition-colors" size={64} />
                 </div>
                 <CardHeader className="flex-grow">
-                  <CardTitle className="text-xl">{t(video.titleKey)}</CardTitle>
+                  <CardTitle className="text-xl">{video.title}</CardTitle>
                   <CardDescription className="text-sm text-muted-foreground">
-                    {new Date(video.date).toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    {formatDate(video.published_at)}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
-                  <p className="text-muted-foreground mb-4 line-clamp-2">{t(video.descriptionKey)}</p>
-                  <a href={video.videoUrl} target="_blank" rel="noopener noreferrer" className="w-full">
+                  <p className="text-muted-foreground mb-4 line-clamp-2">{video.description}</p>
+                  <a href={video.video_url} target="_blank" rel="noopener noreferrer" className="w-full">
                     <Button variant="outline" className="w-full">{t('view video')}</Button>
                   </a>
                 </CardContent>
