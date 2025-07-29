@@ -103,11 +103,16 @@ const AboutPage: React.FC = () => {
             </Card>
           ))}
         </div>
-        <div className="text-center mt-8">
-          <h3 className="text-xl font-semibold flex items-center justify-center gap-2 text-primary">
-            <MapPin className="h-6 w-6" /> {t('headquarter label')}: {t('bandung indonesia')}
-          </h3>
-        </div>
+        <Card className="mt-8 p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 max-w-md mx-auto text-center">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-2xl font-semibold flex items-center justify-center gap-2 text-primary">
+              <MapPin className="h-7 w-7" /> {t('headquarter label')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-lg text-muted-foreground">
+            {t('bandung indonesia')}
+          </CardContent>
+        </Card>
       </section>
 
       <Separator className="my-16" />
