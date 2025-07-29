@@ -46,20 +46,20 @@ const ProgramTopics: React.FC<ProgramTopicsProps> = ({ topics, setTopics }) => {
   return (
     <>
       <Separator className="my-6" />
-      <h3 className="text-lg font-semibold mb-4">{t('admin.program.topics')}</h3>
+      <h3 className="text-lg font-semibold mb-4">{t('topics')}</h3>
       {topics.map((topic, index) => (
         <Card key={index} className="p-4 mb-4 border border-border">
           <div className="flex justify-end mb-2">
             <Button variant="destructive" size="sm" onClick={() => handleRemoveTopic(index)}>
-              <MinusCircle className="h-4 w-4 mr-2" /> {t('admin.program.remove_topic')}
+              <MinusCircle className="h-4 w-4 mr-2" /> {t('remove topic button')}
             </Button>
           </div>
           <div className="space-y-2">
             <div>
-              <Label>{t('admin.program.topic_icon_label')}</Label>
+              <Label>{t('topic icon label')}</Label>
               <Select value={topic.icon_name} onValueChange={(value) => handleTopicChange(index, 'icon_name', value)}>
                 <SelectTrigger className="w-full mt-1">
-                  <SelectValue placeholder={t('placeholder.select_icon')} />
+                  <SelectValue placeholder={t('select icon placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {availableIcons.map(icon => (
@@ -69,22 +69,22 @@ const ProgramTopics: React.FC<ProgramTopicsProps> = ({ topics, setTopics }) => {
               </Select>
               {topic.icon_name && (
                 <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-                  {t('message.selected_icon_preview')}: {React.createElement(iconMap[topic.icon_name], { className: "h-4 w-4" })} {topic.icon_name}
+                  {t('selected icon preview')}: {React.createElement(iconMap[topic.icon_name], { className: "h-4 w-4" })} {topic.icon_name}
                 </p>
               )}
             </div>
             <div>
-              <Label>{t('admin.program.topic_title_label')}</Label>
+              <Label>{t('topic title label')}</Label>
               <Input
-                placeholder={t('admin.program.topic_title_placeholder')}
+                placeholder={t('topic title placeholder')}
                 value={topic.title}
                 onChange={(e) => handleTopicChange(index, 'title', e.target.value)}
               />
             </div>
             <div>
-              <Label>{t('admin.program.topic_description_label')}</Label>
+              <Label>{t('topic description label')}</Label>
               <Textarea
-                placeholder={t('admin.program.topic_description_placeholder')}
+                placeholder={t('topic description placeholder')}
                 value={topic.description}
                 onChange={(e) => handleTopicChange(index, 'description', e.target.value)}
                 className="min-h-[60px]"
@@ -94,7 +94,7 @@ const ProgramTopics: React.FC<ProgramTopicsProps> = ({ topics, setTopics }) => {
         </Card>
       ))}
       <Button type="button" variant="secondary" onClick={handleAddTopic}>
-        <PlusCircle className="h-4 w-4 mr-2" /> {t('admin.program.add_topic')}
+        <PlusCircle className="h-4 w-4 mr-2" /> {t('add topic button')}
       </Button>
     </>
   );

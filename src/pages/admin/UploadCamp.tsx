@@ -45,10 +45,10 @@ const UploadCamp: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login_required'));
+        toast.error(t('login required'));
         navigate('/login');
       } else if (profile?.role !== 'admin') {
-        toast.error(t('auth.admin_required'));
+        toast.error(t('admin required'));
         navigate('/');
       } else {
         if (campId) {
@@ -87,7 +87,7 @@ const UploadCamp: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Error fetching camp data:", err);
-      toast.error(t("message.fetch_error", { error: err.message }));
+      toast.error(t("fetch data error", { error: err.message }));
       navigate('/admin/manage-camps');
     } finally {
       setDataLoading(false);
@@ -114,7 +114,7 @@ const UploadCamp: React.FC = () => {
     setUploading(true);
 
     if (!title || !dates || !description) {
-      toast.error(t("message.required_fields_missing"));
+      toast.error(t("required fields missing"));
       setUploading(false);
       return;
     }
@@ -164,12 +164,12 @@ const UploadCamp: React.FC = () => {
         if (linksError) throw linksError;
       }
 
-      toast.success(campId ? t("success.updated") : t("success.added"));
+      toast.success(campId ? t("updated successfully") : t("added successfully"));
       navigate('/admin/manage-camps');
 
     } catch (err: any) {
       console.error("Error saving camp:", err);
-      toast.error(t("message.save_failed", { error: err.message }));
+      toast.error(t("save failed", { error: err.message }));
     } finally {
       setUploading(false);
     }
@@ -178,7 +178,7 @@ const UploadCamp: React.FC = () => {
   if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('status.loading')}</p>
+        <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
   }
@@ -187,51 +187,51 @@ const UploadCamp: React.FC = () => {
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">
-          {campId ? t('admin.camp.edit_title') : t('admin.camp.add_title')}
+          {campId ? t('edit camp') : t('add camp')}
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {campId ? t('admin.camp.edit_subtitle') : t('admin.camp.add_subtitle')}
+          {campId ? t('edit camp subtitle') : t('add camp subtitle')}
         </p>
       </section>
 
       <Card className="max-w-3xl mx-auto p-6 md:p-8 shadow-lg">
         <CardHeader className="text-center pb-6">
           <CardTitle className="text-2xl font-bold mb-2">
-            {campId ? t('admin.camp.edit_form_title') : t('admin.camp.add_form_title')}
+            {campId ? t('edit camp form') : t('add camp form')}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            {campId ? t('admin.camp.edit_form_desc') : t('admin.camp.add_form_desc')}
+            {campId ? t('edit camp form description') : t('add camp form description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="title">{t('label.title')}</Label>
+              <Label htmlFor="title">{t('title label')}</Label>
               <Input
                 id="title"
                 type="text"
-                placeholder={t('placeholder.title')}
+                placeholder={t('title placeholder')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="dates">{t('label.dates')}</Label>
+              <Label htmlFor="dates">{t('dates label')}</Label>
               <Input
                 id="dates"
                 type="text"
-                placeholder={t('placeholder.dates')}
+                placeholder={t('dates placeholder')}
                 value={dates}
                 onChange={(e) => setDates(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="description">{t('label.description')}</Label>
+              <Label htmlFor="description">{t('description label')}</Label>
               <Textarea
                 id="description"
-                placeholder={t('placeholder.description')}
+                placeholder={t('description placeholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="mt-1 min-h-[80px]"
@@ -239,27 +239,27 @@ const UploadCamp: React.FC = () => {
             </div>
 
             <Separator className="my-6" />
-            <h3 className="text-lg font-semibold mb-4">{t('admin.camp.day_links')}</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('day links')}</h3>
             {dayLinks.map((link, index) => (
               <Card key={index} className="p-4 mb-4 border border-border">
                 <div className="flex justify-end mb-2">
                   <Button variant="destructive" size="sm" onClick={() => handleRemoveDayLink(index)}>
-                    <MinusCircle className="h-4 w-4 mr-2" /> {t('admin.camp.remove_link')}
+                    <MinusCircle className="h-4 w-4 mr-2" /> {t('remove link button')}
                   </Button>
                 </div>
                 <div className="space-y-2">
                   <div>
-                    <Label>{t('label.link')}</Label>
+                    <Label>{t('link label')}</Label>
                     <Input
-                      placeholder={t('admin.camp.link_label_placeholder')}
+                      placeholder={t('link label placeholder')}
                       value={link.label}
                       onChange={(e) => handleDayLinkChange(index, 'label', e.target.value)}
                     />
                   </div>
                   <div>
-                    <Label>{t('label.url')}</Label>
+                    <Label>{t('url label')}</Label>
                     <Input
-                      placeholder={t('admin.camp.link_url_placeholder')}
+                      placeholder={t('link url placeholder')}
                       value={link.url}
                       onChange={(e) => handleDayLinkChange(index, 'url', e.target.value)}
                     />
@@ -268,11 +268,11 @@ const UploadCamp: React.FC = () => {
               </Card>
             ))}
             <Button type="button" variant="secondary" onClick={handleAddDayLink}>
-              <PlusCircle className="h-4 w-4 mr-2" /> {t('admin.camp.add_day_link')}
+              <PlusCircle className="h-4 w-4 mr-2" /> {t('add day link button')}
             </Button>
 
             <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('status.uploading') : (campId ? t('button.save_changes') : t('button.submit'))}
+              {uploading ? t('uploading status') : (campId ? t('save changes button') : t('submit button'))}
             </Button>
           </form>
         </CardContent>
@@ -280,7 +280,7 @@ const UploadCamp: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/admin/manage-camps">
-          <Button>{t('button.back_to_list')}</Button>
+          <Button>{t('back to list button')}</Button>
         </Link>
       </div>
     </div>

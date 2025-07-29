@@ -113,7 +113,7 @@ const MediaCarousel: React.FC = () => {
 
       } catch (err: any) {
         console.error("Error fetching media:", err);
-        setError(t("failed to load videos", { error: err.message }));
+        setError(t("fetch data error", { error: err.message }));
       } finally {
         setLoading(false);
       }

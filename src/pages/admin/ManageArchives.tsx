@@ -51,10 +51,10 @@ const ManageArchives: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login_required'));
+        toast.error(t('login required'));
         navigate('/login');
       } else if (!isAdmin) {
-        toast.error(t('auth.admin_required'));
+        toast.error(t('admin required'));
         navigate('/');
       } else {
         fetchArchives();
@@ -78,7 +78,7 @@ const ManageArchives: React.FC = () => {
       setArchives(data || []);
     } catch (err: any) {
       console.error("Error fetching archives:", err);
-      setError(t("message.fetch_error", { error: err.message }));
+      setError(t("fetch data error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
@@ -109,7 +109,7 @@ const ManageArchives: React.FC = () => {
 
   const handleAddEdit = async () => {
     if (!formTitle || !formExcerpt || !formCategory || !formAuthor) {
-      toast.error(t("message.required_fields_missing"));
+      toast.error(t("required fields missing"));
       return;
     }
 
@@ -118,11 +118,11 @@ const ManageArchives: React.FC = () => {
       try {
         newPdfLink = await uploadFile(pdfFile, 'pdfs', 'blog_pdfs');
       } catch (err: any) {
-        toast.error(t("message.upload_error", { error: err.message }));
+        toast.error(t("upload file error", { error: err.message }));
         return;
       }
     } else if (!currentArchive && !newPdfLink) {
-      toast.error(t("message.required_fields_missing")); // PDF file is required for new archives
+      toast.error(t("required fields missing")); // PDF file is required for new archives
       return;
     }
 
@@ -149,9 +149,9 @@ const ManageArchives: React.FC = () => {
 
       if (error) {
         console.error("Error updating archive:", error);
-        toast.error(t("message.update_error", { error: error.message }));
+        toast.error(t("save failed", { error: error.message }));
       } else {
-        toast.success(t("success.updated"));
+        toast.success(t("updated successfully"));
         fetchArchives();
         setIsDialogOpen(false);
       }
@@ -163,9 +163,9 @@ const ManageArchives: React.FC = () => {
 
       if (error) {
         console.error("Error adding archive:", error);
-        toast.error(t("message.add_error", { error: error.message }));
+        toast.error(t("save failed", { error: error.message }));
       } else {
-        toast.success(t("success.added"));
+        toast.success(t("added successfully"));
         fetchArchives();
         setIsDialogOpen(false);
       }
@@ -173,7 +173,7 @@ const ManageArchives: React.FC = () => {
   };
 
   const handleDelete = async (id: string, pdfLink: string | null) => {
-    if (!window.confirm(t("admin.archive.confirm_delete"))) {
+    if (!window.confirm(t("confirm delete archive"))) {
       return;
     }
     try {
@@ -184,7 +184,7 @@ const ManageArchives: React.FC = () => {
           const { error: storageError } = await supabase.storage.from('pdfs').remove([filePath]);
           if (storageError) {
             console.warn("Error deleting PDF from storage:", storageError);
-            toast.warning(t("message.storage_delete_warning", { error: storageError.message }));
+            toast.warning(t("storage delete warning", { error: storageError.message }));
           }
         }
       }
@@ -197,11 +197,11 @@ const ManageArchives: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("success.deleted"));
+      toast.success(t("deleted successfully"));
       fetchArchives();
     } catch (err: any) {
       console.error("Error deleting archive:", err);
-      toast.error(t("message.delete_error", { error: err.message }));
+      toast.error(t("delete error", { error: err.message }));
     }
   };
 
@@ -255,7 +255,7 @@ const ManageArchives: React.FC = () => {
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('status.loading')}</p>
+        <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
   }
@@ -263,18 +263,18 @@ const ManageArchives: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('admin.archive.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage archives')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('admin.archive.subtitle')}
+          {t('manage archives subtitle')}
         </p>
       </section>
 
       <div className="flex justify-end mb-6">
-        <Button onClick={openDialogForAdd}>{t('admin.archive.add_new')}</Button>
+        <Button onClick={openDialogForAdd}>{t('add new archive')}</Button>
       </div>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('status.loading')}</p>
+        <p className="text-center text-muted-foreground">{t('loading status')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : archives.length > 0 ? (
@@ -283,11 +283,11 @@ const ManageArchives: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('admin.archive.table.title')}</TableHead>
-                  <TableHead>{t('admin.archive.table.category')}</TableHead>
-                  <TableHead>{t('admin.archive.table.date')}</TableHead>
-                  <TableHead>{t('admin.archive.table.pdf_link')}</TableHead>
-                  <TableHead className="text-right">{t('admin.archive.table.actions')}</TableHead>
+                  <TableHead>{t('table title')}</TableHead>
+                  <TableHead>{t('table category')}</TableHead>
+                  <TableHead>{t('table date')}</TableHead>
+                  <TableHead>{t('table pdf link')}</TableHead>
+                  <TableHead className="text-right">{t('table actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -299,10 +299,10 @@ const ManageArchives: React.FC = () => {
                     <TableCell>
                       {archive.pdf_link ? (
                         <a href={archive.pdf_link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex items-center gap-1">
-                          <FileText className="h-4 w-4" /> {t('admin.archive.view_pdf')}
+                          <FileText className="h-4 w-4" /> {t('view pdf')}
                         </a>
                       ) : (
-                        <span className="text-muted-foreground">{t('message.no_pdf')}</span>
+                        <span className="text-muted-foreground">{t('no pdf')}</span>
                       )}
                     </TableCell>
                     <TableCell className="text-right">
@@ -320,21 +320,21 @@ const ManageArchives: React.FC = () => {
           </CardContent>
         </Card>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('admin.archive.no_archives')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no archives found')}</p>
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{currentArchive ? t('admin.archive.edit_form_title') : t('admin.archive.add_form_title')}</DialogTitle>
+            <DialogTitle>{currentArchive ? t('edit archive form') : t('add archive form')}</DialogTitle>
             <DialogDescription>
-              {currentArchive ? t('admin.archive.edit_form_desc') : t('admin.archive.add_form_desc')}
+              {currentArchive ? t('edit archive form description') : t('add archive form description')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-right">
-                {t('label.title')}
+                {t('title label')}
               </Label>
               <Input
                 id="title"
@@ -345,7 +345,7 @@ const ManageArchives: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="excerpt" className="text-right">
-                {t('label.excerpt')}
+                {t('excerpt label')}
               </Label>
               <Textarea
                 id="excerpt"
@@ -356,7 +356,7 @@ const ManageArchives: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="category" className="text-right">
-                {t('label.category')}
+                {t('category label')}
               </Label>
               <select
                 id="category"
@@ -364,7 +364,7 @@ const ManageArchives: React.FC = () => {
                 onChange={(e) => setFormCategory(e.target.value)}
                 className="col-span-3 p-2 border rounded-md bg-background text-foreground"
               >
-                <option value="">{t('placeholder.select_category')}</option>
+                <option value="">{t('select category placeholder')}</option>
                 {categories.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
@@ -372,7 +372,7 @@ const ManageArchives: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="author" className="text-right">
-                {t('label.author')}
+                {t('author label')}
               </Label>
               <Input
                 id="author"
@@ -383,19 +383,19 @@ const ManageArchives: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="tags" className="text-right">
-                {t('label.tags')}
+                {t('tags label')}
               </Label>
               <Input
                 id="tags"
                 value={formTagsInput}
                 onChange={(e) => setFormTagsInput(e.target.value)}
-                placeholder={t('placeholder.tags')}
+                placeholder={t('tags placeholder')}
                 className="col-span-3"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="pdf-upload-dialog" className="text-right">
-                {t('label.pdf')}
+                {t('pdf file label')}
               </Label>
               <Input
                 id="pdf-upload-dialog"
@@ -409,17 +409,17 @@ const ManageArchives: React.FC = () => {
               <div className="grid grid-cols-4 items-center gap-4">
                 <span className="col-span-1"></span>
                 <p className="col-span-3 text-sm text-muted-foreground">
-                  {t('message.current_pdf')}: <a href={currentArchive.pdf_link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{currentArchive.pdf_link.split('/').pop()}</a>
+                  {t('current pdf')}: <a href={currentArchive.pdf_link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{currentArchive.pdf_link.split('/').pop()}</a>
                 </p>
               </div>
             )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              {t('button.cancel')}
+              {t('cancel button')}
             </Button>
             <Button onClick={handleAddEdit} disabled={uploadingFile}>
-              {uploadingFile ? t('status.uploading') : (currentArchive ? t('button.save_changes') : t('button.submit'))}
+              {uploadingFile ? t('uploading status') : (currentArchive ? t('save changes button') : t('submit button'))}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -427,7 +427,7 @@ const ManageArchives: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('button.back_to_list')}</Button>
+          <Button>{t('back to list button')}</Button>
         </Link>
       </div>
     </div>

@@ -48,7 +48,7 @@ const YouTubeUpdates: React.FC = () => {
         }
         setVideos(data || []);
       } catch (err: any) {
-        setError(t("failed to load videos", { error: err.message }));
+        setError(t("fetch data error", { error: err.message }));
         console.error("Error fetching YouTube videos:", err);
       } finally {
         setLoading(false);

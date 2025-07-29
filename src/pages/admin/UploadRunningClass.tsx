@@ -42,10 +42,10 @@ const UploadRunningClass: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login_required'));
+        toast.error(t('login required'));
         navigate('/login');
       } else if (profile?.role !== 'admin') {
-        toast.error(t('auth.admin_required'));
+        toast.error(t('admin required'));
         navigate('/');
       } else {
         if (classId) {
@@ -76,7 +76,7 @@ const UploadRunningClass: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Error fetching running class data:", err);
-      toast.error(t("message.fetch_error", { error: err.message }));
+      toast.error(t("fetch data error", { error: err.message }));
       navigate('/admin/manage-running-classes');
     } finally {
       setDataLoading(false);
@@ -88,7 +88,7 @@ const UploadRunningClass: React.FC = () => {
     setUploading(true);
 
     if (!name || !schedule || !description) {
-      toast.error(t("message.required_fields_missing"));
+      toast.error(t("required fields missing"));
       setUploading(false);
       return;
     }
@@ -118,12 +118,12 @@ const UploadRunningClass: React.FC = () => {
 
       if (error) throw error;
 
-      toast.success(classId ? t("success.updated") : t("success.added"));
+      toast.success(classId ? t("updated successfully") : t("added successfully"));
       navigate('/admin/manage-running-classes');
 
     } catch (err: any) {
       console.error("Error saving running class:", err);
-      toast.error(t("message.save_failed", { error: err.message }));
+      toast.error(t("save failed", { error: err.message }));
     } finally {
       setUploading(false);
     }
@@ -132,7 +132,7 @@ const UploadRunningClass: React.FC = () => {
   if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('status.loading')}</p>
+        <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
   }
@@ -141,61 +141,61 @@ const UploadRunningClass: React.FC = () => {
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">
-          {classId ? t('admin.running_class.edit_title') : t('admin.running_class.add_title')}
+          {classId ? t('edit running class') : t('add running class')}
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {classId ? t('admin.running_class.edit_subtitle') : t('admin.running_class.add_subtitle')}
+          {classId ? t('edit running class subtitle') : t('add running class subtitle')}
         </p>
       </section>
 
       <Card className="max-w-3xl mx-auto p-6 md:p-8 shadow-lg">
         <CardHeader className="text-center pb-6">
           <CardTitle className="text-2xl font-bold mb-2">
-            {classId ? t('admin.running_class.edit_form_title') : t('admin.running_class.add_form_title')}
+            {classId ? t('edit running class form') : t('add running class form')}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            {classId ? t('admin.running_class.edit_form_desc') : t('admin.running_class.add_form_desc')}
+            {classId ? t('edit running class form description') : t('add running class form description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="name">{t('label.name')}</Label>
+              <Label htmlFor="name">{t('name label')}</Label>
               <Input
                 id="name"
                 type="text"
-                placeholder={t('placeholder.name')}
+                placeholder={t('name placeholder')}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="schedule">{t('label.schedule')}</Label>
+              <Label htmlFor="schedule">{t('schedule label')}</Label>
               <Input
                 id="schedule"
                 type="text"
-                placeholder={t('placeholder.schedule')}
+                placeholder={t('schedule placeholder')}
                 value={schedule}
                 onChange={(e) => setSchedule(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="description">{t('label.description')}</Label>
+              <Label htmlFor="description">{t('description label')}</Label>
               <Textarea
                 id="description"
-                placeholder={t('placeholder.description')}
+                placeholder={t('description placeholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="mt-1 min-h-[80px]"
               />
             </div>
             <div>
-              <Label htmlFor="iconName">{t('label.icon')}</Label>
+              <Label htmlFor="iconName">{t('icon label')}</Label>
               <Select value={iconName} onValueChange={setIconName}>
                 <SelectTrigger className="w-full mt-1">
-                  <SelectValue placeholder={t('placeholder.select_icon')} />
+                  <SelectValue placeholder={t('select icon placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {availableIcons.map(icon => (
@@ -205,12 +205,12 @@ const UploadRunningClass: React.FC = () => {
               </Select>
               {iconName && (
                 <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-                  {t('message.selected_icon_preview')}: {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
+                  {t('selected icon preview')}: {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
                 </p>
               )}
             </div>
             <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('status.uploading') : (classId ? t('button.save_changes') : t('button.submit'))}
+              {uploading ? t('uploading status') : (classId ? t('save changes button') : t('submit button'))}
             </Button>
           </form>
         </CardContent>
@@ -218,7 +218,7 @@ const UploadRunningClass: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/admin/manage-running-classes">
-          <Button>{t('button.back_to_list')}</Button>
+          <Button>{t('back to list button')}</Button>
         </Link>
       </div>
     </div>

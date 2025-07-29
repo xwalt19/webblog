@@ -40,7 +40,7 @@ const Training: React.FC = () => {
         setTrainingPrograms(data || []);
       } catch (err: any) {
         console.error("Error fetching training programs:", err);
-        setError(t("training.fetch error", { error: err.message }));
+        setError(t("fetch data error", { error: err.message }));
       } finally {
         setLoading(false);
       }
@@ -68,9 +68,9 @@ const Training: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('training program title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('our training programs title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('training program subtitle')}
+          {t('our training programs subtitle')}
         </p>
       </section>
 
@@ -101,13 +101,13 @@ const Training: React.FC = () => {
             })}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no training programs available')}</p>
+          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no training programs found')}</p>
         )}
       </section>
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('return to home')}</Button>
         </Link>
       </div>
     </div>

@@ -47,10 +47,10 @@ const ManageCalendar: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login_required'));
+        toast.error(t('login required'));
         navigate('/login');
       } else if (!isAdmin) {
-        toast.error(t('auth.admin_required'));
+        toast.error(t('admin required'));
         navigate('/');
       } else {
         fetchEvents();
@@ -73,7 +73,7 @@ const ManageCalendar: React.FC = () => {
       setEvents(data || []);
     } catch (err: any) {
       console.error("Error fetching calendar events:", err);
-      setError(t("message.fetch_error", { error: err.message }));
+      setError(t("fetch data error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
@@ -81,7 +81,7 @@ const ManageCalendar: React.FC = () => {
 
   const handleAddEdit = async () => {
     if (!formTitle || !formDate) {
-      toast.error(t("message.required_fields_missing"));
+      toast.error(t("required fields missing"));
       return;
     }
 
@@ -101,9 +101,9 @@ const ManageCalendar: React.FC = () => {
 
       if (error) {
         console.error("Error updating event:", error);
-        toast.error(t("message.update_error", { error: error.message }));
+        toast.error(t("save failed", { error: error.message }));
       } else {
-        toast.success(t("success.updated"));
+        toast.success(t("updated successfully"));
         fetchEvents();
         setIsDialogOpen(false);
       }
@@ -115,9 +115,9 @@ const ManageCalendar: React.FC = () => {
 
       if (error) {
         console.error("Error adding event:", error);
-        toast.error(t("message.add_error", { error: error.message }));
+        toast.error(t("save failed", { error: error.message }));
       } else {
-        toast.success(t("success.added"));
+        toast.success(t("added successfully"));
         fetchEvents();
         setIsDialogOpen(false);
       }
@@ -125,7 +125,7 @@ const ManageCalendar: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t("admin.calendar.confirm_delete"))) {
+    if (!window.confirm(t("confirm delete calendar event"))) {
       return;
     }
     try {
@@ -137,11 +137,11 @@ const ManageCalendar: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("success.deleted"));
+      toast.success(t("deleted successfully"));
       fetchEvents();
     } catch (err: any) {
       console.error("Error deleting event:", err);
-      toast.error(t("message.delete_error", { error: err.message }));
+      toast.error(t("delete error", { error: err.message }));
     }
   };
 
@@ -176,7 +176,7 @@ const ManageCalendar: React.FC = () => {
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('status.loading')}</p>
+        <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
   }
@@ -184,18 +184,18 @@ const ManageCalendar: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('admin.calendar.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage calendar events')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('admin.calendar.subtitle')}
+          {t('manage calendar events subtitle')}
         </p>
       </section>
 
       <div className="flex justify-end mb-6">
-        <Button onClick={openDialogForAdd}>{t('admin.calendar.add_new')}</Button>
+        <Button onClick={openDialogForAdd}>{t('add new calendar event')}</Button>
       </div>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('status.loading')}</p>
+        <p className="text-center text-muted-foreground">{t('loading status')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : events.length > 0 ? (
@@ -204,10 +204,10 @@ const ManageCalendar: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('admin.calendar.table.title')}</TableHead>
-                  <TableHead>{t('admin.calendar.table.date')}</TableHead>
-                  <TableHead>{t('admin.calendar.table.description')}</TableHead>
-                  <TableHead className="text-right">{t('admin.calendar.table.actions')}</TableHead>
+                  <TableHead>{t('table title')}</TableHead>
+                  <TableHead>{t('table date')}</TableHead>
+                  <TableHead>{t('table description')}</TableHead>
+                  <TableHead className="text-right">{t('table actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -231,21 +231,21 @@ const ManageCalendar: React.FC = () => {
           </CardContent>
         </Card>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('admin.calendar.no_events')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no calendar events found')}</p>
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{currentEvent ? t('admin.calendar.edit_form_title') : t('admin.calendar.add_form_title')}</DialogTitle>
+            <DialogTitle>{currentEvent ? t('edit calendar event form') : t('add calendar event form')}</DialogTitle>
             <DialogDescription>
-              {currentEvent ? t('admin.calendar.edit_form_desc') : t('admin.calendar.add_form_desc')}
+              {currentEvent ? t('edit calendar event form description') : t('add calendar event form description')}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-right">
-                {t('label.title')}
+                {t('title label')}
               </Label>
               <Input
                 id="title"
@@ -256,7 +256,7 @@ const ManageCalendar: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="description" className="text-right">
-                {t('label.description')}
+                {t('description label')}
               </Label>
               <Textarea
                 id="description"
@@ -267,7 +267,7 @@ const ManageCalendar: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="date" className="text-right">
-                {t('label.date')}
+                {t('date label')}
               </Label>
               <Popover>
                 <PopoverTrigger asChild>
@@ -279,7 +279,7 @@ const ManageCalendar: React.FC = () => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formDate ? format(formDate, "PPP") : <span>{t('button.pick_date')}</span>}
+                    {formDate ? format(formDate, "PPP") : <span>{t('pick a date button')}</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -295,10 +295,10 @@ const ManageCalendar: React.FC = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              {t('button.cancel')}
+              {t('cancel button')}
             </Button>
             <Button onClick={handleAddEdit}>
-              {currentEvent ? t('button.save_changes') : t('button.submit')}
+              {currentEvent ? t('save changes button') : t('submit button')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -306,7 +306,7 @@ const ManageCalendar: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('button.back_to_list')}</Button>
+          <Button>{t('back to list button')}</Button>
         </Link>
       </div>
     </div>

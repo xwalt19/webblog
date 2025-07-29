@@ -48,7 +48,7 @@ const TikTokUpdates: React.FC = () => {
         }
         setVideos(data || []);
       } catch (err: any) {
-        setError(t("failed to load videos", { error: err.message }));
+        setError(t("fetch data error", { error: err.message }));
         console.error("Error fetching TikTok videos:", err);
       } finally {
         setLoading(false);

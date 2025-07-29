@@ -35,10 +35,10 @@ const ManageRunningClasses: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login_required'));
+        toast.error(t('login required'));
         navigate('/login');
       } else if (!isAdmin) {
-        toast.error(t('auth.admin_required'));
+        toast.error(t('admin required'));
         navigate('/');
       } else {
         fetchRunningClasses();
@@ -61,14 +61,14 @@ const ManageRunningClasses: React.FC = () => {
       setRunningClasses(data || []);
     } catch (err: any) {
       console.error("Error fetching running classes:", err);
-      setError(t("message.fetch_error", { error: err.message }));
+      setError(t("fetch data error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t("admin.running_class.confirm_delete"))) {
+    if (!window.confirm(t("confirm delete running class"))) {
       return;
     }
     try {
@@ -80,11 +80,11 @@ const ManageRunningClasses: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("success.deleted"));
+      toast.success(t("deleted successfully"));
       fetchRunningClasses(); // Refresh the list
     } catch (err: any) {
       console.error("Error deleting class:", err);
-      toast.error(t("message.delete_error", { error: err.message }));
+      toast.error(t("delete error", { error: err.message }));
     }
   };
 
@@ -100,7 +100,7 @@ const ManageRunningClasses: React.FC = () => {
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('status.loading')}</p>
+        <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
   }
@@ -108,22 +108,22 @@ const ManageRunningClasses: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('admin.running_class.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('running classes')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('admin.running_class.subtitle')}
+          {t('manage running classes subtitle')}
         </p>
       </section>
 
       <div className="flex justify-end mb-6">
         <Link to="/admin/running-classes/new">
           <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('admin.running_class.add_new')}
+            <PlusCircle className="h-4 w-4 mr-2" /> {t('add new running class')}
           </Button>
         </Link>
       </div>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('status.loading')}</p>
+        <p className="text-center text-muted-foreground">{t('loading status')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : runningClasses.length > 0 ? (
@@ -132,11 +132,11 @@ const ManageRunningClasses: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('admin.running_class.table.name')}</TableHead>
-                  <TableHead>{t('admin.running_class.table.schedule')}</TableHead>
-                  <TableHead>{t('admin.running_class.table.icon')}</TableHead>
-                  <TableHead>{t('admin.running_class.table.date')}</TableHead>
-                  <TableHead className="text-right">{t('admin.running_class.table.actions')}</TableHead>
+                  <TableHead>{t('name label')}</TableHead>
+                  <TableHead>{t('schedule label')}</TableHead>
+                  <TableHead>{t('table icon')}</TableHead>
+                  <TableHead>{t('table date')}</TableHead>
+                  <TableHead className="text-right">{t('table actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -168,12 +168,12 @@ const ManageRunningClasses: React.FC = () => {
           </CardContent>
         </Card>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('admin.running_class.no_classes')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no running classes found')}</p>
       )}
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('button.back_to_list')}</Button>
+          <Button>{t('back to list button')}</Button>
         </Link>
       </div>
     </div>

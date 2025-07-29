@@ -48,44 +48,44 @@ const ProgramFormFields: React.FC<ProgramFormFieldsProps> = ({
   return (
     <>
       <div>
-        <Label htmlFor="title">{t('label.title')}</Label>
+        <Label htmlFor="title">{t('title label')}</Label>
         <Input
           id="title"
           type="text"
-          placeholder={t('placeholder.title')}
+          placeholder={t('title placeholder')}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="mt-1"
         />
       </div>
       <div>
-        <Label htmlFor="description">{t('label.description')}</Label>
+        <Label htmlFor="description">{t('description label')}</Label>
         <Textarea
           id="description"
-          placeholder={t('placeholder.description')}
+          placeholder={t('description placeholder')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="mt-1 min-h-[80px]"
         />
       </div>
       <div>
-        <Label htmlFor="type">{t('label.type')}</Label>
+        <Label htmlFor="type">{t('type label')}</Label>
         <Select value={type} onValueChange={(value: "kids" | "private" | "professional") => setType(value)}>
           <SelectTrigger className="w-full mt-1">
-            <SelectValue placeholder={t('placeholder.select_type')} />
+            <SelectValue placeholder={t('select type placeholder')} />
           </SelectTrigger>
           <SelectContent>
             {programTypes.map(pType => (
-              <SelectItem key={pType} value={pType}>{t(`program_types.${pType}`)}</SelectItem>
+              <SelectItem key={pType} value={pType}>{t(`${pType} program type`)}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
       <div>
-        <Label htmlFor="iconName">{t('label.icon')}</Label>
+        <Label htmlFor="iconName">{t('icon label')}</Label>
         <Select value={iconName} onValueChange={setIconName}>
           <SelectTrigger className="w-full mt-1">
-            <SelectValue placeholder={t('placeholder.select_icon')} />
+            <SelectValue placeholder={t('select icon placeholder')} />
           </SelectTrigger>
           <SelectContent>
             {availableIcons.map(icon => (
@@ -95,44 +95,44 @@ const ProgramFormFields: React.FC<ProgramFormFieldsProps> = ({
         </Select>
         {iconName && (
           <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-            {t('message.selected_icon_preview')}: {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
+            {t('selected icon preview')}: {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
           </p>
         )}
       </div>
       <div>
-        <Label htmlFor="schedule">{t('label.schedule')}</Label>
+        <Label htmlFor="schedule">{t('schedule label')}</Label>
         <Input
           id="schedule"
           type="text"
-          placeholder={t('placeholder.schedule')}
+          placeholder={t('schedule placeholder')}
           value={schedule}
           onChange={(e) => setSchedule(e.target.value)}
           className="mt-1"
         />
       </div>
       <div>
-        <Label htmlFor="registrationFee">{t('label.registration_fee')}</Label>
+        <Label htmlFor="registrationFee">{t('registration fee label')}</Label>
         <Input
           id="registrationFee"
           type="text"
-          placeholder={t('placeholder.registration_fee')}
+          placeholder={t('registration fee placeholder')}
           value={registrationFee}
           onChange={(e) => setRegistrationFee(e.target.value)}
           className="mt-1"
         />
       </div>
       <div>
-        <Label htmlFor="price">{t('label.price')}</Label>
+        <Label htmlFor="price">{t('price label')}</Label>
         <Input
           id="price"
           type="text"
-          placeholder={t('placeholder.price')}
+          placeholder={t('price placeholder')}
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           className="mt-1"
         />
         <p className="text-sm text-muted-foreground mt-1">
-          {t('placeholder.price_hint')}
+          {t('price hint')}
         </p>
       </div>
     </>

@@ -35,10 +35,10 @@ const ManageTikTokVideos: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login_required'));
+        toast.error(t('login required'));
         navigate('/login');
       } else if (!isAdmin) {
-        toast.error(t('auth.admin_required'));
+        toast.error(t('admin required'));
         navigate('/');
       } else {
         fetchVideos();
@@ -61,14 +61,14 @@ const ManageTikTokVideos: React.FC = () => {
       setVideos(data || []);
     } catch (err: any) {
       console.error("Error fetching TikTok videos:", err);
-      setError(t("message.fetch_error", { error: err.message }));
+      setError(t("fetch data error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
   };
 
   const handleDelete = async (id: string, thumbnailUrl: string | null) => {
-    if (!window.confirm(t("admin.tiktok_video.confirm_delete"))) {
+    if (!window.confirm(t("confirm delete tiktok video"))) {
       return;
     }
     try {
@@ -79,7 +79,7 @@ const ManageTikTokVideos: React.FC = () => {
           const { error: storageError } = await supabase.storage.from('video_thumbnails').remove([filePath]);
           if (storageError) {
             console.warn("Error deleting thumbnail from storage:", storageError);
-            toast.warning(t("message.storage_delete_warning", { error: storageError.message }));
+            toast.warning(t("storage delete warning", { error: storageError.message }));
           }
         }
       }
@@ -92,11 +92,11 @@ const ManageTikTokVideos: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("success.deleted"));
+      toast.success(t("deleted successfully"));
       fetchVideos(); // Refresh the list
     } catch (err: any) {
       console.error("Error deleting video:", err);
-      toast.error(t("message.delete_error", { error: err.message }));
+      toast.error(t("delete error", { error: err.message }));
     }
   };
 
@@ -112,7 +112,7 @@ const ManageTikTokVideos: React.FC = () => {
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('status.loading')}</p>
+        <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
   }
@@ -120,22 +120,22 @@ const ManageTikTokVideos: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('admin.tiktok_video.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage tiktok videos')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('admin.tiktok_video.subtitle')}
+          {t('manage tiktok videos subtitle')}
         </p>
       </section>
 
       <div className="flex justify-end mb-6">
         <Link to="/admin/tiktok-videos/new">
           <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('admin.tiktok_video.add_new')}
+            <PlusCircle className="h-4 w-4 mr-2" /> {t('add new tiktok video')}
           </Button>
         </Link>
       </div>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('status.loading')}</p>
+        <p className="text-center text-muted-foreground">{t('loading status')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : videos.length > 0 ? (
@@ -144,10 +144,10 @@ const ManageTikTokVideos: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('admin.tiktok_video.table.title')}</TableHead>
-                  <TableHead>{t('admin.tiktok_video.table.thumbnail')}</TableHead>
-                  <TableHead>{t('admin.tiktok_video.table.published_at')}</TableHead>
-                  <TableHead className="text-right">{t('admin.tiktok_video.table.actions')}</TableHead>
+                  <TableHead>{t('table title')}</TableHead>
+                  <TableHead>{t('table thumbnail')}</TableHead>
+                  <TableHead>{t('table published at')}</TableHead>
+                  <TableHead className="text-right">{t('table actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -182,12 +182,12 @@ const ManageTikTokVideos: React.FC = () => {
           </CardContent>
         </Card>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('admin.tiktok_video.no_videos')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('no tiktok videos found')}</p>
       )}
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('button.back_to_list')}</Button>
+          <Button>{t('back to list button')}</Button>
         </Link>
       </div>
     </div>

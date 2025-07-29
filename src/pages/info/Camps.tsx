@@ -49,7 +49,7 @@ const Camps: React.FC = () => {
         setCamps(data || []);
       } catch (err: any) {
         console.error("Error fetching camps:", err);
-        setError(t("camps.fetch error", { error: err.message }));
+        setError(t("fetch data error", { error: err.message }));
       } finally {
         setLoading(false);
       }
@@ -81,9 +81,9 @@ const Camps: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('camp program title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('our camp programs title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('camp program subtitle')}
+          {t('our camp programs subtitle')}
         </p>
       </section>
 
@@ -124,13 +124,13 @@ const Camps: React.FC = () => {
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no camps available')}</p>
+          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no camps found')}</p>
         )}
       </section>
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('return to home')}</Button>
         </Link>
       </div>
     </div>

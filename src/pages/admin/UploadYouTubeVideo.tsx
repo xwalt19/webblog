@@ -46,10 +46,10 @@ const UploadYouTubeVideo: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login_required'));
+        toast.error(t('login required'));
         navigate('/login');
       } else if (profile?.role !== 'admin') {
-        toast.error(t('auth.admin_required'));
+        toast.error(t('admin required'));
         navigate('/');
       } else {
         if (videoId) {
@@ -82,7 +82,7 @@ const UploadYouTubeVideo: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Error fetching video data:", err);
-      toast.error(t("message.fetch_error", { error: err.message }));
+      toast.error(t("fetch data error", { error: err.message }));
       navigate('/admin/manage-youtube-videos');
     } finally {
       setDataLoading(false);
@@ -136,7 +136,7 @@ const UploadYouTubeVideo: React.FC = () => {
     setUploading(true);
 
     if (!title || !videoUrl || !publishedAt) {
-      toast.error(t("message.required_fields_missing"));
+      toast.error(t("required fields missing"));
       setUploading(false);
       return;
     }
@@ -184,7 +184,7 @@ const UploadYouTubeVideo: React.FC = () => {
         throw error;
       }
 
-      toast.success(videoId ? t("success.updated") : t("success.added"));
+      toast.success(videoId ? t("updated successfully") : t("added successfully"));
       
       // Reset form or navigate
       if (!videoId) {
@@ -201,7 +201,7 @@ const UploadYouTubeVideo: React.FC = () => {
 
     } catch (err: any) {
       console.error("Error saving YouTube video:", err);
-      toast.error(t("message.save_failed", { error: err.message }));
+      toast.error(t("save failed", { error: err.message }));
     } finally {
       setUploading(false);
     }
@@ -210,7 +210,7 @@ const UploadYouTubeVideo: React.FC = () => {
   if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('status.loading')}</p>
+        <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
   }
@@ -219,58 +219,58 @@ const UploadYouTubeVideo: React.FC = () => {
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">
-          {videoId ? t('admin.youtube_video.edit_title') : t('admin.youtube_video.add_title')}
+          {videoId ? t('edit youtube video') : t('add youtube video')}
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {videoId ? t('admin.youtube_video.edit_subtitle') : t('admin.youtube_video.add_subtitle')}
+          {videoId ? t('edit youtube video subtitle') : t('add youtube video subtitle')}
         </p>
       </section>
 
       <Card className="max-w-3xl mx-auto p-6 md:p-8 shadow-lg">
         <CardHeader className="text-center pb-6">
           <CardTitle className="text-2xl font-bold mb-2">
-            {videoId ? t('admin.youtube_video.edit_form_title') : t('admin.youtube_video.add_form_title')}
+            {videoId ? t('edit youtube video form') : t('add youtube video form')}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            {videoId ? t('admin.youtube_video.edit_form_desc') : t('admin.youtube_video.add_form_desc')}
+            {videoId ? t('edit youtube video form description') : t('add youtube video form description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="title">{t('label.title')}</Label>
+              <Label htmlFor="title">{t('title label')}</Label>
               <Input
                 id="title"
                 type="text"
-                placeholder={t('placeholder.title')}
+                placeholder={t('title placeholder')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="description">{t('label.description')}</Label>
+              <Label htmlFor="description">{t('description label')}</Label>
               <Textarea
                 id="description"
-                placeholder={t('placeholder.description')}
+                placeholder={t('description placeholder')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="mt-1 min-h-[80px]"
               />
             </div>
             <div>
-              <Label htmlFor="videoUrl">{t('label.video_url')}</Label>
+              <Label htmlFor="videoUrl">{t('video url label')}</Label>
               <Input
                 id="videoUrl"
                 type="url"
-                placeholder={t('placeholder.video_url')}
+                placeholder={t('video url placeholder')}
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="publishedAt">{t('label.published_at')}</Label>
+              <Label htmlFor="publishedAt">{t('published at label')}</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -281,7 +281,7 @@ const UploadYouTubeVideo: React.FC = () => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {publishedAt ? format(publishedAt, "PPP") : <span>{t('button.pick_date')}</span>}
+                    {publishedAt ? format(publishedAt, "PPP") : <span>{t('pick a date button')}</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -295,7 +295,7 @@ const UploadYouTubeVideo: React.FC = () => {
               </Popover>
             </div>
             <div>
-              <Label htmlFor="thumbnail-upload">{t('label.thumbnail')}</Label>
+              <Label htmlFor="thumbnail-upload">{t('thumbnail label')}</Label>
               <Input
                 id="thumbnail-upload"
                 type="file"
@@ -305,16 +305,16 @@ const UploadYouTubeVideo: React.FC = () => {
               />
               {thumbnailFile ? (
                 <p className="text-sm text-muted-foreground mt-2">
-                  {t('message.selected_thumbnail')}: {thumbnailFile.name}
+                  {t('selected thumbnail')}: {thumbnailFile.name}
                 </p>
               ) : initialThumbnailUrl && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  {t('message.current_thumbnail')}: <a href={initialThumbnailUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialThumbnailUrl.split('/').pop()}</a>
+                  {t('current thumbnail')}: <a href={initialThumbnailUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialThumbnailUrl.split('/').pop()}</a>
                 </p>
               )}
             </div>
             <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('status.uploading') : (videoId ? t('button.save_changes') : t('button.submit'))}
+              {uploading ? t('uploading status') : (videoId ? t('save changes button') : t('submit button'))}
             </Button>
           </form>
         </CardContent>
@@ -322,7 +322,7 @@ const UploadYouTubeVideo: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/admin/manage-youtube-videos">
-          <Button>{t('button.back_to_list')}</Button>
+          <Button>{t('back to list button')}</Button>
         </Link>
       </div>
     </div>

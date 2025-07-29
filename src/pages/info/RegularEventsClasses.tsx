@@ -65,7 +65,7 @@ const RegularEventsClasses: React.FC = () => {
 
       } catch (err: any) {
         console.error("Error fetching activities:", err);
-        setError(t("regular events classes.fetch error", { error: err.message }));
+        setError(t("fetch data error", { error: err.message }));
       } finally {
         setLoading(false);
       }
@@ -93,16 +93,16 @@ const RegularEventsClasses: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('schedule events title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('schedule events page title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('schedule events subtitle')}
+          {t('schedule events page subtitle')}
         </p>
       </section>
 
       <div className="flex justify-center mb-10">
         <Select value={selectedActivityView} onValueChange={setSelectedActivityView}>
           <SelectTrigger className="w-full md:w-[250px]">
-            <SelectValue placeholder={t('select activity')} />
+            <SelectValue placeholder={t('select activity placeholder')} />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="allActivities">{t('all activities')}</SelectItem>
@@ -178,7 +178,7 @@ const RegularEventsClasses: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('return to home')}</Button>
         </Link>
       </div>
     </div>
