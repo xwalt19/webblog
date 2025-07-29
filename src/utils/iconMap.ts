@@ -1,14 +1,14 @@
 import {
   BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users, GraduationCap, DollarSign, CalendarDays,
   Lightbulb, Handshake, Building, BellRing, PlayCircle, Image, FileText,
-  Home, Info, Archive, Tent, Mail, Youtube, Music, // Added new icons
+  Home, Info, Archive, Tent, Mail, Youtube, Music, MapPin,
 } from "lucide-react";
 import React from "react";
 
 export const iconMap: { [key: string]: React.ElementType } = {
   BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users, GraduationCap, DollarSign, CalendarDays,
   Lightbulb, Handshake, Building, BellRing, PlayCircle, Image, FileText,
-  Home, Info, Archive, Tent, Mail, Youtube, Music, // Added new icons to map
+  Home, Info, Archive, Tent, Mail, Youtube, Music, MapPin,
 };
 
 export const getIconComponent = (iconName: string | null) => {

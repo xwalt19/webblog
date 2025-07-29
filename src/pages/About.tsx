@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Lightbulb, Users, Handshake } from "lucide-react";
+import { Lightbulb, Users, Handshake, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { dummyTeamMembers, TeamMember } from "@/data/teamMembers";
 
@@ -13,10 +13,22 @@ const AboutPage: React.FC = () => {
 
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
-      <section className="text-center mb-16">
+      <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('about procodecg title')}</h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
           {t('about procodecg subtitle')}
+        </p>
+      </section>
+
+      <section className="mb-16 prose dark:prose-invert max-w-none mx-auto">
+        <p className="text-lg text-muted-foreground mb-4">
+          {t('about page intro paragraph 1')}
+        </p>
+        <p className="text-lg text-muted-foreground mb-4">
+          {t('about page intro paragraph 2')}
+        </p>
+        <p className="text-lg text-muted-foreground">
+          {t('about page intro paragraph 3')}
         </p>
       </section>
 
@@ -90,6 +102,11 @@ const AboutPage: React.FC = () => {
               </CardContent>
             </Card>
           ))}
+        </div>
+        <div className="text-center mt-8">
+          <h3 className="text-xl font-semibold flex items-center justify-center gap-2 text-primary">
+            <MapPin className="h-6 w-6" /> {t('headquarter label')}: {t('bandung indonesia')}
+          </h3>
         </div>
       </section>
 
