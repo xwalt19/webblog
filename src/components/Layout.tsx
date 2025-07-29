@@ -233,7 +233,7 @@ const Layout: React.FC = () => {
                           >
                             <div className="text-sm font-medium leading-none text-foreground">{t('blog posts')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage blog posts.nav desc')}
+                              {t('admin.blog_post.nav_desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -246,9 +246,9 @@ const Layout: React.FC = () => {
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage archives.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('admin.archive.nav_title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage archives.nav desc')}
+                              {t('admin.archive.nav_desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -261,9 +261,9 @@ const Layout: React.FC = () => {
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage calendar.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('admin.calendar.nav_title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage calendar.nav desc')}
+                              {t('admin.calendar.nav_desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -276,9 +276,9 @@ const Layout: React.FC = () => {
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage programs.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('admin.program.nav_title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage programs.nav desc')}
+                              {t('admin.program.nav_desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -291,9 +291,9 @@ const Layout: React.FC = () => {
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage running classes.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('admin.running_class.nav_title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage running classes.nav desc')}
+                              {t('admin.running_class.nav_desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -306,9 +306,9 @@ const Layout: React.FC = () => {
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage regular events.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('admin.regular_event.nav_title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage regular events.nav desc')}
+                              {t('admin.regular_event.nav_desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -321,9 +321,9 @@ const Layout: React.FC = () => {
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage camps.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('admin.camp.nav_title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage camps.nav desc')}
+                              {t('admin.camp.nav_desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -336,9 +336,9 @@ const Layout: React.FC = () => {
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage training programs.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('admin.training_program.nav_title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage training programs.nav desc')}
+                              {t('admin.training_program.nav_desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -351,9 +351,9 @@ const Layout: React.FC = () => {
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage youtube videos.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('admin.youtube_video.nav_title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage youtube videos.nav desc')}
+                              {t('admin.youtube_video.nav_desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>
@@ -366,9 +366,9 @@ const Layout: React.FC = () => {
                               "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                             )}
                           >
-                            <div className="text-sm font-medium leading-none text-foreground">{t('manage tiktok videos.nav title')}</div>
+                            <div className="text-sm font-medium leading-none text-foreground">{t('admin.tiktok_video.nav_title')}</div>
                             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {t('manage tiktok videos.nav desc')}
+                              {t('admin.tiktok_video.nav_desc')}
                             </p>
                           </Link>
                         </NavigationMenuLink>

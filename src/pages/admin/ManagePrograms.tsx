@@ -38,10 +38,10 @@ const ManagePrograms: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('auth.login_required'));
         navigate('/login');
       } else if (!isAdmin) {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('auth.admin_required'));
         navigate('/');
       } else {
         fetchPrograms();
@@ -64,14 +64,14 @@ const ManagePrograms: React.FC = () => {
       setPrograms(data || []);
     } catch (err: any) {
       console.error("Error fetching programs:", err);
-      setError(t("manage programs.fetch error", { error: err.message }));
+      setError(t("message.fetch_error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t("manage programs.confirm delete"))) {
+    if (!window.confirm(t("admin.program.confirm_delete"))) {
       return;
     }
     try {
@@ -87,11 +87,11 @@ const ManagePrograms: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("manage programs.program deleted successfully"));
+      toast.success(t("success.deleted"));
       fetchPrograms(); // Refresh the list
     } catch (err: any) {
       console.error("Error deleting program:", err);
-      toast.error(t("manage programs.delete error", { error: err.message }));
+      toast.error(t("message.delete_error", { error: err.message }));
     }
   };
 
@@ -107,7 +107,7 @@ const ManagePrograms: React.FC = () => {
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('status.loading')}</p>
       </div>
     );
   }
@@ -115,22 +115,22 @@ const ManagePrograms: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage programs.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('admin.program.title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('manage programs.subtitle')}
+          {t('admin.program.subtitle')}
         </p>
       </section>
 
       <div className="flex justify-end mb-6">
         <Link to="/admin/programs/new">
           <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('manage programs.add new program')}
+            <PlusCircle className="h-4 w-4 mr-2" /> {t('admin.program.add_new')}
           </Button>
         </Link>
       </div>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('manage programs.loading programs')}</p>
+        <p className="text-center text-muted-foreground">{t('status.loading')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : programs.length > 0 ? (
@@ -139,11 +139,11 @@ const ManagePrograms: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('manage programs.table title')}</TableHead>
-                  <TableHead>{t('manage programs.table type')}</TableHead>
-                  <TableHead>{t('manage programs.table icon')}</TableHead>
-                  <TableHead>{t('manage programs.table date')}</TableHead>
-                  <TableHead className="text-right">{t('manage programs.table actions')}</TableHead>
+                  <TableHead>{t('admin.program.table.title')}</TableHead>
+                  <TableHead>{t('admin.program.table.type')}</TableHead>
+                  <TableHead>{t('admin.program.table.icon')}</TableHead>
+                  <TableHead>{t('admin.program.table.date')}</TableHead>
+                  <TableHead className="text-right">{t('admin.program.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -175,12 +175,12 @@ const ManagePrograms: React.FC = () => {
           </CardContent>
         </Card>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('manage programs.no programs')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('admin.program.no_programs')}</p>
       )}
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('button.back_to_list')}</Button>
         </Link>
       </div>
     </div>

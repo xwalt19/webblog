@@ -35,10 +35,10 @@ const ManageRegularEvents: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('auth.login_required'));
         navigate('/login');
       } else if (!isAdmin) {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('auth.admin_required'));
         navigate('/');
       } else {
         fetchRegularEvents();
@@ -61,14 +61,14 @@ const ManageRegularEvents: React.FC = () => {
       setRegularEvents(data || []);
     } catch (err: any) {
       console.error("Error fetching regular events:", err);
-      setError(t("manage regular events.fetch error", { error: err.message }));
+      setError(t("message.fetch_error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t("manage regular events.confirm delete"))) {
+    if (!window.confirm(t("admin.regular_event.confirm_delete"))) {
       return;
     }
     try {
@@ -80,11 +80,11 @@ const ManageRegularEvents: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("manage regular events.event deleted successfully"));
+      toast.success(t("success.deleted"));
       fetchRegularEvents(); // Refresh the list
     } catch (err: any) {
       console.error("Error deleting event:", err);
-      toast.error(t("manage regular events.delete error", { error: err.message }));
+      toast.error(t("message.delete_error", { error: err.message }));
     }
   };
 
@@ -100,7 +100,7 @@ const ManageRegularEvents: React.FC = () => {
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('status.loading')}</p>
       </div>
     );
   }
@@ -108,22 +108,22 @@ const ManageRegularEvents: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage regular events.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('admin.regular_event.title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('manage regular events.subtitle')}
+          {t('admin.regular_event.subtitle')}
         </p>
       </section>
 
       <div className="flex justify-end mb-6">
         <Link to="/admin/regular-events/new">
           <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('manage regular events.add new event')}
+            <PlusCircle className="h-4 w-4 mr-2" /> {t('admin.regular_event.add_new')}
           </Button>
         </Link>
       </div>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('manage regular events.loading events')}</p>
+        <p className="text-center text-muted-foreground">{t('status.loading')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : regularEvents.length > 0 ? (
@@ -132,11 +132,11 @@ const ManageRegularEvents: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('manage regular events.table name')}</TableHead>
-                  <TableHead>{t('manage regular events.table schedule')}</TableHead>
-                  <TableHead>{t('manage regular events.table icon')}</TableHead>
-                  <TableHead>{t('manage regular events.table date')}</TableHead>
-                  <TableHead className="text-right">{t('manage regular events.table actions')}</TableHead>
+                  <TableHead>{t('admin.regular_event.table.name')}</TableHead>
+                  <TableHead>{t('admin.regular_event.table.schedule')}</TableHead>
+                  <TableHead>{t('admin.regular_event.table.icon')}</TableHead>
+                  <TableHead>{t('admin.regular_event.table.date')}</TableHead>
+                  <TableHead className="text-right">{t('admin.regular_event.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -168,12 +168,12 @@ const ManageRegularEvents: React.FC = () => {
           </CardContent>
         </Card>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('manage regular events.no events')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('admin.regular_event.no_events')}</p>
       )}
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('button.back_to_list')}</Button>
         </Link>
       </div>
     </div>

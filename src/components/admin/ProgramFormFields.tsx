@@ -48,44 +48,44 @@ const ProgramFormFields: React.FC<ProgramFormFieldsProps> = ({
   return (
     <>
       <div>
-        <Label htmlFor="title">{t('upload program.title label')}</Label>
+        <Label htmlFor="title">{t('label.title')}</Label>
         <Input
           id="title"
           type="text"
-          placeholder={t('upload program.title placeholder')}
+          placeholder={t('placeholder.title')}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="mt-1"
         />
       </div>
       <div>
-        <Label htmlFor="description">{t('upload program.description label')}</Label>
+        <Label htmlFor="description">{t('label.description')}</Label>
         <Textarea
           id="description"
-          placeholder={t('upload program.description placeholder')}
+          placeholder={t('placeholder.description')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="mt-1 min-h-[80px]"
         />
       </div>
       <div>
-        <Label htmlFor="type">{t('upload program.type label')}</Label>
+        <Label htmlFor="type">{t('label.type')}</Label>
         <Select value={type} onValueChange={(value: "kids" | "private" | "professional") => setType(value)}>
           <SelectTrigger className="w-full mt-1">
-            <SelectValue placeholder={t('upload program.select type')} />
+            <SelectValue placeholder={t('placeholder.select_type')} />
           </SelectTrigger>
           <SelectContent>
             {programTypes.map(pType => (
-              <SelectItem key={pType} value={pType}>{t(`program types.${pType}`)}</SelectItem>
+              <SelectItem key={pType} value={pType}>{t(`program_types.${pType}`)}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
       <div>
-        <Label htmlFor="iconName">{t('upload program.icon label')}</Label>
+        <Label htmlFor="iconName">{t('label.icon')}</Label>
         <Select value={iconName} onValueChange={setIconName}>
           <SelectTrigger className="w-full mt-1">
-            <SelectValue placeholder={t('upload program.select icon')} />
+            <SelectValue placeholder={t('placeholder.select_icon')} />
           </SelectTrigger>
           <SelectContent>
             {availableIcons.map(icon => (
@@ -95,44 +95,44 @@ const ProgramFormFields: React.FC<ProgramFormFieldsProps> = ({
         </Select>
         {iconName && (
           <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-            {t('upload program.selected icon preview')}: {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
+            {t('message.selected_icon_preview')}: {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
           </p>
         )}
       </div>
       <div>
-        <Label htmlFor="schedule">{t('upload program.schedule label')}</Label>
+        <Label htmlFor="schedule">{t('label.schedule')}</Label>
         <Input
           id="schedule"
           type="text"
-          placeholder={t('upload program.schedule placeholder')}
+          placeholder={t('placeholder.schedule')}
           value={schedule}
           onChange={(e) => setSchedule(e.target.value)}
           className="mt-1"
         />
       </div>
       <div>
-        <Label htmlFor="registrationFee">{t('upload program.registration fee label')}</Label>
+        <Label htmlFor="registrationFee">{t('label.registration_fee')}</Label>
         <Input
           id="registrationFee"
           type="text"
-          placeholder={t('upload program.registration fee placeholder')}
+          placeholder={t('placeholder.registration_fee')}
           value={registrationFee}
           onChange={(e) => setRegistrationFee(e.target.value)}
           className="mt-1"
         />
       </div>
       <div>
-        <Label htmlFor="price">{t('upload program.price label')}</Label>
+        <Label htmlFor="price">{t('label.price')}</Label>
         <Input
           id="price"
           type="text"
-          placeholder={t('upload program.price placeholder')}
+          placeholder={t('placeholder.price')}
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           className="mt-1"
         />
         <p className="text-sm text-muted-foreground mt-1">
-          {t('upload program.price hint')}
+          {t('placeholder.price_hint')}
         </p>
       </div>
     </>

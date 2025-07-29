@@ -42,10 +42,10 @@ const UploadTrainingProgram: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('auth.login_required'));
         navigate('/login');
       } else if (profile?.role !== 'admin') {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('auth.admin_required'));
         navigate('/');
       } else {
         if (programId) {
@@ -76,7 +76,7 @@ const UploadTrainingProgram: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Error fetching training program data:", err);
-      toast.error(t("upload training program.fetch error", { error: err.message }));
+      toast.error(t("message.fetch_error", { error: err.message }));
       navigate('/admin/manage-training-programs');
     } finally {
       setDataLoading(false);
@@ -88,7 +88,7 @@ const UploadTrainingProgram: React.FC = () => {
     setUploading(true);
 
     if (!title || !dates || !description) {
-      toast.error(t("upload training program.required fields missing"));
+      toast.error(t("message.required_fields_missing"));
       setUploading(false);
       return;
     }
@@ -118,12 +118,12 @@ const UploadTrainingProgram: React.FC = () => {
 
       if (error) throw error;
 
-      toast.success(programId ? t("upload training program.program updated successfully") : t("upload training program.program added successfully"));
+      toast.success(programId ? t("success.updated") : t("success.added"));
       navigate('/admin/manage-training-programs');
 
     } catch (err: any) {
       console.error("Error saving training program:", err);
-      toast.error(t("upload training program.save failed", { error: err.message }));
+      toast.error(t("message.save_failed", { error: err.message }));
     } finally {
       setUploading(false);
     }
@@ -132,7 +132,7 @@ const UploadTrainingProgram: React.FC = () => {
   if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('status.loading')}</p>
       </div>
     );
   }
@@ -141,61 +141,61 @@ const UploadTrainingProgram: React.FC = () => {
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">
-          {programId ? t('upload training program.edit program title') : t('upload training program.add program title')}
+          {programId ? t('admin.training_program.edit_title') : t('admin.training_program.add_title')}
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {programId ? t('upload training program.edit program subtitle') : t('upload training program.add program subtitle')}
+          {programId ? t('admin.training_program.edit_subtitle') : t('admin.training_program.add_subtitle')}
         </p>
       </section>
 
       <Card className="max-w-3xl mx-auto p-6 md:p-8 shadow-lg">
         <CardHeader className="text-center pb-6">
           <CardTitle className="text-2xl font-bold mb-2">
-            {programId ? t('upload training program.edit program') : t('add new training program')}
+            {programId ? t('admin.training_program.edit_form_title') : t('admin.training_program.add_form_title')}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            {programId ? t('upload training program.fill form to edit program') : t('fill form to add new program')}
+            {programId ? t('admin.training_program.edit_form_desc') : t('admin.training_program.add_form_desc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="title">{t('upload training program.title label')}</Label>
+              <Label htmlFor="title">{t('label.title')}</Label>
               <Input
                 id="title"
                 type="text"
-                placeholder={t('upload training program.title placeholder')}
+                placeholder={t('placeholder.title')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="dates">{t('upload training program.dates label')}</Label>
+              <Label htmlFor="dates">{t('label.dates')}</Label>
               <Input
                 id="dates"
                 type="text"
-                placeholder={t('upload training program.dates placeholder')}
+                placeholder={t('placeholder.dates')}
                 value={dates}
                 onChange={(e) => setDates(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="description">{t('upload training program.description label')}</Label>
+              <Label htmlFor="description">{t('label.description')}</Label>
               <Textarea
                 id="description"
-                placeholder={t('upload training program.description placeholder')}
+                placeholder={t('placeholder.description')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="mt-1 min-h-[80px]"
               />
             </div>
             <div>
-              <Label htmlFor="iconName">{t('upload training program.icon label')}</Label>
+              <Label htmlFor="iconName">{t('label.icon')}</Label>
               <Select value={iconName} onValueChange={setIconName}>
                 <SelectTrigger className="w-full mt-1">
-                  <SelectValue placeholder={t('upload training program.select icon')} />
+                  <SelectValue placeholder={t('placeholder.select_icon')} />
                 </SelectTrigger>
                 <SelectContent>
                   {availableIcons.map(icon => (
@@ -205,12 +205,12 @@ const UploadTrainingProgram: React.FC = () => {
               </Select>
               {iconName && (
                 <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-                  {t('upload training program.selected icon preview')}: {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
+                  {t('message.selected_icon_preview')}: {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
                 </p>
               )}
             </div>
             <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('uploading') : (programId ? t('upload training program.save changes') : t('upload training program.submit button'))}
+              {uploading ? t('status.uploading') : (programId ? t('button.save_changes') : t('button.submit'))}
             </Button>
           </form>
         </CardContent>
@@ -218,7 +218,7 @@ const UploadTrainingProgram: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/admin/manage-training-programs">
-          <Button>{t('back to training programs list')}</Button>
+          <Button>{t('button.back_to_list')}</Button>
         </Link>
       </div>
     </div>

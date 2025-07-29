@@ -35,10 +35,10 @@ const ManageTrainingPrograms: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('auth.login_required'));
         navigate('/login');
       } else if (!isAdmin) {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('auth.admin_required'));
         navigate('/');
       } else {
         fetchTrainingPrograms();
@@ -61,14 +61,14 @@ const ManageTrainingPrograms: React.FC = () => {
       setTrainingPrograms(data || []);
     } catch (err: any) {
       console.error("Error fetching training programs:", err);
-      setError(t("manage training programs.fetch error", { error: err.message }));
+      setError(t("message.fetch_error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t("manage training programs.confirm delete"))) {
+    if (!window.confirm(t("admin.training_program.confirm_delete"))) {
       return;
     }
     try {
@@ -80,11 +80,11 @@ const ManageTrainingPrograms: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("manage training programs.program deleted successfully"));
+      toast.success(t("success.deleted"));
       fetchTrainingPrograms(); // Refresh the list
     } catch (err: any) {
       console.error("Error deleting program:", err);
-      toast.error(t("manage training programs.delete error", { error: err.message }));
+      toast.error(t("message.delete_error", { error: err.message }));
     }
   };
 
@@ -100,7 +100,7 @@ const ManageTrainingPrograms: React.FC = () => {
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('status.loading')}</p>
       </div>
     );
   }
@@ -108,22 +108,22 @@ const ManageTrainingPrograms: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage training programs.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('admin.training_program.title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('manage training programs.subtitle')}
+          {t('admin.training_program.subtitle')}
         </p>
       </section>
 
       <div className="flex justify-end mb-6">
         <Link to="/admin/training-programs/new">
           <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('manage training programs.add new program')}
+            <PlusCircle className="h-4 w-4 mr-2" /> {t('admin.training_program.add_new')}
           </Button>
         </Link>
       </div>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('manage training programs.loading programs')}</p>
+        <p className="text-center text-muted-foreground">{t('status.loading')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : trainingPrograms.length > 0 ? (
@@ -132,11 +132,11 @@ const ManageTrainingPrograms: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('manage training programs.table title')}</TableHead>
-                  <TableHead>{t('manage training programs.table dates')}</TableHead>
-                  <TableHead>{t('manage training programs.table icon')}</TableHead>
-                  <TableHead>{t('manage training programs.table date')}</TableHead>
-                  <TableHead className="text-right">{t('manage training programs.table actions')}</TableHead>
+                  <TableHead>{t('admin.training_program.table.title')}</TableHead>
+                  <TableHead>{t('admin.training_program.table.dates')}</TableHead>
+                  <TableHead>{t('admin.training_program.table.icon')}</TableHead>
+                  <TableHead>{t('admin.training_program.table.date')}</TableHead>
+                  <TableHead className="text-right">{t('admin.training_program.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -168,12 +168,12 @@ const ManageTrainingPrograms: React.FC = () => {
           </CardContent>
         </Card>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('manage training programs.no programs')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('admin.training_program.no_programs')}</p>
       )}
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('button.back_to_list')}</Button>
         </Link>
       </div>
     </div>

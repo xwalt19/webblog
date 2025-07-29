@@ -46,10 +46,10 @@ const UploadTikTokVideo: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('auth.login_required'));
         navigate('/login');
       } else if (profile?.role !== 'admin') {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('auth.admin_required'));
         navigate('/');
       } else {
         if (videoId) {
@@ -82,7 +82,7 @@ const UploadTikTokVideo: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Error fetching video data:", err);
-      toast.error(t("upload tiktok video.fetch error", { error: err.message }));
+      toast.error(t("message.fetch_error", { error: err.message }));
       navigate('/admin/manage-tiktok-videos');
     } finally {
       setDataLoading(false);
@@ -136,7 +136,7 @@ const UploadTikTokVideo: React.FC = () => {
     setUploading(true);
 
     if (!title || !videoUrl || !publishedAt) {
-      toast.error(t("upload tiktok video.required fields missing"));
+      toast.error(t("message.required_fields_missing"));
       setUploading(false);
       return;
     }
@@ -184,7 +184,7 @@ const UploadTikTokVideo: React.FC = () => {
         throw error;
       }
 
-      toast.success(videoId ? t("upload tiktok video.video updated successfully") : t("upload tiktok video.video added successfully"));
+      toast.success(videoId ? t("success.updated") : t("success.added"));
       
       // Reset form or navigate
       if (!videoId) {
@@ -201,7 +201,7 @@ const UploadTikTokVideo: React.FC = () => {
 
     } catch (err: any) {
       console.error("Error saving TikTok video:", err);
-      toast.error(t("upload tiktok video.save failed", { error: err.message }));
+      toast.error(t("message.save_failed", { error: err.message }));
     } finally {
       setUploading(false);
     }
@@ -210,7 +210,7 @@ const UploadTikTokVideo: React.FC = () => {
   if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('status.loading')}</p>
       </div>
     );
   }
@@ -219,58 +219,58 @@ const UploadTikTokVideo: React.FC = () => {
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">
-          {videoId ? t('upload tiktok video.edit video title') : t('upload tiktok video.add video title')}
+          {videoId ? t('admin.tiktok_video.edit_title') : t('admin.tiktok_video.add_title')}
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {videoId ? t('upload tiktok video.edit video subtitle') : t('upload tiktok video.add video subtitle')}
+          {videoId ? t('admin.tiktok_video.edit_subtitle') : t('admin.tiktok_video.add_subtitle')}
         </p>
       </section>
 
       <Card className="max-w-3xl mx-auto p-6 md:p-8 shadow-lg">
         <CardHeader className="text-center pb-6">
           <CardTitle className="text-2xl font-bold mb-2">
-            {videoId ? t('upload tiktok video.edit video') : t('add new tiktok video')}
+            {videoId ? t('admin.tiktok_video.edit_form_title') : t('admin.tiktok_video.add_form_title')}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            {videoId ? t('upload tiktok video.fill form to edit video') : t('fill form to add new video')}
+            {videoId ? t('admin.tiktok_video.edit_form_desc') : t('admin.tiktok_video.add_form_desc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="title">{t('upload tiktok video.title label')}</Label>
+              <Label htmlFor="title">{t('label.title')}</Label>
               <Input
                 id="title"
                 type="text"
-                placeholder={t('upload tiktok video.title placeholder')}
+                placeholder={t('placeholder.title')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="description">{t('upload tiktok video.description label')}</Label>
+              <Label htmlFor="description">{t('label.description')}</Label>
               <Textarea
                 id="description"
-                placeholder={t('upload tiktok video.description placeholder')}
+                placeholder={t('placeholder.description')}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="mt-1 min-h-[80px]"
               />
             </div>
             <div>
-              <Label htmlFor="videoUrl">{t('upload tiktok video.video url label')}</Label>
+              <Label htmlFor="videoUrl">{t('label.video_url')}</Label>
               <Input
                 id="videoUrl"
                 type="url"
-                placeholder={t('upload tiktok video.video url placeholder')}
+                placeholder={t('placeholder.video_url')}
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="publishedAt">{t('upload tiktok video.published at label')}</Label>
+              <Label htmlFor="publishedAt">{t('label.published_at')}</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -281,7 +281,7 @@ const UploadTikTokVideo: React.FC = () => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {publishedAt ? format(publishedAt, "PPP") : <span>{t('upload tiktok video.pick a date')}</span>}
+                    {publishedAt ? format(publishedAt, "PPP") : <span>{t('button.pick_date')}</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -295,7 +295,7 @@ const UploadTikTokVideo: React.FC = () => {
               </Popover>
             </div>
             <div>
-              <Label htmlFor="thumbnail-upload">{t('upload tiktok video.thumbnail label')}</Label>
+              <Label htmlFor="thumbnail-upload">{t('label.thumbnail')}</Label>
               <Input
                 id="thumbnail-upload"
                 type="file"
@@ -305,16 +305,16 @@ const UploadTikTokVideo: React.FC = () => {
               />
               {thumbnailFile ? (
                 <p className="text-sm text-muted-foreground mt-2">
-                  {t('upload tiktok video.selected thumbnail')}: {thumbnailFile.name}
+                  {t('message.selected_thumbnail')}: {thumbnailFile.name}
                 </p>
               ) : initialThumbnailUrl && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  {t('upload tiktok video.current thumbnail')}: <a href={initialThumbnailUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialThumbnailUrl.split('/').pop()}</a>
+                  {t('message.current_thumbnail')}: <a href={initialThumbnailUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialThumbnailUrl.split('/').pop()}</a>
                 </p>
               )}
             </div>
             <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('uploading') : (videoId ? t('upload tiktok video.save changes') : t('upload tiktok video.submit button'))}
+              {uploading ? t('status.uploading') : (videoId ? t('button.save_changes') : t('button.submit'))}
             </Button>
           </form>
         </CardContent>
@@ -322,7 +322,7 @@ const UploadTikTokVideo: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/admin/manage-tiktok-videos">
-          <Button>{t('back to tiktok videos list')}</Button>
+          <Button>{t('button.back_to_list')}</Button>
         </Link>
       </div>
     </div>

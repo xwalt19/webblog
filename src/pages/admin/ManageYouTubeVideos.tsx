@@ -35,10 +35,10 @@ const ManageYouTubeVideos: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('auth.login_required'));
         navigate('/login');
       } else if (!isAdmin) {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('auth.admin_required'));
         navigate('/');
       } else {
         fetchVideos();
@@ -61,14 +61,14 @@ const ManageYouTubeVideos: React.FC = () => {
       setVideos(data || []);
     } catch (err: any) {
       console.error("Error fetching YouTube videos:", err);
-      setError(t("manage youtube videos.fetch error", { error: err.message }));
+      setError(t("message.fetch_error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
   };
 
   const handleDelete = async (id: string, thumbnailUrl: string | null) => {
-    if (!window.confirm(t("manage youtube videos.confirm delete"))) {
+    if (!window.confirm(t("admin.youtube_video.confirm_delete"))) {
       return;
     }
     try {
@@ -79,7 +79,7 @@ const ManageYouTubeVideos: React.FC = () => {
           const { error: storageError } = await supabase.storage.from('video_thumbnails').remove([filePath]);
           if (storageError) {
             console.warn("Error deleting thumbnail from storage:", storageError);
-            toast.warning(t("manage youtube videos.storage delete warning", { error: storageError.message }));
+            toast.warning(t("message.storage_delete_warning", { error: storageError.message }));
           }
         }
       }
@@ -92,11 +92,11 @@ const ManageYouTubeVideos: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("manage youtube videos.video deleted successfully"));
+      toast.success(t("success.deleted"));
       fetchVideos(); // Refresh the list
     } catch (err: any) {
       console.error("Error deleting video:", err);
-      toast.error(t("manage youtube videos.delete error", { error: err.message }));
+      toast.error(t("message.delete_error", { error: err.message }));
     }
   };
 
@@ -112,7 +112,7 @@ const ManageYouTubeVideos: React.FC = () => {
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('status.loading')}</p>
       </div>
     );
   }
@@ -120,22 +120,22 @@ const ManageYouTubeVideos: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage youtube videos.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('admin.youtube_video.title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('manage youtube videos.subtitle')}
+          {t('admin.youtube_video.subtitle')}
         </p>
       </section>
 
       <div className="flex justify-end mb-6">
         <Link to="/admin/youtube-videos/new">
           <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('manage youtube videos.add new video')}
+            <PlusCircle className="h-4 w-4 mr-2" /> {t('admin.youtube_video.add_new')}
           </Button>
         </Link>
       </div>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('manage youtube videos.loading videos')}</p>
+        <p className="text-center text-muted-foreground">{t('status.loading')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : videos.length > 0 ? (
@@ -144,10 +144,10 @@ const ManageYouTubeVideos: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('manage youtube videos.table title')}</TableHead>
-                  <TableHead>{t('manage youtube videos.table thumbnail')}</TableHead>
-                  <TableHead>{t('manage youtube videos.table published at')}</TableHead>
-                  <TableHead className="text-right">{t('manage youtube videos.table actions')}</TableHead>
+                  <TableHead>{t('admin.youtube_video.table.title')}</TableHead>
+                  <TableHead>{t('admin.youtube_video.table.thumbnail')}</TableHead>
+                  <TableHead>{t('admin.youtube_video.table.published_at')}</TableHead>
+                  <TableHead className="text-right">{t('admin.youtube_video.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -182,12 +182,12 @@ const ManageYouTubeVideos: React.FC = () => {
           </CardContent>
         </Card>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('manage youtube videos.no videos')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('admin.youtube_video.no_videos')}</p>
       )}
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('button.back_to_list')}</Button>
         </Link>
       </div>
     </div>

@@ -61,10 +61,10 @@ const UploadProgram: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('auth.login_required'));
         navigate('/login');
       } else if (profile?.role !== 'admin') {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('auth.admin_required'));
         navigate('/');
       } else {
         if (programId) {
@@ -119,7 +119,7 @@ const UploadProgram: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Error fetching program data:", err);
-      toast.error(t("upload program.fetch error", { error: err.message }));
+      toast.error(t("message.fetch_error", { error: err.message }));
       navigate('/admin/manage-programs');
     } finally {
       setDataLoading(false);
@@ -131,7 +131,7 @@ const UploadProgram: React.FC = () => {
     setUploading(true);
 
     if (!title || !description || !type) {
-      toast.error(t("upload program.required fields missing"));
+      toast.error(t("message.required_fields_missing"));
       setUploading(false);
       return;
     }
@@ -194,12 +194,12 @@ const UploadProgram: React.FC = () => {
         if (topicsError) throw topicsError;
       }
 
-      toast.success(programId ? t("upload program.program updated successfully") : t("upload program.program added successfully"));
+      toast.success(programId ? t("success.updated") : t("success.added"));
       navigate('/admin/manage-programs');
 
     } catch (err: any) {
       console.error("Error saving program:", err);
-      toast.error(t("upload program.save failed", { error: err.message }));
+      toast.error(t("message.save_failed", { error: err.message }));
     } finally {
       setUploading(false);
     }
@@ -208,7 +208,7 @@ const UploadProgram: React.FC = () => {
   if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('status.loading')}</p>
       </div>
     );
   }
@@ -217,20 +217,20 @@ const UploadProgram: React.FC = () => {
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">
-          {programId ? t('upload program.edit program title') : t('upload program.add program title')}
+          {programId ? t('admin.program.edit_title') : t('admin.program.add_title')}
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {programId ? t('upload program.edit program subtitle') : t('upload program.add program subtitle')}
+          {programId ? t('admin.program.edit_subtitle') : t('admin.program.add_subtitle')}
         </p>
       </section>
 
       <Card className="max-w-3xl mx-auto p-6 md:p-8 shadow-lg">
         <CardHeader className="text-center pb-6">
           <CardTitle className="text-2xl font-bold mb-2">
-            {programId ? t('upload program.edit program') : t('add new program')}
+            {programId ? t('admin.program.edit_form_title') : t('admin.program.add_form_title')}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            {programId ? t('upload program.fill form to edit program') : t('fill form to add new program')}
+            {programId ? t('admin.program.edit_form_desc') : t('admin.program.add_form_desc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -263,7 +263,7 @@ const UploadProgram: React.FC = () => {
             />
 
             <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('uploading') : (programId ? t('upload program.save changes') : t('upload program.submit button'))}
+              {uploading ? t('status.uploading') : (programId ? t('button.save_changes') : t('button.submit'))}
             </Button>
           </form>
         </CardContent>
@@ -271,7 +271,7 @@ const UploadProgram: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/admin/manage-programs">
-          <Button>{t('back to programs list')}</Button>
+          <Button>{t('button.back_to_list')}</Button>
         </Link>
       </div>
     </div>

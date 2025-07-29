@@ -120,34 +120,34 @@ const MobileNav: React.FC = () => {
                 </AccordionTrigger>
                 <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
                   <Link to="/admin/manage-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('blog posts')}
+                    {t('admin.blog_post.nav_title')}
                   </Link>
                   <Link to="/admin/manage-archives" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('manage archives.nav title')}
+                    {t('admin.archive.nav_title')}
                   </Link>
                   <Link to="/admin/manage-calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('manage calendar.nav title')}
+                    {t('admin.calendar.nav_title')}
                   </Link>
                   <Link to="/admin/manage-programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('manage programs.nav title')}
+                    {t('admin.program.nav_title')}
                   </Link>
                   <Link to="/admin/manage-running-classes" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('manage running classes.nav title')}
+                    {t('admin.running_class.nav_title')}
                   </Link>
                   <Link to="/admin/manage-regular-events" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('manage regular events.nav title')}
+                    {t('admin.regular_event.nav_title')}
                   </Link>
                   <Link to="/admin/manage-camps" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('manage camps.nav title')}
+                    {t('admin.camp.nav_title')}
                   </Link>
                   <Link to="/admin/manage-training-programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('manage training programs.nav title')}
+                    {t('admin.training_program.nav_title')}
                   </Link>
                   <Link to="/admin/manage-youtube-videos" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('manage youtube videos.nav title')}
+                    {t('admin.youtube_video.nav_title')}
                   </Link>
                   <Link to="/admin/manage-tiktok-videos" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                    {t('manage tiktok videos.nav title')}
+                    {t('admin.tiktok_video.nav_title')}
                   </Link>
                 </AccordionContent>
               </AccordionItem>

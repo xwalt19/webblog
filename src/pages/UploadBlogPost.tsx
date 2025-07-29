@@ -53,10 +53,10 @@ const UploadBlogPost: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('auth.login_required'));
         navigate('/login');
       } else if (profile?.role !== 'admin') {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('auth.admin_required'));
         navigate('/');
       } else {
         if (postId) {
@@ -92,7 +92,7 @@ const UploadBlogPost: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Error fetching post data:", err);
-      toast.error(t("upload blog post.fetch error", { error: err.message }));
+      toast.error(t("message.fetch_error", { error: err.message }));
       navigate('/content'); // Redirect if post not found or error
     } finally {
       setDataLoading(false);
@@ -154,7 +154,7 @@ const UploadBlogPost: React.FC = () => {
     setUploading(true);
 
     if (!title || !excerpt || !category || !author) {
-      toast.error(t("upload blog post.required fields missing"));
+      toast.error(t("message.required_fields_missing"));
       setUploading(false);
       return;
     }
@@ -196,7 +196,7 @@ const UploadBlogPost: React.FC = () => {
         author,
         tags: tagsArray,
         pdf_link: currentPdfLink,
-        ...(postId ? {} : { created_by: session?.user?.id }), // Add created_by only for new posts
+        ...(postId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
       };
 
       let error;
@@ -219,7 +219,7 @@ const UploadBlogPost: React.FC = () => {
         throw error;
       }
 
-      toast.success(postId ? t("upload blog post.post updated successfully") : t("upload blog post.post uploaded successfully"));
+      toast.success(postId ? t("success.updated") : t("success.added"));
       
       // Reset form or navigate
       if (!postId) {
@@ -241,7 +241,7 @@ const UploadBlogPost: React.FC = () => {
 
     } catch (err: any) {
       console.error("Error saving blog post:", err);
-      toast.error(t("upload blog post.upload failed", { error: err.message }));
+      toast.error(t("message.save_failed", { error: err.message }));
     } finally {
       setUploading(false);
     }
@@ -250,7 +250,7 @@ const UploadBlogPost: React.FC = () => {
   if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('status.loading')}</p>
       </div>
     );
   }
@@ -259,60 +259,60 @@ const UploadBlogPost: React.FC = () => {
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">
-          {postId ? t('upload blog post.edit blog post title') : t('upload blog post title')}
+          {postId ? t('admin.blog_post.edit_title') : t('admin.blog_post.add_title')}
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {postId ? t('upload blog post.edit blog post subtitle') : t('upload blog post subtitle')}
+          {postId ? t('admin.blog_post.edit_subtitle') : t('admin.blog_post.add_subtitle')}
         </p>
       </section>
 
       <Card className="max-w-3xl mx-auto p-6 md:p-8 shadow-lg">
         <CardHeader className="text-center pb-6">
           <CardTitle className="text-2xl font-bold mb-2">
-            {postId ? t('upload blog post.edit blog post') : t('add new blog post')}
+            {postId ? t('admin.blog_post.edit_form_title') : t('admin.blog_post.add_form_title')}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            {postId ? t('upload blog post.fill form to edit blog post') : t('fill form to upload blog post')}
+            {postId ? t('admin.blog_post.edit_form_desc') : t('admin.blog_post.add_form_desc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="title">{t('upload blog post.title label')}</Label>
+              <Label htmlFor="title">{t('label.title')}</Label>
               <Input
                 id="title"
                 type="text"
-                placeholder={t('upload blog post.title placeholder')}
+                placeholder={t('placeholder.title')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="excerpt">{t('upload blog post.excerpt label')}</Label>
+              <Label htmlFor="excerpt">{t('label.excerpt')}</Label>
               <Textarea
                 id="excerpt"
-                placeholder={t('upload blog post.excerpt placeholder')}
+                placeholder={t('placeholder.excerpt')}
                 value={excerpt}
                 onChange={(e) => setExcerpt(e.target.value)}
                 className="mt-1 min-h-[80px]"
               />
             </div>
             <div>
-              <Label htmlFor="content">{t('upload blog post.content label')}</Label>
+              <Label htmlFor="content">{t('label.content')}</Label>
               <Textarea
                 id="content"
-                placeholder={t('upload blog post.content placeholder')}
+                placeholder={t('placeholder.content')}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 className="mt-1 min-h-[200px]"
               />
             </div>
             <div>
-              <Label htmlFor="category">{t('upload blog post.category label')}</Label>
+              <Label htmlFor="category">{t('label.category')}</Label>
               <Select value={category} onValueChange={setCategory}>
                 <SelectTrigger className="w-full mt-1">
-                  <SelectValue placeholder={t('upload blog post.select category')} />
+                  <SelectValue placeholder={t('placeholder.select_category')} />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map(cat => (
@@ -322,32 +322,32 @@ const UploadBlogPost: React.FC = () => {
               </Select>
             </div>
             <div>
-              <Label htmlFor="author">{t('upload blog post.author label')}</Label>
+              <Label htmlFor="author">{t('label.author')}</Label>
               <Input
                 id="author"
                 type="text"
-                placeholder={t('upload blog post.author placeholder')}
+                placeholder={t('placeholder.author')}
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
                 className="mt-1"
               />
             </div>
             <div>
-              <Label htmlFor="tags">{t('upload blog post.tags label')}</Label>
+              <Label htmlFor="tags">{t('label.tags')}</Label>
               <Input
                 id="tags"
                 type="text"
-                placeholder={t('upload blog post.tags placeholder')}
+                placeholder={t('placeholder.tags')}
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
                 className="mt-1"
               />
               <p className="text-sm text-muted-foreground mt-1">
-                {t('upload blog post.tags hint')}
+                {t('placeholder.tags_hint')}
               </p>
             </div>
             <div>
-              <Label htmlFor="image-upload">{t('upload blog post.image label')}</Label>
+              <Label htmlFor="image-upload">{t('label.image')}</Label>
               <Input
                 id="image-upload"
                 type="file"
@@ -357,16 +357,16 @@ const UploadBlogPost: React.FC = () => {
               />
               {imageFile ? (
                 <p className="text-sm text-muted-foreground mt-2">
-                  {t('upload blog post.selected image')}: {imageFile.name}
+                  {t('message.selected_image')}: {imageFile.name}
                 </p>
               ) : initialImageUrl && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  {t('upload blog post.current image')}: <a href={initialImageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialImageUrl.split('/').pop()}</a>
+                  {t('message.current_image')}: <a href={initialImageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialImageUrl.split('/').pop()}</a>
                 </p>
               )}
             </div>
             <div>
-              <Label htmlFor="pdf-upload">{t('upload blog post.pdf label')}</Label>
+              <Label htmlFor="pdf-upload">{t('label.pdf')}</Label>
               <Input
                 id="pdf-upload"
                 type="file"
@@ -376,16 +376,16 @@ const UploadBlogPost: React.FC = () => {
               />
               {pdfFile ? (
                 <p className="text-sm text-muted-foreground mt-2">
-                  {t('upload blog post.selected pdf')}: {pdfFile.name}
+                  {t('message.selected_pdf')}: {pdfFile.name}
                 </p>
               ) : initialPdfLink && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  {t('upload blog post.current pdf')}: <a href={initialPdfLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialPdfLink.split('/').pop()}</a>
+                  {t('message.current_pdf')}: <a href={initialPdfLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialPdfLink.split('/').pop()}</a>
                 </p>
               )}
             </div>
             <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('uploading') : (postId ? t('upload blog post.save changes') : t('upload blog post.submit button'))}
+              {uploading ? t('status.uploading') : (postId ? t('button.save_changes') : t('button.submit'))}
             </Button>
           </form>
         </CardContent>
@@ -393,7 +393,7 @@ const UploadBlogPost: React.FC = () => {
 
       <div className="text-center mt-12">
         <Link to="/admin/manage-blog-posts">
-          <Button>{t('back to blog posts list')}</Button>
+          <Button>{t('button.back_to_list')}</Button>
         </Link>
       </div>
     </div>

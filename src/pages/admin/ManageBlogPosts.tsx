@@ -37,10 +37,10 @@ const ManageBlogPosts: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('auth.login_required'));
         navigate('/login');
       } else if (!isAdmin) {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('auth.admin_required'));
         navigate('/');
       } else {
         fetchBlogPosts();
@@ -64,14 +64,14 @@ const ManageBlogPosts: React.FC = () => {
       setBlogPosts(data || []);
     } catch (err: any) {
       console.error("Error fetching blog posts:", err);
-      setError(t("manage blog posts.fetch error", { error: err.message }));
+      setError(t("message.fetch_error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
   };
 
   const handleDelete = async (id: string, imageUrl: string | null) => {
-    if (!window.confirm(t("manage blog posts.confirm delete"))) {
+    if (!window.confirm(t("admin.blog_post.confirm_delete"))) {
       return;
     }
     try {
@@ -82,7 +82,7 @@ const ManageBlogPosts: React.FC = () => {
           const { error: storageError } = await supabase.storage.from('images').remove([filePath]);
           if (storageError) {
             console.warn("Error deleting image from storage:", storageError);
-            toast.warning(t("manage blog posts.storage delete warning", { error: storageError.message }));
+            toast.warning(t("message.storage_delete_warning", { error: storageError.message }));
           }
         }
       }
@@ -95,11 +95,11 @@ const ManageBlogPosts: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("manage blog posts.post deleted successfully"));
+      toast.success(t("success.deleted"));
       fetchBlogPosts(); // Refresh the list
     } catch (err: any) {
       console.error("Error deleting post:", err);
-      toast.error(t("manage blog posts.delete error", { error: err.message }));
+      toast.error(t("message.delete_error", { error: err.message }));
     }
   };
 
@@ -115,7 +115,7 @@ const ManageBlogPosts: React.FC = () => {
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('status.loading')}</p>
       </div>
     );
   }
@@ -123,22 +123,22 @@ const ManageBlogPosts: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage blog posts.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('admin.blog_post.title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('manage blog posts.subtitle')}
+          {t('admin.blog_post.subtitle')}
         </p>
       </section>
 
       <div className="flex justify-end mb-6">
         <Link to="/admin/blog-posts/new">
           <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('manage blog posts.add new post')}
+            <PlusCircle className="h-4 w-4 mr-2" /> {t('admin.blog_post.add_new')}
           </Button>
         </Link>
       </div>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('manage blog posts.loading posts')}</p>
+        <p className="text-center text-muted-foreground">{t('status.loading')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : blogPosts.length > 0 ? (
@@ -147,11 +147,11 @@ const ManageBlogPosts: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('manage blog posts.table title')}</TableHead>
-                  <TableHead>{t('manage blog posts.table category')}</TableHead>
-                  <TableHead>{t('manage blog posts.table author')}</TableHead>
-                  <TableHead>{t('manage blog posts.table date')}</TableHead>
-                  <TableHead className="text-right">{t('manage blog posts.table actions')}</TableHead>
+                  <TableHead>{t('admin.blog_post.table.title')}</TableHead>
+                  <TableHead>{t('admin.blog_post.table.category')}</TableHead>
+                  <TableHead>{t('admin.blog_post.table.author')}</TableHead>
+                  <TableHead>{t('admin.blog_post.table.date')}</TableHead>
+                  <TableHead className="text-right">{t('admin.blog_post.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -178,12 +178,12 @@ const ManageBlogPosts: React.FC = () => {
           </CardContent>
         </Card>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('manage blog posts.no posts')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('admin.blog_post.no_posts')}</p>
       )}
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('button.back_to_list')}</Button>
         </Link>
       </div>
     </div>

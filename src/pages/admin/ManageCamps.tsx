@@ -33,10 +33,10 @@ const ManageCamps: React.FC = () => {
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
-        toast.error(t('auth.login required'));
+        toast.error(t('auth.login_required'));
         navigate('/login');
       } else if (!isAdmin) {
-        toast.error(t('auth.admin access required'));
+        toast.error(t('auth.admin_required'));
         navigate('/');
       } else {
         fetchCamps();
@@ -59,14 +59,14 @@ const ManageCamps: React.FC = () => {
       setCamps(data || []);
     } catch (err: any) {
       console.error("Error fetching camps:", err);
-      setError(t("manage camps.fetch error", { error: err.message }));
+      setError(t("message.fetch_error", { error: err.message }));
     } finally {
       setDataLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm(t("manage camps.confirm delete"))) {
+    if (!window.confirm(t("admin.camp.confirm_delete"))) {
       return;
     }
     try {
@@ -81,11 +81,11 @@ const ManageCamps: React.FC = () => {
       if (error) {
         throw error;
       }
-      toast.success(t("manage camps.camp deleted successfully"));
+      toast.success(t("success.deleted"));
       fetchCamps(); // Refresh the list
     } catch (err: any) {
       console.error("Error deleting camp:", err);
-      toast.error(t("manage camps.delete error", { error: err.message }));
+      toast.error(t("message.delete_error", { error: err.message }));
     }
   };
 
@@ -101,7 +101,7 @@ const ManageCamps: React.FC = () => {
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading')}</p>
+        <p className="text-foreground">{t('status.loading')}</p>
       </div>
     );
   }
@@ -109,22 +109,22 @@ const ManageCamps: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage camps.title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('admin.camp.title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('manage camps.subtitle')}
+          {t('admin.camp.subtitle')}
         </p>
       </section>
 
       <div className="flex justify-end mb-6">
         <Link to="/admin/camps/new">
           <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('manage camps.add new camp')}
+            <PlusCircle className="h-4 w-4 mr-2" /> {t('admin.camp.add_new')}
           </Button>
         </Link>
       </div>
 
       {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('manage camps.loading camps')}</p>
+        <p className="text-center text-muted-foreground">{t('status.loading')}</p>
       ) : error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : camps.length > 0 ? (
@@ -133,11 +133,11 @@ const ManageCamps: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t('manage camps.table title')}</TableHead>
-                  <TableHead>{t('manage camps.table dates')}</TableHead>
-                  <TableHead>{t('manage camps.table description')}</TableHead>
-                  <TableHead>{t('manage camps.table day links')}</TableHead>
-                  <TableHead className="text-right">{t('manage camps.table actions')}</TableHead>
+                  <TableHead>{t('admin.camp.table.title')}</TableHead>
+                  <TableHead>{t('admin.camp.table.dates')}</TableHead>
+                  <TableHead>{t('admin.camp.table.description')}</TableHead>
+                  <TableHead>{t('admin.camp.table.day_links')}</TableHead>
+                  <TableHead className="text-right">{t('admin.camp.table.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -148,7 +148,7 @@ const ManageCamps: React.FC = () => {
                     <TableCell className="max-w-xs truncate">{camp.description}</TableCell>
                     <TableCell>
                       <Link to={`/admin/camps/${camp.id}/edit`} className="text-blue-600 hover:underline flex items-center gap-1">
-                        <LinkIcon className="h-4 w-4" /> {t('manage camps.view links')}
+                        <LinkIcon className="h-4 w-4" /> {t('admin.camp.view_links')}
                       </Link>
                     </TableCell>
                     <TableCell className="text-right">
@@ -168,12 +168,12 @@ const ManageCamps: React.FC = () => {
           </CardContent>
         </Card>
       ) : (
-        <p className="text-center text-muted-foreground mt-8 text-lg">{t('manage camps.no camps')}</p>
+        <p className="text-center text-muted-foreground mt-8 text-lg">{t('admin.camp.no_camps')}</p>
       )}
 
       <div className="text-center mt-12">
         <Link to="/">
-          <Button>{t('back to home')}</Button>
+          <Button>{t('button.back_to_list')}</Button>
         </Link>
       </div>
     </div>
