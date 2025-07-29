@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, LogIn, User, LayoutDashboard } from "lucide-react"; // Import LayoutDashboard icon
+import { LogOut, LogIn, User } from "lucide-react"; // Removed LayoutDashboard icon as it's no longer needed in header
 import MobileNav from "./MobileNav";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
@@ -34,18 +34,8 @@ const Layout: React.FC = () => {
               <>
                 {session ? (
                   <>
-                    <Link to="/dashboard"> {/* Link to Member Dashboard */}
-                      <Button variant="ghost" className="px-4 py-2">
-                        <LayoutDashboard className="h-5 w-5 mr-2" /> {t('dashboard')}
-                      </Button>
-                    </Link>
-                    {isAdmin && ( // Admin Dashboard link only for admins
-                      <Link to="/admin">
-                        <Button variant="ghost" className="px-4 py-2">
-                          <LayoutDashboard className="h-5 w-5 mr-2" /> {t('admin dashboard')}
-                        </Button>
-                      </Link>
-                    )}
+                    {/* Removed Dashboard link from header */}
+                    {/* Removed Admin Dashboard link from header */}
                     <Link to="/profile">
                       <Button variant="ghost" className="px-4 py-2">
                         <User className="h-5 w-5 mr-2" /> {displayName}
