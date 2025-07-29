@@ -1,4 +1,5 @@
 {
-  "footer text": "© 2025 ProCodeCG. All Rights Reserved.",
-  // ... konten terjemahan lainnya
+  "footer text": "© 2025 ProCodeCG. All Rights Reserved."
+  // Harap pastikan untuk menambahkan kembali semua terjemahan lain yang Anda miliki di sini,
+  // tetapi JANGAN sertakan komentar JavaScript (//) di dalam objek JSON.
 }
