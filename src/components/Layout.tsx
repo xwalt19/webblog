@@ -74,9 +74,7 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('programs')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('programs desc')}
-                          </p>
+                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -89,9 +87,7 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('regular events classes')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('regular events classes desc')}
-                          </p>
+                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -104,9 +100,7 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('camps')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('camps desc')}
-                          </p>
+                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -119,9 +113,7 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('training')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('training desc')}
-                          </p>
+                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -142,9 +134,7 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('youtube')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('youtube desc')}
-                          </p>
+                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -157,9 +147,7 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('tiktok')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('tiktok desc')}
-                          </p>
+                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -179,9 +167,7 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('contact us')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('contact us desc')}
-                          </p>
+                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -194,9 +180,7 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('partners')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('partners desc')}
-                          </p>
+                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -209,9 +193,7 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('calendar')}</div>
-                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                            {t('calendar desc')}
-                          </p>
+                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
