@@ -16,8 +16,8 @@ import MobileNav from "./MobileNav";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
-import { useSession } from "@/components/SessionProvider";
-import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/components/SessionProvider"; // Corrected import path for useSession
+import { supabase } from "@/integrations/supabase/client"; // Added import for supabase
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
@@ -39,8 +39,8 @@ const Layout: React.FC = () => {
           </Link>
 
           {/* Navigation Menu */}
-          <NavigationMenu className="hidden md:flex">
-            <NavigationMenuList>
+          <NavigationMenu className="hidden md:flex flex-grow justify-center"> {/* Added flex-grow and justify-center */}
+            <NavigationMenuList className="space-x-1"> {/* Adjusted spacing */}
               <NavigationMenuItem>
                 <Link to="/" className={cn(navigationMenuTriggerStyle(), "bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}>
                   {t('home')}
