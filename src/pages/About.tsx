@@ -69,13 +69,13 @@ const AboutPage: React.FC = () => {
           {dummyTeamMembers.map((member, index) => (
             <Card key={index} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <Avatar className="w-24 h-24 mb-4">
-                <AvatarImage src={member.avatarUrl} alt={t(member.nameKey)} />
-                <AvatarFallback>{t(member.nameKey).split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                <AvatarImage src={member.avatarUrl} alt={member.name} />
+                <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
               </Avatar>
-              <CardTitle className="text-xl mb-1">{t(member.nameKey)}</CardTitle>
-              <p className="text-sm text-primary mb-3">{t(member.roleKey)}</p>
+              <CardTitle className="text-xl mb-1">{member.name}</CardTitle>
+              <p className="text-sm text-primary mb-3">{member.role}</p>
               <CardContent className="text-muted-foreground p-0">
-                {t(member.descriptionKey)}
+                {member.description}
               </CardContent>
             </Card>
           ))}

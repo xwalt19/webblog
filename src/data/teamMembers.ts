@@ -1,39 +1,39 @@
 export interface TeamMember {
-  nameKey: string;
-  roleKey: string;
+  name: string;
+  role: string;
   avatarUrl: string;
-  descriptionKey: string;
+  description: string;
 }
 
 export const dummyTeamMembers: TeamMember[] = [
   {
-    nameKey: "marisa team member name",
-    roleKey: "marisa team member role detailed",
+    name: "Marisa Paryasto",
+    role: "PhD Electrical Engineering Institute Technology Bandung, Researcher at ITB, Part-time Lecturer at Telkom University",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Marisa",
-    descriptionKey: "marisa team member description detailed",
+    description: "Experienced in teaching and education. An expert in computer engineering/science, programming and cryptography. A big admirer of kids.",
   },
   {
-    nameKey: "budi team member name",
-    roleKey: "budi team member role detailed",
+    name: "Budi Rahardjo",
+    role: "Mentor",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Budi",
-    descriptionKey: "budi team member description detailed",
+    description: "PhD, Faculty of Electrical Engineering Institute Technology Bandung",
   },
   {
-    nameKey: "prayudi team member name",
-    roleKey: "prayudi team member role detailed",
+    name: "Prayudi Utomo",
+    role: "CodeinTech Founder",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Prayudi",
-    descriptionKey: "prayudi team member description detailed",
+    description: "Programmer",
   },
   {
-    nameKey: "faris team member name",
-    roleKey: "faris team member role detailed",
+    name: "Faris Hafizhan Hakim",
+    role: "Captain/Teaching Assistant/Junior Instructor",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Faris",
-    descriptionKey: "faris team member description detailed",
+    description: "For Kids Classes",
   },
   {
-    nameKey: "bullitt team member name",
-    roleKey: "bullitt team member role detailed",
+    name: "Bullitt Zulfiqar",
+    role: "Captain/Teaching Assistant/Junior Instructor",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Bullitt",
-    descriptionKey: "bullitt team member description detailed",
+    description: "For Kids Classes",
   },
 ];
