@@ -79,7 +79,7 @@ const Sidebar: React.FC = () => {
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col h-full bg-sidebar border-r border-sidebar-border py-4 transition-all duration-300 ease-in-out overflow-y-auto sticky top-0",
+        "hidden md:flex flex-col h-full bg-sidebar border-r border-sidebar-border py-4 transition-all duration-300 ease-in-out overflow-y-auto",
         isExpanded ? "w-64" : "w-20"
       )}
       onMouseEnter={() => setIsExpanded(true)}
