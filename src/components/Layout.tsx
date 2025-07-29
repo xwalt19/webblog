@@ -251,7 +251,7 @@ const Layout: React.FC = () => {
                               {t('manage archives.nav desc')}
                             </p>
                           </Link>
-                        </Link>
+                        </NavigationMenuLink>
                       </li>
                       <li>
                         <NavigationMenuLink asChild>

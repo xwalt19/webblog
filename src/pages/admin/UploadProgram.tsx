@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, MinusCircle } from "lucide-react";
+import { Separator } from "@/components/ui/separator"; // Added import
 import { iconMap } from "@/utils/iconMap";
 
 interface Program {
