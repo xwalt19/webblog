@@ -79,13 +79,13 @@ const Sidebar: React.FC = () => {
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col max-h-full bg-sidebar border-r border-sidebar-border py-4 transition-all duration-300 ease-in-out overflow-y-auto",
+        "hidden md:flex flex-col flex-shrink-0 bg-sidebar border-r border-sidebar-border py-4 transition-all duration-300 ease-in-out overflow-y-auto", // Menambahkan flex-shrink-0, menghapus max-h-full
         isExpanded ? "w-64" : "w-20"
       )}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
-      <div className="flex-grow px-3 space-y-4">
+      <div className="flex-grow px-3 space-y-4"> {/* Div ini akan mengisi tinggi yang tersedia di dalam aside */}
         {/* Main Navigation */}
         <div className="space-y-1">
           {isExpanded && <h3 className="text-sm font-semibold text-muted-foreground px-3 mb-2">{t('main navigation')}</h3>}

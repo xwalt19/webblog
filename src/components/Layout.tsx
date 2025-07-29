@@ -7,7 +7,7 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import { useSession } from "@/components/SessionProvider";
 import { supabase } from "@/integrations/supabase/client";
-import Sidebar from "./Sidebar"; // Import the new Sidebar component
+import Sidebar from "./Sidebar";
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
@@ -18,9 +18,9 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col h-screen">
       {/* Header (Navbar) */}
-      <header className="sticky top-0 z-50 bg-background shadow-sm border-b border-border">
+      <header className="flex-shrink-0 sticky top-0 z-50 bg-background shadow-sm border-b border-border">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-primary">
@@ -31,36 +31,37 @@ const Layout: React.FC = () => {
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
             {!loading && (
-              session ? (
-                <Button variant="default" onClick={handleLogout} className="px-4 py-2">
-                  <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
-                </Button>
-              ) : (
-                <Link to="/login">
-                  <Button variant="default" className="px-4 py-2">
-                    <LogIn className="h-5 w-5 mr-2" /> {t('sign in')}
+              <> {/* Menggunakan React.Fragment untuk membungkus kondisional */}
+                {session ? (
+                  <Button variant="default" onClick={handleLogout} className="px-4 py-2">
+                    <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
                   </Button>
-                </Link>
-              )
+                ) : (
+                  <Link to="/login">
+                    <Button variant="default" className="px-4 py-2">
+                      <LogIn className="h-5 w-5 mr-2" /> {t('sign in')}
+                    </Button>
+                  </Link>
+                )}
+              </>
             )}
             {/* MobileNav trigger */}
             <div className="md:hidden">
               <MobileNav />
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
       {/* Main Content Area with Sidebar */}
-      <div className="flex flex-grow">
-        <Sidebar /> {/* Render the Sidebar component */}
-        <main className="flex-grow overflow-y-auto"> {/* Allow main content to scroll */}
+      <div className="flex flex-grow overflow-hidden">
+        <Sidebar />
+        <main className="flex-grow overflow-y-auto">
           <Outlet />
         </main>
       </div>
 
       {/* Footer */}
-      <footer className="bg-footer py-4 text-center text-sm text-white border-t border-border">
+      <footer className="flex-shrink-0 bg-footer py-4 text-center text-sm text-white border-t border-border">
         <div className="container mx-auto px-4">
           {t('footer text')}
         </div>
