@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -11,6 +11,16 @@ import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash, PlusCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface BlogPost {
   id: string;
@@ -24,6 +34,8 @@ interface BlogPost {
   pdf_link: string | null; // To filter out archives
 }
 
+const POSTS_PER_PAGE = 10; // Number of posts to display per page
+
 const ManageBlogPosts: React.FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
@@ -33,6 +45,23 @@ const ManageBlogPosts: React.FC = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedTag, setSelectedTag] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPostsCount, setTotalPostsCount] = useState(0);
+
+  const allCategories = useMemo(() => [
+    "all", "Programming", "Technology", "Education", "Data Science", "Cybersecurity", "Mobile Development", "Cloud Computing", "History", "Retro Tech", "Programming History"
+  ], []);
+
+  const allTags = useMemo(() => {
+    const tags = new Set<string>();
+    blogPosts.forEach(post => {
+      post.tags?.forEach(tag => tags.add(tag));
+    });
+    return ["all", ...Array.from(tags).sort()];
+  }, [blogPosts]); // Recalculate when blogPosts change
 
   useEffect(() => {
     if (!sessionLoading) {
@@ -46,22 +75,39 @@ const ManageBlogPosts: React.FC = () => {
         fetchBlogPosts();
       }
     }
-  }, [session, isAdmin, sessionLoading, navigate, t]);
+  }, [session, isAdmin, sessionLoading, navigate, t, searchTerm, selectedCategory, selectedTag, currentPage]);
 
   const fetchBlogPosts = async () => {
     setDataLoading(true);
     setError(null);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('blog_posts')
-        .select('*')
-        .is('pdf_link', null) // Only fetch actual blog posts (no PDF link)
-        .order('created_at', { ascending: false });
+        .select('*', { count: 'exact' })
+        .is('pdf_link', null); // Only fetch actual blog posts (no PDF link)
+
+      if (searchTerm) {
+        query = query.or(`title.ilike.%${searchTerm}%,excerpt.ilike.%${searchTerm}%`);
+      }
+      if (selectedCategory !== 'all') {
+        query = query.eq('category', selectedCategory);
+      }
+      if (selectedTag !== 'all') {
+        query = query.contains('tags', [selectedTag]);
+      }
+
+      const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+      const endIndex = startIndex + POSTS_PER_PAGE - 1;
+
+      const { data, error, count } = await query
+        .order('created_at', { ascending: false })
+        .range(startIndex, endIndex);
 
       if (error) {
         throw error;
       }
       setBlogPosts(data || []);
+      setTotalPostsCount(count || 0);
     } catch (err: any) {
       console.error("Error fetching blog posts:", err);
       setError(t("fetch data error", { error: err.message }));
@@ -112,6 +158,13 @@ const ManageBlogPosts: React.FC = () => {
     });
   };
 
+  const totalPages = Math.ceil(totalPostsCount / POSTS_PER_PAGE);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -129,9 +182,60 @@ const ManageBlogPosts: React.FC = () => {
         </p>
       </section>
 
-      <div className="flex justify-end mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+        <Input
+          type="text"
+          placeholder={t('search post placeholder')}
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1); // Reset to first page on search
+          }}
+          className="w-full md:max-w-xs"
+        />
+
+        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+          <Select
+            value={selectedCategory}
+            onValueChange={(value) => {
+              setSelectedCategory(value);
+              setCurrentPage(1); // Reset to first page on filter change
+            }}
+          >
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder={t('select category placeholder')} />
+            </SelectTrigger>
+            <SelectContent>
+              {allCategories.map(category => (
+                <SelectItem key={category} value={category}>
+                  {category === "all" ? t("all categories") : category}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={selectedTag}
+            onValueChange={(value) => {
+              setSelectedTag(value);
+              setCurrentPage(1); // Reset to first page on filter change
+            }}
+          >
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder={t('tag placeholder')} />
+            </SelectTrigger>
+            <SelectContent>
+              {allTags.map(tag => (
+                <SelectItem key={tag} value={tag}>
+                  {tag === "all" ? t("all tags") : tag}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <Link to="/admin/blog-posts/new">
-          <Button>
+          <Button className="w-full md:w-auto mt-4 md:mt-0">
             <PlusCircle className="h-4 w-4 mr-2" /> {t('add new blog post')}
           </Button>
         </Link>
@@ -179,6 +283,35 @@ const ManageBlogPosts: React.FC = () => {
         </Card>
       ) : (
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no posts available')}</p>
+      )}
+
+      {totalPages > 1 && (
+        <Pagination className="mt-12">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => handlePageChange(currentPage - 1)}
+                className={currentPage === 1 ? "pointer-events-none opacity-50" : undefined}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  onClick={() => handlePageChange(page)}
+                  isActive={currentPage === page}
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => handlePageChange(currentPage + 1)}
+                className={currentPage === totalPages ? "pointer-events-none opacity-50" : undefined}
+                />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       )}
 
       <div className="text-center mt-12">
