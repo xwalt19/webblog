@@ -7,33 +7,33 @@ export interface TeamMember {
 
 export const dummyTeamMembers: TeamMember[] = [
   {
-    nameKey: "team members.marisa name",
-    roleKey: "team members.marisa role",
+    nameKey: "marisa team member name",
+    roleKey: "marisa team member role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Marisa",
-    descriptionKey: "team members.marisa desc",
+    descriptionKey: "marisa team member description",
   },
   {
-    nameKey: "team members.budi name",
-    roleKey: "team members.budi role",
+    nameKey: "budi team member name",
+    roleKey: "budi team member role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Budi",
-    descriptionKey: "team members.budi desc",
+    descriptionKey: "budi team member description",
   },
   {
-    nameKey: "team members.prayudi name",
-    roleKey: "team members.prayudi role",
+    nameKey: "prayudi team member name",
+    roleKey: "prayudi team member role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Prayudi",
-    descriptionKey: "team members.prayudi desc",
+    descriptionKey: "prayudi team member description",
   },
   {
-    nameKey: "team members.faris name",
-    roleKey: "team members.faris role",
+    nameKey: "faris team member name",
+    roleKey: "faris team member role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Faris",
-    descriptionKey: "team members.faris desc",
+    descriptionKey: "faris team member description",
   },
   {
-    nameKey: "team members.bullitt name",
-    roleKey: "team members.bullitt role",
+    nameKey: "bullitt team member name",
+    roleKey: "bullitt team member role",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Bullitt",
-    descriptionKey: "team members.bullitt desc",
+    descriptionKey: "bullitt team member description",
   },
 ];
