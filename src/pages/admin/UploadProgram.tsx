@@ -4,17 +4,13 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PlusCircle, MinusCircle } from "lucide-react";
-import { Separator } from "@/components/ui/separator"; // Added import
-import { iconMap } from "@/utils/iconMap";
+import ProgramFormFields from "@/components/admin/ProgramFormFields";
+import ProgramPriceTables from "@/components/admin/ProgramPriceTables";
+import ProgramTopics from "@/components/admin/ProgramTopics";
 
 interface Program {
   id: string;
@@ -30,7 +26,7 @@ interface Program {
 }
 
 interface PriceTier {
-  id?: string; // Optional for new tiers
+  id?: string;
   header_key_col1: string;
   header_key_col2: string;
   participants_key: string;
@@ -38,7 +34,7 @@ interface PriceTier {
 }
 
 interface Topic {
-  id?: string; // Optional for new topics
+  id?: string;
   icon_name: string;
   title: string;
   description: string;
@@ -57,13 +53,10 @@ const UploadProgram: React.FC = () => {
   const [price, setPrice] = useState("");
   const [type, setType] = useState<"kids" | "private" | "professional">("kids");
   const [iconName, setIconName] = useState("");
-  const [priceTables, setPriceTables] = useState<PriceTier[][]>([]); // Array of arrays for multiple tables
+  const [priceTables, setPriceTables] = useState<PriceTier[][]>([]);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [uploading, setUploading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
-
-  const programTypes = ["kids", "private", "professional"];
-  const availableIcons = Object.keys(iconMap);
 
   useEffect(() => {
     if (!sessionLoading) {
@@ -77,7 +70,7 @@ const UploadProgram: React.FC = () => {
         if (programId) {
           fetchProgramData(programId);
         } else {
-          setDataLoading(false); // Ready for new program if no ID
+          setDataLoading(false);
         }
       }
     }
@@ -103,13 +96,11 @@ const UploadProgram: React.FC = () => {
         setType(programData.type || "kids");
         setIconName(programData.icon_name || "");
 
-        // Fetch related price tiers
         const { data: priceTiersData, error: priceTiersError } = await supabase
           .from('program_price_tiers')
           .select('*')
           .eq('program_id', id);
         if (priceTiersError) throw priceTiersError;
-        // Group price tiers by header_key_col1 to reconstruct tables
         const groupedPriceTiers: { [key: string]: PriceTier[] } = {};
         priceTiersData.forEach(tier => {
           if (!groupedPriceTiers[tier.header_key_col1]) {
@@ -119,7 +110,6 @@ const UploadProgram: React.FC = () => {
         });
         setPriceTables(Object.values(groupedPriceTiers));
 
-        // Fetch related topics
         const { data: topicsData, error: topicsError } = await supabase
           .from('program_topics')
           .select('*')
@@ -134,48 +124,6 @@ const UploadProgram: React.FC = () => {
     } finally {
       setDataLoading(false);
     }
-  };
-
-  const handleAddPriceTable = () => {
-    setPriceTables([...priceTables, [{ header_key_col1: "", header_key_col2: "", participants_key: "", price: "" }]]);
-  };
-
-  const handleRemovePriceTable = (index: number) => {
-    const newPriceTables = priceTables.filter((_, i) => i !== index);
-    setPriceTables(newPriceTables);
-  };
-
-  const handlePriceTierChange = (tableIndex: number, rowIndex: number, field: keyof PriceTier, value: string) => {
-    const newPriceTables = [...priceTables];
-    newPriceTables[tableIndex][rowIndex] = { ...newPriceTables[tableIndex][rowIndex], [field]: value };
-    setPriceTables(newPriceTables);
-  };
-
-  const handleAddPriceTierRow = (tableIndex: number) => {
-    const newPriceTables = [...priceTables];
-    newPriceTables[tableIndex] = [...newPriceTables[tableIndex], { header_key_col1: "", header_key_col2: "", participants_key: "", price: "" }];
-    setPriceTables(newPriceTables);
-  };
-
-  const handleRemovePriceTierRow = (tableIndex: number, rowIndex: number) => {
-    const newPriceTables = [...priceTables];
-    newPriceTables[tableIndex] = newPriceTables[tableIndex].filter((_, i) => i !== rowIndex);
-    setPriceTables(newPriceTables);
-  };
-
-  const handleAddTopic = () => {
-    setTopics([...topics, { icon_name: "", title: "", description: "" }]);
-  };
-
-  const handleRemoveTopic = (index: number) => {
-    const newTopics = topics.filter((_, i) => i !== index);
-    setTopics(newTopics);
-  };
-
-  const handleTopicChange = (index: number, field: keyof Topic, value: string) => {
-    const newTopics = [...topics];
-    newTopics[index] = { ...newTopics[index], [field]: value };
-    setTopics(newTopics);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -204,14 +152,12 @@ const UploadProgram: React.FC = () => {
       let error;
 
       if (programId) {
-        // Update existing program
         const { error: updateError } = await supabase
           .from('programs')
           .update(programData)
           .eq('id', programId);
         error = updateError;
       } else {
-        // Insert new program
         const { data, error: insertError } = await supabase
           .from('programs')
           .insert([programData])
@@ -224,10 +170,7 @@ const UploadProgram: React.FC = () => {
       if (error) throw error;
       if (!currentProgramId) throw new Error("Program ID not found after save.");
 
-      // Handle price tiers
-      // First, delete existing price tiers for this program
       await supabase.from('program_price_tiers').delete().eq('program_id', currentProgramId);
-      // Then, insert new/updated price tiers
       if (priceTables.length > 0) {
         const allTiersToInsert = priceTables.flat().map(tier => ({
           ...tier,
@@ -239,10 +182,7 @@ const UploadProgram: React.FC = () => {
         if (priceTiersError) throw priceTiersError;
       }
 
-      // Handle topics
-      // First, delete existing topics for this program
       await supabase.from('program_topics').delete().eq('program_id', currentProgramId);
-      // Then, insert new/updated topics
       if (topics.length > 0) {
         const allTopicsToInsert = topics.map(topic => ({
           ...topic,
@@ -295,201 +235,32 @@ const UploadProgram: React.FC = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Label htmlFor="title">{t('upload program.title label')}</Label>
-              <Input
-                id="title"
-                type="text"
-                placeholder={t('upload program.title placeholder')}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="description">{t('upload program.description label')}</Label>
-              <Textarea
-                id="description"
-                placeholder={t('upload program.description placeholder')}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="mt-1 min-h-[80px]"
-              />
-            </div>
-            <div>
-              <Label htmlFor="type">{t('upload program.type label')}</Label>
-              <Select value={type} onValueChange={(value: "kids" | "private" | "professional") => setType(value)}>
-                <SelectTrigger className="w-full mt-1">
-                  <SelectValue placeholder={t('upload program.select type')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {programTypes.map(pType => (
-                    <SelectItem key={pType} value={pType}>{t(`program types.${pType}`)}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="iconName">{t('upload program.icon label')}</Label>
-              <Select value={iconName} onValueChange={setIconName}>
-                <SelectTrigger className="w-full mt-1">
-                  <SelectValue placeholder={t('upload program.select icon')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableIcons.map(icon => (
-                    <SelectItem key={icon} value={icon}>{icon}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {iconName && (
-                <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-                  {t('upload program.selected icon preview')}: {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
-                </p>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="schedule">{t('upload program.schedule label')}</Label>
-              <Input
-                id="schedule"
-                type="text"
-                placeholder={t('upload program.schedule placeholder')}
-                value={schedule}
-                onChange={(e) => setSchedule(e.target.value)}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="registrationFee">{t('upload program.registration fee label')}</Label>
-              <Input
-                id="registrationFee"
-                type="text"
-                placeholder={t('upload program.registration fee placeholder')}
-                value={registrationFee}
-                onChange={(e) => setRegistrationFee(e.target.value)}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="price">{t('upload program.price label')}</Label>
-              <Input
-                id="price"
-                type="text"
-                placeholder={t('upload program.price placeholder')}
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                className="mt-1"
-              />
-              <p className="text-sm text-muted-foreground mt-1">
-                {t('upload program.price hint')}
-              </p>
-            </div>
+            <ProgramFormFields
+              title={title}
+              setTitle={setTitle}
+              description={description}
+              setDescription={setDescription}
+              schedule={schedule}
+              setSchedule={setSchedule}
+              registrationFee={registrationFee}
+              setRegistrationFee={setRegistrationFee}
+              price={price}
+              setPrice={setPrice}
+              type={type}
+              setType={setType}
+              iconName={iconName}
+              setIconName={setIconName}
+            />
 
-            <Separator className="my-6" />
-            <h3 className="text-lg font-semibold mb-4">{t('upload program.price tables')}</h3>
-            {priceTables.map((table, tableIndex) => (
-              <Card key={tableIndex} className="p-4 mb-4 border border-border">
-                <div className="flex justify-end mb-2">
-                  <Button variant="destructive" size="sm" onClick={() => handleRemovePriceTable(tableIndex)}>
-                    <MinusCircle className="h-4 w-4 mr-2" /> {t('upload program.remove table')}
-                  </Button>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <Label>{t('upload program.header col1 label')}</Label>
-                    <Input
-                      value={table[0]?.header_key_col1 || ""}
-                      onChange={(e) => handlePriceTierChange(tableIndex, 0, 'header_key_col1', e.target.value)}
-                      placeholder={t('upload program.header col1 placeholder')}
-                    />
-                  </div>
-                  <div>
-                    <Label>{t('upload program.header col2 label')}</Label>
-                    <Input
-                      value={table[0]?.header_key_col2 || ""}
-                      onChange={(e) => handlePriceTierChange(tableIndex, 0, 'header_key_col2', e.target.value)}
-                      placeholder={t('upload program.header col2 placeholder')}
-                    />
-                  </div>
-                </div>
-                {table.map((row, rowIndex) => (
-                  <div key={rowIndex} className="flex items-center gap-2 mb-2">
-                    <Input
-                      placeholder={t('upload program.participants key placeholder')}
-                      value={row.participants_key}
-                      onChange={(e) => handlePriceTierChange(tableIndex, rowIndex, 'participants_key', e.target.value)}
-                      className="flex-1"
-                    />
-                    <Input
-                      placeholder={t('upload program.price value placeholder')}
-                      value={row.price}
-                      onChange={(e) => handlePriceTierChange(tableIndex, rowIndex, 'price', e.target.value)}
-                      className="flex-1"
-                    />
-                    <Button variant="destructive" size="icon" onClick={() => handleRemovePriceTierRow(tableIndex, rowIndex)}>
-                      <MinusCircle className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-                <Button variant="outline" size="sm" onClick={() => handleAddPriceTierRow(tableIndex)} className="mt-2">
-                  <PlusCircle className="h-4 w-4 mr-2" /> {t('upload program.add row')}
-                </Button>
-              </Card>
-            ))}
-            <Button type="button" variant="secondary" onClick={handleAddPriceTable}>
-              <PlusCircle className="h-4 w-4 mr-2" /> {t('upload program.add price table')}
-            </Button>
+            <ProgramPriceTables
+              priceTables={priceTables}
+              setPriceTables={setPriceTables}
+            />
 
-            <Separator className="my-6" />
-            <h3 className="text-lg font-semibold mb-4">{t('upload program.topics')}</h3>
-            {topics.map((topic, index) => (
-              <Card key={index} className="p-4 mb-4 border border-border">
-                <div className="flex justify-end mb-2">
-                  <Button variant="destructive" size="sm" onClick={() => handleRemoveTopic(index)}>
-                    <MinusCircle className="h-4 w-4 mr-2" /> {t('upload program.remove topic')}
-                  </Button>
-                </div>
-                <div className="space-y-2">
-                  <div>
-                    <Label>{t('upload program.topic icon label')}</Label>
-                    <Select value={topic.icon_name} onValueChange={(value) => handleTopicChange(index, 'icon_name', value)}>
-                      <SelectTrigger className="w-full mt-1">
-                        <SelectValue placeholder={t('upload program.select icon')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableIcons.map(icon => (
-                          <SelectItem key={icon} value={icon}>{icon}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {topic.icon_name && (
-                      <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-                        {t('upload program.selected icon preview')}: {React.createElement(iconMap[topic.icon_name], { className: "h-4 w-4" })} {topic.icon_name}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label>{t('upload program.topic title label')}</Label>
-                    <Input
-                      placeholder={t('upload program.topic title placeholder')}
-                      value={topic.title}
-                      onChange={(e) => handleTopicChange(index, 'title', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label>{t('upload program.topic description label')}</Label>
-                    <Textarea
-                      placeholder={t('upload program.topic description placeholder')}
-                      value={topic.description}
-                      onChange={(e) => handleTopicChange(index, 'description', e.target.value)}
-                      className="min-h-[60px]"
-                    />
-                  </div>
-                </div>
-              </Card>
-            ))}
-            <Button type="button" variant="secondary" onClick={handleAddTopic}>
-              <PlusCircle className="h-4 w-4 mr-2" /> {t('upload program.add topic')}
-            </Button>
+            <ProgramTopics
+              topics={topics}
+              setTopics={setTopics}
+            />
 
             <Button type="submit" className="w-full" disabled={uploading}>
               {uploading ? t('uploading') : (programId ? t('upload program.save changes') : t('upload program.submit button'))}
