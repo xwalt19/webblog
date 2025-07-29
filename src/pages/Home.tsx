@@ -17,7 +17,7 @@ const Home: React.FC = () => {
       <MediaCarousel />
       <FixedNewsSchedule />
       <FeaturedCourses />
-      {/* <SimpleExternalArticlesDisplay /> */} {/* Menghapus penggunaan komponen */}
+      
       <CallToActionSection />
     </div>
   );

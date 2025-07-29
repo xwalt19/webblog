@@ -36,13 +36,24 @@ const ProgramPriceTables: React.FC<ProgramPriceTablesProps> = ({ priceTables, se
 
   const handlePriceTierChange = (tableIndex: number, rowIndex: number, field: keyof PriceTier, value: string) => {
     const newPriceTables = [...priceTables];
-    newPriceTables[tableIndex][rowIndex] = { ...newPriceTables[tableIndex][rowIndex], [field]: value };
+    if (field === 'header_key_col1' || field === 'header_key_col2') {
+      // Apply header change to all rows in this table
+      newPriceTables[tableIndex] = newPriceTables[tableIndex].map(row => ({ ...row, [field]: value }));
+    } else {
+      // Apply other changes to specific row
+      newPriceTables[tableIndex][rowIndex] = { ...newPriceTables[tableIndex][rowIndex], [field]: value };
+    }
     setPriceTables(newPriceTables);
   };
 
   const handleAddPriceTierRow = (tableIndex: number) => {
     const newPriceTables = [...priceTables];
-    newPriceTables[tableIndex] = [...newPriceTables[tableIndex], { header_key_col1: "", header_key_col2: "", participants_key: "", price: "" }];
+    // Inherit headers from the first row of the current table
+    const currentHeaders = newPriceTables[tableIndex].length > 0
+      ? { header_key_col1: newPriceTables[tableIndex][0].header_key_col1, header_key_col2: newPriceTables[tableIndex][0].header_key_col2 }
+      : { header_key_col1: "", header_key_col2: "" };
+    
+    newPriceTables[tableIndex] = [...newPriceTables[tableIndex], { ...currentHeaders, participants_key: "", price: "" }];
     setPriceTables(newPriceTables);
   };
 
