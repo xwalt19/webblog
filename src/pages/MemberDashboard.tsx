@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { useSession } from "@/components/SessionProvider";
-import { User as UserIcon, LayoutDashboard } from "lucide-react";
+import { User as UserIcon, LayoutDashboard, BookOpen } from "lucide-react"; // Import BookOpen for programs
+import EnrolledProgramsList from "@/components/EnrolledProgramsList"; // Import the new component
 
 const MemberDashboard: React.FC = () => {
   const { t } = useTranslation();
@@ -43,7 +44,7 @@ const MemberDashboard: React.FC = () => {
         </p>
       </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('my profile')}</CardTitle>
@@ -77,7 +78,7 @@ const MemberDashboard: React.FC = () => {
         <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">{t('explore programs')}</CardTitle>
-            <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{t('learn something new')}</p>
@@ -88,6 +89,8 @@ const MemberDashboard: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+
+      <EnrolledProgramsList />
 
       <div className="text-center mt-12">
         <Link to="/">

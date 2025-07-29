@@ -22,6 +22,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
+import { useSession } from "@/components/SessionProvider";
+import { toast } from "sonner";
 
 interface SupabasePriceTier {
   id: string;
@@ -57,35 +59,49 @@ interface SupabaseProgram {
 
 const ProgramsPage: React.FC = () => {
   const { t } = useTranslation();
+  const { session, loading: sessionLoading } = useSession();
   const [selectedProgramType, setSelectedProgramType] = useState("all");
   const [allPrograms, setAllPrograms] = useState<SupabaseProgram[]>([]);
+  const [enrolledProgramIds, setEnrolledProgramIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPrograms = async () => {
+    const fetchProgramsAndEnrollments = async () => {
       setLoading(true);
       setError(null);
       try {
-        const { data, error } = await supabase
+        const { data: programsData, error: programsError } = await supabase
           .from('programs')
           .select('*, program_price_tiers(*), program_topics(*)')
           .order('created_at', { ascending: false });
 
-        if (error) {
-          throw error;
+        if (programsError) {
+          throw programsError;
         }
-        setAllPrograms(data || []);
+        setAllPrograms(programsData || []);
+
+        if (session?.user) {
+          const { data: enrollmentsData, error: enrollmentsError } = await supabase
+            .from('user_programs')
+            .select('program_id')
+            .eq('user_id', session.user.id);
+
+          if (enrollmentsError) {
+            throw enrollmentsError;
+          }
+          setEnrolledProgramIds(new Set(enrollmentsData?.map(e => e.program_id) || []));
+        }
       } catch (err: any) {
-        console.error("Error fetching programs:", err);
+        console.error("Error fetching programs or enrollments:", err);
         setError(t("fetch data error", { error: err.message }));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPrograms();
-  }, [t]);
+    fetchProgramsAndEnrollments();
+  }, [t, session, sessionLoading]);
 
   const filteredPrograms = useMemo(() => {
     if (selectedProgramType === "all") {
@@ -93,6 +109,36 @@ const ProgramsPage: React.FC = () => {
     }
     return allPrograms.filter(program => program.type === selectedProgramType);
   }, [selectedProgramType, allPrograms]);
+
+  const handleEnroll = async (programId: string, programTitle: string) => {
+    if (!session?.user) {
+      toast.error(t('login to enroll'));
+      return;
+    }
+
+    if (enrolledProgramIds.has(programId)) {
+      toast.info(t('already enrolled'));
+      return;
+    }
+
+    const toastId = toast.loading(t('enrolling in program', { programTitle }));
+
+    try {
+      const { error } = await supabase
+        .from('user_programs')
+        .insert({ user_id: session.user.id, program_id: programId });
+
+      if (error) {
+        throw error;
+      }
+
+      setEnrolledProgramIds(prev => new Set(prev).add(programId));
+      toast.success(t('enrolled successfully', { programTitle }), { id: toastId });
+    } catch (err: any) {
+      console.error("Error enrolling in program:", err);
+      toast.error(t('enrollment failed', { error: err.message }), { id: toastId });
+    }
+  };
 
   if (loading) {
     return (
@@ -136,6 +182,7 @@ const ProgramsPage: React.FC = () => {
       <div className="grid grid-cols-1 gap-8">
         {filteredPrograms.map((program) => {
           const ProgramIcon = getIconComponent(program.icon_name);
+          const isEnrolled = enrolledProgramIds.has(program.id);
           return (
             <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
               <CardHeader className="pb-4 flex-grow">
@@ -216,9 +263,19 @@ const ProgramsPage: React.FC = () => {
                   </div>
                 )}
                 <div className="mt-6">
-                  <a href="https://wa.me/628122015409" target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button className="w-full">{t('register now button')}</Button>
-                  </a>
+                  {session?.user ? (
+                    <Button
+                      className="w-full"
+                      onClick={() => handleEnroll(program.id, program.title)}
+                      disabled={isEnrolled}
+                    >
+                      {isEnrolled ? t('enrolled button') : t('enroll now button')}
+                    </Button>
+                  ) : (
+                    <Link to="/login" className="w-full">
+                      <Button className="w-full">{t('login to enroll')}</Button>
+                    </Link>
+                  )}
                 </div>
               </CardContent>
             </Card>
