@@ -16,8 +16,8 @@ import MobileNav from "./MobileNav";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
-import { useSession } from "@/components/SessionProvider"; // Corrected import path for useSession
-import { supabase } from "@/integrations/supabase/client"; // Added import for supabase
+import { useSession } from "@/components/SessionProvider";
+import { supabase } from "@/integrations/supabase/client";
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
@@ -39,8 +39,8 @@ const Layout: React.FC = () => {
           </Link>
 
           {/* Navigation Menu */}
-          <NavigationMenu className="hidden md:flex flex-grow justify-center"> {/* Added flex-grow and justify-center */}
-            <NavigationMenuList className="space-x-1"> {/* Adjusted spacing */}
+          <NavigationMenu className="hidden md:flex flex-grow justify-center">
+            <NavigationMenuList className="space-x-1">
               <NavigationMenuItem>
                 <Link to="/" className={cn(navigationMenuTriggerStyle(), "bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground")}>
                   {t('home')}
@@ -64,7 +64,7 @@ const Layout: React.FC = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('activity')}</NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-background text-foreground border-border">
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                  <ul className="grid w-[300px] gap-2 p-3 md:w-[400px] md:grid-cols-2 lg:w-[450px] "> {/* Adjusted width and gap */}
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
@@ -74,7 +74,6 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('programs')}</div>
-                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -87,7 +86,6 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('regular events classes')}</div>
-                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -100,7 +98,6 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('camps')}</div>
-                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -113,7 +110,6 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('training')}</div>
-                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -124,7 +120,7 @@ const Layout: React.FC = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('media')}</NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-background text-foreground border-border">
-                  <ul className="grid grid-cols-2 gap-3 p-4 md:w-[500px] lg:w-[600px]">
+                  <ul className="flex flex-col gap-2 p-3 w-[200px]"> {/* Changed to flex-col and adjusted width/padding */}
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
@@ -134,7 +130,6 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('youtube')}</div>
-                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -147,7 +142,6 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('tiktok')}</div>
-                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -157,7 +151,7 @@ const Layout: React.FC = () => {
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('info')}</NavigationMenuTrigger>
                 <NavigationMenuContent className="bg-background text-foreground border-border">
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                  <ul className="grid w-[300px] gap-2 p-3 md:w-[400px] md:grid-cols-2 lg:w-[450px] "> {/* Adjusted width and gap */}
                     <li>
                       <NavigationMenuLink asChild>
                         <Link
@@ -167,7 +161,6 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('contact us')}</div>
-                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -180,7 +173,6 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('partners')}</div>
-                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -193,7 +185,6 @@ const Layout: React.FC = () => {
                           )}
                         >
                           <div className="text-sm font-medium leading-none text-foreground">{t('calendar')}</div>
-                          {/* Removed description */}
                         </Link>
                       </NavigationMenuLink>
                     </li>
@@ -204,7 +195,7 @@ const Layout: React.FC = () => {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="bg-background text-foreground hover:text-primary data-[active]:bg-accent data-[state=open]:bg-accent data-[active]:text-accent-foreground data-[state=open]:text-accent-foreground">{t('admin tools')}</NavigationMenuTrigger>
                   <NavigationMenuContent className="bg-background text-foreground border-border">
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                    <ul className="grid w-[300px] gap-2 p-3 md:w-[400px] md:grid-cols-2 lg:w-[450px] "> {/* Adjusted width and gap */}
                       <li>
                         <NavigationMenuLink asChild>
                           <Link
