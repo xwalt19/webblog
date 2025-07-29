@@ -73,6 +73,36 @@ const BlogPage: React.FC = () => {
     };
 
     fetchBlogPosts();
+
+    const channel = supabase
+      .channel('blog_posts_public_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'blog_posts' },
+        (payload) => {
+          // Only process changes for non-PDF posts (actual blog posts)
+          if (payload.new?.pdf_link === null || payload.old?.pdf_link === null) {
+            if (payload.eventType === 'INSERT') {
+              setAllPosts((prev) => [payload.new as BlogPost, ...prev]);
+            } else if (payload.eventType === 'UPDATE') {
+              setAllPosts((prev) =>
+                prev.map((post) =>
+                  post.id === payload.new.id ? (payload.new as BlogPost) : post
+                )
+              );
+            } else if (payload.eventType === 'DELETE') {
+              setAllPosts((prev) =>
+                prev.filter((post) => post.id !== payload.old.id)
+              );
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [t]);
 
   useEffect(() => {

@@ -49,6 +49,33 @@ const ManageUsers: React.FC = () => {
         navigate('/');
       } else {
         fetchUsers();
+
+        const channel = supabase
+          .channel('profiles_changes')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'profiles' },
+            (payload) => {
+              if (payload.eventType === 'INSERT') {
+                setUsers((prev) => [payload.new as UserProfile, ...prev]);
+              } else if (payload.eventType === 'UPDATE') {
+                setUsers((prev) =>
+                  prev.map((user) =>
+                    user.id === payload.new.id ? (payload.new as UserProfile) : user
+                  )
+                );
+              } else if (payload.eventType === 'DELETE') {
+                setUsers((prev) =>
+                  prev.filter((user) => user.id !== payload.old.id)
+                );
+              }
+            }
+          )
+          .subscribe();
+
+        return () => {
+          supabase.removeChannel(channel);
+        };
       }
     }
   }, [session, isAdmin, sessionLoading, navigate, t]);
@@ -96,8 +123,8 @@ const ManageUsers: React.FC = () => {
         throw error;
       }
       toast.success(t("updated successfully"));
-      fetchUsers();
       setIsDialogOpen(false);
+      // No need to call fetchUsers() here, Realtime will handle the update
     } catch (err: any) {
       console.error("Error updating user:", err);
       toast.error(t("save failed", { error: err.message }));
@@ -119,7 +146,7 @@ const ManageUsers: React.FC = () => {
         throw error;
       }
       toast.success(t("deleted successfully"));
-      fetchUsers();
+      // No need to call fetchUsers() here, Realtime will handle the update
     } catch (err: any) {
       console.error("Error deleting user:", err);
       toast.error(t("delete error", { error: err.message }));

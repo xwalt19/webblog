@@ -65,6 +65,7 @@ const ManageBlogPosts: React.FC = () => {
     return ["all", ...Array.from(tags).sort()];
   }, [blogPosts]); // Recalculate when blogPosts change
 
+  // Initial fetch and Realtime subscription
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
@@ -75,9 +76,49 @@ const ManageBlogPosts: React.FC = () => {
         navigate('/');
       } else {
         fetchBlogPosts();
+
+        const channel = supabase
+          .channel('blog_posts_admin_changes')
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'blog_posts' },
+            (payload) => {
+              // Only process changes for non-PDF posts (actual blog posts)
+              if (payload.new?.pdf_link === null || payload.old?.pdf_link === null) {
+                if (payload.eventType === 'INSERT') {
+                  setBlogPosts((prev) => [payload.new as BlogPost, ...prev]);
+                  setTotalPostsCount((prev) => prev + 1);
+                } else if (payload.eventType === 'UPDATE') {
+                  setBlogPosts((prev) =>
+                    prev.map((post) =>
+                      post.id === payload.new.id ? (payload.new as BlogPost) : post
+                    )
+                  );
+                } else if (payload.eventType === 'DELETE') {
+                  setBlogPosts((prev) =>
+                    prev.filter((post) => post.id !== payload.old.id)
+                  );
+                  setTotalPostsCount((prev) => prev - 1);
+                }
+              }
+            }
+          )
+          .subscribe();
+
+        return () => {
+          supabase.removeChannel(channel);
+        };
       }
     }
-  }, [session, isAdmin, sessionLoading, navigate, t, searchTerm, selectedCategory, selectedTag, currentPage]);
+  }, [session, isAdmin, sessionLoading, navigate, t]);
+
+  // Refetch data only when filters or pagination change, not on every real-time update
+  useEffect(() => {
+    if (!sessionLoading && session && isAdmin) {
+      fetchBlogPosts();
+    }
+  }, [searchTerm, selectedCategory, selectedTag, currentPage]);
+
 
   const fetchBlogPosts = async () => {
     setDataLoading(true);
@@ -144,7 +185,7 @@ const ManageBlogPosts: React.FC = () => {
         throw error;
       }
       toast.success(t("deleted successfully"));
-      fetchBlogPosts(); // Refresh the list
+      // No need to call fetchBlogPosts() here, Realtime will handle the update
     } catch (err: any) {
       console.error("Error deleting post:", err);
       toast.error(t("delete error", { error: err.message }));
