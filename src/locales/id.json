@@ -282,7 +282,7 @@
   "add training program": "Tambah Program Pelatihan",
   "edit training program subtitle": "Perbarui detail program pelatihan ini.",
   "add training program subtitle": "Isi detail untuk menambahkan program pelatihan baru.",
-  "edit training program form": "Edit Detail Program Pelatihan",
+  "edit training program form": "Edit Program Pelatihan Details",
   "add training program form": "Tambah Program Pelatihan Baru",
   "edit training program form description": "Perbarui informasi untuk program pelatihan ini.",
   "add training program form description": "Masukkan detail untuk program pelatihan baru.",
@@ -401,5 +401,6 @@
   "our team": "Tim Kami",
   "ready to start learning journey": "Siap Memulai Perjalanan Belajar Anda?",
   "explore latest insights from blog": "Jelajahi wawasan dan artikel terbaru kami dari blog.",
-  "visit blog button": "Kunjungi Blog"
+  "visit blog button": "Kunjungi Blog",
+  "register now button": "Daftar Sekarang"
 }

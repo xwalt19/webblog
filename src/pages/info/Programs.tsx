@@ -215,6 +215,11 @@ const ProgramsPage: React.FC = () => {
                     </div>
                   </div>
                 )}
+                <div className="mt-6">
+                  <Link to="/contact-us">
+                    <Button className="w-full">{t('register now button')}</Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           );
