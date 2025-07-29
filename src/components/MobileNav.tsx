@@ -16,8 +16,9 @@ import { supabase } from "@/integrations/supabase/client";
 const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
-  const { session, profile, loading } = useSession();
+  const { session, profile, user, loading } = useSession(); // Get user object
   const isAdmin = profile?.role === 'admin';
+  const displayName = profile?.first_name || user?.email || t('my profile'); // Use first_name, fallback to email, then 'My Profile'
 
   const closeSheet = () => setIsOpen(false);
 
@@ -119,7 +120,7 @@ const MobileNav: React.FC = () => {
                 <LayoutDashboard className="h-5 w-5 inline-block mr-2" /> {t('dashboard')}
               </Link>
               <Link to="/profile" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
-                <User className="h-5 w-5 inline-block mr-2" /> {t('my profile')}
+                <User className="h-5 w-5 inline-block mr-2" /> {displayName}
               </Link>
             </>
           )}

@@ -11,8 +11,10 @@ import Sidebar from "./Sidebar";
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
-  const { session, profile, loading } = useSession();
+  const { session, profile, user, loading } = useSession(); // Get user object
+
   const isAdmin = profile?.role === 'admin';
+  const displayName = profile?.first_name || user?.email || t('my profile'); // Use first_name, fallback to email, then 'My Profile'
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -46,7 +48,7 @@ const Layout: React.FC = () => {
                     )}
                     <Link to="/profile">
                       <Button variant="ghost" className="px-4 py-2">
-                        <User className="h-5 w-5 mr-2" /> {t('my profile')}
+                        <User className="h-5 w-5 mr-2" /> {displayName}
                       </Button>
                     </Link>
                     <Button variant="default" onClick={handleLogout} className="px-4 py-2">
