@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, LogIn } from "lucide-react";
+import { LogOut, LogIn, User } from "lucide-react"; // Import User icon
 import MobileNav from "./MobileNav";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
@@ -30,9 +30,16 @@ const Layout: React.FC = () => {
             {!loading && (
               <>
                 {session ? (
-                  <Button variant="default" onClick={handleLogout} className="px-4 py-2">
-                    <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
-                  </Button>
+                  <>
+                    <Link to="/profile">
+                      <Button variant="ghost" className="px-4 py-2">
+                        <User className="h-5 w-5 mr-2" /> {t('my profile')}
+                      </Button>
+                    </Link>
+                    <Button variant="default" onClick={handleLogout} className="px-4 py-2">
+                      <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
+                    </Button>
+                  </>
                 ) : (
                   <Link to="/login">
                     <Button variant="default" className="px-4 py-2">

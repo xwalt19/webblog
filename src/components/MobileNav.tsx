@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, LogIn, LayoutDashboard, Users } from "lucide-react"; // Import Users icon
+import { Menu, LogOut, LogIn, LayoutDashboard, Users, User } from "lucide-react"; // Import User icon
 import {
   Accordion,
   AccordionContent,
@@ -111,6 +111,13 @@ const MobileNav: React.FC = () => {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+
+          {/* User Profile Link */}
+          {!loading && session && (
+            <Link to="/profile" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+              <User className="h-5 w-5 inline-block mr-2" /> {t('my profile')}
+            </Link>
+          )}
 
           {isAdmin && (
             <Accordion type="single" collapsible className="w-full">

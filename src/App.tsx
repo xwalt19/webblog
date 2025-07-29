@@ -41,7 +41,8 @@ import Login from "./pages/Login";
 import { SessionProvider } from "./components/SessionProvider";
 import React from "react";
 import AdminDashboard from "./pages/admin/Dashboard";
-import ManageUsers from "./pages/admin/ManageUsers"; // Import new ManageUsers
+import ManageUsers from "./pages/admin/ManageUsers";
+import UserProfile from "./pages/UserProfile"; // Import new UserProfile
 
 const queryClient = new QueryClient();
 
@@ -69,6 +70,7 @@ const App = () => (
               <Route path="media/youtube" element={<YouTubePage />} />
               <Route path="media/tiktok" element={<TikTokPage />} />
               <Route path="info/calendar" element={<CalendarPage />} />
+              <Route path="profile" element={<UserProfile />} /> {/* New User Profile Route */}
               {/* Admin Routes */}
               <Route path="admin" element={<AdminDashboard />} />
               <Route path="admin/blog-posts/new" element={<UploadBlogPost />} />
@@ -98,7 +100,7 @@ const App = () => (
               <Route path="content" element={<ContentList />} />
               <Route path="admin/manage-calendar" element={<ManageCalendar />} />
               <Route path="admin/manage-archives" element={<ManageArchives />} />
-              <Route path="admin/manage-users" element={<ManageUsers />} /> {/* New User Management Route */}
+              <Route path="admin/manage-users" element={<ManageUsers />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
