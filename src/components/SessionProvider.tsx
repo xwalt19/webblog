@@ -52,6 +52,21 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return profileData;
   }, []); // No dependencies, so this function reference is stable
 
+  // Function to process auth data and update states (without touching loading)
+  const processAuthData = useCallback(async (currentSession: Session | null) => {
+    setSession(currentSession);
+    setUser(currentSession?.user || null);
+
+    if (currentSession?.user) {
+      console.log("SessionProvider: [DEBUG] User present, fetching profile for state update...");
+      const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
+      setProfile(fetchedProfile);
+    } else {
+      console.log("SessionProvider: [DEBUG] No user found, clearing profile for state update.");
+      setProfile(null);
+    }
+  }, [fetchProfileFromDb]);
+
   // Function to explicitly clear session state (for logout)
   const clearSession = useCallback(() => {
     console.log("SessionProvider: [DEBUG] Clearing local session data.");
@@ -88,18 +103,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       try {
         const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError) throw sessionError;
+        
+        // Process the initial session data
+        await processAuthData(initialSession);
 
-        setSession(initialSession);
-        setUser(initialSession?.user || null);
-
-        if (initialSession?.user) {
-          console.log("SessionProvider: [DEBUG] Initial session found, fetching profile...");
-          const fetchedProfile = await fetchProfileFromDb(initialSession.user.id);
-          setProfile(fetchedProfile);
-        } else {
-          console.log("SessionProvider: [DEBUG] No initial session found.");
-          setProfile(null);
-        }
       } catch (err) {
         console.error("SessionProvider: [ERROR] Error fetching initial session or profile:", err);
         setSession(null);
@@ -118,21 +125,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       console.log(`SessionProvider: [DEBUG] Auth state change event: ${event}`, currentSession);
       
-      // Update session and user states directly
-      setSession(currentSession);
-      setUser(currentSession?.user || null);
-
-      if (currentSession?.user) {
-        // Always fetch the latest profile if a user is present in the session.
-        // This ensures the profile is up-to-date after any auth event (SIGN_IN, USER_UPDATED).
-        console.log("SessionProvider: [DEBUG] User present, fetching/refreshing profile from DB due to auth event...");
-        const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
-        setProfile(fetchedProfile);
-      } else {
-        // No user in currentSession (e.g., SIGNED_OUT)
-        console.log("SessionProvider: [DEBUG] No user found or signed out from auth event, clearing profile.");
-        setProfile(null);
-      }
+      // Only process auth data, do NOT touch setLoading here.
+      await processAuthData(currentSession);
 
       // Handle toasts and navigation
       if (event === 'SIGNED_IN') {
@@ -146,15 +140,13 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       } else if (event === 'USER_UPDATED') {
         toast.info(t('profile updated'));
       }
-      // IMPORTANT: Do NOT set setLoading(true) or setLoading(false) here.
-      // The initial getInitialData handles the global loading state.
     });
 
     return () => {
       console.log("SessionProvider: [LIFECYCLE] Component Unmounted. Cleaning up auth listener.");
       subscription.unsubscribe();
     };
-  }, [fetchProfileFromDb, navigate, location.pathname, t]); // Dependencies are now stable functions/values.
+  }, [fetchProfileFromDb, navigate, location.pathname, t, processAuthData]); // Dependencies are now stable functions/values.
 
   // Render children only when loading is false
   if (loading) {
