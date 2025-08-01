@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
+import { useSession } from "@/components/SessionProvider"; // Import useSession
 
 interface BlogPost {
   id: string;
@@ -43,6 +44,7 @@ const POSTS_PER_PAGE = 6;
 const BlogPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { getTranslatedTag } = useTranslatedTag();
+  const { loading: sessionLoading } = useSession(); // Get session loading state
   const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +76,10 @@ const BlogPage: React.FC = () => {
       }
     };
 
-    fetchBlogPosts();
+    // Only fetch blog posts if session loading is complete
+    if (!sessionLoading) {
+      fetchBlogPosts();
+    }
 
     const channel = supabase
       .channel('blog_posts_public_changes')
@@ -105,7 +110,7 @@ const BlogPage: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [t]);
+  }, [t, sessionLoading]); // Add sessionLoading to dependencies
 
   useEffect(() => {
     setSelectedPeriod("all");
@@ -184,7 +189,7 @@ const BlogPage: React.FC = () => {
     return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  if (loading) {
+  if (loading) { // Use local loading state for rendering
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
         <p className="text-center text-muted-foreground">{t('loading posts')}</p>
