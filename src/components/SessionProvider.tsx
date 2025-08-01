@@ -87,7 +87,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   useEffect(() => {
     console.log("SessionProvider: [LIFECYCLE] Component Mounted. Initializing session provider and setting up auth listener.");
     
-    // Attempt to load from localStorage first for instant UI
+    // --- START: Load from localStorage for instant UI ---
     try {
       const storedSession = localStorage.getItem('supabase_session');
       const storedProfile = localStorage.getItem('user_profile');
@@ -98,69 +98,53 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setSession(parsedSession);
         setUser(parsedSession.user);
         setProfile(parsedProfile);
-        console.log("SessionProvider: [STATE] setLoading(false) from localStorage init");
         setLoading(false); // UI can render immediately with stored data
         console.log("SessionProvider: [DEBUG] Loaded initial state from localStorage. Loading set to false.");
       } else {
-        console.log("SessionProvider: [STATE] setLoading(true) from no localStorage init");
         setLoading(true); // If no stored data, keep loading true and wait for Supabase auth
         console.log("SessionProvider: [DEBUG] No initial state in localStorage, waiting for Supabase auth.");
       }
     } catch (e) {
       console.error("SessionProvider: [ERROR] Error parsing localStorage data:", e);
       clearSession(); // Clear corrupted data
-      console.log("SessionProvider: [STATE] setLoading(true) from localStorage error");
       setLoading(true); // Wait for Supabase auth
     }
+    // --- END: Load from localStorage ---
 
     // Set up the real-time auth state change listener for authoritative updates
+    // This effect should only run once on mount and once on unmount.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       console.log(`SessionProvider: [DEBUG] Auth state change event: ${event}`, currentSession);
       
-      // Use a local variable for the current user ID to avoid stale closure over `user` state
-      const currentUserId = currentSession?.user?.id;
-      // Capture current `user.id` from state. This `user` state is from the closure of this effect.
-      // If this effect runs only once, `user` here will be the initial `user` state.
-      // We need to be careful here. The `user` state *inside* this callback might be stale if the effect doesn't re-run.
-      // A better approach is to always fetch profile if `currentSession.user` exists and `profile` state is not yet set or its ID doesn't match.
-      
+      // Always set loading to true when an auth event is being processed,
+      // unless it's the initial session check and we already loaded from localStorage.
+      // This ensures UI reflects pending auth state changes.
+      // However, if we just loaded from localStorage and currentSession is null (initial state),
+      // we should not set loading to true again.
+      if (event !== 'INITIAL_SESSION' || !localStorage.getItem('supabase_session')) {
+         setLoading(true); // Indicate that we are processing an auth event
+         console.log("SessionProvider: [STATE] setLoading(true) from auth state change event processing");
+      }
+
       try {
-        // Update session and user state immediately
         setSession(currentSession);
         setUser(currentSession?.user || null);
 
         if (currentSession?.user) {
-          // Check if profile is already loaded and matches the current user
-          // Or if it's a new user signing in
-          if (!profile || profile.id !== currentSession.user.id) {
-            console.log("SessionProvider: [STATE] setLoading(true) from auth state change (new user or ID mismatch)");
-            setLoading(true); // Indicate that we are fetching profile data
-            console.log("SessionProvider: [DEBUG] User present or ID mismatch, fetching/refreshing profile from DB...");
-            const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
-            setProfile(fetchedProfile);
-            localStorage.setItem('supabase_session', JSON.stringify(currentSession));
-            localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
-            console.log("SessionProvider: [STATE] setLoading(false) from auth state change (new user fetch complete)");
-            setLoading(false); // Finished fetching profile
-            console.log("SessionProvider: [DEBUG] Profile fetch/refresh complete. Loading set to false.");
-          } else {
-            // User ID is the same as the one already in state.
-            // This happens on refresh when localStorage already populated `user` and `profile`.
-            // No need to re-fetch profile or set loading.
-            console.log("SessionProvider: [DEBUG] User found, profile already consistent. No re-fetch needed.");
-            localStorage.setItem('supabase_session', JSON.stringify(currentSession));
-            console.log("SessionProvider: [STATE] setLoading(false) from auth state change (consistent user)");
-            setLoading(false); // Ensure loading is false
-          }
+          // Always fetch the latest profile if a user is present in the session.
+          // This ensures the profile is up-to-date after any auth event (SIGN_IN, USER_UPDATED).
+          console.log("SessionProvider: [DEBUG] User present in session, fetching/refreshing profile from DB...");
+          const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
+          setProfile(fetchedProfile);
+          localStorage.setItem('supabase_session', JSON.stringify(currentSession));
+          localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
+          console.log("SessionProvider: [DEBUG] Profile fetch/refresh complete.");
         } else {
           // No user in currentSession (e.g., SIGNED_OUT, or no session on INITIAL_SESSION)
           console.log("SessionProvider: [DEBUG] No user found or signed out from auth event, clearing local data.");
           setProfile(null);
           localStorage.removeItem('supabase_session');
           localStorage.removeItem('user_profile');
-          console.log("SessionProvider: [STATE] setLoading(false) from auth state change (no user)");
-          setLoading(false); // Finished processing, no user, so not loading
-          console.log("SessionProvider: [DEBUG] No user. Loading set to false.");
         }
       } catch (err) {
         console.error("SessionProvider: [ERROR] Error processing auth state change:", err);
@@ -170,8 +154,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setProfile(null);
         localStorage.removeItem('supabase_session');
         localStorage.removeItem('user_profile');
-        console.log("SessionProvider: [STATE] setLoading(false) from auth state change (error)");
-        setLoading(false); // Ensure loading is false even on error
+      } finally {
+        // Always set loading to false after processing the auth event
+        console.log("SessionProvider: [STATE] setLoading(false) from auth state change finally");
+        setLoading(false);
       }
 
       // Handle toasts and navigation
@@ -193,7 +179,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.log("SessionProvider: [LIFECYCLE] Component Unmounted. Cleaning up auth listener.");
       subscription.unsubscribe();
     };
-  }, [profile]); // Dependency array now includes `profile` to ensure profile check is up-to-date.
+  }, [navigate, location.pathname, t, fetchProfileFromDb, clearSession]); // Dependensi yang stabil
 
   // Render children only when loading is false
   if (loading) {
