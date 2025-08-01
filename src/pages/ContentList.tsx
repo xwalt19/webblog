@@ -10,7 +10,7 @@ import { Trash } from "lucide-react"; // Removed Image, FileText, CalendarDays
 import { useSession } from "@/components/SessionProvider";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
+import { useTranslatedTag } from "@/utils/i18nUtils"; // Removed cleanTagForStorage
 
 interface BlogPost {
   id: string;

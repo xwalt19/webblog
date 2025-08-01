@@ -21,7 +21,7 @@ interface Camp {
 }
 
 const ManageCamps: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation(); // Removed i18n
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';

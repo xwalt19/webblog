@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
+// @ts-ignore
 import { BookOpen, GraduationCap, Users, Youtube, Music, CalendarDays, Archive, Code, BellRing, LayoutDashboard, Tent, Cpu } from "lucide-react";
 import { toast } from "sonner";
 

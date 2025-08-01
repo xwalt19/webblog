@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardTitle, CardDescription } from "@/components/ui/card"; // Removed CardContent, CardHeader
 import { Handshake, Building, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { dummyPartners, Partner } from "@/data/partners";
