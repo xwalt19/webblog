@@ -65,15 +65,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Function to refresh profile, exposed via context
   const refreshProfile = useCallback(async () => {
     if (user?.id) {
-      setLoading(true);
+      // For manual refresh, we can briefly show loading if needed, but not the full app overlay.
+      // For now, let's just update the profile without changing the global loading state.
       console.log("SessionProvider: [DEBUG] Manually refreshing profile.");
       try {
         const fetchedProfile = await fetchProfileFromDb(user.id);
         setProfile(fetchedProfile);
       } catch (err) {
         console.error("SessionProvider: [ERROR] Error refreshing profile:", err);
-      } finally {
-        setLoading(false);
       }
     }
   }, [user, fetchProfileFromDb]); // Depends on `user` and `fetchProfileFromDb`
@@ -82,65 +81,60 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   useEffect(() => {
     console.log("SessionProvider: [LIFECYCLE] Component Mounted. Initializing session provider.");
 
-    // Function to handle session and profile updates
-    const updateSessionAndProfile = async (currentSession: Session | null) => {
-      setSession(currentSession);
-      setUser(currentSession?.user || null);
-
-      if (currentSession?.user) {
-        console.log("SessionProvider: [DEBUG] User present, fetching profile...");
-        const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
-        setProfile(fetchedProfile);
-      } else {
-        console.log("SessionProvider: [DEBUG] No user found, clearing profile.");
-        setProfile(null);
-      }
-      setLoading(false); // Always set loading to false after processing session/profile
-      console.log("SessionProvider: [DEBUG] Session/profile processing complete. Loading set to false.");
-    };
-
     // 1. Fetch initial session and profile immediately on mount
     const getInitialData = async () => {
-      setLoading(true); // Ensure loading is true while fetching initial data
+      setLoading(true); // Ensure loading is true at the very start of initial data fetch
       console.log("SessionProvider: [DEBUG] Fetching initial session and profile...");
       try {
         const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError) throw sessionError;
-        await updateSessionAndProfile(initialSession);
+
+        setSession(initialSession);
+        setUser(initialSession?.user || null);
+
+        if (initialSession?.user) {
+          console.log("SessionProvider: [DEBUG] Initial session found, fetching profile...");
+          const fetchedProfile = await fetchProfileFromDb(initialSession.user.id);
+          setProfile(fetchedProfile);
+        } else {
+          console.log("SessionProvider: [DEBUG] No initial session found.");
+          setProfile(null);
+        }
       } catch (err) {
         console.error("SessionProvider: [ERROR] Error fetching initial session or profile:", err);
         setSession(null);
         setUser(null);
         setProfile(null);
-        setLoading(false); // Ensure loading is false even on error
+      } finally {
+        setLoading(false); // Crucially, set loading to false *only once* after initial check
+        console.log("SessionProvider: [DEBUG] Initial session check complete. Loading set to false.");
       }
     };
 
-    getInitialData();
+    getInitialData(); // Call it immediately on mount
 
     // 2. Set up real-time auth state change listener for subsequent events
+    // This listener should NOT manipulate the global 'loading' state.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       console.log(`SessionProvider: [DEBUG] Auth state change event: ${event}`, currentSession);
       
-      // For any auth event (except the initial load handled by getInitialData),
-      // set loading to true while processing the new state.
-      // This ensures UI reflects pending auth state changes.
-      if (event !== 'INITIAL_SESSION') { // 'INITIAL_SESSION' is handled by getInitialData
-        setLoading(true);
-        console.log("SessionProvider: [STATE] setLoading(true) from auth state change event processing");
-      }
+      // Update session and user states directly
+      setSession(currentSession);
+      setUser(currentSession?.user || null);
 
-      try {
-        await updateSessionAndProfile(currentSession); // Re-use the update logic
-      } catch (err) {
-        console.error("SessionProvider: [ERROR] Error processing auth state change:", err);
-        setSession(null);
-        setUser(null);
+      if (currentSession?.user) {
+        // Always fetch the latest profile if a user is present in the session.
+        // This ensures the profile is up-to-date after any auth event (SIGN_IN, USER_UPDATED).
+        console.log("SessionProvider: [DEBUG] User present, fetching/refreshing profile from DB due to auth event...");
+        const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
+        setProfile(fetchedProfile);
+      } else {
+        // No user in currentSession (e.g., SIGNED_OUT)
+        console.log("SessionProvider: [DEBUG] No user found or signed out from auth event, clearing profile.");
         setProfile(null);
-        setLoading(false); // Ensure loading is false even on error
       }
 
-      // Handle toasts and navigation (use stable references)
+      // Handle toasts and navigation
       if (event === 'SIGNED_IN') {
         toast.success(t('signed in successfully'));
         if (location.pathname === '/login') {
@@ -152,6 +146,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       } else if (event === 'USER_UPDATED') {
         toast.info(t('profile updated'));
       }
+      // IMPORTANT: Do NOT set setLoading(true) or setLoading(false) here.
+      // The initial getInitialData handles the global loading state.
     });
 
     return () => {
