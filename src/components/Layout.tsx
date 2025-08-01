@@ -1,13 +1,13 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, LogIn, User } from "lucide-react"; // Removed LayoutDashboard icon as it's no longer needed in header
+import { LogOut, LogIn, User, Loader2 } from "lucide-react"; // Import Loader2 for spinner
 import MobileNav from "./MobileNav";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import { useSession } from "@/components/SessionProvider";
 import { supabase } from "@/integrations/supabase/client";
-import Sidebar from "./Sidebar";
+import Sidebar from "./Sidebar"; // Import Sidebar component
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
@@ -30,12 +30,14 @@ const Layout: React.FC = () => {
 
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
-            {!loading && (
+            {loading ? ( // Show loading state if session is loading
+              <div className="flex items-center px-4 py-2 text-muted-foreground">
+                <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading status')}
+              </div>
+            ) : (
               <>
                 {session ? (
                   <>
-                    {/* Removed Dashboard link from header */}
-                    {/* Removed Admin Dashboard link from header */}
                     <Link to="/profile">
                       <Button variant="ghost" className="px-4 py-2">
                         <User className="h-5 w-5 mr-2" /> {displayName}
