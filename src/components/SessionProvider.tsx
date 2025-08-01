@@ -60,12 +60,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setProfile(null);
     localStorage.removeItem('supabase_session');
     localStorage.removeItem('user_profile');
+    console.log("SessionProvider: [STATE] setLoading(false) from clearSession");
     setLoading(false); // Ensure loading is false after clearing
   }, []);
 
   // Function to refresh profile, exposed via context
   const refreshProfile = useCallback(async () => {
     if (user?.id) {
+      console.log("SessionProvider: [STATE] setLoading(true) from refreshProfile");
       setLoading(true); // Indicate loading for manual refresh
       console.log("SessionProvider: [DEBUG] Manually refreshing profile.");
       try {
@@ -75,6 +77,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       } catch (err) {
         console.error("SessionProvider: [ERROR] Error refreshing profile:", err);
       } finally {
+        console.log("SessionProvider: [STATE] setLoading(false) from refreshProfile finally");
         setLoading(false);
       }
     }
@@ -95,16 +98,18 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setSession(parsedSession);
         setUser(parsedSession.user);
         setProfile(parsedProfile);
+        console.log("SessionProvider: [STATE] setLoading(false) from localStorage init");
         setLoading(false); // UI can render immediately with stored data
         console.log("SessionProvider: [DEBUG] Loaded initial state from localStorage. Loading set to false.");
       } else {
-        // If no stored data, keep loading true and wait for Supabase auth
-        setLoading(true);
+        console.log("SessionProvider: [STATE] setLoading(true) from no localStorage init");
+        setLoading(true); // If no stored data, keep loading true and wait for Supabase auth
         console.log("SessionProvider: [DEBUG] No initial state in localStorage, waiting for Supabase auth.");
       }
     } catch (e) {
       console.error("SessionProvider: [ERROR] Error parsing localStorage data:", e);
       clearSession(); // Clear corrupted data
+      console.log("SessionProvider: [STATE] setLoading(true) from localStorage error");
       setLoading(true); // Wait for Supabase auth
     }
 
@@ -113,25 +118,31 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.log(`SessionProvider: [DEBUG] Auth state change event: ${event}`, currentSession);
       
       try {
+        // Update session and user state immediately
         setSession(currentSession);
         setUser(currentSession?.user || null);
 
         if (currentSession?.user) {
-          // Only fetch profile and set loading if user ID changes or profile is not yet loaded
-          if (!profile || profile.id !== currentSession.user.id) {
+          // Only fetch profile and set loading if it's a new user or the profile state is currently empty/stale
+          // We compare against the `user` state variable, which is updated right above.
+          if (!user || user.id !== currentSession.user.id) {
+            console.log("SessionProvider: [STATE] setLoading(true) from auth state change (new user or ID mismatch)");
             setLoading(true); // Indicate that we are fetching profile data
             console.log("SessionProvider: [DEBUG] User present or ID mismatch, fetching/refreshing profile from DB...");
             const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
             setProfile(fetchedProfile);
             localStorage.setItem('supabase_session', JSON.stringify(currentSession));
             localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
+            console.log("SessionProvider: [STATE] setLoading(false) from auth state change (new user fetch complete)");
             setLoading(false); // Finished fetching profile
             console.log("SessionProvider: [DEBUG] Profile fetch/refresh complete. Loading set to false.");
           } else {
-            // User ID is the same, assume profile is up-to-date from localStorage or previous fetch
-            // Just update session in localStorage, no need to re-fetch profile or show loading
+            // User ID is the same as the one already in state.
+            // This happens on refresh when localStorage already populated `user` and `profile`.
+            // No need to re-fetch profile or set loading.
             console.log("SessionProvider: [DEBUG] User found, profile already consistent. No re-fetch needed.");
             localStorage.setItem('supabase_session', JSON.stringify(currentSession));
+            console.log("SessionProvider: [STATE] setLoading(false) from auth state change (consistent user)");
             setLoading(false); // Ensure loading is false
           }
         } else {
@@ -140,6 +151,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           setProfile(null);
           localStorage.removeItem('supabase_session');
           localStorage.removeItem('user_profile');
+          console.log("SessionProvider: [STATE] setLoading(false) from auth state change (no user)");
           setLoading(false); // Finished processing, no user, so not loading
           console.log("SessionProvider: [DEBUG] No user. Loading set to false.");
         }
@@ -151,6 +163,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setProfile(null);
         localStorage.removeItem('supabase_session');
         localStorage.removeItem('user_profile');
+        console.log("SessionProvider: [STATE] setLoading(false) from auth state change (error)");
         setLoading(false); // Ensure loading is false even on error
       }
 
@@ -173,7 +186,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.log("SessionProvider: [DEBUG] Cleaning up onAuthStateChange listener.");
       subscription.unsubscribe();
     };
-  }, [navigate, location.pathname, t, fetchProfileFromDb, clearSession, profile]); // Added 'profile' to dependencies
+  }, [navigate, location.pathname, t, fetchProfileFromDb, clearSession, user]); // Added 'user' to dependencies, removed 'profile'
 
   // Render children only when loading is false
   if (loading) {
