@@ -36,6 +36,7 @@ const ManagePrograms: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Only proceed if session loading is complete
     if (!sessionLoading) {
       if (!session) {
         toast.error(t('login required'));
@@ -44,10 +45,11 @@ const ManagePrograms: React.FC = () => {
         toast.error(t('admin required'));
         navigate('/');
       } else {
+        // If session is loaded and user is admin, fetch data
         fetchPrograms();
       }
     }
-  }, [session, isAdmin, sessionLoading, navigate, t]);
+  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
 
   const fetchPrograms = async () => {
     setDataLoading(true);
@@ -65,6 +67,7 @@ const ManagePrograms: React.FC = () => {
     } catch (err: any) {
       console.error("Error fetching programs:", err);
       setError(t("fetch data error", { error: err.message }));
+      // Optionally, if a critical error, navigate away or show a persistent error message
     } finally {
       setDataLoading(false);
     }
@@ -106,7 +109,8 @@ const ManagePrograms: React.FC = () => {
     });
   };
 
-  if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
+  // Render loading state based on sessionLoading OR dataLoading
+  if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
@@ -131,9 +135,7 @@ const ManagePrograms: React.FC = () => {
         </Link>
       </div>
 
-      {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('loading status')}</p>
-      ) : error ? (
+      {error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : programs.length > 0 ? (
         <Card className="shadow-lg">
