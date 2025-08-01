@@ -8,16 +8,28 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/components/SessionProvider";
 import { supabase } from "@/integrations/supabase/client";
 import Sidebar from "./Sidebar"; // Import Sidebar component
+import { toast } from "sonner"; // Import toast
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
-  const { session, profile, user, loading } = useSession();
+  const { session, profile, user, loading, clearSession } = useSession(); // Get clearSession
 
   const isAdmin = profile?.role === 'admin';
   const displayName = profile?.first_name || user?.email || t('my profile');
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        throw error;
+      }
+      clearSession(); // Immediately clear local state and localStorage
+      // No need to navigate here, as SessionProvider's onAuthStateChange will handle it
+      // or the clearSession already prepares the state for /login redirect.
+    } catch (err: any) {
+      console.error("Error during logout:", err);
+      toast.error(t('logout failed', { error: err.message }));
+    }
   };
 
   return (

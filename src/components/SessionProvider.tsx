@@ -20,6 +20,7 @@ interface SessionContextType {
   profile: Profile | null;
   loading: boolean; // Indicates if initial session check or an auth action is in progress
   refreshProfile: () => Promise<void>; // Function to manually refresh profile
+  clearSession: () => void; // New function to explicitly clear session state
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -68,6 +69,16 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return profileData;
   }, []);
 
+  // Function to explicitly clear session state and local storage
+  const clearSession = useCallback(() => {
+    setSession(null);
+    setUser(null);
+    setProfile(null);
+    localStorage.removeItem('supabase_session');
+    localStorage.removeItem('user_profile');
+    setLoading(false); // Ensure loading is false after clearing
+  }, []);
+
   // Function to refresh profile, exposed via context
   const refreshProfile = useCallback(async () => {
     if (user?.id) {
@@ -86,10 +97,11 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      // Set loading to true for explicit auth actions (sign in/out/update)
-      // or for the initial session check if no local data was found.
-      if (event !== 'INITIAL_SESSION' || !getInitialSession()) {
-        setLoading(true); 
+      // Only set loading true if it's an initial check without local session, or a user-initiated sign-in/update
+      if (event === 'INITIAL_SESSION' && !getInitialSession()) {
+        setLoading(true);
+      } else if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+        setLoading(true);
       }
 
       try {
@@ -102,6 +114,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           localStorage.setItem('supabase_session', JSON.stringify(currentSession));
           localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
         } else {
+          // If currentSession is null (e.g., SIGNED_OUT), clear local storage and state
+          // This path is primarily for external sign-outs (e.g., from Supabase dashboard)
+          // or if clearSession wasn't called by the app's logout button.
           setProfile(null);
           localStorage.removeItem('supabase_session');
           localStorage.removeItem('user_profile');
@@ -115,7 +130,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.removeItem('supabase_session');
         localStorage.removeItem('user_profile');
       } finally {
-        setLoading(false); // Always set to false after processing the event
+        setLoading(false);
       }
 
       // Handle toasts and navigation
@@ -126,7 +141,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
       } else if (event === 'SIGNED_OUT') {
         toast.info(t('signed out successfully'));
-        navigate('/login');
+        // Do NOT navigate here. The component calling `handleLogout` will navigate.
+        // This prevents double navigation or race conditions.
       } else if (event === 'USER_UPDATED') {
         toast.info(t('profile updated'));
       }
@@ -163,7 +179,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [navigate, location.pathname, t, fetchProfileFromDb]); // Dependencies for useEffect
 
   return (
-    <SessionContext.Provider value={{ session, user, profile, loading, refreshProfile }}>
+    <SessionContext.Provider value={{ session, user, profile, loading, refreshProfile, clearSession }}>
       {children}
     </SessionContext.Provider>
   );
