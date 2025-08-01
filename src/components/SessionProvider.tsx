@@ -18,7 +18,7 @@ interface SessionContextType {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
-  loading: boolean; // Indicates if initial session check or an auth action is in progress
+  loading: boolean; // Indicates if an auth action is in progress (e.g., refreshProfile)
   refreshProfile: () => Promise<void>; // Function to manually refresh profile
   clearSession: () => void; // New function to explicitly clear session state
 }
@@ -70,7 +70,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
       } catch (err) {
         console.error("Error refreshing profile:", err);
-      } finally {
+      } finally { // Ensure loading is set to false after refreshProfile completes
         setLoading(false);
       }
     }
