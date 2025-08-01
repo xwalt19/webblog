@@ -27,6 +27,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   useEffect(() => {
     const getSession = async () => {
+      console.log("SessionProvider: Initial getSession call");
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
       setUser(session?.user || null);
@@ -36,9 +37,11 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setProfile(null);
       }
       setLoading(false);
+      console.log("SessionProvider: Initial session loaded. Session:", session, "User:", session?.user);
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("SessionProvider: Auth state change detected. Event:", event, "Session:", session);
       setSession(session);
       setUser(session?.user || null);
       if (session?.user) {
@@ -70,6 +73,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [navigate, location.pathname, t]);
 
   const fetchProfile = async (userId: string) => {
+    console.log("SessionProvider: Fetching profile for user ID:", userId);
     const { data, error } = await supabase
       .from('profiles')
       .select('id, first_name, last_name, role')
@@ -77,9 +81,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       .single();
 
     if (error) {
-      console.error("Error fetching profile:", error);
+      console.error("SessionProvider: Error fetching profile:", error);
       setProfile(null);
     } else {
+      console.log("SessionProvider: Profile fetched:", data);
       setProfile(data);
     }
   };

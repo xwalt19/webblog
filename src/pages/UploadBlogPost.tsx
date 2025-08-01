@@ -61,14 +61,18 @@ const UploadBlogPost: React.FC = () => {
   ];
 
   useEffect(() => {
+    console.log("UploadBlogPost: useEffect triggered. sessionLoading:", sessionLoading, "session:", session, "profile:", profile);
     if (!sessionLoading) {
       if (!session) {
+        console.log("UploadBlogPost: No session, redirecting to login.");
         toast.error(t('login required'));
         navigate('/login');
       } else if (profile?.role !== 'admin') {
+        console.log("UploadBlogPost: User is not admin, redirecting to home. Role:", profile?.role);
         toast.error(t('admin required'));
         navigate('/');
       } else {
+        console.log("UploadBlogPost: User is authenticated and admin. Proceeding with data fetch.");
         if (postId) {
           fetchPostData(postId);
         } else {
@@ -82,6 +86,7 @@ const UploadBlogPost: React.FC = () => {
 
   const fetchPostData = async (id: string) => {
     setDataLoading(true);
+    console.log("UploadBlogPost: Fetching post data for ID:", id);
     try {
       const { data, error } = await supabase
         .from('blog_posts')
@@ -93,6 +98,7 @@ const UploadBlogPost: React.FC = () => {
         throw error;
       }
       if (data) {
+        console.log("UploadBlogPost: Post data fetched:", data);
         setTitle(data.title || "");
         setExcerpt(data.excerpt || "");
         setContent(data.content || "");
@@ -104,7 +110,7 @@ const UploadBlogPost: React.FC = () => {
         setFormCreatedAt(new Date(data.created_at)); // Set existing date/time for edit
       }
     } catch (err: any) {
-      console.error("Error fetching post data:", err);
+      console.error("UploadBlogPost: Error fetching post data:", err);
       toast.error(t("fetch data error", { error: err.message }));
       navigate('/content'); // Redirect if post not found or error
     } finally {
@@ -113,6 +119,7 @@ const UploadBlogPost: React.FC = () => {
   };
 
   const fetchAllTags = async () => {
+    console.log("UploadBlogPost: Fetching all tags.");
     try {
       const { data, error } = await supabase
         .from('blog_posts')
@@ -125,8 +132,9 @@ const UploadBlogPost: React.FC = () => {
         post.tags?.forEach(tag => uniqueTags.add(cleanTagForStorage(tag)));
       });
       setAllPossibleTags(Array.from(uniqueTags).sort());
+      console.log("UploadBlogPost: All tags fetched:", Array.from(uniqueTags).sort());
     } catch (err) {
-      console.error("Error fetching all tags:", err);
+      console.error("UploadBlogPost: Error fetching all tags:", err);
     }
   };
 
@@ -147,6 +155,7 @@ const UploadBlogPost: React.FC = () => {
   };
 
   const uploadFile = async (file: File, bucket: string, folder: string) => {
+    console.log(`UploadBlogPost: Uploading file to ${bucket}/${folder}...`);
     const fileExtension = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
     const filePath = `${folder}/${fileName}`;
@@ -159,34 +168,41 @@ const UploadBlogPost: React.FC = () => {
       });
 
     if (uploadError) {
+      console.error("UploadBlogPost: File upload error:", uploadError);
       throw uploadError;
     }
 
     const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(filePath);
+    console.log("UploadBlogPost: File uploaded, public URL:", publicUrlData.publicUrl);
     return publicUrlData.publicUrl;
   };
 
   const deleteFileFromStorage = async (url: string, bucket: string) => {
+    console.log(`UploadBlogPost: Attempting to delete file from ${bucket}:`, url);
     try {
       const path = url.split(`/${bucket}/`)[1];
       if (path) {
         const { error } = await supabase.storage.from(bucket).remove([path]);
         if (error) {
-          console.warn(`Failed to delete old file from ${bucket}:`, error.message);
+          console.warn(`UploadBlogPost: Failed to delete old file from ${bucket}:`, error.message);
+        } else {
+          console.log(`UploadBlogPost: Old file deleted from ${bucket}:`, path);
         }
       }
     } catch (e) {
-      console.warn("Error parsing file URL for deletion:", e);
+      console.warn("UploadBlogPost: Error parsing file URL for deletion:", e);
     }
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setUploading(true);
+    console.log("UploadBlogPost: Form submission started.");
 
     if (!title || !excerpt || !category || !author || !formCreatedAt) {
       toast.error(t("required fields missing"));
       setUploading(false);
+      console.log("UploadBlogPost: Required fields missing.");
       return;
     }
 
@@ -232,6 +248,7 @@ const UploadBlogPost: React.FC = () => {
       let error;
       if (postId) {
         // Update existing post
+        console.log("UploadBlogPost: Updating existing post with ID:", postId, "Data:", postData);
         const { error: updateError } = await supabase
           .from('blog_posts')
           .update(postData)
@@ -239,6 +256,7 @@ const UploadBlogPost: React.FC = () => {
         error = updateError;
       } else {
         // Insert new post
+        console.log("UploadBlogPost: Inserting new post. Data:", postData);
         const { error: insertError } = await supabase
           .from('blog_posts')
           .insert([postData]);
@@ -250,6 +268,7 @@ const UploadBlogPost: React.FC = () => {
       }
 
       toast.success(postId ? t("updated successfully") : t("added successfully"));
+      console.log("UploadBlogPost: Post saved successfully.");
       
       // Reset form or navigate
       if (!postId) {
@@ -271,14 +290,16 @@ const UploadBlogPost: React.FC = () => {
       }
 
     } catch (err: any) {
-      console.error("Error saving blog post:", err);
+      console.error("UploadBlogPost: Error saving blog post:", err);
       toast.error(t("save failed", { error: err.message }));
     } finally {
       setUploading(false);
+      console.log("UploadBlogPost: Form submission finished.");
     }
   };
 
   if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
+    console.log("UploadBlogPost: Rendering loading/redirect state. sessionLoading:", sessionLoading, "dataLoading:", dataLoading, "session:", session, "profile role:", profile?.role);
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
