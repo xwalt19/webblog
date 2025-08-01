@@ -29,7 +29,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true); // Always start as true
+  const [loading, setLoading] = useState(true); // Always start as true to ensure initial check via onAuthStateChange
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,44 +76,11 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [user, fetchProfileFromDb]);
 
-  // Initial session check and listener setup
+  // Rely solely on onAuthStateChange for session management
   useEffect(() => {
-    const loadSessionAndProfile = async () => {
-      setLoading(true); // Ensure loading is true at the start of this process
-      try {
-        const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
-
-        if (sessionError) {
-          console.error("SessionProvider: Error getting initial session:", sessionError);
-          clearSession(); // Clear everything on error
-          return;
-        }
-
-        setSession(currentSession);
-        setUser(currentSession?.user || null);
-
-        if (currentSession?.user) {
-          const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
-          setProfile(fetchedProfile);
-          localStorage.setItem('supabase_session', JSON.stringify(currentSession));
-          localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
-        } else {
-          clearSession(); // No session, ensure local storage is clear
-        }
-      } catch (err) {
-        console.error("SessionProvider: Unexpected error during initial session check:", err);
-        clearSession(); // Clear everything on unexpected error
-      } finally {
-        setLoading(false); // Always set to false after initial check completes
-      }
-    };
-
-    loadSessionAndProfile(); // Call immediately on mount
-
-    // Set up auth state change listener for subsequent changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      // For any auth state change, re-evaluate the session and profile
-      setLoading(true); 
+      setLoading(true); // Always set loading true when an auth event occurs
+
       try {
         setSession(currentSession);
         setUser(currentSession?.user || null);
@@ -124,7 +91,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           localStorage.setItem('supabase_session', JSON.stringify(currentSession));
           localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
         } else {
-          // If currentSession is null (e.g., SIGNED_OUT), clear local storage and state
+          // If currentSession is null (e.g., SIGNED_OUT, or no session on INITIAL_SESSION), clear local storage and state
           setProfile(null);
           localStorage.removeItem('supabase_session');
           localStorage.removeItem('user_profile');
