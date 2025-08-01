@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -22,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
+import { useSession } from "@/components/SessionProvider";
 
 interface BlogPost {
   id: string;
@@ -41,6 +44,7 @@ const POSTS_PER_PAGE = 6;
 const Archives: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { getTranslatedTag } = useTranslatedTag();
+  const { loading: sessionLoading } = useSession();
   const [allArchivePosts, setAllArchivePosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,8 +76,11 @@ const Archives: React.FC = () => {
       }
     };
 
-    fetchArchivePosts();
-  }, [t]);
+    // Hanya ambil postingan arsip jika sesi sudah selesai dimuat
+    if (!sessionLoading) {
+      fetchArchivePosts();
+    }
+  }, [t, sessionLoading]); // Tambahkan sessionLoading ke dependensi
 
   useEffect(() => {
     setSelectedPeriod("all");
@@ -152,7 +159,7 @@ const Archives: React.FC = () => {
     return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  if (loading) {
+  if (loading) { // Gunakan status loading lokal untuk rendering
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
         <p className="text-center text-muted-foreground">{t('loading archives')}</p>
