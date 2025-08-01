@@ -44,20 +44,6 @@ const ManageCalendar: React.FC = () => {
   const [formDescription, setFormDescription] = useState("");
   const [formDate, setFormDate] = useState<Date | undefined>(undefined);
 
-  useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (!isAdmin) {
-        toast.error(t('admin required'));
-        navigate('/');
-      } else {
-        fetchEvents();
-      }
-    }
-  }, [session, isAdmin, sessionLoading, navigate, t]);
-
   const fetchEvents = async () => {
     setDataLoading(true);
     setError(null);
@@ -78,6 +64,28 @@ const ManageCalendar: React.FC = () => {
       setDataLoading(false);
     }
   };
+
+  // Combined useEffect for initial load, auth check, and data fetching
+  useEffect(() => {
+    if (sessionLoading) {
+      return;
+    }
+
+    if (!session) {
+      toast.error(t('login required'));
+      navigate('/login');
+      return;
+    }
+
+    if (!isAdmin) {
+      toast.error(t('admin required'));
+      navigate('/');
+      return;
+    }
+
+    fetchEvents();
+
+  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
 
   const handleAddEdit = async () => {
     if (!formTitle || !formDate) {

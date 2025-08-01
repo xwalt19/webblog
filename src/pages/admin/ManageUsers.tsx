@@ -20,7 +20,6 @@ interface UserProfile {
   first_name: string | null;
   last_name: string | null;
   role: string;
-  // created_at: string; // Removed as it does not exist in the database schema
 }
 
 const ManageUsers: React.FC = () => {
@@ -39,47 +38,6 @@ const ManageUsers: React.FC = () => {
   const [formLastName, setFormLastName] = useState("");
   const [formRole, setFormRole] = useState("");
 
-  useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (!isAdmin) {
-        toast.error(t('admin required'));
-        navigate('/');
-      } else {
-        fetchUsers();
-
-        const channel = supabase
-          .channel('profiles_changes')
-          .on(
-            'postgres_changes',
-            { event: '*', schema: 'public', table: 'profiles' },
-            (payload) => {
-              if (payload.eventType === 'INSERT') {
-                setUsers((prev) => [payload.new as UserProfile, ...prev]);
-              } else if (payload.eventType === 'UPDATE') {
-                setUsers((prev) =>
-                  prev.map((user) =>
-                    user.id === payload.new.id ? (payload.new as UserProfile) : user
-                  )
-                );
-              } else if (payload.eventType === 'DELETE') {
-                setUsers((prev) =>
-                  prev.filter((user) => user.id !== payload.old.id)
-                );
-              }
-            }
-          )
-          .subscribe();
-
-        return () => {
-          supabase.removeChannel(channel);
-        };
-      }
-    }
-  }, [session, isAdmin, sessionLoading, navigate, t]);
-
   const fetchUsers = async () => {
     setDataLoading(true);
     setError(null);
@@ -87,8 +45,8 @@ const ManageUsers: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
-        // .order('created_at', { ascending: false }); // Removed as 'created_at' column does not exist
+        .select('*');
+        // Removed .order('created_at', { ascending: false }) as 'created_at' column does not exist
 
       if (error) {
         throw error;
@@ -102,6 +60,54 @@ const ManageUsers: React.FC = () => {
       console.timeEnd("Fetch users data"); // End timer
     }
   };
+
+  // Combined useEffect for initial load, auth check, and data fetching
+  useEffect(() => {
+    if (sessionLoading) {
+      return;
+    }
+
+    if (!session) {
+      toast.error(t('login required'));
+      navigate('/login');
+      return;
+    }
+
+    if (!isAdmin) {
+      toast.error(t('admin required'));
+      navigate('/');
+      return;
+    }
+
+    fetchUsers();
+
+    const channel = supabase
+      .channel('profiles_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'profiles' },
+        (payload) => {
+          if (payload.eventType === 'INSERT') {
+            setUsers((prev) => [payload.new as UserProfile, ...prev]);
+          } else if (payload.eventType === 'UPDATE') {
+            setUsers((prev) =>
+              prev.map((user) =>
+                user.id === payload.new.id ? (payload.new as UserProfile) : user
+              )
+            );
+          } else if (payload.eventType === 'DELETE') {
+            setUsers((prev) =>
+              prev.filter((user) => user.id !== payload.old.id)
+            );
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
 
   const handleEditUser = async () => {
     if (!currentUser) return;
@@ -163,16 +169,6 @@ const ManageUsers: React.FC = () => {
     setIsDialogOpen(true);
   };
 
-  // Removed formatDisplayDate as created_at is no longer used for display
-  // const formatDisplayDate = (isoString: string) => {
-  //   const dateObj = new Date(isoString);
-  //   return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', {
-  //     year: 'numeric',
-  //     month: 'long',
-  //     day: 'numeric',
-  //   });
-  // };
-
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -202,7 +198,6 @@ const ManageUsers: React.FC = () => {
                 <TableRow>
                   <TableHead>{t('table name')}</TableHead>
                   <TableHead>{t('table role')}</TableHead>
-                  {/* <TableHead>{t('table created at')}</TableHead> */} {/* Removed from display */}
                   <TableHead className="text-right">{t('table actions')}</TableHead>
                 </TableRow>
               </TableHeader>
@@ -211,7 +206,6 @@ const ManageUsers: React.FC = () => {
                   <TableRow key={user.id}>
                     <TableCell className="font-medium">{user.first_name} {user.last_name}</TableCell>
                     <TableCell>{user.role}</TableCell>
-                    {/* <TableCell>{formatDisplayDate(user.created_at)}</TableCell> */} {/* Removed from display */}
                     <TableCell className="text-right">
                       <Button variant="ghost" size="icon" onClick={() => openDialogForEdit(user)} className="mr-2">
                         <Edit className="h-4 w-4" />

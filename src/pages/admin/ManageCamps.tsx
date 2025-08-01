@@ -30,20 +30,6 @@ const ManageCamps: React.FC = () => {
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (!isAdmin) {
-        toast.error(t('admin required'));
-        navigate('/');
-      } else {
-        fetchCamps();
-      }
-    }
-  }, [session, isAdmin, sessionLoading, navigate, t]);
-
   const fetchCamps = async () => {
     setDataLoading(true);
     setError(null);
@@ -64,6 +50,28 @@ const ManageCamps: React.FC = () => {
       setDataLoading(false);
     }
   };
+
+  // Combined useEffect for initial load, auth check, and data fetching
+  useEffect(() => {
+    if (sessionLoading) {
+      return;
+    }
+
+    if (!session) {
+      toast.error(t('login required'));
+      navigate('/login');
+      return;
+    }
+
+    if (!isAdmin) {
+      toast.error(t('admin required'));
+      navigate('/');
+      return;
+    }
+
+    fetchCamps();
+
+  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
 
   const handleDelete = async (id: string) => {
     if (!window.confirm(t("confirm delete camp"))) {

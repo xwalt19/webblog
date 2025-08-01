@@ -65,61 +65,6 @@ const ManageBlogPosts: React.FC = () => {
     return ["all", ...Array.from(tags).sort()];
   }, [blogPosts]); // Recalculate when blogPosts change
 
-  // Initial fetch and Realtime subscription
-  useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (!isAdmin) {
-        toast.error(t('admin required'));
-        navigate('/');
-      } else {
-        fetchBlogPosts();
-
-        const channel = supabase
-          .channel('blog_posts_admin_changes')
-          .on(
-            'postgres_changes',
-            { event: '*', schema: 'public', table: 'blog_posts' },
-            (payload) => {
-              // Only process changes for non-PDF posts (actual blog posts)
-              if ((payload.new as BlogPost)?.pdf_link === null || (payload.old as BlogPost)?.pdf_link === null) {
-                if (payload.eventType === 'INSERT') {
-                  setBlogPosts((prev) => [payload.new as BlogPost, ...prev]);
-                  setTotalPostsCount((prev) => prev + 1);
-                } else if (payload.eventType === 'UPDATE') {
-                  setBlogPosts((prev) =>
-                    prev.map((post) =>
-                      post.id === payload.new.id ? (payload.new as BlogPost) : post
-                    )
-                  );
-                } else if (payload.eventType === 'DELETE') {
-                  setBlogPosts((prev) =>
-                    prev.filter((post) => post.id !== payload.old.id)
-                  );
-                  setTotalPostsCount((prev) => prev - 1);
-                }
-              }
-            }
-          )
-          .subscribe();
-
-        return () => {
-          supabase.removeChannel(channel);
-        };
-      }
-    }
-  }, [session, isAdmin, sessionLoading, navigate, t]);
-
-  // Refetch data only when filters or pagination change, not on every real-time update
-  useEffect(() => {
-    if (!sessionLoading && session && isAdmin) {
-      fetchBlogPosts();
-    }
-  }, [searchTerm, selectedCategory, selectedTag, currentPage]);
-
-
   const fetchBlogPosts = async () => {
     setDataLoading(true);
     setError(null);
@@ -158,6 +103,74 @@ const ManageBlogPosts: React.FC = () => {
       setDataLoading(false);
     }
   };
+
+  // Combined useEffect for initial load, auth check, and data fetching/filtering
+  useEffect(() => {
+    if (sessionLoading) {
+      // Session is still loading, wait for it to complete
+      return;
+    }
+
+    if (!session) {
+      // Not authenticated, redirect to login
+      toast.error(t('login required'));
+      navigate('/login');
+      return;
+    }
+
+    if (!isAdmin) {
+      // Not an admin, redirect to home
+      toast.error(t('admin required'));
+      navigate('/');
+      return;
+    }
+
+    // If we reach here, session is loaded, user is logged in, and is admin.
+    // Now, fetch data based on current filters and pagination.
+    fetchBlogPosts();
+
+  }, [session, isAdmin, sessionLoading, navigate, t, searchTerm, selectedCategory, selectedTag, currentPage]); // All dependencies that should trigger a fetch
+
+  // Realtime subscription (separate useEffect as it's a one-time setup)
+  useEffect(() => {
+    if (!session || !isAdmin) {
+      // Only subscribe if session is active and user is admin
+      return;
+    }
+
+    const channel = supabase
+      .channel('blog_posts_admin_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'blog_posts' },
+        (payload) => {
+          // Only process changes for non-PDF posts (actual blog posts)
+          if ((payload.new as BlogPost)?.pdf_link === null || (payload.old as BlogPost)?.pdf_link === null) {
+            if (payload.eventType === 'INSERT') {
+              setBlogPosts((prev) => [payload.new as BlogPost, ...prev]);
+              setTotalPostsCount((prev) => prev + 1);
+            } else if (payload.eventType === 'UPDATE') {
+              setBlogPosts((prev) =>
+                prev.map((post) =>
+                  post.id === payload.new.id ? (payload.new as BlogPost) : post
+                )
+              );
+            } else if (payload.eventType === 'DELETE') {
+              setBlogPosts((prev) =>
+                prev.filter((post) => post.id !== payload.old.id)
+              );
+              setTotalPostsCount((prev) => prev - 1);
+            }
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [session, isAdmin]); // Depend on session and isAdmin to manage subscription lifecycle
+
 
   const handleDelete = async (id: string, imageUrl: string | null) => {
     if (!window.confirm(t("confirm delete blog post"))) {
@@ -211,6 +224,7 @@ const ManageBlogPosts: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Render loading state based on sessionLoading OR dataLoading
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">

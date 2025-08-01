@@ -35,22 +35,6 @@ const ManagePrograms: React.FC = () => {
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Only proceed if session loading is complete
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (!isAdmin) {
-        toast.error(t('admin required'));
-        navigate('/');
-      } else {
-        // If session is loaded and user is admin, fetch data
-        fetchPrograms();
-      }
-    }
-  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
-
   const fetchPrograms = async () => {
     setDataLoading(true);
     setError(null);
@@ -72,6 +56,30 @@ const ManagePrograms: React.FC = () => {
       setDataLoading(false);
     }
   };
+
+  // Combined useEffect for initial load, auth check, and data fetching
+  useEffect(() => {
+    // Only proceed if session loading is complete
+    if (sessionLoading) {
+      return;
+    }
+
+    if (!session) {
+      toast.error(t('login required'));
+      navigate('/login');
+      return;
+    }
+
+    if (!isAdmin) {
+      toast.error(t('admin required'));
+      navigate('/');
+      return;
+    }
+
+    // If session is loaded and user is admin, fetch data
+    fetchPrograms();
+    
+  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
 
   const handleDelete = async (id: string) => {
     if (!window.confirm(t("confirm delete program"))) {
@@ -110,7 +118,7 @@ const ManagePrograms: React.FC = () => {
   };
 
   // Render loading state based on sessionLoading OR dataLoading
-  if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
+  if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
@@ -137,6 +145,8 @@ const ManagePrograms: React.FC = () => {
 
       {error ? (
         <p className="text-center text-destructive">{error}</p>
+      ) : dataLoading ? ( // Check dataLoading here
+        <p className="text-center text-muted-foreground">{t('loading status')}</p>
       ) : programs.length > 0 ? (
         <Card className="shadow-lg">
           <CardContent className="p-0">

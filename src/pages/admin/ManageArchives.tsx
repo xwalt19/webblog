@@ -61,21 +61,6 @@ const ManageArchives: React.FC = () => {
 
   const [allPossibleTags, setAllPossibleTags] = useState<string[]>([]); // New state for all tags
 
-  useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (!isAdmin) {
-        toast.error(t('admin required'));
-        navigate('/');
-      } else {
-        fetchArchives();
-        fetchAllTags(); // Fetch all tags when admin is authenticated
-      }
-    }
-  }, [session, isAdmin, sessionLoading, navigate, t]);
-
   const fetchArchives = async () => {
     setDataLoading(true);
     setError(null);
@@ -115,6 +100,29 @@ const ManageArchives: React.FC = () => {
       console.error("Error fetching all tags:", err);
     }
   };
+
+  // Combined useEffect for initial load, auth check, and data fetching
+  useEffect(() => {
+    if (sessionLoading) {
+      return;
+    }
+
+    if (!session) {
+      toast.error(t('login required'));
+      navigate('/login');
+      return;
+    }
+
+    if (!isAdmin) {
+      toast.error(t('admin required'));
+      navigate('/');
+      return;
+    }
+
+    fetchArchives();
+    fetchAllTags(); // Fetch all tags when admin is authenticated
+
+  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
 
   const uploadFile = async (file: File, bucket: string, folder: string) => {
     setUploadingFile(true);
@@ -192,13 +200,11 @@ const ManageArchives: React.FC = () => {
         .insert([archiveData]);
 
       if (error) {
-        console.error("Error adding archive:", error);
-        toast.error(t("save failed", { error: error.message }));
-      } else {
-        toast.success(t("added successfully"));
-        fetchArchives();
-        setIsDialogOpen(false);
+        throw error;
       }
+      toast.success(t("added successfully"));
+      fetchArchives();
+      setIsDialogOpen(false);
     }
   };
 
