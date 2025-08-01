@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu, LogOut, LogIn, LayoutDashboard, Users, User, Loader2 } from "lucide-react"; // Import User icon
@@ -17,6 +17,7 @@ import { toast } from "sonner"; // Import toast
 const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
+  const navigate = useNavigate(); // Initialize useNavigate
   const { session, profile, user, loading, clearSession } = useSession(); // Get clearSession
   const isAdmin = profile?.role === 'admin';
   const displayName = profile?.first_name || user?.email || t('my profile');
@@ -31,8 +32,7 @@ const MobileNav: React.FC = () => {
       }
       clearSession(); // Immediately clear local state and localStorage
       closeSheet(); // Close the mobile nav sheet
-      // No need to navigate here, as SessionProvider's onAuthStateChange will handle it
-      // or the clearSession already prepares the state for /login redirect.
+      navigate('/login'); // Navigate immediately after clearing session
     } catch (err: any) {
       console.error("Error during logout:", err);
       toast.error(t('logout failed', { error: err.message }));

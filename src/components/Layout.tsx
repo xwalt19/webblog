@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom"; // Import useNavigate
 import { Button } from "@/components/ui/button";
 import { LogOut, LogIn, User, Loader2 } from "lucide-react"; // Import Loader2 for spinner
 import MobileNav from "./MobileNav";
@@ -12,6 +12,7 @@ import { toast } from "sonner"; // Import toast
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate(); // Initialize useNavigate
   const { session, profile, user, loading, clearSession } = useSession(); // Get clearSession
 
   const isAdmin = profile?.role === 'admin';
@@ -24,8 +25,7 @@ const Layout: React.FC = () => {
         throw error;
       }
       clearSession(); // Immediately clear local state and localStorage
-      // No need to navigate here, as SessionProvider's onAuthStateChange will handle it
-      // or the clearSession already prepares the state for /login redirect.
+      navigate('/login'); // Navigate immediately after clearing session
     } catch (err: any) {
       console.error("Error during logout:", err);
       toast.error(t('logout failed', { error: err.message }));
