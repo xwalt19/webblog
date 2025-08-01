@@ -34,6 +34,9 @@ interface BlogPost {
   created_by: string | null; // Add created_by to interface
 }
 
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+const MAX_PDF_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
+
 const UploadBlogPost: React.FC = () => {
   const { id: postId } = useParams<{ id: string }>(); // Get post ID from URL for editing
   const { t } = useTranslation();
@@ -140,7 +143,14 @@ const UploadBlogPost: React.FC = () => {
 
   const handleImageFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setImageFile(event.target.files[0]);
+      const file = event.target.files[0];
+      if (file.size > MAX_IMAGE_SIZE_BYTES) {
+        toast.error(t('file size too large', { max: '5MB' }));
+        event.target.value = ''; // Clear the input
+        setImageFile(null);
+        return;
+      }
+      setImageFile(file);
     } else {
       setImageFile(null);
     }
@@ -148,7 +158,14 @@ const UploadBlogPost: React.FC = () => {
 
   const handlePdfFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setPdfFile(event.target.files[0]);
+      const file = event.target.files[0];
+      if (file.size > MAX_PDF_SIZE_BYTES) {
+        toast.error(t('file size too large', { max: '20MB' }));
+        event.target.value = ''; // Clear the input
+        setPdfFile(null);
+        return;
+      }
+      setPdfFile(file);
     } else {
       setPdfFile(null);
     }

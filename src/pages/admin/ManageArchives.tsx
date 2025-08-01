@@ -35,6 +35,8 @@ interface ArchivePost {
   pdf_link: string | null;
 }
 
+const MAX_PDF_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
+
 const ManageArchives: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { getTranslatedTag } = useTranslatedTag();
@@ -263,7 +265,14 @@ const ManageArchives: React.FC = () => {
 
   const handlePdfFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setPdfFile(event.target.files[0]);
+      const file = event.target.files[0];
+      if (file.size > MAX_PDF_SIZE_BYTES) {
+        toast.error(t('file size too large', { max: '20MB' }));
+        event.target.value = ''; // Clear the input
+        setPdfFile(null);
+        return;
+      }
+      setPdfFile(file);
     } else {
       setPdfFile(null);
     }

@@ -28,6 +28,8 @@ interface TikTokVideo {
   created_at: string;
 }
 
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+
 const UploadTikTokVideo: React.FC = () => {
   const { id: videoId } = useParams<{ id: string }>();
   const { t } = useTranslation();
@@ -91,7 +93,14 @@ const UploadTikTokVideo: React.FC = () => {
 
   const handleThumbnailFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      setThumbnailFile(event.target.files[0]);
+      const file = event.target.files[0];
+      if (file.size > MAX_IMAGE_SIZE_BYTES) {
+        toast.error(t('file size too large', { max: '5MB' }));
+        event.target.value = ''; // Clear the input
+        setThumbnailFile(null);
+        return;
+      }
+      setThumbnailFile(file);
     } else {
       setThumbnailFile(null);
     }
