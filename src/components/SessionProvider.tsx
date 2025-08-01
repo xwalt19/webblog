@@ -29,7 +29,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true); // Always start as true to ensure initial check via onAuthStateChange
+  const [loading, setLoading] = useState(true); // Start as true, will be set to false after initial check
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,54 +76,80 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [user, fetchProfileFromDb]);
 
-  // Rely solely on onAuthStateChange for session management
+  // Initial session load from localStorage and setup auth state change listener
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      setLoading(true); // Always set loading true when an auth event occurs
-
+    const loadInitialSession = async () => {
       try {
-        setSession(currentSession);
-        setUser(currentSession?.user || null);
+        // Try to load from localStorage first for instant UI
+        const storedSession = localStorage.getItem('supabase_session');
+        const storedProfile = localStorage.getItem('user_profile');
 
-        if (currentSession?.user) {
-          const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
-          setProfile(fetchedProfile);
-          localStorage.setItem('supabase_session', JSON.stringify(currentSession));
-          localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
+        if (storedSession && storedProfile) {
+          const parsedSession: Session = JSON.parse(storedSession);
+          const parsedProfile: Profile = JSON.parse(storedProfile);
+          setSession(parsedSession);
+          setUser(parsedSession.user);
+          setProfile(parsedProfile);
+          setLoading(false); // UI can render immediately
         } else {
-          // If currentSession is null (e.g., SIGNED_OUT, or no session on INITIAL_SESSION), clear local storage and state
-          setProfile(null);
-          localStorage.removeItem('supabase_session');
-          localStorage.removeItem('user_profile');
+          // If nothing in localStorage, or incomplete, set loading true
+          setLoading(true);
         }
+
+        // Always listen for auth state changes for authoritative updates
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+          setLoading(true); // Set loading true for any auth event processing
+
+          try {
+            setSession(currentSession);
+            setUser(currentSession?.user || null);
+
+            if (currentSession?.user) {
+              const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
+              setProfile(fetchedProfile);
+              localStorage.setItem('supabase_session', JSON.stringify(currentSession));
+              localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
+            } else {
+              // If currentSession is null (e.g., SIGNED_OUT, or no session on INITIAL_SESSION), clear local storage and state
+              setProfile(null);
+              localStorage.removeItem('supabase_session');
+              localStorage.removeItem('user_profile');
+            }
+          } catch (err) {
+            console.error("SessionProvider: Error processing auth state change:", err);
+            // Clear session data on error to ensure consistent state
+            setSession(null);
+            setUser(null);
+            setProfile(null);
+            localStorage.removeItem('supabase_session');
+            localStorage.removeItem('user_profile');
+          } finally {
+            setLoading(false); // Always set to false after processing the event
+          }
+
+          // Handle toasts and navigation
+          if (event === 'SIGNED_IN') {
+            toast.success(t('signed in successfully'));
+            if (location.pathname === '/login') {
+              navigate('/');
+            }
+          } else if (event === 'SIGNED_OUT') {
+            toast.info(t('signed out successfully'));
+            // Do NOT navigate here. The component calling `handleLogout` will navigate.
+            // This prevents double navigation or race conditions.
+          } else if (event === 'USER_UPDATED') {
+            toast.info(t('profile updated'));
+          }
+        });
+
+        return () => subscription.unsubscribe();
       } catch (err) {
-        console.error("SessionProvider: Error processing auth state change:", err);
-        // Clear session data on error to ensure consistent state
-        setSession(null);
-        setUser(null);
-        setProfile(null);
-        localStorage.removeItem('supabase_session');
-        localStorage.removeItem('user_profile');
-      } finally {
-        setLoading(false); // Always set to false after processing the event
+        console.error("SessionProvider: Error during initial session load or subscription setup:", err);
+        clearSession(); // Ensure everything is cleared on critical error
       }
+    };
 
-      // Handle toasts and navigation
-      if (event === 'SIGNED_IN') {
-        toast.success(t('signed in successfully'));
-        if (location.pathname === '/login') {
-          navigate('/');
-        }
-      } else if (event === 'SIGNED_OUT') {
-        toast.info(t('signed out successfully'));
-        // Do NOT navigate here. The component calling `handleLogout` will navigate.
-        // This prevents double navigation or race conditions.
-      } else if (event === 'USER_UPDATED') {
-        toast.info(t('profile updated'));
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    loadInitialSession();
   }, [navigate, location.pathname, t, fetchProfileFromDb, clearSession]); // Dependencies for useEffect
 
   // Render children only when loading is false
