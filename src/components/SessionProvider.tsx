@@ -50,7 +50,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
     console.log("SessionProvider: [DEBUG] Profile fetched:", profileData);
     return profileData;
-  }, []);
+  }, []); // No dependencies, so this function reference is stable
 
   // Function to explicitly clear session state and local storage
   const clearSession = useCallback(() => {
@@ -62,7 +62,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.removeItem('user_profile');
     console.log("SessionProvider: [STATE] setLoading(false) from clearSession");
     setLoading(false); // Ensure loading is false after clearing
-  }, []);
+  }, []); // No dependencies, so this function reference is stable
 
   // Function to refresh profile, exposed via context
   const refreshProfile = useCallback(async () => {
@@ -81,11 +81,11 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setLoading(false);
       }
     }
-  }, [user, fetchProfileFromDb]);
+  }, [user, fetchProfileFromDb]); // Depends on `user` and `fetchProfileFromDb` (which is stable)
 
   // Main effect for session management
   useEffect(() => {
-    console.log("SessionProvider: [DEBUG] Initializing session provider.");
+    console.log("SessionProvider: [LIFECYCLE] Component Mounted. Initializing session provider and setting up auth listener.");
     
     // Attempt to load from localStorage first for instant UI
     try {
@@ -117,15 +117,22 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       console.log(`SessionProvider: [DEBUG] Auth state change event: ${event}`, currentSession);
       
+      // Use a local variable for the current user ID to avoid stale closure over `user` state
+      const currentUserId = currentSession?.user?.id;
+      // Capture current `user.id` from state. This `user` state is from the closure of this effect.
+      // If this effect runs only once, `user` here will be the initial `user` state.
+      // We need to be careful here. The `user` state *inside* this callback might be stale if the effect doesn't re-run.
+      // A better approach is to always fetch profile if `currentSession.user` exists and `profile` state is not yet set or its ID doesn't match.
+      
       try {
         // Update session and user state immediately
         setSession(currentSession);
         setUser(currentSession?.user || null);
 
         if (currentSession?.user) {
-          // Only fetch profile and set loading if it's a new user or the profile state is currently empty/stale
-          // We compare against the `user` state variable, which is updated right above.
-          if (!user || user.id !== currentSession.user.id) {
+          // Check if profile is already loaded and matches the current user
+          // Or if it's a new user signing in
+          if (!profile || profile.id !== currentSession.user.id) {
             console.log("SessionProvider: [STATE] setLoading(true) from auth state change (new user or ID mismatch)");
             setLoading(true); // Indicate that we are fetching profile data
             console.log("SessionProvider: [DEBUG] User present or ID mismatch, fetching/refreshing profile from DB...");
@@ -183,10 +190,10 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
 
     return () => {
-      console.log("SessionProvider: [DEBUG] Cleaning up onAuthStateChange listener.");
+      console.log("SessionProvider: [LIFECYCLE] Component Unmounted. Cleaning up auth listener.");
       subscription.unsubscribe();
     };
-  }, [navigate, location.pathname, t, fetchProfileFromDb, clearSession, user]); // Added 'user' to dependencies, removed 'profile'
+  }, [profile]); // Dependency array now includes `profile` to ensure profile check is up-to-date.
 
   // Render children only when loading is false
   if (loading) {
