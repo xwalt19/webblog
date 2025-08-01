@@ -29,11 +29,12 @@ const ManageRegularEvents: React.FC = () => {
   const isAdmin = profile?.role === 'admin';
 
   const [regularEvents, setRegularEvents] = useState<RegularEvent[]>([]);
-  const [dataLoading, setDataLoading] = useState(true);
+  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
   const [error, setError] = useState<string | null>(null);
+  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches
 
   const fetchRegularEvents = async () => {
-    setDataLoading(true);
+    setIsFetching(true);
     setError(null);
     try {
       const { data, error } = await supabase
@@ -49,7 +50,8 @@ const ManageRegularEvents: React.FC = () => {
       console.error("Error fetching regular events:", err);
       setError(t("fetch data error", { error: err.message }));
     } finally {
-      setDataLoading(false);
+      setIsFetching(false);
+      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
     }
   };
 
@@ -113,6 +115,15 @@ const ManageRegularEvents: React.FC = () => {
     );
   }
 
+  // If initial data is not loaded yet, show loading for the page content
+  if (!isInitialDataLoaded) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-muted-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -130,9 +141,7 @@ const ManageRegularEvents: React.FC = () => {
         </Link>
       </div>
 
-      {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('loading status')}</p>
-      ) : error ? (
+      {error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : regularEvents.length > 0 ? (
         <Card className="shadow-lg">
@@ -177,6 +186,11 @@ const ManageRegularEvents: React.FC = () => {
         </Card>
       ) : (
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no regular events found')}</p>
+      )}
+
+      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads */}
+      {isFetching && regularEvents.length > 0 && (
+        <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}
 
       <div className="text-center mt-12">

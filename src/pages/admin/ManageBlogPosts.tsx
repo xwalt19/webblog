@@ -45,8 +45,9 @@ const ManageBlogPosts: React.FC = () => {
   const isAdmin = profile?.role === 'admin';
 
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [dataLoading, setDataLoading] = useState(true);
+  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
   const [error, setError] = useState<string | null>(null);
+  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches (e.g., after filter change)
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
@@ -66,8 +67,8 @@ const ManageBlogPosts: React.FC = () => {
   }, [blogPosts]); // Recalculate when blogPosts change
 
   const fetchBlogPosts = async () => {
-    setDataLoading(true);
-    setError(null);
+    setIsFetching(true); // Indicate fetching is in progress
+    setError(null); // Clear previous errors
     try {
       let query = supabase
         .from('blog_posts')
@@ -100,33 +101,33 @@ const ManageBlogPosts: React.FC = () => {
       console.error("Error fetching blog posts:", err);
       setError(t("fetch data error", { error: err.message }));
     } finally {
-      setDataLoading(false);
+      setIsFetching(false);
+      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
     }
   };
 
   // Combined useEffect for initial load, auth check, and data fetching/filtering
   useEffect(() => {
     if (sessionLoading) {
-      // Session is still loading, wait for it to complete
+      // While session is loading, we don't do anything here.
+      // The SessionProvider's global loading screen is active.
       return;
     }
 
     if (!session) {
-      // Not authenticated, redirect to login
       toast.error(t('login required'));
       navigate('/login');
       return;
     }
 
     if (!isAdmin) {
-      // Not an admin, redirect to home
       toast.error(t('admin required'));
       navigate('/');
       return;
     }
 
     // If we reach here, session is loaded, user is logged in, and is admin.
-    // Now, fetch data based on current filters and pagination.
+    // Fetch data. The dependencies `searchTerm`, `selectedCategory`, `selectedTag`, `currentPage` will trigger re-fetch.
     fetchBlogPosts();
 
   }, [session, isAdmin, sessionLoading, navigate, t, searchTerm, selectedCategory, selectedTag, currentPage]); // All dependencies that should trigger a fetch
@@ -233,6 +234,15 @@ const ManageBlogPosts: React.FC = () => {
     );
   }
 
+  // If initial data is not loaded yet, show loading for the page content
+  if (!isInitialDataLoaded) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-muted-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -301,9 +311,7 @@ const ManageBlogPosts: React.FC = () => {
         </Link>
       </div>
 
-      {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('loading status')}</p>
-      ) : error ? (
+      {error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : blogPosts.length > 0 ? (
         <Card className="shadow-lg">
@@ -343,6 +351,11 @@ const ManageBlogPosts: React.FC = () => {
         </Card>
       ) : (
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no posts available')}</p>
+      )}
+
+      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads (e.g., filter change) */}
+      {isFetching && blogPosts.length > 0 && (
+        <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}
 
       {totalPages > 1 && (

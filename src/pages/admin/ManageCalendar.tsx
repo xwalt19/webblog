@@ -35,8 +35,9 @@ const ManageCalendar: React.FC = () => {
   const isAdmin = profile?.role === 'admin';
 
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [dataLoading, setDataLoading] = useState(true);
+  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
   const [error, setError] = useState<string | null>(null);
+  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<CalendarEvent | null>(null);
@@ -45,7 +46,7 @@ const ManageCalendar: React.FC = () => {
   const [formDate, setFormDate] = useState<Date | undefined>(undefined);
 
   const fetchEvents = async () => {
-    setDataLoading(true);
+    setIsFetching(true);
     setError(null);
     try {
       const { data, error } = await supabase
@@ -61,7 +62,8 @@ const ManageCalendar: React.FC = () => {
       console.error("Error fetching calendar events:", err);
       setError(t("fetch data error", { error: err.message }));
     } finally {
-      setDataLoading(false);
+      setIsFetching(false);
+      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
     }
   };
 
@@ -189,6 +191,15 @@ const ManageCalendar: React.FC = () => {
     );
   }
 
+  // If initial data is not loaded yet, show loading for the page content
+  if (!isInitialDataLoaded) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-muted-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -202,9 +213,7 @@ const ManageCalendar: React.FC = () => {
         <Button onClick={openDialogForAdd}>{t('add new calendar event')}</Button>
       </div>
 
-      {dataLoading ? (
-        <p className="text-center text-muted-foreground">{t('loading status')}</p>
-      ) : error ? (
+      {error ? (
         <p className="text-center text-destructive">{error}</p>
       ) : events.length > 0 ? (
         <Card className="shadow-lg">
@@ -240,6 +249,11 @@ const ManageCalendar: React.FC = () => {
         </Card>
       ) : (
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no calendar events found')}</p>
+      )}
+
+      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads */}
+      {isFetching && events.length > 0 && (
+        <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

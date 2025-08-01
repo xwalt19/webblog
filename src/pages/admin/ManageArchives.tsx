@@ -46,15 +46,16 @@ const ManageArchives: React.FC = () => {
   const isAdmin = profile?.role === 'admin';
 
   const [archives, setArchives] = useState<ArchivePost[]>([]);
-  const [dataLoading, setDataLoading] = useState(true);
+  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
   const [error, setError] = useState<string | null>(null);
+  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentArchiveDataForForm, setCurrentArchiveDataForForm] = useState<ArchivePostFormData | null>(null);
   const [allPossibleTags, setAllPossibleTags] = useState<string[]>([]);
 
   const fetchArchives = async () => {
-    setDataLoading(true);
+    setIsFetching(true);
     setError(null);
     try {
       const { data, error } = await supabase
@@ -71,7 +72,8 @@ const ManageArchives: React.FC = () => {
       console.error("Error fetching archives:", err);
       setError(t("fetch data error", { error: err.message }));
     } finally {
-      setDataLoading(false);
+      setIsFetching(false);
+      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
     }
   };
 
@@ -252,6 +254,15 @@ const ManageArchives: React.FC = () => {
     );
   }
 
+  // If initial data is not loaded yet, show loading for the page content
+  if (!isInitialDataLoaded) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-muted-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -267,7 +278,7 @@ const ManageArchives: React.FC = () => {
 
       <ArchiveTable
         archives={archives}
-        dataLoading={dataLoading}
+        dataLoading={isFetching} // Use isFetching for table's loading state
         error={error}
         onEdit={openDialogForEdit}
         onDelete={handleDeleteArchive}
