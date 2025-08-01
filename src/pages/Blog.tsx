@@ -46,7 +46,7 @@ const BlogPage: React.FC = () => {
   const { getTranslatedTag } = useTranslatedTag();
   const { loading: sessionLoading } = useSession(); // Get session loading state
   const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Local loading state for posts
   const [error, setError] = useState<string | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
@@ -55,8 +55,8 @@ const BlogPage: React.FC = () => {
 
   useEffect(() => {
     const fetchBlogPosts = async () => {
-      setLoading(true);
-      setError(null);
+      setLoading(true); // Start loading for posts
+      setError(null); // Clear previous errors
       try {
         const { data, error } = await supabase
           .from('blog_posts')
@@ -72,15 +72,17 @@ const BlogPage: React.FC = () => {
         console.error("Error fetching blog posts:", err);
         setError(t("failed to load posts", { error: err.message }));
       } finally {
-        setLoading(false);
+        setLoading(false); // End loading for posts
       }
     };
 
     // Only fetch blog posts if session loading is complete
+    // This ensures supabase client is ready and user auth state is known
     if (!sessionLoading) {
       fetchBlogPosts();
     }
 
+    // Realtime subscription for blog posts
     const channel = supabase
       .channel('blog_posts_public_changes')
       .on(
@@ -113,6 +115,7 @@ const BlogPage: React.FC = () => {
   }, [t, sessionLoading]); // Add sessionLoading to dependencies
 
   useEffect(() => {
+    // Reset filters and page when language or allPosts change
     setSelectedPeriod("all");
     setSelectedTag("all");
     setSearchTerm("");

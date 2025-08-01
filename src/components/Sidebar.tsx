@@ -37,7 +37,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon: Icon, label, isExpa
 
 const Sidebar: React.FC = () => {
   const { t } = useTranslation();
-  const { profile, session } = useSession(); // Removed 'loading' from destructuring here, as it's not needed for conditional rendering of these sections
+  const { profile, session } = useSession(); 
   const isAdmin = profile?.role === 'admin';
   const [isExpanded, setIsExpanded] = useState(false);
 
