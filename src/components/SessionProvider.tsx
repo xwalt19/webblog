@@ -29,7 +29,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true); // Always start as true to ensure initial check
+  const [loading, setLoading] = useState(true); // Always start as true
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -78,7 +78,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Initial session check and listener setup
   useEffect(() => {
-    const getInitialSessionAndProfile = async () => {
+    const loadSessionAndProfile = async () => {
       setLoading(true); // Ensure loading is true at the start of this process
       try {
         const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
@@ -108,15 +108,12 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     };
 
-    getInitialSessionAndProfile();
+    loadSessionAndProfile(); // Call immediately on mount
 
     // Set up auth state change listener for subsequent changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      // Only set loading true for explicit auth actions (sign in/out/update)
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
-        setLoading(true); 
-      }
-
+      // For any auth state change, re-evaluate the session and profile
+      setLoading(true); 
       try {
         setSession(currentSession);
         setUser(currentSession?.user || null);
@@ -128,8 +125,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
           localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
         } else {
           // If currentSession is null (e.g., SIGNED_OUT), clear local storage and state
-          // This path is primarily for external sign-outs (e.g., from Supabase dashboard)
-          // or if clearSession wasn't called by the app's logout button.
           setProfile(null);
           localStorage.removeItem('supabase_session');
           localStorage.removeItem('user_profile');
@@ -163,6 +158,15 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     return () => subscription.unsubscribe();
   }, [navigate, location.pathname, t, fetchProfileFromDb, clearSession]); // Dependencies for useEffect
+
+  // Render children only when loading is false
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
 
   return (
     <SessionContext.Provider value={{ session, user, profile, loading, refreshProfile, clearSession }}>
