@@ -17,16 +17,17 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-interface TikTokVideo {
-  id: string;
-  title: string;
-  description: string | null;
-  thumbnail_url: string | null;
-  video_url: string;
-  published_at: string;
-  created_by: string | null;
-  created_at: string;
-}
+// Removed unused interface TikTokVideo
+// interface TikTokVideo {
+//   id: string;
+//   title: string;
+//   description: string | null;
+//   thumbnail_url: string | null;
+//   video_url: string;
+//   published_at: string;
+//   created_by: string | null;
+//   created_at: string;
+// }
 
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
@@ -111,7 +112,7 @@ const UploadTikTokVideo: React.FC = () => {
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
     const filePath = `${folder}/${fileName}`;
 
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: _uploadData, error: uploadError } = await supabase.storage // Renamed uploadData to _uploadData
       .from(bucket)
       .upload(filePath, file, {
         cacheControl: '3600',

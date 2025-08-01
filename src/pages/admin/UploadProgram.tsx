@@ -12,18 +12,19 @@ import ProgramFormFields from "@/components/admin/ProgramFormFields";
 import ProgramPriceTables from "@/components/admin/ProgramPriceTables";
 import ProgramTopics from "@/components/admin/ProgramTopics";
 
-interface Program {
-  id: string;
-  title: string;
-  description: string;
-  schedule: string | null; // Still string from DB, will be parsed to Date
-  registration_fee: string | null;
-  price: string | null;
-  type: "kids" | "private" | "professional";
-  icon_name: string | null;
-  created_by: string | null;
-  created_at: string;
-}
+// Removed unused interface Program
+// interface Program {
+//   id: string;
+//   title: string;
+//   description: string;
+//   schedule: string | null; // Still string from DB, will be parsed to Date
+//   registration_fee: string | null;
+//   price: string | null;
+//   type: "kids" | "private" | "professional";
+//   icon_name: string | null;
+//   created_by: string | null;
+//   created_at: string;
+// }
 
 interface PriceTier {
   id?: string;

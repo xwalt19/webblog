@@ -3,14 +3,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card"; // Removed CardHeader, CardTitle, CardDescription
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash, PlusCircle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+// import { Badge } from "@/components/ui/badge"; // Removed unused import
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -61,7 +61,7 @@ const ManageBlogPosts: React.FC = () => {
   const allTags = useMemo(() => {
     const tags = new Set<string>();
     blogPosts.forEach(post => {
-      post.tags?.forEach(tag => tags.add(cleanTagForStorage(tag)));
+      post.tags?.forEach((tag: string) => tags.add(cleanTagForStorage(tag)));
     });
     return ["all", ...Array.from(tags).sort()];
   }, [blogPosts]); // Recalculate when blogPosts change
@@ -353,7 +353,7 @@ const ManageBlogPosts: React.FC = () => {
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no posts available')}</p>
       )}
 
-      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads (e.g., filter change) */}
+      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads */}
       {isFetching && blogPosts.length > 0 && (
         <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}

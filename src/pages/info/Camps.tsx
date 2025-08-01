@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react"; // Removed useMemo
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator"; // Removed unused import
 import { CalendarDays, Code } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";

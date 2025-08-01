@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Lightbulb, Users, Handshake, MapPin } from "lucide-react";
+import { Lightbulb, Users, MapPin } from "lucide-react"; // Removed Handshake
 import { useTranslation } from "react-i18next";
-import { dummyTeamMembers, TeamMember } from "@/data/teamMembers";
+import { dummyTeamMembers } from "@/data/teamMembers"; // Removed unused 'TeamMember' import
 
 const AboutPage: React.FC = () => {
   const { t } = useTranslation();

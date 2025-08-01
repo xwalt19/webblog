@@ -15,7 +15,7 @@ const Layout: React.FC = () => {
   const navigate = useNavigate(); // Initialize useNavigate
   const { session, profile, user, loading, clearSession } = useSession(); // Get clearSession
 
-  const isAdmin = profile?.role === 'admin';
+  // const isAdmin = profile?.role === 'admin'; // Removed unused variable
   const displayName = profile?.first_name || user?.email || t('my profile');
 
   const handleLogout = async () => {

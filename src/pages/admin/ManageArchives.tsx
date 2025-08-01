@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react"; // Removed useMemo
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card"; // Keep these, they are used in the JSX
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
-import { PlusCircle } from "lucide-react";
+// import { PlusCircle } from "lucide-react"; // Removed unused import
 import { cleanTagForStorage } from "@/utils/i18nUtils";
 import ArchiveTable from "@/components/admin/ArchiveTable";
 import ArchiveFormDialog from "@/components/admin/ArchiveFormDialog";
@@ -87,7 +87,7 @@ const ManageArchives: React.FC = () => {
 
       const uniqueTags = new Set<string>();
       data.forEach(post => {
-        post.tags?.forEach(tag => uniqueTags.add(cleanTagForStorage(tag)));
+        post.tags?.forEach((tag: string) => uniqueTags.add(cleanTagForStorage(tag))); // Added type annotation for 'tag'
       });
       setAllPossibleTags(Array.from(uniqueTags).sort());
     } catch (err) {
@@ -122,7 +122,7 @@ const ManageArchives: React.FC = () => {
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
     const filePath = `${folder}/${fileName}`;
 
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: _uploadData, error: uploadError } = await supabase.storage // Renamed uploadData to _uploadData
       .from(bucket)
       .upload(filePath, file, {
         cacheControl: '3600',

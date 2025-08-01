@@ -20,19 +20,20 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import MultiSelectTags from "@/components/MultiSelectTags"; // Import MultiSelectTags
 
-interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string | null;
-  content: string | null;
-  created_at: string; // This is the field to control
-  image_url: string | null;
-  category: string | null;
-  author: string | null;
-  tags: string[] | null;
-  pdf_link: string | null;
-  created_by: string | null; // Add created_by to interface
-}
+// Removed unused interface BlogPost
+// interface BlogPost {
+//   id: string;
+//   title: string;
+//   excerpt: string | null;
+//   content: string | null;
+//   created_at: string; // This is the field to control
+//   image_url: string | null;
+//   category: string | null;
+//   author: string | null;
+//   tags: string[] | null;
+//   pdf_link: string | null;
+//   created_by: string | null; // Add created_by to interface
+// }
 
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 const MAX_PDF_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
@@ -125,7 +126,7 @@ const UploadBlogPost: React.FC = () => {
 
       const uniqueTags = new Set<string>();
       data.forEach(post => {
-        post.tags?.forEach(tag => uniqueTags.add(cleanTagForStorage(tag)));
+        post.tags?.forEach((tag: string) => uniqueTags.add(cleanTagForStorage(tag))); // Added type annotation for 'tag'
       });
       setAllPossibleTags(Array.from(uniqueTags).sort());
     } catch (err) {
@@ -168,7 +169,7 @@ const UploadBlogPost: React.FC = () => {
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
     const filePath = `${folder}/${fileName}`;
 
-    const { data: uploadData, error: uploadError } = await supabase.storage
+    const { data: _uploadData, error: uploadError } = await supabase.storage // Renamed uploadData to _uploadData
       .from(bucket)
       .upload(filePath, file, {
         cacheControl: '3600',

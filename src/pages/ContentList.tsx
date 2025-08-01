@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { Image, FileText, CalendarDays, Trash } from "lucide-react";
+import { Trash } from "lucide-react"; // Removed Image, FileText, CalendarDays
 import { useSession } from "@/components/SessionProvider";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import { useTranslatedTag } from "@/utils/i18nUtils";
+import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
 
 interface BlogPost {
   id: string;
@@ -22,6 +22,7 @@ interface BlogPost {
   author: string;
   tags: string[];
   pdf_link: string | null;
+  created_by: string | null; // Add created_by to interface
 }
 
 const ContentList: React.FC = () => {

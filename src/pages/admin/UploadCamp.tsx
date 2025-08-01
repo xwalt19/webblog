@@ -14,14 +14,15 @@ import { useSession } from "@/components/SessionProvider";
 import { PlusCircle, MinusCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
-interface Camp {
-  id: string;
-  title: string;
-  dates: string;
-  description: string;
-  created_by: string | null;
-  created_at: string;
-}
+// Removed unused interface Camp
+// interface Camp {
+//   id: string;
+//   title: string;
+//   dates: string;
+//   description: string;
+//   created_by: string | null;
+//   created_at: string;
+// }
 
 interface CampDayLink {
   id?: string; // Optional for new links

@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react"; // Removed useMemo
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";

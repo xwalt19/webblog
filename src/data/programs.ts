@@ -1,5 +1,5 @@
 import React from "react";
-import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users, GraduationCap, DollarSign, CalendarDays } from "lucide-react";
+import { BookOpen, Gamepad, Globe, Smartphone, Lock, Cpu, Code, Users, GraduationCap, CalendarDays } from "lucide-react"; // Removed DollarSign
 
 export interface PriceTier {
   participantsKey: string;

@@ -4,7 +4,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { CalendarDays, BellRing } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { dummyFixedItems, FixedItem } from "@/data/fixedItems";
+import { dummyFixedItems } from "@/data/fixedItems"; // Removed unused 'FixedItem' import
 
 const FixedNewsSchedule: React.FC = () => {
   const { t, i18n } = useTranslation();

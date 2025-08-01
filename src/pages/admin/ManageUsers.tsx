@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card"; // Removed CardHeader, CardTitle, CardDescription
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Edit, Trash, User as UserIcon } from "lucide-react";
+import { Edit, Trash } from "lucide-react"; // Removed User as UserIcon
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface UserProfile {
@@ -23,7 +23,7 @@ interface UserProfile {
 }
 
 const ManageUsers: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation(); // Removed i18n as it's not directly used here
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';

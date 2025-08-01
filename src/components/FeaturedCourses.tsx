@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { dummyCourses, Course } from "@/data/courses";
+import { dummyCourses } from "@/data/courses"; // Removed unused 'Course' import
 
 const FeaturedCourses: React.FC = () => {
   const { t } = useTranslation();

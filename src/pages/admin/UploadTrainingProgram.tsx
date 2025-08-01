@@ -14,15 +14,16 @@ import { useSession } from "@/components/SessionProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { iconMap } from "@/utils/iconMap";
 
-interface TrainingProgram {
-  id: string;
-  title: string;
-  dates: string;
-  description: string;
-  icon_name: string | null;
-  created_by: string | null;
-  created_at: string;
-}
+// Removed unused interface TrainingProgram
+// interface TrainingProgram {
+//   id: string;
+//   title: string;
+//   dates: string;
+//   description: string;
+//   icon_name: string | null;
+//   created_by: string | null;
+//   created_at: string;
+// }
 
 const UploadTrainingProgram: React.FC = () => {
   const { id: programId } = useParams<{ id: string }>();
@@ -205,7 +206,7 @@ const UploadTrainingProgram: React.FC = () => {
               </Select>
               {iconName && (
                 <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-                  {t('selected icon preview')}: {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
+                  {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
                 </p>
               )}
             </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { CalendarDays, Code, Gamepad, Smartphone } from "lucide-react";
+import { Code, Gamepad, Smartphone } from "lucide-react"; // Removed CalendarDays
 
 export interface TrainingProgram {
   id: string;
