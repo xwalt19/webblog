@@ -27,8 +27,8 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [session, setSession] = useState<Session | null>(initialSessionData);
   const [user, setUser] = useState<User | null>(initialSessionData?.user || null);
   const [profile, setProfile] = useState<{ id: string; first_name: string; last_name: string; role: string } | null>(initialProfileData);
-  // Set loading to false if we have initial data from localStorage, true otherwise
-  // This is the key for instant display on refresh if data is cached.
+  // Initialize loading based on whether we have a session from localStorage.
+  // If we have initial data, we are not 'loading' in the sense of blocking UI.
   const [loading, setLoading] = useState(!initialSessionData);
 
   const navigate = useNavigate();
@@ -51,42 +51,39 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   useEffect(() => {
-    // This function will handle updating session and profile states, and localStorage
-    const updateSessionAndProfile = async (currentSession: Session | null) => {
-      setSession(currentSession);
-      setUser(currentSession?.user || null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      // Set loading to true for explicit auth actions or if it's the initial session and no local data
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED' || (event === 'INITIAL_SESSION' && !initialSessionData)) {
+        setLoading(true);
+      }
 
-      if (currentSession?.user) {
-        const fetchedProfile = await fetchProfile(currentSession.user.id);
-        setProfile(fetchedProfile);
-        localStorage.setItem('supabase_session', JSON.stringify(currentSession));
-        localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
-      } else {
+      try {
+        setSession(currentSession);
+        setUser(currentSession?.user || null);
+
+        if (currentSession?.user) {
+          const fetchedProfile = await fetchProfile(currentSession.user.id);
+          setProfile(fetchedProfile);
+          localStorage.setItem('supabase_session', JSON.stringify(currentSession));
+          localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
+        } else {
+          setProfile(null);
+          localStorage.removeItem('supabase_session');
+          localStorage.removeItem('user_profile');
+        }
+      } catch (err) {
+        console.error("SessionProvider: Error processing auth state change:", err);
+        // Clear session data on error to ensure consistent state
+        setSession(null);
+        setUser(null);
         setProfile(null);
         localStorage.removeItem('supabase_session');
         localStorage.removeItem('user_profile');
-      }
-    };
-
-    // Initial session check and setup
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      // For 'INITIAL_SESSION' event, if we already have data from localStorage,
-      // we don't want to show a loading spinner. We only set loading to true
-      // if we truly don't have any session data initially.
-      if (event === 'INITIAL_SESSION') {
-        if (!initialSessionData) { // Only show loading if no initial data from localStorage
-          setLoading(true);
-        }
-        await updateSessionAndProfile(currentSession);
-        setLoading(false); // Always set to false after initial session is processed
-      } else if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
-        // For explicit auth actions, we show loading
-        setLoading(true);
-        await updateSessionAndProfile(currentSession);
-        setLoading(false);
+      } finally {
+        setLoading(false); // Always set to false after processing the event
       }
 
-      // Handle toasts and navigation for explicit auth events
+      // Handle toasts and navigation
       if (event === 'SIGNED_IN') {
         toast.success(t('signed in successfully'));
         if (location.pathname === '/login') {

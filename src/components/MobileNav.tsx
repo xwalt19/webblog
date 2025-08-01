@@ -114,7 +114,7 @@ const MobileNav: React.FC = () => {
           </Accordion>
 
           {/* User Profile Link */}
-          {session && ( // Show if session exists, regardless of loading state
+          {session ? ( // Show if session exists
             <>
               <Link to="/dashboard" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
                 <LayoutDashboard className="h-5 w-5 inline-block mr-2" /> {t('dashboard')}
@@ -123,9 +123,9 @@ const MobileNav: React.FC = () => {
                 <User className="h-5 w-5 inline-block mr-2" /> {displayName}
               </Link>
             </>
-          )}
+          ) : null}
 
-          {isAdmin && ( // Show if isAdmin is true, regardless of loading state
+          {isAdmin ? ( // Show if isAdmin is true
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-4" className="border-b-0">
                 <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
@@ -171,25 +171,23 @@ const MobileNav: React.FC = () => {
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
-          )}
+          ) : null}
 
           {/* Auth Buttons for Mobile */}
-          {loading && !session ? ( // Show loading state ONLY if loading AND no session
+          {loading && !session ? ( // If loading and no session, show spinner
             <div className="flex items-center px-4 py-2 text-muted-foreground">
               <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading status')}
             </div>
-          ) : (
-            session ? ( // Show logout if session exists
-              <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={handleLogout}>
-                <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
+          ) : session ? ( // If session exists, show logout
+            <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={handleLogout}>
+              <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
+            </Button>
+          ) : ( // Otherwise (not loading, no session), show sign in
+            <Link to="/login" onClick={closeSheet}>
+              <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors">
+                <LogIn className="h-5 w-5 mr-2" /> {t('sign in')}
               </Button>
-            ) : ( // Show sign in if no session
-              <Link to="/login" onClick={closeSheet}>
-                <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors">
-                  <LogIn className="h-5 w-5 mr-2" /> {t('sign in')}
-                </Button>
-              </Link>
-            )
+            </Link>
           )}
         </nav>
       </SheetContent>
