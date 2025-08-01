@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, LogIn, LayoutDashboard, Users, User } from "lucide-react"; // Import User icon
+import { Menu, LogOut, LogIn, LayoutDashboard, Users, User, Loader2 } from "lucide-react"; // Import User icon
 import {
   Accordion,
   AccordionContent,
@@ -16,9 +16,9 @@ import { supabase } from "@/integrations/supabase/client";
 const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
-  const { session, profile, user, loading } = useSession(); // Get user object
+  const { session, profile, user, loading } = useSession();
   const isAdmin = profile?.role === 'admin';
-  const displayName = profile?.first_name || user?.email || t('my profile'); // Use first_name, fallback to email, then 'My Profile'
+  const displayName = profile?.first_name || user?.email || t('my profile');
 
   const closeSheet = () => setIsOpen(false);
 
@@ -114,7 +114,7 @@ const MobileNav: React.FC = () => {
           </Accordion>
 
           {/* User Profile Link */}
-          {!loading && session && (
+          {session && ( // Show if session exists, regardless of loading state
             <>
               <Link to="/dashboard" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
                 <LayoutDashboard className="h-5 w-5 inline-block mr-2" /> {t('dashboard')}
@@ -125,7 +125,7 @@ const MobileNav: React.FC = () => {
             </>
           )}
 
-          {isAdmin && (
+          {isAdmin && ( // Show if isAdmin is true, regardless of loading state
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-4" className="border-b-0">
                 <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
@@ -174,12 +174,16 @@ const MobileNav: React.FC = () => {
           )}
 
           {/* Auth Buttons for Mobile */}
-          {!loading && (
-            session ? (
+          {loading && !session ? ( // Show loading state ONLY if loading AND no session
+            <div className="flex items-center px-4 py-2 text-muted-foreground">
+              <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading status')}
+            </div>
+          ) : (
+            session ? ( // Show logout if session exists
               <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={handleLogout}>
                 <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
               </Button>
-            ) : (
+            ) : ( // Show sign in if no session
               <Link to="/login" onClick={closeSheet}>
                 <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors">
                   <LogIn className="h-5 w-5 mr-2" /> {t('sign in')}

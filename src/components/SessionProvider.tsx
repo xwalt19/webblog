@@ -50,52 +50,51 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   useEffect(() => {
-    const fetchLatestSessionAndProfile = async () => {
+    const setupSession = async () => {
       // Only set loading to true if we truly don't have any session data at all
       // This prevents showing a loader if we already have data from localStorage
-      if (!session && !user && !profile) {
+      if (!initialSessionData) {
         setLoading(true);
       }
 
       try {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
         
-        // Only update state if there's a change or if we didn't have initial data
-        if (currentSession?.user?.id !== user?.id || JSON.stringify(currentSession) !== JSON.stringify(session)) {
-          setSession(currentSession);
-          setUser(currentSession?.user || null);
-          if (currentSession?.user) {
-            const fetchedProfile = await fetchProfile(currentSession.user.id);
-            setProfile(fetchedProfile);
-            localStorage.setItem('supabase_session', JSON.stringify(currentSession));
-            localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
-          } else {
-            setProfile(null);
-            localStorage.removeItem('supabase_session');
-            localStorage.removeItem('user_profile');
-          }
+        // Update state based on actual Supabase session
+        setSession(currentSession);
+        setUser(currentSession?.user || null);
+
+        if (currentSession?.user) {
+          const fetchedProfile = await fetchProfile(currentSession.user.id);
+          setProfile(fetchedProfile);
+          localStorage.setItem('supabase_session', JSON.stringify(currentSession));
+          localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
+        } else {
+          setProfile(null);
+          localStorage.removeItem('supabase_session');
+          localStorage.removeItem('user_profile');
         }
       } catch (err) {
-        console.error("SessionProvider: Error during background session/profile refresh:", err);
-        // On error, clear session to avoid stale data, but don't block UI
+        console.error("SessionProvider: Error during initial session fetch:", err);
         setSession(null);
         setUser(null);
         setProfile(null);
         localStorage.removeItem('supabase_session');
         localStorage.removeItem('user_profile');
       } finally {
-        setLoading(false); // Always set to false after the initial/background fetch
+        setLoading(false); // Always set to false after initial fetch is complete
       }
     };
 
-    // Run this once on mount to fetch the latest session/profile
-    fetchLatestSessionAndProfile();
+    setupSession(); // Call once on mount
 
-    // The onAuthStateChange listener should still handle real-time updates
+    // This listener handles *subsequent* auth state changes (login, logout, user update)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      // For auth state changes (like SIGNED_IN, SIGNED_OUT), we *do* want to show loading
-      // as a new state is being established and verified.
-      setLoading(true);
+      // For actual auth events, we want to show loading briefly
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+        setLoading(true);
+      }
+
       try {
         setSession(currentSession);
         setUser(currentSession?.user || null);
@@ -118,7 +117,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         localStorage.removeItem('supabase_session');
         localStorage.removeItem('user_profile');
       } finally {
-        setLoading(false);
+        setLoading(false); // Ensure loading is always set to false after processing
       }
 
       if (event === 'SIGNED_IN') {

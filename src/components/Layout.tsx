@@ -11,10 +11,10 @@ import Sidebar from "./Sidebar"; // Import Sidebar component
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
-  const { session, profile, user, loading } = useSession(); // Get user object
+  const { session, profile, user, loading } = useSession();
 
   const isAdmin = profile?.role === 'admin';
-  const displayName = profile?.first_name || user?.email || t('my profile'); // Use first_name, fallback to email, then 'My Profile'
+  const displayName = profile?.first_name || user?.email || t('my profile');
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -30,13 +30,13 @@ const Layout: React.FC = () => {
 
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
-            {loading ? ( // Show loading state if session is loading
+            {loading && !session ? ( // Show loading state ONLY if loading AND no session
               <div className="flex items-center px-4 py-2 text-muted-foreground">
                 <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading status')}
               </div>
             ) : (
               <>
-                {session ? (
+                {session ? ( // Show session buttons if session exists
                   <>
                     <Link to="/profile">
                       <Button variant="ghost" className="px-4 py-2">
@@ -47,7 +47,7 @@ const Layout: React.FC = () => {
                       <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
                     </Button>
                   </>
-                ) : (
+                ) : ( // Show login button if no session
                   <Link to="/login">
                     <Button variant="default" className="px-4 py-2">
                       <LogIn className="h-5 w-5 mr-2" /> {t('sign in')}
