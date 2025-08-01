@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'; // Import useRef
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -35,6 +35,13 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const location = useLocation();
   const { t } = useTranslation();
 
+  // Use refs for mutable values that should not trigger effect re-runs
+  const profileRef = useRef(profile);
+
+  // Update refs whenever state changes
+  useEffect(() => { profileRef.current = profile; }, [profile]);
+
+
   // Function to fetch profile from DB
   const fetchProfileFromDb = useCallback(async (userId: string) => {
     console.log("SessionProvider: [DEBUG] Attempting to fetch profile for user ID:", userId);
@@ -52,78 +59,80 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return profileData;
   }, []); // No dependencies, so this function reference is stable
 
-  // Function to explicitly clear session state and local storage
+  // Function to explicitly clear session state (for logout)
   const clearSession = useCallback(() => {
-    console.log("SessionProvider: [DEBUG] Clearing session data.");
+    console.log("SessionProvider: [DEBUG] Clearing local session data.");
     setSession(null);
     setUser(null);
     setProfile(null);
-    localStorage.removeItem('supabase_session');
-    localStorage.removeItem('user_profile');
-    console.log("SessionProvider: [STATE] setLoading(false) from clearSession");
-    setLoading(false); // Ensure loading is false after clearing
-  }, []); // No dependencies, so this function reference is stable
+    // Supabase handles clearing its own localStorage on signOut()
+    setLoading(false);
+  }, []);
 
   // Function to refresh profile, exposed via context
   const refreshProfile = useCallback(async () => {
-    if (user?.id) {
-      console.log("SessionProvider: [STATE] setLoading(true) from refreshProfile");
-      setLoading(true); // Indicate loading for manual refresh
+    if (user?.id) { // Use current `user` state directly as this is a callback
+      setLoading(true);
       console.log("SessionProvider: [DEBUG] Manually refreshing profile.");
       try {
         const fetchedProfile = await fetchProfileFromDb(user.id);
         setProfile(fetchedProfile);
-        localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
       } catch (err) {
         console.error("SessionProvider: [ERROR] Error refreshing profile:", err);
       } finally {
-        console.log("SessionProvider: [STATE] setLoading(false) from refreshProfile finally");
         setLoading(false);
       }
     }
-  }, [user, fetchProfileFromDb]); // Depends on `user` and `fetchProfileFromDb` (which is stable)
+  }, [user, fetchProfileFromDb]); // Depends on `user` and `fetchProfileFromDb`
 
-  // Main effect for session management
+  // Main effect for initial session load and auth state changes
   useEffect(() => {
-    console.log("SessionProvider: [LIFECYCLE] Component Mounted. Initializing session provider and setting up auth listener.");
-    
-    // --- START: Load from localStorage for instant UI ---
-    try {
-      const storedSession = localStorage.getItem('supabase_session');
-      const storedProfile = localStorage.getItem('user_profile');
+    console.log("SessionProvider: [LIFECYCLE] Component Mounted. Initializing session provider.");
 
-      if (storedSession && storedProfile) {
-        const parsedSession: Session = JSON.parse(storedSession);
-        const parsedProfile: Profile = JSON.parse(storedProfile);
-        setSession(parsedSession);
-        setUser(parsedSession.user);
-        setProfile(parsedProfile);
-        setLoading(false); // UI can render immediately with stored data
-        console.log("SessionProvider: [DEBUG] Loaded initial state from localStorage. Loading set to false.");
-      } else {
-        setLoading(true); // If no stored data, keep loading true and wait for Supabase auth
-        console.log("SessionProvider: [DEBUG] No initial state in localStorage, waiting for Supabase auth.");
+    // 1. Fetch initial session
+    const getInitialSession = async () => {
+      setLoading(true); // Ensure loading is true while fetching initial session
+      console.log("SessionProvider: [DEBUG] Fetching initial session from Supabase...");
+      try {
+        const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
+
+        if (sessionError) {
+          throw sessionError;
+        }
+
+        setSession(initialSession);
+        setUser(initialSession?.user || null);
+
+        if (initialSession?.user) {
+          console.log("SessionProvider: [DEBUG] Initial session found, fetching profile...");
+          const fetchedProfile = await fetchProfileFromDb(initialSession.user.id);
+          setProfile(fetchedProfile);
+        } else {
+          console.log("SessionProvider: [DEBUG] No initial session found.");
+          setProfile(null);
+        }
+      } catch (err) {
+        console.error("SessionProvider: [ERROR] Error fetching initial session or profile:", err);
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+      } finally {
+        setLoading(false); // Always set loading to false after initial check
+        console.log("SessionProvider: [DEBUG] Initial session check complete. Loading set to false.");
       }
-    } catch (e) {
-      console.error("SessionProvider: [ERROR] Error parsing localStorage data:", e);
-      clearSession(); // Clear corrupted data
-      setLoading(true); // Wait for Supabase auth
-    }
-    // --- END: Load from localStorage ---
+    };
 
-    // Set up the real-time auth state change listener for authoritative updates
-    // This effect should only run once on mount and once on unmount.
+    getInitialSession();
+
+    // 2. Set up real-time auth state change listener for subsequent events
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       console.log(`SessionProvider: [DEBUG] Auth state change event: ${event}`, currentSession);
       
-      // Always set loading to true when an auth event is being processed,
-      // unless it's the initial session check and we already loaded from localStorage.
-      // This ensures UI reflects pending auth state changes.
-      // However, if we just loaded from localStorage and currentSession is null (initial state),
-      // we should not set loading to true again.
-      if (event !== 'INITIAL_SESSION' || !localStorage.getItem('supabase_session')) {
-         setLoading(true); // Indicate that we are processing an auth event
-         console.log("SessionProvider: [STATE] setLoading(true) from auth state change event processing");
+      // Only set loading to true for non-INITIAL_SESSION events
+      // For INITIAL_SESSION, getInitialSession() already handled the loading state.
+      if (event !== 'INITIAL_SESSION') {
+        setLoading(true);
+        console.log("SessionProvider: [STATE] setLoading(true) from auth state change event processing (non-INITIAL_SESSION)");
       }
 
       try {
@@ -131,36 +140,34 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setUser(currentSession?.user || null);
 
         if (currentSession?.user) {
-          // Always fetch the latest profile if a user is present in the session.
-          // This ensures the profile is up-to-date after any auth event (SIGN_IN, USER_UPDATED).
-          console.log("SessionProvider: [DEBUG] User present in session, fetching/refreshing profile from DB...");
-          const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
-          setProfile(fetchedProfile);
-          localStorage.setItem('supabase_session', JSON.stringify(currentSession));
-          localStorage.setItem('user_profile', JSON.stringify(fetchedProfile));
-          console.log("SessionProvider: [DEBUG] Profile fetch/refresh complete.");
+          // Only fetch profile if it's a new user, user data has potentially changed (e.g., USER_UPDATED),
+          // or if profile is not yet loaded for this specific user ID.
+          // Use profileRef.current to access the latest profile state without re-running the effect.
+          if (!profileRef.current || profileRef.current.id !== currentSession.user.id || event === 'USER_UPDATED') {
+            console.log("SessionProvider: [DEBUG] User present or updated, fetching/refreshing profile from DB...");
+            const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
+            setProfile(fetchedProfile);
+          } else {
+            console.log("SessionProvider: [DEBUG] User found, profile already consistent. No re-fetch needed.");
+          }
         } else {
-          // No user in currentSession (e.g., SIGNED_OUT, or no session on INITIAL_SESSION)
           console.log("SessionProvider: [DEBUG] No user found or signed out from auth event, clearing local data.");
           setProfile(null);
-          localStorage.removeItem('supabase_session');
-          localStorage.removeItem('user_profile');
         }
       } catch (err) {
         console.error("SessionProvider: [ERROR] Error processing auth state change:", err);
-        // Clear session data on error to ensure consistent state
         setSession(null);
         setUser(null);
         setProfile(null);
-        localStorage.removeItem('supabase_session');
-        localStorage.removeItem('user_profile');
       } finally {
-        // Always set loading to false after processing the auth event
-        console.log("SessionProvider: [STATE] setLoading(false) from auth state change finally");
-        setLoading(false);
+        // Only set loading to false if we set it to true for this event (i.e., not INITIAL_SESSION)
+        if (event !== 'INITIAL_SESSION') {
+          setLoading(false);
+          console.log("SessionProvider: [STATE] setLoading(false) from auth state change finally (non-INITIAL_SESSION)");
+        }
       }
 
-      // Handle toasts and navigation
+      // Handle toasts and navigation (use stable references)
       if (event === 'SIGNED_IN') {
         toast.success(t('signed in successfully'));
         if (location.pathname === '/login') {
@@ -168,8 +175,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
       } else if (event === 'SIGNED_OUT') {
         toast.info(t('signed out successfully'));
-        // Do NOT navigate here. The component calling `handleLogout` will navigate.
-        // This prevents double navigation or race conditions.
+        // The component calling `handleLogout` will handle navigation.
       } else if (event === 'USER_UPDATED') {
         toast.info(t('profile updated'));
       }
@@ -179,7 +185,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.log("SessionProvider: [LIFECYCLE] Component Unmounted. Cleaning up auth listener.");
       subscription.unsubscribe();
     };
-  }, [navigate, location.pathname, t, fetchProfileFromDb, clearSession]); // Dependensi yang stabil
+  }, [fetchProfileFromDb, navigate, location.pathname, t]); // Dependencies are now stable functions/values.
 
   // Render children only when loading is false
   if (loading) {
