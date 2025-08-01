@@ -20,36 +20,61 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<{ id: string; first_name: string; last_name: string; role: string } | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Start as true
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
 
   useEffect(() => {
-    const getSession = async () => {
-      console.log("SessionProvider: Initial getSession call");
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user || null);
-      if (session?.user) {
-        await fetchProfile(session.user.id);
+    const loadSessionAndProfile = async () => {
+      setLoading(true); // Ensure loading is true at the start of any session/profile fetch operation
+      const { data: { session: initialSession } } = await supabase.auth.getSession();
+      setSession(initialSession);
+      setUser(initialSession?.user || null);
+
+      if (initialSession?.user) {
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name, role')
+          .eq('id', initialSession.user.id)
+          .single();
+
+        if (profileError) {
+          console.error("SessionProvider: Error fetching profile during initial load:", profileError);
+          setProfile(null);
+        } else {
+          setProfile(profileData);
+        }
       } else {
         setProfile(null);
       }
-      setLoading(false);
-      console.log("SessionProvider: Initial session loaded. Session:", session, "User:", session?.user);
+      setLoading(false); // Set loading to false only after profile is also updated
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("SessionProvider: Auth state change detected. Event:", event, "Session:", session);
-      setSession(session);
-      setUser(session?.user || null);
-      if (session?.user) {
-        await fetchProfile(session.user.id);
+    loadSessionAndProfile(); // Call once on mount for initial state
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      setLoading(true); // Set loading to true when auth state changes, until new profile is fetched
+      setSession(currentSession);
+      setUser(currentSession?.user || null);
+
+      if (currentSession?.user) {
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('id, first_name, last_name, role')
+          .eq('id', currentSession.user.id)
+          .single();
+
+        if (profileError) {
+          console.error("SessionProvider: Error fetching profile on auth change:", profileError);
+          setProfile(null);
+        } else {
+          setProfile(profileData);
+        }
       } else {
         setProfile(null);
       }
-      setLoading(false);
+      setLoading(false); // Set loading to false after profile is updated
 
       if (event === 'SIGNED_IN') {
         toast.success(t('signed in successfully'));
@@ -61,33 +86,12 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         navigate('/login');
       } else if (event === 'USER_UPDATED') {
         toast.info(t('profile updated'));
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        }
+        // Profile is already fetched above, no need for another fetchProfile call here.
       }
     });
 
-    getSession();
-
     return () => subscription.unsubscribe();
-  }, [navigate, location.pathname, t]);
-
-  const fetchProfile = async (userId: string) => {
-    console.log("SessionProvider: Fetching profile for user ID:", userId);
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id, first_name, last_name, role')
-      .eq('id', userId)
-      .single();
-
-    if (error) {
-      console.error("SessionProvider: Error fetching profile:", error);
-      setProfile(null);
-    } else {
-      console.log("SessionProvider: Profile fetched:", data);
-      setProfile(data);
-    }
-  };
+  }, [navigate, location.pathname, t]); // Dependencies for useEffect
 
   return (
     <SessionContext.Provider value={{ session, user, profile, loading }}>
