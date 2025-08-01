@@ -51,8 +51,9 @@ const MultiSelectTags: React.FC<MultiSelectTagsProps> = ({
   };
 
   // Filter out tags already selected from the available options
+  // Also, filter out any empty strings that might result from cleanTagForStorage
   const filteredAvailableTags = allAvailableTags.filter(
-    (tag) => !selectedTags.includes(tag)
+    (tag) => tag !== "" && !selectedTags.includes(tag)
   );
 
   return (
