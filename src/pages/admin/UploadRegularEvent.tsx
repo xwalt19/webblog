@@ -13,50 +13,35 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { iconMap } from "@/utils/iconMap";
-
-// Removed unused interface RegularEvent
-// interface RegularEvent {
-//   id: string;
-//   name: string;
-//   schedule: string;
-//   description: string;
-//   icon_name: string | null;
-//   created_by: string | null;
-//   created_at: string;
-// }
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
 
 const UploadRegularEvent: React.FC = () => {
   const { id: eventId } = useParams<{ id: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { session, profile, loading: sessionLoading } = useSession();
-  
+  const { session } = useSession(); // Keep session for created_by
+
   const [name, setName] = useState("");
   const [schedule, setSchedule] = useState("");
   const [description, setDescription] = useState("");
   const [iconName, setIconName] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [dataLoading, setDataLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true); // Still needed for edit mode
 
   const availableIcons = Object.keys(iconMap);
 
-  useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (profile?.role !== 'admin') {
-        toast.error(t('admin required'));
-        navigate('/');
+  // Use the new admin page logic hook
+  const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
+    isAdminRequired: true,
+    onAuthSuccess: () => {
+      if (eventId) {
+        fetchEventData(eventId);
       } else {
-        if (eventId) {
-          fetchEventData(eventId);
-        } else {
-          setDataLoading(false);
-        }
+        // For new events, data is not loading from DB, so set dataLoading to false
+        setDataLoading(false);
       }
-    }
-  }, [session, profile, sessionLoading, navigate, t, eventId]);
+    },
+  });
 
   const fetchEventData = async (id: string) => {
     setDataLoading(true);
@@ -130,12 +115,18 @@ const UploadRegularEvent: React.FC = () => {
     }
   };
 
-  if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
+  // Render loading state based on auth loading or data loading (only for edit mode)
+  if (isLoadingAuth || (eventId && dataLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
+  }
+
+  // If not authenticated/authorized, the hook will handle navigation, so return null
+  if (!isAuthenticatedAndAuthorized) {
+    return null;
   }
 
   return (
