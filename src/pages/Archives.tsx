@@ -111,28 +111,15 @@ const Archives: React.FC = () => {
     t("july month name"), t("august month name"), t("september month name"), t("october month name"), t("november month name"), t("december month name")
   ], [i18n.language]);
 
+  // Hardcoded years
   const allYears: string[] = useMemo(() => {
-    const years = new Set<string>();
-    allArchivePosts.forEach(post => {
-      const date = new Date(post.created_at);
-      years.add(String(date.getFullYear()));
-    });
-    return ["all", ...Array.from(years).sort((a, b) => Number(b) - Number(a))];
-  }, [allArchivePosts]);
+    return ["all", "2025", "2024", "2023"];
+  }, []);
 
+  // All months regardless of selected year
   const availableMonthsForSelectedYear: string[] = useMemo(() => {
-    if (selectedYear === "all") {
-      return ["all"]; // If all years are selected, show all months option
-    }
-    const months = new Set<string>();
-    allArchivePosts.forEach(post => {
-      const date = new Date(post.created_at);
-      if (String(date.getFullYear()) === selectedYear) {
-        months.add(String(date.getMonth() + 1));
-      }
-    });
-    return ["all", ...Array.from(months).sort((a, b) => Number(b) - Number(a))];
-  }, [allArchivePosts, selectedYear]);
+    return ["all", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+  }, []);
 
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
