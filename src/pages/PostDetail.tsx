@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag } from "@/utils/i18nUtils";
+import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
 
 interface BlogPost {
   id: string;
@@ -61,9 +62,6 @@ const PostDetail: React.FC = () => {
     return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  // Removed the explicit loading return block here.
-  // The component will now render its structure immediately.
-
   if (error) {
     return (
       <div className="text-center py-10">
@@ -107,7 +105,12 @@ const PostDetail: React.FC = () => {
             <div>
               {post?.image_url && (
                 <div className="relative w-full h-auto max-h-96 overflow-hidden mb-6 rounded-md">
-                  <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
+                  <ResponsiveImage 
+                    src={post.image_url} 
+                    alt={post.title} 
+                    containerClassName="w-full h-full" 
+                    className="object-cover" 
+                  />
                 </div>
               )}
               <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post?.content || '' }} />

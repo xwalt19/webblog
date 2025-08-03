@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/pagination";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client"; // Import supabase
+import ResponsiveImage from "./ResponsiveImage"; // Import ResponsiveImage
 
 interface TikTokVideo {
   id: string;
@@ -109,7 +110,12 @@ const TikTokUpdates: React.FC = () => {
             {currentVideos.map((video) => (
               <Card key={video.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center">
-                  <img src={video.thumbnail_url} alt={video.title} className="w-full h-full object-cover" />
+                  <ResponsiveImage 
+                    src={video.thumbnail_url} 
+                    alt={video.title} 
+                    containerClassName="w-full h-full absolute inset-0" 
+                    className="object-cover" 
+                  />
                   <PlayCircle className="absolute text-white/80 hover:text-white transition-colors" size={64} />
                 </div>
                 <CardHeader className="flex-grow">

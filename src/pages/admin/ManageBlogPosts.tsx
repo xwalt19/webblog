@@ -21,6 +21,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
+import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
 
 interface BlogPost {
   id: string;

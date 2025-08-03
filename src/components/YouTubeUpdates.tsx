@@ -14,6 +14,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import YouTubeVideoModal from "@/components/YouTubeVideoModal";
+import ResponsiveImage from "./ResponsiveImage"; // Import ResponsiveImage
 
 interface YouTubeVideo {
   id: string;
@@ -118,7 +119,12 @@ const YouTubeUpdates: React.FC = () => {
             {currentVideos.map((video) => (
               <Card key={video.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center cursor-pointer" onClick={() => openVideoInModal(video)}>
-                  <img src={video.thumbnail_url} alt={video.title} className="w-full h-full object-cover" />
+                  <ResponsiveImage 
+                    src={video.thumbnail_url} 
+                    alt={video.title} 
+                    containerClassName="w-full h-full absolute inset-0" 
+                    className="object-cover" 
+                  />
                   <Youtube className="absolute text-red-600 hover:text-red-700 transition-colors" size={64} />
                 </div>
                 <CardHeader className="flex-grow">

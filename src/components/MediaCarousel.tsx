@@ -8,6 +8,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import YouTubeVideoModal from "@/components/YouTubeVideoModal";
+import ResponsiveImage from "./ResponsiveImage"; // Import ResponsiveImage
 
 interface YouTubeVideo {
   id: string;
@@ -175,7 +176,12 @@ const MediaCarousel: React.FC = () => {
                 <div key={item.id} className="flex-none w-full sm:w-1/2 lg:w-1/3 pl-4">
                   <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
                     <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center cursor-pointer" onClick={() => item.type === 'youtube' ? openVideoInModal(item) : window.open(item.url, '_blank')}>
-                      <img src={item.thumbnail_url} alt={item.title} className="w-full h-full object-cover" />
+                      <ResponsiveImage 
+                        src={item.thumbnail_url} 
+                        alt={item.title} 
+                        containerClassName="w-full h-full absolute inset-0" 
+                        className="object-cover" 
+                      />
                       {item.type === 'youtube' ? (
                         <Youtube className="absolute text-red-600 hover:text-red-700 transition-colors" size={64} />
                       ) : (

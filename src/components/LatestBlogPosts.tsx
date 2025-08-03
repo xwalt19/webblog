@@ -8,6 +8,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag } from "@/utils/i18nUtils";
+import ResponsiveImage from "./ResponsiveImage"; // Import ResponsiveImage
 
 interface BlogPost {
   id: string;
@@ -95,15 +96,11 @@ const LatestBlogPosts: React.FC = () => {
     );
   }
 
-  // Removed the explicit loading return block here.
-  // The component will now render its structure immediately.
-  // The check for `latestPosts.length === 0` will handle the "no posts" state.
-
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest blog posts title')}</h2>
-        {loading ? ( // Show loading only for the carousel content if data is still fetching
+        {loading ? (
           <p className="text-center text-muted-foreground">{t('loading posts')}</p>
         ) : latestPosts.length > 0 ? (
           <div className="relative">
@@ -112,7 +109,12 @@ const LatestBlogPosts: React.FC = () => {
                 {latestPosts.map((post) => (
                   <div key={post.id} className="flex-none w-full sm:w-1/2 lg:w-1/3 pl-4">
                     <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
-                      <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover" />
+                      <ResponsiveImage 
+                        src={post.image_url} 
+                        alt={post.title} 
+                        containerClassName="w-full h-48" 
+                        className="object-cover" 
+                      />
                       <CardHeader className="flex-grow">
                         <div className="flex justify-between items-center mb-2">
                           <Badge variant="secondary">{post.category}</Badge>

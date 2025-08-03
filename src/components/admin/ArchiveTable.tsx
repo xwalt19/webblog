@@ -8,6 +8,7 @@ import { FileText, Edit, Trash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { useTranslatedTag } from "@/utils/i18nUtils";
+import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
 
 interface ArchivePost {
   id: string;
@@ -26,7 +27,7 @@ interface ArchiveTableProps {
   dataLoading: boolean;
   error: string | null;
   onEdit: (archive: ArchivePost) => void;
-  onDelete: (id: string, pdfLink: string | null) => void; // Keep this signature for now, as image_url is handled internally
+  onDelete: (id: string, pdfLink: string | null, imageUrl: string | null) => void; // Updated signature
 }
 
 const ArchiveTable: React.FC<ArchiveTableProps> = ({
@@ -71,7 +72,7 @@ const ArchiveTable: React.FC<ArchiveTableProps> = ({
             <TableRow>
               <TableHead>{t('table title')}</TableHead>
               <TableHead>{t('table category')}</TableHead>
-              <TableHead>{t('table image')}</TableHead> {/* New column for image */}
+              <TableHead>{t('table image')}</TableHead>
               <TableHead>{t('table date')}</TableHead>
               <TableHead>{t('table pdf link')}</TableHead>
               <TableHead className="text-right">{t('table actions')}</TableHead>
@@ -84,7 +85,12 @@ const ArchiveTable: React.FC<ArchiveTableProps> = ({
                 <TableCell>{archive.category}</TableCell>
                 <TableCell>
                   {archive.image_url ? (
-                    <img src={archive.image_url} alt={archive.title} className="w-16 h-10 object-cover rounded" />
+                    <ResponsiveImage 
+                      src={archive.image_url} 
+                      alt={archive.title} 
+                      containerClassName="w-16 h-10 rounded" 
+                      className="object-cover" 
+                    />
                   ) : (
                     <span className="text-muted-foreground">-</span>
                   )}
@@ -108,7 +114,7 @@ const ArchiveTable: React.FC<ArchiveTableProps> = ({
                   <Button variant="ghost" size="icon" onClick={() => onEdit(archive)} className="mr-2">
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button variant="destructive" size="icon" onClick={() => onDelete(archive.id, archive.pdf_link)}>
+                  <Button variant="destructive" size="icon" onClick={() => onDelete(archive.id, archive.pdf_link, archive.image_url)}>
                     <Trash className="h-4 w-4" />
                   </Button>
                 </TableCell>

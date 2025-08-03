@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
 import { useSession } from "@/components/SessionProvider";
+import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
 
 interface BlogPost {
   id: string;
@@ -167,9 +168,6 @@ const Archives: React.FC = () => {
     );
   }
 
-  // Removed the explicit loading return block here.
-  // The component will now render its structure immediately.
-
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">{t('archives')}</h1>
@@ -219,13 +217,18 @@ const Archives: React.FC = () => {
         </Select>
       </div>
 
-      {loading ? ( // Show loading only for the posts grid if data is still fetching
+      {loading ? (
         <p className="text-center text-muted-foreground">{t('loading archives')}</p>
       ) : currentPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">
-              <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover" />
+              <ResponsiveImage 
+                src={post.image_url} 
+                alt={post.title} 
+                containerClassName="w-full h-48" 
+                className="object-cover" 
+              />
               <CardHeader className="flex-grow">
                 <div className="flex justify-between items-center mb-2">
                   <Badge variant="secondary">{post.category}</Badge>

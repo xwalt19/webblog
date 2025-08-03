@@ -19,6 +19,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import MultiSelectTags from "@/components/MultiSelectTags"; // Import MultiSelectTags
+import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
 
 // Removed unused interface BlogPost
 // interface BlogPost {
@@ -452,9 +453,17 @@ const UploadBlogPost: React.FC = () => {
                   {t('selected image')}: {imageFile.name}
                 </p>
               ) : initialImageUrl && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  {t('current image')}: <a href={initialImageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialImageUrl.split('/').pop()}</a>
-                </p>
+                <div className="mt-2">
+                  <ResponsiveImage 
+                    src={initialImageUrl} 
+                    alt={t('current image')} 
+                    containerClassName="w-32 h-20 rounded-md" 
+                    className="object-cover" 
+                  />
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {t('current image')}: <a href={initialImageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialImageUrl.split('/').pop()}</a>
+                  </p>
+                </div>
               )}
             </div>
             <div>

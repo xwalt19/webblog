@@ -294,10 +294,7 @@ const ManageArchives: React.FC = () => {
         dataLoading={isFetching}
         error={error}
         onEdit={openDialogForEdit}
-        onDelete={(id, pdfLink) => {
-          const archiveToDelete = archives.find(a => a.id === id);
-          handleDeleteArchive(id, pdfLink, archiveToDelete?.image_url || null);
-        }}
+        onDelete={(id, pdfLink, imageUrl) => handleDeleteArchive(id, pdfLink, imageUrl)}
       />
 
       <ArchiveFormDialog

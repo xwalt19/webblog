@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash, PlusCircle, PlayCircle } from "lucide-react";
+import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
 
 interface TikTokVideo {
   id: string;
@@ -173,7 +174,12 @@ const ManageTikTokVideos: React.FC = () => {
                     <TableCell className="font-medium">{video.title}</TableCell>
                     <TableCell>
                       {video.thumbnail_url ? (
-                        <img src={video.thumbnail_url} alt={video.title} className="w-16 h-10 object-cover rounded" />
+                        <ResponsiveImage 
+                          src={video.thumbnail_url} 
+                          alt={video.title} 
+                          containerClassName="w-16 h-10 rounded" 
+                          className="object-cover" 
+                        />
                       ) : (
                         <span className="text-muted-foreground">-</span>
                       )}
