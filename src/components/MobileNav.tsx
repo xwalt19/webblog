@@ -59,9 +59,6 @@ const MobileNav: React.FC = () => {
             {t('about')}
           </Link>
           <Link to="/blog" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
-            {t('blog')}
-          </Link>
-          <Link to="/archives" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
             {t('archives')}
           </Link>
           
@@ -180,9 +177,9 @@ const MobileNav: React.FC = () => {
                   <Link to="/admin/manage-users" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     <Users className="h-4 w-4 inline-block mr-2" /> {t('manage users')}
                   </Link>
-                  <Link to="/admin/manage-about-content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  {/* <Link to="/admin/manage-about-content" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     <Info className="h-4 w-4 inline-block mr-2" /> {t('about page content')}
-                  </Link>
+                  </Link> */}
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

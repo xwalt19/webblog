@@ -7,41 +7,42 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Lightbulb, Users, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { dummyTeamMembers } from "@/data/teamMembers";
-import { supabase } from "@/integrations/supabase/client";
+// import { supabase } from "@/integrations/supabase/client"; // Removed supabase import
 
-const ABOUT_PAGE_CONTENT_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+// const ABOUT_PAGE_CONTENT_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'; // ID konten halaman About Us
 
 const AboutPage: React.FC = () => {
   const { t } = useTranslation();
-  const [aboutContent, setAboutContent] = useState<string | null>(null);
-  const [loadingContent, setLoadingContent] = useState(true);
-  const [errorContent, setErrorContent] = useState<string | null>(null);
+  // const [aboutContent, setAboutContent] = useState<string | null>(null); // Removed state
+  // const [loadingContent, setLoadingContent] = useState(true); // Removed state
+  // const [errorContent, setErrorContent] = useState<string | null>(null); // Removed state
 
-  useEffect(() => {
-    const fetchAboutContent = async () => {
-      setLoadingContent(true);
-      setErrorContent(null);
-      try {
-        const { data, error } = await supabase
-          .from('content')
-          .select('html_content')
-          .eq('id', ABOUT_PAGE_CONTENT_ID)
-          .single();
+  // Removed useEffect for fetching content
+  // useEffect(() => {
+  //   const fetchAboutContent = async () => {
+  //     setLoadingContent(true);
+  //     setErrorContent(null);
+  //     try {
+  //       const { data, error } = await supabase
+  //         .from('content')
+  //         .select('html_content')
+  //         .eq('id', ABOUT_PAGE_CONTENT_ID)
+  //         .single();
 
-        if (error) {
-          throw error;
-        }
-        setAboutContent(data?.html_content || null);
-      } catch (err: any) {
-        console.error("Error fetching about page content:", err);
-        setErrorContent(t("fetch data error", { error: err.message }));
-      } finally {
-        setLoadingContent(false);
-      }
-    };
+  //       if (error) {
+  //         throw error;
+  //       }
+  //       setAboutContent(data?.html_content || null);
+  //     } catch (err: any) {
+  //       console.error("Error fetching about page content:", err);
+  //       setErrorContent(t("fetch data error", { error: err.message }));
+  //     } finally {
+  //       setLoadingContent(false);
+  //     }
+  //   };
 
-    fetchAboutContent();
-  }, [t]);
+  //   fetchAboutContent();
+  // }, [t]);
 
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -53,15 +54,8 @@ const AboutPage: React.FC = () => {
       </section>
 
       <section className="mb-16 prose dark:prose-invert max-w-none mx-auto">
-        {loadingContent ? (
-          <p className="text-center text-muted-foreground">{t('loading content')}</p>
-        ) : errorContent ? (
-          <p className="text-center text-destructive">{errorContent}</p>
-        ) : aboutContent ? (
-          <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
-        ) : (
-          <p className="text-center text-muted-foreground">{t('no content available')}</p>
-        )}
+        {/* Removed dynamic content rendering */}
+        <p className="text-center text-muted-foreground">{t('about page static content placeholder')}</p>
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">

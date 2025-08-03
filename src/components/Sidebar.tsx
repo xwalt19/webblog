@@ -82,7 +82,7 @@ const Sidebar: React.FC = () => {
     { to: "/admin/manage-youtube-videos", labelKey: "youtube videos", icon: Youtube },
     { to: "/admin/manage-tiktok-videos", labelKey: "tiktok videos", icon: Music },
     { to: "/admin/manage-users", labelKey: "manage users", icon: Users },
-    { to: "/admin/manage-about-content", labelKey: "about page content", icon: Info }, // New link
+    // { to: "/admin/manage-about-content", labelKey: "about page content", icon: Info }, // New link
   ];
 
   return (

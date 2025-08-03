@@ -44,7 +44,7 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
 import UserProfile from "./pages/UserProfile";
 import MemberDashboard from "./pages/MemberDashboard";
-import ManageAboutContent from "@/pages/admin/ManageAboutContent"; // Menggunakan alias path
+// import ManageAboutContent from "@/pages/admin/ManageAboutContent"; // Menggunakan alias path
 
 const queryClient = new QueryClient();
 
@@ -102,7 +102,7 @@ const App = () => (
               <Route path="admin/manage-calendar" element={<ManageCalendar />} />
               <Route path="admin/manage-archives" element={<ManageArchives />} />
               <Route path="admin/manage-users" element={<ManageUsers />} />
-              <Route path="admin/manage-about-content" element={<ManageAboutContent />} />
+              {/* <Route path="admin/manage-about-content" element={<ManageAboutContent />} /> */}
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
