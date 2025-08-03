@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface CalendarEvent {
   id: string;
@@ -26,6 +27,7 @@ interface CalendarEvent {
   date: string; // ISO string from database
   created_by: string;
   created_at: string;
+  program_id: string | null; // Added program_id
 }
 
 const ManageCalendar: React.FC = () => {
@@ -33,11 +35,7 @@ const ManageCalendar: React.FC = () => {
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';
-
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
-  const [error, setError] = useState<string | null>(null);
-  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches
+  const queryClient = useQueryClient();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<CalendarEvent | null>(null);
@@ -45,114 +43,132 @@ const ManageCalendar: React.FC = () => {
   const [formDescription, setFormDescription] = useState("");
   const [formDate, setFormDate] = useState<Date | undefined>(undefined);
 
-  const fetchEvents = async () => {
-    setIsFetching(true);
-    setError(null);
-    try {
+  // Query to fetch calendar events
+  const { data: events, isLoading: isEventsLoading, isError: isEventsError, error: eventsError } = useQuery<CalendarEvent[], Error>({
+    queryKey: ['calendarEvents'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('calendar_events')
         .select('*')
         .order('date', { ascending: false });
 
-      if (error) {
-        throw error;
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!session && isAdmin, // Only run query if session exists and user is admin
+  });
+
+  // Mutation for adding/editing calendar event
+  const saveEventMutation = useMutation<void, Error, Omit<CalendarEvent, 'created_at' | 'created_by' | 'program_id'> & { id?: string, program_id?: string | null }>({
+    mutationFn: async (eventData) => {
+      const dataToSave = {
+        title: eventData.title,
+        description: eventData.description || null,
+        date: eventData.date,
+        created_by: session?.user?.id,
+        program_id: eventData.program_id || null, // Ensure program_id is passed
+      };
+
+      if (eventData.id) {
+        // Update existing event
+        const { error } = await supabase
+          .from('calendar_events')
+          .update(dataToSave)
+          .eq('id', eventData.id);
+        if (error) throw error;
+      } else {
+        // Add new event
+        const { error } = await supabase
+          .from('calendar_events')
+          .insert([dataToSave]);
+        if (error) throw error;
       }
-      setEvents(data || []);
-    } catch (err: any) {
-      console.error("Error fetching calendar events:", err);
-      setError(t("fetch data error", { error: err.message }));
-    } finally {
-      setIsFetching(false);
-      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
-    }
-  };
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['calendarEvents'] });
+      toast.success(variables.id ? t("updated successfully") : t("added successfully"));
+      setIsDialogOpen(false);
+    },
+    onError: (err) => {
+      console.error("Error saving event:", err);
+      toast.error(t("save failed", { error: err.message }));
+    },
+  });
 
-  // Combined useEffect for initial load, auth check, and data fetching
+  // Mutation for deleting calendar event
+  const deleteEventMutation = useMutation<void, Error, string>({
+    mutationFn: async (id) => {
+      const { error } = await supabase
+        .from('calendar_events')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['calendarEvents'] });
+      toast.success(t("deleted successfully"));
+    },
+    onError: (err) => {
+      console.error("Error deleting event:", err);
+      toast.error(t("delete error", { error: err.message }));
+    },
+  });
+
+  // Authentication and authorization check
   useEffect(() => {
-    if (sessionLoading) {
+    if (!sessionLoading) {
+      if (!session) {
+        toast.error(t('login required'));
+        navigate('/login');
+      } else if (!isAdmin) {
+        toast.error(t('admin required'));
+        navigate('/');
+      }
+    }
+  }, [session, isAdmin, sessionLoading, navigate, t]);
+
+  // Realtime subscription (separate useEffect as it's a one-time setup)
+  useEffect(() => {
+    if (!session || !isAdmin) {
       return;
     }
 
-    if (!session) {
-      toast.error(t('login required'));
-      navigate('/login');
-      return;
-    }
+    const channel = supabase
+      .channel('calendar_events_admin_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'calendar_events' },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['calendarEvents'] });
+        }
+      )
+      .subscribe();
 
-    if (!isAdmin) {
-      toast.error(t('admin required'));
-      navigate('/');
-      return;
-    }
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [session, isAdmin, queryClient]);
 
-    fetchEvents();
-
-  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
-
-  const handleAddEdit = async () => {
+  const handleAddEdit = () => {
     if (!formTitle || !formDate) {
       toast.error(t("required fields missing"));
       return;
     }
 
-    const eventData = {
+    saveEventMutation.mutate({
+      id: currentEvent?.id,
       title: formTitle,
-      description: formDescription || null,
+      description: formDescription,
       date: formDate.toISOString(),
-      created_by: session?.user?.id,
-    };
-
-    if (currentEvent) {
-      // Edit existing event
-      const { error } = await supabase
-        .from('calendar_events')
-        .update(eventData)
-        .eq('id', currentEvent.id);
-
-      if (error) {
-        console.error("Error updating event:", error);
-        toast.error(t("save failed", { error: error.message }));
-      } else {
-        toast.success(t("updated successfully"));
-        fetchEvents();
-        setIsDialogOpen(false);
-      }
-    } else {
-      // Add new event
-      const { error } = await supabase
-        .from('calendar_events')
-        .insert([eventData]);
-
-      if (error) {
-        console.error("Error adding event:", error);
-        toast.error(t("save failed", { error: error.message }));
-      } else {
-        toast.success(t("added successfully"));
-        fetchEvents();
-        setIsDialogOpen(false);
-      }
-    }
+      program_id: currentEvent?.program_id, // Preserve program_id if editing
+    });
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = (id: string) => {
     if (!window.confirm(t("confirm delete calendar event"))) {
       return;
     }
-    try {
-      const { error } = await supabase
-        .from('calendar_events')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        throw error;
-      }
-      toast.success(t("deleted successfully"));
-      fetchEvents();
-    } catch (err: any) {
-      console.error("Error deleting event:", err);
-      toast.error(t("delete error", { error: err.message }));
-    }
+    deleteEventMutation.mutate(id);
   };
 
   const openDialogForAdd = () => {
@@ -191,11 +207,18 @@ const ManageCalendar: React.FC = () => {
     );
   }
 
-  // If initial data is not loaded yet, show loading for the page content
-  if (!isInitialDataLoaded) {
+  if (isEventsLoading) {
     return (
       <div className="container mx-auto py-10 px-4">
         <p className="text-center text-muted-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
+
+  if (isEventsError) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-destructive">{t("fetch data error", { error: eventsError?.message })}</p>
       </div>
     );
   }
@@ -213,9 +236,7 @@ const ManageCalendar: React.FC = () => {
         <Button onClick={openDialogForAdd}>{t('add new calendar event')}</Button>
       </div>
 
-      {error ? (
-        <p className="text-center text-destructive">{error}</p>
-      ) : events.length > 0 ? (
+      {events && events.length > 0 ? (
         <Card className="shadow-lg">
           <CardContent className="p-0">
             <Table>
@@ -251,10 +272,9 @@ const ManageCalendar: React.FC = () => {
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no calendar events found')}</p>
       )}
 
-      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads */}
-      {isFetching && events.length > 0 && (
+      {saveEventMutation.isPending || deleteEventMutation.isPending ? (
         <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
-      )}
+      ) : null}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
@@ -316,11 +336,11 @@ const ManageCalendar: React.FC = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={saveEventMutation.isPending}>
               {t('cancel button')}
             </Button>
-            <Button onClick={handleAddEdit}>
-              {currentEvent ? t('save changes button') : t('submit button')}
+            <Button onClick={handleAddEdit} disabled={saveEventMutation.isPending}>
+              {saveEventMutation.isPending ? t('uploading status') : (currentEvent ? t('save changes button') : t('submit button'))}
             </Button>
           </DialogFooter>
         </DialogContent>
