@@ -13,36 +13,67 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { iconMap } from "@/utils/iconMap";
-import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
-import { Calendar as CalendarIcon } from "lucide-react"; // Import CalendarIcon
-import { format } from "date-fns"; // Import format from date-fns
-import { Calendar } from "@/components/ui/calendar"; // Import Calendar component
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; // Import Popover components
-import { cn } from "@/lib/utils"; // Import cn utility
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+// Define Zod schema for validation
+const formSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }).max(100, {
+    message: "Name must not be longer than 100 characters.",
+  }),
+  schedule: z.date({
+    required_error: "Schedule date and time are required.",
+  }),
+  description: z.string().min(10, {
+    message: "Description must be at least 10 characters.",
+  }).max(500, {
+    message: "Description must not be longer than 500 characters.",
+  }),
+  iconName: z.string().optional(), // Optional as it can be null
+});
 
 const UploadRegularEvent: React.FC = () => {
   const { id: eventId } = useParams<{ id: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { session } = useSession(); // Keep session for created_by
+  const { session } = useSession();
 
-  const [name, setName] = useState("");
-  const [schedule, setSchedule] = useState<Date | undefined>(undefined); // Changed to Date | undefined
-  const [description, setDescription] = useState("");
-  const [iconName, setIconName] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [dataLoading, setDataLoading] = useState(true); // Still needed for edit mode
-
+  const [dataLoading, setDataLoading] = useState(true);
   const availableIcons = Object.keys(iconMap);
 
-  // Use the new admin page logic hook
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      schedule: undefined,
+      description: "",
+      iconName: "",
+    },
+  });
+
   const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
     isAdminRequired: true,
     onAuthSuccess: () => {
       if (eventId) {
         fetchEventData(eventId);
       } else {
-        // For new events, data is not loading from DB, so set dataLoading to false
         setDataLoading(false);
       }
     },
@@ -60,10 +91,12 @@ const UploadRegularEvent: React.FC = () => {
       if (error) throw error;
 
       if (data) {
-        setName(data.name || "");
-        setSchedule(data.schedule ? new Date(data.schedule) : undefined); // Parse schedule to Date
-        setDescription(data.description || "");
-        setIconName(data.icon_name || "");
+        form.reset({
+          name: data.name || "",
+          schedule: data.schedule ? new Date(data.schedule) : undefined,
+          description: data.description || "",
+          iconName: data.icon_name || "",
+        });
       }
     } catch (err: any) {
       console.error("Error fetching regular event data:", err);
@@ -74,22 +107,15 @@ const UploadRegularEvent: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setUploading(true);
-
-    if (!name || !schedule || !description) {
-      toast.error(t("required fields missing"));
-      setUploading(false);
-      return;
-    }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const toastId = toast.loading(eventId ? t("updating status") : t("uploading status"));
 
     try {
       const eventData = {
-        name,
-        schedule: schedule ? schedule.toISOString() : null, // Convert Date to ISO string
-        description,
-        icon_name: iconName || null,
+        name: values.name,
+        schedule: values.schedule.toISOString(),
+        description: values.description,
+        icon_name: values.iconName || null,
         ...(eventId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
       };
 
@@ -109,18 +135,15 @@ const UploadRegularEvent: React.FC = () => {
 
       if (error) throw error;
 
-      toast.success(eventId ? t("updated successfully") : t("added successfully"));
+      toast.success(eventId ? t("updated successfully") : t("added successfully"), { id: toastId });
       navigate('/admin/manage-regular-events');
 
     } catch (err: any) {
       console.error("Error saving regular event:", err);
-      toast.error(t("save failed", { error: err.message }));
-    } finally {
-      setUploading(false);
+      toast.error(t("save failed", { error: err.message }), { id: toastId });
     }
   };
 
-  // Render loading state based on auth loading or data loading (only for edit mode)
   if (isLoadingAuth || (eventId && dataLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -129,7 +152,6 @@ const UploadRegularEvent: React.FC = () => {
     );
   }
 
-  // If not authenticated/authorized, the hook will handle navigation, so return null
   if (!isAuthenticatedAndAuthorized) {
     return null;
   }
@@ -155,96 +177,125 @@ const UploadRegularEvent: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Label htmlFor="name">{t('name label')}</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder={t('name placeholder')}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mt-1"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('name label')}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={t('name placeholder')} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <Label htmlFor="schedule">{t('schedule label')}</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal mt-1",
-                      !schedule && "text-muted-foreground"
+              <FormField
+                control={form.control}
+                name="schedule"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>{t('schedule label')}</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal mt-1",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? format(field.value, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          initialFocus
+                        />
+                        <div className="p-3 border-t border-border">
+                          <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
+                          <Input
+                            id="time-input"
+                            type="time"
+                            value={field.value ? format(field.value, "HH:mm") : ""}
+                            onChange={(e) => {
+                              const [hours, minutes] = e.target.value.split(':').map(Number);
+                              if (field.value) {
+                                const newDate = new Date(field.value);
+                                newDate.setHours(hours, minutes);
+                                field.onChange(newDate);
+                              } else {
+                                const newDate = new Date();
+                                newDate.setHours(hours, minutes);
+                                field.onChange(newDate);
+                              }
+                            }}
+                            className="w-full"
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('description label')}</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder={t('description placeholder')}
+                        className="min-h-[80px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="iconName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('icon label')}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full mt-1">
+                          <SelectValue placeholder={t('select icon placeholder')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {availableIcons.map(icon => (
+                          <SelectItem key={icon} value={icon}>{icon}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {field.value && (
+                      <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+                        {React.createElement(iconMap[field.value], { className: "h-4 w-4" })} {field.value}
+                      </p>
                     )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {schedule ? format(schedule, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={schedule}
-                    onSelect={setSchedule}
-                    initialFocus
-                  />
-                  <div className="p-3 border-t border-border">
-                    <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
-                    <Input
-                      id="time-input"
-                      type="time"
-                      value={schedule ? format(schedule, "HH:mm") : ""}
-                      onChange={(e) => {
-                        const [hours, minutes] = e.target.value.split(':').map(Number);
-                        if (schedule) {
-                          const newDate = new Date(schedule);
-                          newDate.setHours(hours, minutes);
-                          setSchedule(newDate);
-                        } else {
-                          const newDate = new Date();
-                          newDate.setHours(hours, minutes);
-                          setSchedule(newDate);
-                        }
-                      }}
-                      className="w-full"
-                    />
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-            <div>
-              <Label htmlFor="description">{t('description label')}</Label>
-              <Textarea
-                id="description"
-                placeholder={t('description placeholder')}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="mt-1 min-h-[80px]"
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <Label htmlFor="iconName">{t('icon label')}</Label>
-              <Select value={iconName} onValueChange={setIconName}>
-                <SelectTrigger className="w-full mt-1">
-                  <SelectValue placeholder={t('select icon placeholder')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableIcons.map(icon => (
-                    <SelectItem key={icon} value={icon}>{icon}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {iconName && (
-                <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-                  {React.createElement(iconMap[iconName], { className: "h-4 w-4" })} {iconName}
-                </p>
-              )}
-            </div>
-            <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('uploading status') : (eventId ? t('save changes button') : t('submit button'))}
-            </Button>
-          </form>
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? t('uploading status') : (eventId ? t('save changes button') : t('submit button'))}
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
 
