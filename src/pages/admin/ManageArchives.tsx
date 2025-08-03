@@ -12,6 +12,7 @@ import { cleanTagForStorage } from "@/utils/i18nUtils";
 import ArchiveTable from "@/components/admin/ArchiveTable";
 import ArchiveFormDialog from "@/components/admin/ArchiveFormDialog";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
 
 interface ArchivePost {
   id: string;
@@ -45,12 +46,20 @@ const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 const ManageArchives: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { session, profile, loading: sessionLoading } = useSession();
-  const isAdmin = profile?.role === 'admin';
+  const { session } = useSession(); // Only need session for created_by in mutations
   const queryClient = useQueryClient();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentArchiveDataForForm, setCurrentArchiveDataForForm] = useState<ArchivePostFormData | null>(null);
+
+  // State to control when data fetching queries should run
+  const [shouldFetchData, setShouldFetchData] = useState(false);
+
+  // Use the new admin page logic hook
+  const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
+    isAdminRequired: true,
+    onAuthSuccess: () => setShouldFetchData(true), // Set flag to true when auth is successful
+  });
 
   // Query to fetch archives
   const { data: archives, isLoading: isArchivesLoading, isError: isArchivesError, error: archivesError } = useQuery<ArchivePost[], Error>({
@@ -65,7 +74,7 @@ const ManageArchives: React.FC = () => {
       if (error) throw error;
       return data || [];
     },
-    enabled: !!session && isAdmin, // Only run query if session exists and user is admin
+    enabled: shouldFetchData, // Only run query if auth is successful
   });
 
   // Query to fetch all possible tags
@@ -84,7 +93,7 @@ const ManageArchives: React.FC = () => {
       });
       return Array.from(uniqueTags).sort();
     },
-    enabled: !!session && isAdmin, // Only run query if session exists and user is admin
+    enabled: shouldFetchData, // Only run query if auth is successful
   });
 
   // Mutation for saving (add/edit) archive
@@ -232,17 +241,32 @@ const ManageArchives: React.FC = () => {
     },
   });
 
+  // Realtime subscription (separate useEffect as it's a one-time setup)
   useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (!isAdmin) {
-        toast.error(t('admin required'));
-        navigate('/');
-      }
+    if (!isAuthenticatedAndAuthorized) { // Only subscribe if authenticated and authorized
+      return;
     }
-  }, [session, isAdmin, sessionLoading, navigate, t]);
+
+    const channel = supabase
+      .channel('archives_admin_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'blog_posts' },
+        (payload) => {
+          // Only process changes for PDF posts (archives)
+          if ((payload.new as ArchivePost)?.pdf_link !== null || (payload.old as ArchivePost)?.pdf_link !== null) {
+            // Invalidate the query to refetch data and update UI
+            queryClient.invalidateQueries({ queryKey: ['archives'] });
+            queryClient.invalidateQueries({ queryKey: ['all_tags'] });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAuthenticatedAndAuthorized, queryClient]); // Depend on isAuthenticatedAndAuthorized
 
   const openDialogForAdd = () => {
     setCurrentArchiveDataForForm(null); // Clear data for new entry
@@ -266,7 +290,8 @@ const ManageArchives: React.FC = () => {
     setIsDialogOpen(true);
   };
 
-  if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
+  // Render loading state based on auth loading or data loading
+  if (isLoadingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
@@ -274,6 +299,12 @@ const ManageArchives: React.FC = () => {
     );
   }
 
+  // If not authenticated/authorized, the hook will navigate, so we return null here
+  if (!isAuthenticatedAndAuthorized) {
+    return null;
+  }
+
+  // Show loading for data fetching after auth is confirmed
   if (isArchivesLoading || isTagsLoading) {
     return (
       <div className="container mx-auto py-10 px-4">
