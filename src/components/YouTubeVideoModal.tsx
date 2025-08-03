@@ -3,7 +3,7 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useTranslation } from "react-i18next";
-import { getYouTubeEmbedUrl } from "@/utils/youtube";
+import { getYouTubeEmbedUrl } from "@/utils/videoUtils"; // Import from new videoUtils
 
 interface YouTubeVideoModalProps {
   isOpen: boolean;

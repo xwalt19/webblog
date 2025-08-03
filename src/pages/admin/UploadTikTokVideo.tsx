@@ -17,20 +17,6 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-// Removed unused interface TikTokVideo
-// interface TikTokVideo {
-//   id: string;
-//   title: string;
-//   description: string | null;
-//   thumbnail_url: string | null;
-//   video_url: string;
-//   published_at: string;
-//   created_by: string | null;
-//   created_at: string;
-// }
-
-const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
-
 const UploadTikTokVideo: React.FC = () => {
   const { id: videoId } = useParams<{ id: string }>();
   const { t } = useTranslation();
@@ -41,9 +27,7 @@ const UploadTikTokVideo: React.FC = () => {
   const [description, setDescription] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [publishedAt, setPublishedAt] = useState<Date | undefined>(undefined);
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [initialThumbnailUrl, setInitialThumbnailUrl] = useState<string | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
@@ -76,12 +60,16 @@ const UploadTikTokVideo: React.FC = () => {
       if (error) {
         throw error;
       }
+      if (!data) {
+        toast.error(t("video not found"));
+        navigate('/admin/manage-tiktok-videos');
+        return;
+      }
       if (data) {
         setTitle(data.title || "");
         setDescription(data.description || "");
         setVideoUrl(data.video_url || "");
         setPublishedAt(data.published_at ? new Date(data.published_at) : undefined);
-        setInitialThumbnailUrl(data.thumbnail_url || null);
       }
     } catch (err: any) {
       console.error("Error fetching video data:", err);
@@ -89,55 +77,6 @@ const UploadTikTokVideo: React.FC = () => {
       navigate('/admin/manage-tiktok-videos');
     } finally {
       setDataLoading(false);
-    }
-  };
-
-  const handleThumbnailFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      if (file.size > MAX_IMAGE_SIZE_BYTES) {
-        toast.error(t('file size too large', { max: '5MB' }));
-        event.target.value = ''; // Clear the input
-        setThumbnailFile(null);
-        return;
-      }
-      setThumbnailFile(file);
-    } else {
-      setThumbnailFile(null);
-    }
-  };
-
-  const uploadFile = async (file: File, bucket: string, folder: string) => {
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
-    const filePath = `${folder}/${fileName}`;
-
-    const { data: _uploadData, error: uploadError } = await supabase.storage // Renamed uploadData to _uploadData
-      .from(bucket)
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-      });
-
-    if (uploadError) {
-      throw uploadError;
-    }
-
-    const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(filePath);
-    return publicUrlData.publicUrl;
-  };
-
-  const deleteFileFromStorage = async (url: string, bucket: string) => {
-    try {
-      const path = url.split(`/${bucket}/`)[1];
-      if (path) {
-        const { error } = await supabase.storage.from(bucket).remove([path]);
-        if (error) {
-          console.warn(`Failed to delete old file from ${bucket}:`, error.message);
-        }
-      }
-    } catch (e) {
-      console.warn("Error parsing file URL for deletion:", e);
     }
   };
 
@@ -151,27 +90,15 @@ const UploadTikTokVideo: React.FC = () => {
       return;
     }
 
-    let currentThumbnailUrl = initialThumbnailUrl;
-
     try {
-      // Handle thumbnail upload/update
-      if (thumbnailFile) {
-        if (initialThumbnailUrl) {
-          await deleteFileFromStorage(initialThumbnailUrl, 'video_thumbnails');
-        }
-        currentThumbnailUrl = await uploadFile(thumbnailFile, 'video_thumbnails', 'tiktok_thumbnails');
-      } else if (videoId && !initialThumbnailUrl) {
-        // If editing and no initial thumbnail but no new file, ensure thumbnail_url is null
-        currentThumbnailUrl = null;
-      }
-
       const videoData = {
         title,
         description: description || null,
         video_url: videoUrl,
         published_at: publishedAt.toISOString(),
-        thumbnail_url: currentThumbnailUrl,
-        ...(videoId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
+        thumbnail_url: null, // TikTok thumbnails are not automatically extracted
+        created_by: session?.user?.id, // Always include created_by
+        ...(videoId ? {} : { created_at: new Date().toISOString() }),
       };
 
       let error;
@@ -202,9 +129,6 @@ const UploadTikTokVideo: React.FC = () => {
         setDescription("");
         setVideoUrl("");
         setPublishedAt(undefined);
-        setThumbnailFile(null);
-        const thumbnailInput = document.getElementById("thumbnail-upload") as HTMLInputElement;
-        if (thumbnailInput) thumbnailInput.value = "";
       } else {
         navigate('/admin/manage-tiktok-videos'); // Go back to list after edit
       }
@@ -303,25 +227,6 @@ const UploadTikTokVideo: React.FC = () => {
                   />
                 </PopoverContent>
               </Popover>
-            </div>
-            <div>
-              <Label htmlFor="thumbnail-upload">{t('thumbnail label')}</Label>
-              <Input
-                id="thumbnail-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleThumbnailFileChange}
-                className="mt-1"
-              />
-              {thumbnailFile ? (
-                <p className="text-sm text-muted-foreground mt-2">
-                  {t('selected thumbnail')}: {thumbnailFile.name}
-                </p>
-              ) : initialThumbnailUrl && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  {t('current thumbnail')}: <a href={initialThumbnailUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialThumbnailUrl.split('/').pop()}</a>
-                </p>
-              )}
             </div>
             <Button type="submit" className="w-full" disabled={uploading}>
               {uploading ? t('uploading status') : (videoId ? t('save changes button') : t('submit button'))}
