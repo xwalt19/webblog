@@ -21,7 +21,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
-import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
+import ResponsiveImage from "@/components/ResponsiveImage";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface BlogPost {
   id: string;
@@ -43,33 +44,21 @@ const ManageBlogPosts: React.FC = () => {
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';
+  const queryClient = useQueryClient();
 
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
-  const [error, setError] = useState<string | null>(null);
-  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches (e.g., after filter change)
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPostsCount, setTotalPostsCount] = useState(0);
 
   const allCategories = useMemo(() => [
     "all", "Programming", "Technology", "Education", "Data Science", "Cybersecurity", "Mobile Development", "Cloud Computing", "History", "Retro Tech", "Programming History"
   ], []);
 
-  const allTags = useMemo(() => {
-    const tags = new Set<string>();
-    blogPosts.forEach(post => {
-      post.tags?.forEach((tag: string) => tags.add(cleanTagForStorage(tag)));
-    });
-    return ["all", ...Array.from(tags).sort()];
-  }, [blogPosts]); // Recalculate when blogPosts change
-
-  const fetchBlogPosts = async () => {
-    setIsFetching(true); // Indicate fetching is in progress
-    setError(null); // Clear previous errors
-    try {
+  // Query to fetch blog posts
+  const { data: blogPostsData, isLoading: isBlogPostsLoading, isError: isBlogPostsError, error: blogPostsError } = useQuery<{ posts: BlogPost[], count: number }, Error>({
+    queryKey: ['blogPosts', searchTerm, selectedCategory, selectedTag, currentPage],
+    queryFn: async () => {
       let query = supabase
         .from('blog_posts')
         .select('*', { count: 'exact' })
@@ -95,47 +84,91 @@ const ManageBlogPosts: React.FC = () => {
       if (error) {
         throw error;
       }
-      setBlogPosts(data || []);
-      setTotalPostsCount(count || 0);
-    } catch (err: any) {
-      console.error("Error fetching blog posts:", err);
-      setError(t("fetch data error", { error: err.message }));
-    } finally {
-      setIsFetching(false);
-      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
-    }
-  };
+      return { posts: data || [], count: count || 0 };
+    },
+    enabled: !!session && isAdmin, // Only run query if session exists and user is admin
+    placeholderData: (previousData) => previousData, // Keep previous data while fetching new
+  });
 
-  // Combined useEffect for initial load, auth check, and data fetching/filtering
+  const blogPosts = blogPostsData?.posts || [];
+  const totalPostsCount = blogPostsData?.count || 0;
+
+  // Query to fetch all possible tags (for filter dropdown)
+  const { data: allPossibleTags = [] } = useQuery<string[], Error>({
+    queryKey: ['all_tags_blog_posts'], // Separate query key for all tags
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('tags')
+        .is('pdf_link', null); // Only get tags from actual blog posts
+      
+      if (error) throw error;
+
+      const uniqueTags = new Set<string>();
+      data.forEach(post => {
+        post.tags?.forEach((tag: string) => uniqueTags.add(cleanTagForStorage(tag)));
+      });
+      return Array.from(uniqueTags).sort();
+    },
+    enabled: !!session && isAdmin,
+  });
+
+  // Mutation for deleting blog post
+  const deleteBlogPostMutation = useMutation<void, Error, { id: string, imageUrl: string | null }>({
+    mutationFn: async ({ id, imageUrl }) => {
+      // Helper function to delete file from storage
+      const deleteFileFromStorage = async (url: string, bucket: string) => {
+        try {
+          const path = url.split(`/${bucket}/`)[1];
+          if (path) {
+            const { error } = await supabase.storage.from(bucket).remove([path]);
+            if (error) {
+              console.warn(`Failed to delete old file from ${bucket}:`, error.message);
+            }
+          }
+        } catch (e) {
+          console.warn("Error parsing file URL for deletion:", e);
+        }
+      };
+
+      if (imageUrl) {
+        await deleteFileFromStorage(imageUrl, 'images');
+      }
+
+      const { error } = await supabase
+        .from('blog_posts')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogPosts'] });
+      queryClient.invalidateQueries({ queryKey: ['all_tags_blog_posts'] });
+      toast.success(t("deleted successfully"));
+    },
+    onError: (err) => {
+      console.error("Error deleting post:", err);
+      toast.error(t("delete error", { error: err.message }));
+    },
+  });
+
+  // Authentication and authorization check
   useEffect(() => {
-    if (sessionLoading) {
-      // While session is loading, we don't do anything here.
-      // The SessionProvider's global loading screen is active.
-      return;
+    if (!sessionLoading) {
+      if (!session) {
+        toast.error(t('login required'));
+        navigate('/login');
+      } else if (!isAdmin) {
+        toast.error(t('admin required'));
+        navigate('/');
+      }
     }
-
-    if (!session) {
-      toast.error(t('login required'));
-      navigate('/login');
-      return;
-    }
-
-    if (!isAdmin) {
-      toast.error(t('admin required'));
-      navigate('/');
-      return;
-    }
-
-    // If we reach here, session is loaded, user is logged in, and is admin.
-    // Fetch data. The dependencies `searchTerm`, `selectedCategory`, `selectedTag`, `currentPage` will trigger re-fetch.
-    fetchBlogPosts();
-
-  }, [session, isAdmin, sessionLoading, navigate, t, searchTerm, selectedCategory, selectedTag, currentPage, profile]); // All dependencies that should trigger a fetch
+  }, [session, isAdmin, sessionLoading, navigate, t]);
 
   // Realtime subscription (separate useEffect as it's a one-time setup)
   useEffect(() => {
     if (!session || !isAdmin) {
-      // Only subscribe if session is active and user is admin
       return;
     }
 
@@ -147,21 +180,9 @@ const ManageBlogPosts: React.FC = () => {
         (payload) => {
           // Only process changes for non-PDF posts (actual blog posts)
           if ((payload.new as BlogPost)?.pdf_link === null || (payload.old as BlogPost)?.pdf_link === null) {
-            if (payload.eventType === 'INSERT') {
-              setBlogPosts((prev) => [payload.new as BlogPost, ...prev]);
-              setTotalPostsCount((prev) => prev + 1);
-            } else if (payload.eventType === 'UPDATE') {
-              setBlogPosts((prev) =>
-                prev.map((post) =>
-                  post.id === payload.new.id ? (payload.new as BlogPost) : post
-                )
-              );
-            } else if (payload.eventType === 'DELETE') {
-              setBlogPosts((prev) =>
-                prev.filter((post) => post.id !== payload.old.id)
-              );
-              setTotalPostsCount((prev) => prev - 1);
-            }
+            // Invalidate the query to refetch data and update UI
+            queryClient.invalidateQueries({ queryKey: ['blogPosts'] });
+            queryClient.invalidateQueries({ queryKey: ['all_tags_blog_posts'] });
           }
         }
       )
@@ -170,40 +191,13 @@ const ManageBlogPosts: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [session, isAdmin]); // Depend on session and isAdmin to manage subscription lifecycle
+  }, [session, isAdmin, queryClient]);
 
-
-  const handleDelete = async (id: string, imageUrl: string | null) => {
+  const handleDelete = (id: string, imageUrl: string | null) => {
     if (!window.confirm(t("confirm delete blog post"))) {
       return;
     }
-    try {
-      // Optionally delete the image file from storage if it exists
-      if (imageUrl) {
-        const filePath = imageUrl.split('/storage/v1/object/public/images/')[1];
-        if (filePath) {
-          const { error: storageError } = await supabase.storage.from('images').remove([filePath]);
-          if (storageError) {
-            console.warn("Error deleting image from storage:", storageError);
-            toast.warning(t("storage delete warning", { error: storageError.message }));
-          }
-        }
-      }
-
-      const { error } = await supabase
-        .from('blog_posts')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        throw error;
-      }
-      toast.success(t("deleted successfully"));
-      // No need to call fetchBlogPosts() here, Realtime will handle the update
-    } catch (err: any) {
-      console.error("Error deleting post:", err);
-      toast.error(t("delete error", { error: err.message }));
-    }
+    deleteBlogPostMutation.mutate({ id, imageUrl });
   };
 
   const formatDisplayDate = (isoString: string) => {
@@ -234,11 +228,18 @@ const ManageBlogPosts: React.FC = () => {
     );
   }
 
-  // If initial data is not loaded yet, show loading for the page content
-  if (!isInitialDataLoaded) {
+  if (isBlogPostsLoading) {
     return (
       <div className="container mx-auto py-10 px-4">
         <p className="text-center text-muted-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
+
+  if (isBlogPostsError) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-destructive">{t("fetch data error", { error: blogPostsError?.message })}</p>
       </div>
     );
   }
@@ -295,7 +296,7 @@ const ManageBlogPosts: React.FC = () => {
               <SelectValue placeholder={t('tag placeholder')} />
             </SelectTrigger>
             <SelectContent>
-              {allTags.map(tag => (
+              {allPossibleTags.map(tag => (
                 <SelectItem key={tag} value={tag}>
                   {tag === "all" ? t("all tags") : getTranslatedTag(tag)}
                 </SelectItem>
@@ -311,9 +312,7 @@ const ManageBlogPosts: React.FC = () => {
         </Link>
       </div>
 
-      {error ? (
-        <p className="text-center text-destructive">{error}</p>
-      ) : blogPosts.length > 0 ? (
+      {blogPosts.length > 0 ? (
         <Card className="shadow-lg">
           <CardContent className="p-0">
             <Table>
@@ -353,8 +352,7 @@ const ManageBlogPosts: React.FC = () => {
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no posts available')}</p>
       )}
 
-      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads */}
-      {isFetching && blogPosts.length > 0 && (
+      {isBlogPostsLoading && blogPosts.length > 0 && (
         <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}
 
