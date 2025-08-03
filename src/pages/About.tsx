@@ -1,15 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Lightbulb, Users, MapPin } from "lucide-react"; // Removed Handshake
+import { Lightbulb, Users, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { dummyTeamMembers } from "@/data/teamMembers"; // Removed unused 'TeamMember' import
+import { dummyTeamMembers } from "@/data/teamMembers";
+import { supabase } from "@/integrations/supabase/client";
+
+const ABOUT_PAGE_CONTENT_ID = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
 
 const AboutPage: React.FC = () => {
   const { t } = useTranslation();
+  const [aboutContent, setAboutContent] = useState<string | null>(null);
+  const [loadingContent, setLoadingContent] = useState(true);
+  const [errorContent, setErrorContent] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAboutContent = async () => {
+      setLoadingContent(true);
+      setErrorContent(null);
+      try {
+        const { data, error } = await supabase
+          .from('content')
+          .select('html_content')
+          .eq('id', ABOUT_PAGE_CONTENT_ID)
+          .single();
+
+        if (error) {
+          throw error;
+        }
+        setAboutContent(data?.html_content || null);
+      } catch (err: any) {
+        console.error("Error fetching about page content:", err);
+        setErrorContent(t("fetch data error", { error: err.message }));
+      } finally {
+        setLoadingContent(false);
+      }
+    };
+
+    fetchAboutContent();
+  }, [t]);
 
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -21,19 +53,15 @@ const AboutPage: React.FC = () => {
       </section>
 
       <section className="mb-16 prose dark:prose-invert max-w-none mx-auto">
-        <p className="text-lg text-muted-foreground mb-4">
-          <span className="inline-flex items-center gap-2 font-semibold text-foreground mb-2">
-            <MapPin className="h-6 w-6 text-primary" /> {t('headquarter label')}: {t('bandung indonesia')}
-          </span>
-          <br />
-          ProCodeCG adalah startup yang berbasis di Bandung yang bergerak di bidang teknologi, khususnya literasi pemrograman dan coding. Kami senang membantu anak-anak membangun dan mengembangkan keterampilan mereka di lingkungan IT, karena kami menyadari bahwa anak-anak adalah investasi paling berharga dalam memenuhi kebutuhan sumber daya manusia. Kami membantu industri masa depan dengan membentuk keterampilan anak-anak sedini mungkin untuk memenuhi persyaratan lanskap industri teknologi, karena perubahan teknologi yang cepat di seluruh dunia.
-        </p>
-        <p className="text-lg text-muted-foreground mb-4">
-          Tidak hanya untuk anak-anak, kami juga membantu lingkungan industri kreatif dengan membangun komunitas bernama Code Meet Up. Komunitas ini terdiri dari orang-orang kreatif dengan pengetahuan lintas bidang yang peduli terhadap teknologi dan bisnis. Kami berkumpul, berbagi, berkolaborasi, dan menciptakan sesuatu yang luar biasa bersama orang-orang super kreatif lainnya seperti Anda. Dan bagian terbaiknya, ini gratis. Jika Anda adalah orang yang berpikiran terbuka, kreatif, dan bersemangat, datang dan bergabunglah dengan kami di komunitas Code Meet Up.
-        </p>
-        <p className="text-lg text-muted-foreground">
-          Kami sangat bangga menggabungkan talenta terbaik dari berbagai disiplin ilmu dan menyatukan orang-orang dengan satu arahan sederhana: berkolaborasi dan berkreasi.
-        </p>
+        {loadingContent ? (
+          <p className="text-center text-muted-foreground">{t('loading content')}</p>
+        ) : errorContent ? (
+          <p className="text-center text-destructive">{errorContent}</p>
+        ) : aboutContent ? (
+          <div dangerouslySetInnerHTML={{ __html: aboutContent }} />
+        ) : (
+          <p className="text-center text-muted-foreground">{t('no content available')}</p>
+        )}
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">

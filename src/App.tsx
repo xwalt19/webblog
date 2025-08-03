@@ -43,7 +43,8 @@ import React from "react";
 import AdminDashboard from "./pages/admin/Dashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
 import UserProfile from "./pages/UserProfile";
-import MemberDashboard from "./pages/MemberDashboard"; // Import MemberDashboard
+import MemberDashboard from "./pages/MemberDashboard";
+import ManageAboutContent from "@/pages/admin/ManageAboutContent"; // Menggunakan alias path
 
 const queryClient = new QueryClient();
 
@@ -72,7 +73,7 @@ const App = () => (
               <Route path="media/tiktok" element={<TikTokPage />} />
               <Route path="info/calendar" element={<CalendarPage />} />
               <Route path="profile" element={<UserProfile />} />
-              <Route path="dashboard" element={<MemberDashboard />} /> {/* New Member Dashboard Route */}
+              <Route path="dashboard" element={<MemberDashboard />} />
               {/* Admin Routes */}
               <Route path="admin" element={<AdminDashboard />} />
               <Route path="admin/blog-posts/new" element={<UploadBlogPost />} />
@@ -83,10 +84,8 @@ const App = () => (
               <Route path="admin/manage-programs" element={<ManagePrograms />} />
               <Route path="admin/running-classes/new" element={<UploadRunningClass />} />
               <Route path="admin/running-classes/:id/edit" element={<UploadRunningClass />} />
-              <Route path="admin/manage-running-classes" element={<ManageRunningClasses />} />
-              <Route path="admin/regular-events/new" element={<UploadRegularEvent />} />
-              <Route path="admin/regular-events/:id/edit" element={<UploadRegularEvent />} />
               <Route path="admin/manage-regular-events" element={<ManageRegularEvents />} />
+              <Route path="admin/regular-events/:id/edit" element={<UploadRegularEvent />} />
               <Route path="admin/camps/new" element={<UploadCamp />} />
               <Route path="admin/camps/:id/edit" element={<UploadCamp />} />
               <Route path="admin/manage-camps" element={<ManageCamps />} />
@@ -103,6 +102,7 @@ const App = () => (
               <Route path="admin/manage-calendar" element={<ManageCalendar />} />
               <Route path="admin/manage-archives" element={<ManageArchives />} />
               <Route path="admin/manage-users" element={<ManageUsers />} />
+              <Route path="admin/manage-about-content" element={<ManageAboutContent />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
