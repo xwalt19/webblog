@@ -16,17 +16,6 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
 
-// Removed SupabaseRunningClass interface
-// interface SupabaseRunningClass {
-//   id: string;
-//   name: string;
-//   schedule: string;
-//   description: string;
-//   icon_name: string | null;
-//   created_by: string | null;
-//   created_at: string;
-// }
-
 interface SupabaseRegularEvent {
   id: string;
   name: string;
@@ -39,9 +28,7 @@ interface SupabaseRegularEvent {
 
 const RegularEventsClasses: React.FC = () => {
   const { t } = useTranslation();
-  const [selectedActivityView, setSelectedActivityView] = useState("regularEvents"); // Default to regularEvents
-  // Removed runningClasses state
-  // const [runningClasses, setRunningClasses] = useState<SupabaseRunningClass[]>([]);
+  const [selectedActivityView, setSelectedActivityView] = useState("regularEvents");
   const [regularEvents, setRegularEvents] = useState<SupabaseRegularEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,15 +38,6 @@ const RegularEventsClasses: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        // Removed runningData fetch
-        // const { data: runningData, error: runningError } = await supabase
-        //   .from('running_classes')
-        //   .select('*')
-        //   .order('created_at', { ascending: false });
-
-        // if (runningError) throw runningError;
-        // setRunningClasses(runningData || []);
-
         const { data: eventData, error: eventError } = await supabase
           .from('regular_events')
           .select('*')
@@ -102,55 +80,15 @@ const RegularEventsClasses: React.FC = () => {
             <SelectValue placeholder={t('select activity placeholder')} />
           </SelectTrigger>
           <SelectContent>
-            {/* Removed 'allActivities' and 'runningClasses' options */}
-            {/* <SelectItem value="allActivities">{t('all activities')}</SelectItem>
-            <SelectItem value="runningClasses">{t('running classes')}</SelectItem> */}
             <SelectItem value="regularEvents">{t('regular events')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      {/* Removed running classes section */}
-      {/* {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && (
-        <section className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('running classes section title')}</h2>
-          {loading ? (
-            <p className="text-center text-muted-foreground">{t('loading activities')}</p>
-          ) : runningClasses.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6"> 
-              {runningClasses.map((cls) => {
-                const ClassIcon = getIconComponent(cls.icon_name);
-                return (
-                  <Card key={cls.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col md:flex-row items-center md:items-start text-center md:text-left">
-                    <div className="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                      {ClassIcon && <ClassIcon className="text-primary" size={64} />}
-                    </div>
-                    <div className="flex-grow">
-                      <CardHeader className="pb-2 p-0">
-                        <CardTitle className="text-2xl font-semibold">{cls.name}</CardTitle>
-                        <CardDescription className="text-primary font-medium">{cls.schedule}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="text-muted-foreground p-0 pt-2">
-                        {cls.description}
-                      </CardContent>
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
-          ) : (
-            <p className="text-center text-muted-foreground mt-8 text-lg">{t('no running classes available')}</p>
-          )}
-        </section>
-      )} */}
-
-      {/* Removed separator if running classes section is removed */}
-      {/* {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && <Separator className="my-12" />} */}
-
       {(selectedActivityView === "allActivities" || selectedActivityView === "regularEvents") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('regular events section title')}</h2>
-          {loading ? ( // Show loading only for this section if data is still fetching
+          {loading ? (
             <p className="text-center text-muted-foreground">{t('loading activities')}</p>
           ) : regularEvents.length > 0 ? (
             <div className="grid grid-cols-1 gap-6">

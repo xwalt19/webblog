@@ -20,7 +20,7 @@ const MobileNav: React.FC = () => {
   const navigate = useNavigate();
   const { session, profile, user, loading, clearSession } = useSession();
   const isAdmin = profile?.role === 'admin';
-  const displayName = profile?.first_name || user?.email || "Profil Saya"; // Static Indonesian text
+  const displayName = profile?.first_name || user?.email || "Profil Saya";
 
   const closeSheet = () => setIsOpen(false);
 
@@ -125,9 +125,6 @@ const MobileNav: React.FC = () => {
           {/* User Account (Conditional) */}
           {session ? (
             <>
-              {/* <Link to="/dashboard" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
-                <LayoutDashboard className="h-5 w-5 inline-block mr-2" /> {t('dashboard')}
-              </Link> */}
               <Link to="/profile" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
                 <User className="h-5 w-5 inline-block mr-2" /> {displayName}
               </Link>
@@ -156,7 +153,6 @@ const MobileNav: React.FC = () => {
                   <Link to="/admin/manage-programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('programs')}
                   </Link>
-                  {/* Removed running classes link */}
                   <Link to="/admin/manage-regular-events" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('regular events')}
                   </Link>

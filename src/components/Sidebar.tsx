@@ -63,19 +63,16 @@ const Sidebar: React.FC = () => {
     { to: "/media/tiktok", labelKey: "tiktok", icon: Music },
   ];
 
-  // Hanya menyertakan link profil untuk pengguna yang login
   const userLinks = [
-    // { to: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard }, // Dihapus
     { to: "/profile", labelKey: "my profile", icon: User },
   ];
 
   const adminLinks = [
-    { to: "/admin", labelKey: "admin dashboard", icon: LayoutDashboard }, // Changed labelKey for clarity
+    { to: "/admin", labelKey: "admin dashboard", icon: LayoutDashboard },
     { to: "/admin/manage-blog-posts", labelKey: "blog posts", icon: FileText },
     { to: "/admin/manage-archives", labelKey: "archives", icon: Archive },
     { to: "/admin/manage-calendar", labelKey: "calendar", icon: CalendarDays },
     { to: "/admin/manage-programs", labelKey: "programs", icon: GraduationCap },
-    // Removed running classes link
     { to: "/admin/manage-regular-events", labelKey: "regular events", icon: BellRing },
     { to: "/admin/manage-camps", labelKey: "camps", icon: Tent },
     { to: "/admin/manage-training-programs", labelKey: "training programs", icon: Cpu },
@@ -137,7 +134,7 @@ const Sidebar: React.FC = () => {
         </div>
 
         {/* User Account (Conditional) */}
-        {session && ( // Hanya cek jika sesi ada
+        {session && (
           <div className="space-y-1 pt-4 border-t border-sidebar-border">
             {isExpanded && <h3 className="text-sm font-semibold text-muted-foreground px-3 mb-2">{t('my account')}</h3>}
             {userLinks.map((link) => (
@@ -153,7 +150,7 @@ const Sidebar: React.FC = () => {
         )}
 
         {/* Admin Tools (Conditional) */}
-        {isAdmin && ( // Hanya cek jika isAdmin
+        {isAdmin && (
           <div className="space-y-1 pt-4 border-t border-sidebar-border">
             {isExpanded && <h3 className="text-sm font-semibold text-muted-foreground px-3 mb-2">{t('admin tools')}</h3>}
             {adminLinks.map((link) => (

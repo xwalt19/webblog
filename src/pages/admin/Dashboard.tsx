@@ -16,7 +16,6 @@ interface Stats {
   archives: number;
   calendarEvents: number;
   programs: number;
-  // Removed runningClasses: number;
   regularEvents: number;
   camps: number;
   trainingPrograms: number;
@@ -75,12 +74,6 @@ const AdminDashboard: React.FC = () => {
         .select('*', { count: 'exact', head: true });
       if (programsError) throw programsError;
 
-      // Removed runningClassesCount fetch
-      // const { count: runningClassesCount, error: runningClassesError } = await supabase
-      //   .from('running_classes')
-      //   .select('*', { count: 'exact', head: true });
-      // if (runningClassesError) throw runningClassesError;
-
       const { count: regularEventsCount, error: regularEventsError } = await supabase
         .from('regular_events')
         .select('*', { count: 'exact', head: true });
@@ -116,7 +109,6 @@ const AdminDashboard: React.FC = () => {
         archives: archivesCount || 0,
         calendarEvents: calendarEventsCount || 0,
         programs: programsCount || 0,
-        // runningClasses: runningClassesCount || 0, // Removed
         regularEvents: regularEventsCount || 0,
         camps: campsCount || 0,
         trainingPrograms: trainingProgramsCount || 0,
@@ -137,14 +129,12 @@ const AdminDashboard: React.FC = () => {
     { title: t('total archives'), value: stats.archives, icon: Archive, link: "/admin/manage-archives" },
     { title: t('total calendar events'), value: stats.calendarEvents, icon: CalendarDays, link: "/admin/manage-calendar" },
     { title: t('total programs'), value: stats.programs, icon: GraduationCap, link: "/admin/manage-programs" },
-    // Removed running classes card
-    // { title: t('total running classes'), value: stats.runningClasses, icon: Code, link: "/admin/manage-running-classes" },
     { title: t('total regular events'), value: stats.regularEvents, icon: BellRing, link: "/admin/manage-regular-events" },
     { title: t('total camps'), value: stats.camps, icon: Tent, link: "/admin/manage-camps" },
     { title: t('total training programs'), value: stats.trainingPrograms, icon: Cpu, link: "/admin/manage-training-programs" },
     { title: t('total youtube videos'), value: stats.youtubeVideos, icon: Youtube, link: "/admin/manage-youtube-videos" },
     { title: t('total tiktok videos'), value: stats.tiktokVideos, icon: Music, link: "/admin/manage-tiktok-videos" },
-    { title: t('total users'), value: stats.totalUsers, icon: Users, link: "/admin/manage-users" }, // Link to new user management page
+    { title: t('total users'), value: stats.totalUsers, icon: Users, link: "/admin/manage-users" },
   ] : [];
 
   if (!session || !isAdmin) {
