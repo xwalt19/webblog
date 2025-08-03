@@ -159,16 +159,11 @@ const ProgramsPage: React.FC = () => {
                       <h3 className="text-lg font-semibold text-primary mb-2">{t('price details')}</h3>
                       <Card className="mb-4 shadow-sm">
                         <CardHeader className="p-3 pb-2">
-                          <CardTitle className="text-lg font-semibold">{program.program_price_tiers[0]?.header_key_col2}</CardTitle>
+                          {/* Removed CardTitle that displayed header_key_col2 */}
                         </CardHeader>
                         <CardContent className="p-0">
                           <Table className="w-full">
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead className="w-[150px]">{program.program_price_tiers[0]?.header_key_col1}</TableHead>
-                                <TableHead className="text-right">{program.program_price_tiers[0]?.header_key_col2}</TableHead>
-                              </TableRow>
-                            </TableHeader>
+                            {/* Removed TableHeader and TableHead */}
                             <TableBody>
                               {program.program_price_tiers.map((row, rowIndex) => (
                                 <TableRow key={rowIndex}>
