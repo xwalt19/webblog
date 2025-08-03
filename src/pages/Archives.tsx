@@ -119,12 +119,18 @@ const Archives: React.FC = () => {
     allArchivePosts.forEach(post => {
       const date = new Date(post.created_at);
       periods.add(`${date.getFullYear()}-${date.getMonth() + 1}`);
+      periods.add(`${date.getFullYear()}`); // Add just the year as an option
     });
     const sortedPeriods = Array.from(periods).sort((a, b) => {
+      // Sort by year descending, then by month descending
       const [yearA, monthA] = a.split('-').map(Number);
       const [yearB, monthB] = b.split('-').map(Number);
+
       if (yearA !== yearB) return yearB - yearA;
-      return monthB - monthA;
+      if (monthA && monthB) return monthB - monthA; // Both are months
+      if (monthA) return -1; // A is month, B is year
+      if (monthB) return 1; // B is month, A is year
+      return 0; // Both are years or invalid
     });
     return ["all", ...sortedPeriods];
   }, [allArchivePosts]);
@@ -132,11 +138,12 @@ const Archives: React.FC = () => {
   const getPeriodDisplayName = (period: string) => {
     if (period === "all") return t("all time period");
     const parts = period.split('-');
-    if (parts.length === 2) {
+    if (parts.length === 2) { // YYYY-MM format
       const [year, month] = parts.map(Number);
-      return `${year} - ${monthNames[month]}`;
+      return monthNames[month]; // Just the month name
     }
-    return period;
+    // If it's just a year (e.g., "2024")
+    return period; // Returns "2024"
   };
 
   const filteredPosts = useMemo(() => {
