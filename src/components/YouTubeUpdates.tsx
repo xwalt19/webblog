@@ -119,7 +119,7 @@ const YouTubeUpdates: React.FC = () => {
               <Card key={video.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center cursor-pointer" onClick={() => openVideoInModal(video)}>
                   <img src={video.thumbnail_url} alt={video.title} className="w-full h-full object-cover" />
-                  <Youtube className="absolute text-white/80 hover:text-white transition-colors" size={64} />
+                  <Youtube className="absolute text-red-600 hover:text-red-700 transition-colors" size={64} />
                 </div>
                 <CardHeader className="flex-grow">
                   <CardTitle className="text-xl">{video.title}</CardTitle>

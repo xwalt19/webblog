@@ -177,7 +177,7 @@ const MediaCarousel: React.FC = () => {
                     <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center cursor-pointer" onClick={() => item.type === 'youtube' ? openVideoInModal(item) : window.open(item.url, '_blank')}>
                       <img src={item.thumbnail_url} alt={item.title} className="w-full h-full object-cover" />
                       {item.type === 'youtube' ? (
-                        <Youtube className="absolute text-white/80 hover:text-white transition-colors" size={64} />
+                        <Youtube className="absolute text-red-600 hover:text-red-700 transition-colors" size={64} />
                       ) : (
                         <Music className="absolute text-white/80 hover:text-white transition-colors" size={64} />
                       )}
