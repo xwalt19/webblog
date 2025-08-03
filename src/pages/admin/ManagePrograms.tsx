@@ -11,6 +11,7 @@ import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash, PlusCircle } from "lucide-react";
 import { getIconComponent } from "@/utils/iconMap";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Program {
   id: string;
@@ -30,64 +31,26 @@ const ManagePrograms: React.FC = () => {
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';
+  const queryClient = useQueryClient();
 
-  const [programs, setPrograms] = useState<Program[]>([]);
-  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
-  const [error, setError] = useState<string | null>(null);
-  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches
-
-  const fetchPrograms = async () => {
-    setIsFetching(true);
-    setError(null);
-    try {
+  // Query to fetch programs
+  const { data: programs, isLoading: isProgramsLoading, isError: isProgramsError, error: programsError, isFetching: isProgramsFetching } = useQuery<Program[], Error>({
+    queryKey: ['programs'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('programs')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        throw error;
-      }
-      setPrograms(data || []);
-    } catch (err: any) {
-      console.error("Error fetching programs:", err);
-      setError(t("fetch data error", { error: err.message }));
-      // Optionally, if a critical error, navigate away or show a persistent error message
-    } finally {
-      setIsFetching(false);
-      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
-    }
-  };
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!session && isAdmin, // Only run query if session exists and user is admin
+  });
 
-  // Combined useEffect for initial load, auth check, and data fetching
-  useEffect(() => {
-    // Only proceed if session loading is complete
-    if (sessionLoading) {
-      return;
-    }
-
-    if (!session) {
-      toast.error(t('login required'));
-      navigate('/login');
-      return;
-    }
-
-    if (!isAdmin) {
-      toast.error(t('admin required'));
-      navigate('/');
-      return;
-    }
-
-    // If session is loaded and user is admin, fetch data
-    fetchPrograms();
-    
-  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
-
-  const handleDelete = async (id: string) => {
-    if (!window.confirm(t("confirm delete program"))) {
-      return;
-    }
-    try {
+  // Mutation for deleting a program
+  const deleteProgramMutation = useMutation<void, Error, string>({
+    mutationFn: async (id) => {
       // Delete related price tiers and topics first due to foreign key constraints
       await supabase.from('program_price_tiers').delete().eq('program_id', id);
       await supabase.from('program_topics').delete().eq('program_id', id);
@@ -99,15 +62,99 @@ const ManagePrograms: React.FC = () => {
         .delete()
         .eq('id', id);
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['programs'] }); // Invalidate the query to refetch the list
+      queryClient.invalidateQueries({ queryKey: ['calendarEvents'] }); // Invalidate calendar events as well
       toast.success(t("deleted successfully"));
-      fetchPrograms(); // Refresh the list
-    } catch (err: any) {
+    },
+    onError: (err) => {
       console.error("Error deleting program:", err);
       toast.error(t("delete error", { error: err.message }));
+    },
+  });
+
+  // Authentication and authorization check
+  useEffect(() => {
+    if (!sessionLoading) {
+      if (!session) {
+        toast.error(t('login required'));
+        navigate('/login');
+      } else if (!isAdmin) {
+        toast.error(t('admin required'));
+        navigate('/');
+      }
     }
+  }, [session, isAdmin, sessionLoading, navigate, t]);
+
+  // Real-time subscription for programs, price tiers, topics, and calendar events
+  useEffect(() => {
+    if (!session || !isAdmin) {
+      return;
+    }
+
+    const programChannel = supabase
+      .channel('programs_admin_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'programs' },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['programs'] });
+        }
+      )
+      .subscribe();
+
+    const priceTiersChannel = supabase
+      .channel('program_price_tiers_admin_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'program_price_tiers' },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['programs'] });
+        }
+      )
+      .subscribe();
+
+    const topicsChannel = supabase
+      .channel('program_topics_admin_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'program_topics' },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['programs'] });
+        }
+      )
+      .subscribe();
+
+    const calendarEventsChannel = supabase
+      .channel('calendar_events_program_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'calendar_events' },
+        (payload) => {
+          // Only invalidate if the change is related to a program_id
+          if (payload.new?.program_id || payload.old?.program_id) {
+            queryClient.invalidateQueries({ queryKey: ['programs'] });
+            queryClient.invalidateQueries({ queryKey: ['calendarEvents'] });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(programChannel);
+      supabase.removeChannel(priceTiersChannel);
+      supabase.removeChannel(topicsChannel);
+      supabase.removeChannel(calendarEventsChannel);
+    };
+  }, [session, isAdmin, queryClient]);
+
+  const handleDelete = (id: string) => {
+    if (!window.confirm(t("confirm delete program"))) {
+      return;
+    }
+    deleteProgramMutation.mutate(id);
   };
 
   const formatDisplayDate = (isoString: string) => {
@@ -128,11 +175,18 @@ const ManagePrograms: React.FC = () => {
     );
   }
 
-  // If initial data is not loaded yet, show loading for the page content
-  if (!isInitialDataLoaded) {
+  if (isProgramsLoading) {
     return (
       <div className="container mx-auto py-10 px-4">
         <p className="text-center text-muted-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
+
+  if (isProgramsError) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-destructive">{t("fetch data error", { error: programsError?.message })}</p>
       </div>
     );
   }
@@ -154,9 +208,7 @@ const ManagePrograms: React.FC = () => {
         </Link>
       </div>
 
-      {error ? (
-        <p className="text-center text-destructive">{error}</p>
-      ) : programs.length > 0 ? (
+      {programs && programs.length > 0 ? (
         <Card className="shadow-lg">
           <CardContent className="p-0">
             <Table>
@@ -186,7 +238,7 @@ const ManagePrograms: React.FC = () => {
                             <Edit className="h-4 w-4" />
                           </Button>
                         </Link>
-                        <Button variant="destructive" size="icon" onClick={() => handleDelete(program.id)}>
+                        <Button variant="destructive" size="icon" onClick={() => handleDelete(program.id)} disabled={deleteProgramMutation.isPending}>
                           <Trash className="h-4 w-4" />
                         </Button>
                       </TableCell>
@@ -201,8 +253,7 @@ const ManagePrograms: React.FC = () => {
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no programs found')}</p>
       )}
 
-      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads */}
-      {isFetching && programs.length > 0 && (
+      {isProgramsFetching && programs && programs.length > 0 && (
         <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}
 
