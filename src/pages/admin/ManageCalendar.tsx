@@ -19,6 +19,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
 
 export interface CalendarEvent {
   id: string;
@@ -33,8 +34,7 @@ export interface CalendarEvent {
 const ManageCalendar: React.FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { session, profile, loading: sessionLoading } = useSession();
-  const isAdmin = profile?.role === 'admin';
+  const { session } = useSession(); // Only need session for created_by in mutations
   const queryClient = useQueryClient();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -42,6 +42,15 @@ const ManageCalendar: React.FC = () => {
   const [formTitle, setFormTitle] = useState("");
   const [formDescription, setFormDescription] = useState("");
   const [formDate, setFormDate] = useState<Date | undefined>(undefined);
+
+  // State to control when data fetching queries should run
+  const [shouldFetchData, setShouldFetchData] = useState(false);
+
+  // Use the new admin page logic hook
+  const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
+    isAdminRequired: true,
+    onAuthSuccess: () => setShouldFetchData(true), // Set flag to true when auth is successful
+  });
 
   // Query to fetch calendar events
   const { data: events, isLoading: isEventsLoading, isError: isEventsError, error: eventsError } = useQuery<CalendarEvent[], Error>({
@@ -55,7 +64,7 @@ const ManageCalendar: React.FC = () => {
       if (error) throw error;
       return data || [];
     },
-    enabled: !!session && isAdmin, // Only run query if session exists and user is admin
+    enabled: shouldFetchData, // Only run query if auth is successful
   });
 
   // Mutation for adding/editing calendar event
@@ -114,22 +123,9 @@ const ManageCalendar: React.FC = () => {
     },
   });
 
-  // Authentication and authorization check
-  useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (!isAdmin) {
-        toast.error(t('admin required'));
-        navigate('/');
-      }
-    }
-  }, [session, isAdmin, sessionLoading, navigate, t]);
-
   // Realtime subscription (separate useEffect as it's a one-time setup)
   useEffect(() => {
-    if (!session || !isAdmin) {
+    if (!isAuthenticatedAndAuthorized) { // Only subscribe if authenticated and authorized
       return;
     }
 
@@ -147,7 +143,7 @@ const ManageCalendar: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [session, isAdmin, queryClient]);
+  }, [isAuthenticatedAndAuthorized, queryClient]);
 
   const handleAddEdit = () => {
     if (!formTitle || !formDate) {
@@ -199,12 +195,16 @@ const ManageCalendar: React.FC = () => {
     });
   };
 
-  if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
+  if (isLoadingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
+  }
+
+  if (!isAuthenticatedAndAuthorized) {
+    return null; // The hook handles navigation
   }
 
   if (isEventsLoading) {
