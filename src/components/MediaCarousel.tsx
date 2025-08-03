@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Youtube, Music, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client"; // Import supabase
+import { supabase } from "@/integrations/supabase/client";
+import YouTubeVideoModal from "@/components/YouTubeVideoModal"; // Import the new modal
 
 interface YouTubeVideo {
   id: string;
@@ -44,6 +45,9 @@ const MediaCarousel: React.FC = () => {
   const [allMedia, setAllMedia] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+  const [selectedVideoForModal, setSelectedVideoForModal] = useState<MediaItem | null>(null); // State for video in modal
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -120,7 +124,12 @@ const MediaCarousel: React.FC = () => {
     };
 
     fetchMedia();
-  }, [t]); // Depend on t to refetch if language changes
+  }, [t]);
+
+  const openVideoInModal = (video: MediaItem) => {
+    setSelectedVideoForModal(video);
+    setIsModalOpen(true);
+  };
 
   if (loading) {
     return (
@@ -165,7 +174,7 @@ const MediaCarousel: React.FC = () => {
               {allMedia.map((item) => (
                 <div key={item.id} className="flex-none w-full sm:w-1/2 lg:w-1/3 pl-4">
                   <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
-                    <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center">
+                    <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center cursor-pointer" onClick={() => item.type === 'youtube' ? openVideoInModal(item) : window.open(item.url, '_blank')}>
                       <img src={item.thumbnail_url} alt={item.title} className="w-full h-full object-cover" />
                       {item.type === 'youtube' ? (
                         <Youtube className="absolute text-white/80 hover:text-white transition-colors" size={64} />
@@ -181,9 +190,15 @@ const MediaCarousel: React.FC = () => {
                     </CardHeader>
                     <CardContent className="p-6 pt-0">
                       <p className="text-muted-foreground mb-4 line-clamp-2">{item.description}</p>
-                      <a href={item.url} target="_blank" rel="noopener noreferrer" className="w-full">
-                        <Button variant="outline" className="w-full">{t('view video')}</Button>
-                      </a>
+                      {item.type === 'youtube' ? (
+                        <Button variant="outline" className="w-full" onClick={() => openVideoInModal(item)}>
+                          {t('view video')}
+                        </Button>
+                      ) : (
+                        <a href={item.url} target="_blank" rel="noopener noreferrer" className="w-full">
+                          <Button variant="outline" className="w-full">{t('view video')}</Button>
+                        </a>
+                      )}
                     </CardContent>
                   </Card>
                 </div>
@@ -208,6 +223,14 @@ const MediaCarousel: React.FC = () => {
           </Button>
         </div>
       </div>
+      {selectedVideoForModal && selectedVideoForModal.type === 'youtube' && (
+        <YouTubeVideoModal
+          isOpen={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          videoUrl={selectedVideoForModal.url}
+          title={selectedVideoForModal.title}
+        />
+      )}
     </section>
   );
 };

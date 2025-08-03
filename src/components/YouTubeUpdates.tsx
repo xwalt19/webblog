@@ -12,7 +12,8 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client"; // Import supabase
+import { supabase } from "@/integrations/supabase/client";
+import YouTubeVideoModal from "@/components/YouTubeVideoModal"; // Import the new modal
 
 interface YouTubeVideo {
   id: string;
@@ -32,6 +33,9 @@ const YouTubeUpdates: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+  const [selectedVideoForModal, setSelectedVideoForModal] = useState<YouTubeVideo | null>(null); // State for video in modal
 
   useEffect(() => {
     const fetchYouTubeVideos = async () => {
@@ -56,7 +60,7 @@ const YouTubeUpdates: React.FC = () => {
     };
 
     fetchYouTubeVideos();
-  }, [t]); // Depend on t to refetch if language changes
+  }, [t]);
 
   const filteredVideos = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
@@ -64,7 +68,7 @@ const YouTubeUpdates: React.FC = () => {
       video.title.toLowerCase().includes(lowerCaseSearchTerm) ||
       video.description.toLowerCase().includes(lowerCaseSearchTerm)
     );
-  }, [videos, searchTerm]); // No need for i18n.language here as data is already fetched
+  }, [videos, searchTerm]);
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
   const currentVideos = useMemo(() => {
@@ -80,11 +84,16 @@ const YouTubeUpdates: React.FC = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm]); // Reset page when search term changes
+  }, [searchTerm]);
 
   const formatDate = (isoString: string) => {
     const dateObj = new Date(isoString);
     return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  const openVideoInModal = (video: YouTubeVideo) => {
+    setSelectedVideoForModal(video);
+    setIsModalOpen(true);
   };
 
   return (
@@ -108,7 +117,7 @@ const YouTubeUpdates: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentVideos.map((video) => (
               <Card key={video.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center">
+                <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center cursor-pointer" onClick={() => openVideoInModal(video)}>
                   <img src={video.thumbnail_url} alt={video.title} className="w-full h-full object-cover" />
                   <PlayCircle className="absolute text-white/80 hover:text-white transition-colors" size={64} />
                 </div>
@@ -120,9 +129,9 @@ const YouTubeUpdates: React.FC = () => {
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
                   <p className="text-muted-foreground mb-4 line-clamp-2">{video.description}</p>
-                  <a href={video.video_url} target="_blank" rel="noopener noreferrer" className="w-full">
-                    <Button variant="outline" className="w-full">{t('view video')}</Button>
-                  </a>
+                  <Button variant="outline" className="w-full" onClick={() => openVideoInModal(video)}>
+                    {t('view video')}
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -160,6 +169,14 @@ const YouTubeUpdates: React.FC = () => {
           </Pagination>
         )}
       </div>
+      {selectedVideoForModal && (
+        <YouTubeVideoModal
+          isOpen={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          videoUrl={selectedVideoForModal.video_url}
+          title={selectedVideoForModal.title}
+        />
+      )}
     </section>
   );
 };
