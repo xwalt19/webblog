@@ -410,5 +410,11 @@
   "edit archive form description": "Isi detail untuk memperbarui arsip.",
   "add archive form description": "Isi detail untuk menambahkan arsip baru.",
   "number of meetings": "Jumlah Pertemuan",
-  "price": "Harga"
+  "price": "Harga",
+  "programs data.kids weekday coding class title": "Kelas Coding Anak Hari Kerja",
+  "programs data.kids weekday coding class desc": "Kelas coding yang dirancang khusus untuk anak-anak selama hari kerja, fokus pada dasar-dasar pemrograman yang menyenangkan.",
+  "programs data.kids regular coding class title": "Kelas Coding Reguler Anak",
+  "programs data.kids regular coding class desc": "Program coding reguler untuk anak-anak, membangun keterampilan pemrograman melalui proyek-proyek kreatif dan tantangan.",
+  "programs data.tutoring coding class title": "Kelas Les Privat Coding",
+  "programs data.tutoring coding class desc": "Sesi les privat yang disesuaikan untuk kebutuhan belajar individu, memberikan perhatian penuh dan kurikulum yang fleksibel."
 }
