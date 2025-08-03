@@ -3,7 +3,6 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut, LogIn, User, Loader2 } from "lucide-react";
 import MobileNav from "./MobileNav";
-// import LanguageSwitcher from "./LanguageSwitcher"; // Removed import
 import { useTranslation } from "react-i18next";
 import { useSession } from "@/components/SessionProvider";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +14,7 @@ const Layout: React.FC = () => {
   const navigate = useNavigate();
   const { session, profile, user, loading, clearSession } = useSession();
 
-  const displayName = profile?.first_name || user?.email || "Profil Saya"; // Static Indonesian text
+  const displayName = profile?.first_name || user?.email || t("my profile button");
 
   const handleLogout = async () => {
     try {
@@ -40,10 +39,9 @@ const Layout: React.FC = () => {
           </Link>
 
           <div className="flex items-center gap-2">
-            {/* <LanguageSwitcher /> */} {/* Removed component usage */}
             {loading && !session ? (
               <div className="flex items-center px-4 py-2 text-muted-foreground">
-                <Loader2 className="h-5 w-5 animate-spin mr-2" /> Memuat...
+                <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading text')}
               </div>
             ) : (
               <>
@@ -55,13 +53,13 @@ const Layout: React.FC = () => {
                       </Button>
                     </Link>
                     <Button variant="default" onClick={handleLogout} className="px-4 py-2">
-                      <LogOut className="h-5 w-5 mr-2" /> Keluar
+                      <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
                     </Button>
                   </>
                 ) : (
                   <Link to="/login">
                     <Button variant="default" className="px-4 py-2">
-                      <LogIn className="h-5 w-5 mr-2" /> Masuk
+                      <LogIn className="h-5 w-5 mr-2" /> {t('login button')}
                     </Button>
                   </Link>
                 )}

@@ -1,39 +1,39 @@
 export interface TeamMember {
   name: string;
-  role: string;
+  roleKey: string; // Changed to roleKey
   avatarUrl: string;
-  description: string;
+  descriptionKey: string; // Changed to descriptionKey
 }
 
 export const dummyTeamMembers: TeamMember[] = [
   {
     name: "Marisa Paryasto",
-    role: "PhD Electrical Engineering Institute Technology Bandung, Researcher at ITB, Part-time Lecturer at Telkom University",
+    roleKey: "team member role marisa",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Marisa",
-    description: "Experienced in teaching and education. An expert in computer engineering/science, programming and cryptography. A big admirer of kids.",
+    descriptionKey: "team member desc marisa",
   },
   {
     name: "Budi Rahardjo",
-    role: "Mentor",
+    roleKey: "team member role budi",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Budi",
-    description: "PhD, Faculty of Electrical Engineering Institute Technology Bandung",
+    descriptionKey: "team member desc budi",
   },
   {
     name: "Prayudi Utomo",
-    role: "CodeinTech Founder",
+    roleKey: "team member role prayudi",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Prayudi",
-    description: "Programmer",
+    descriptionKey: "team member desc prayudi",
   },
   {
     name: "Faris Hafizhan Hakim",
-    role: "Captain/Teaching Assistant/Junior Instructor",
+    roleKey: "team member role faris",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Faris",
-    description: "For Kids Classes",
+    descriptionKey: "team member desc faris",
   },
   {
     name: "Bullitt Zulfiqar",
-    role: "Captain/Teaching Assistant/Junior Instructor",
+    roleKey: "team member role bullitt",
     avatarUrl: "https://api.dicebear.com/8.x/avataaars/svg?seed=Bullitt",
-    description: "For Kids Classes",
+    descriptionKey: "team member desc bullitt",
   },
 ];

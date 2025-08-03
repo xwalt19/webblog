@@ -20,7 +20,7 @@ const MobileNav: React.FC = () => {
   const navigate = useNavigate();
   const { session, profile, user, loading, clearSession } = useSession();
   const isAdmin = profile?.role === 'admin';
-  const displayName = profile?.first_name || user?.email || "Profil Saya";
+  const displayName = profile?.first_name || user?.email || t("my profile button");
 
   const closeSheet = () => setIsOpen(false);
 
@@ -59,6 +59,9 @@ const MobileNav: React.FC = () => {
             {t('about')}
           </Link>
           <Link to="/blog" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+            {t('blog')}
+          </Link>
+          <Link to="/archives" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
             {t('archives')}
           </Link>
           
@@ -179,16 +182,16 @@ const MobileNav: React.FC = () => {
           {/* Auth Buttons for Mobile */}
           {loading && !session ? (
             <div className="flex items-center px-4 py-2 text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin mr-2" /> Memuat...
+              <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading text')}
             </div>
           ) : session ? (
             <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={handleLogout}>
-              <LogOut className="h-5 w-5 mr-2" /> Keluar
+              <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
             </Button>
           ) : (
             <Link to="/login" onClick={closeSheet}>
               <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors">
-                <LogIn className="h-5 w-5 mr-2" /> Masuk
+                <LogIn className="h-5 w-5 mr-2" /> {t('login button')}
               </Button>
             </Link>
           )}
