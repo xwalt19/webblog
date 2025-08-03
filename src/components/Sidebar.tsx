@@ -15,7 +15,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useBlogDateFilters } from "@/hooks/use-blog-date-filters";
 
 interface SidebarLinkProps {
   to: string;
@@ -46,18 +45,15 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon: Icon, label, isExpa
 };
 
 const Sidebar: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { profile, session } = useSession(); 
   const isAdmin = profile?.role === 'admin';
   const [isExpanded, setIsExpanded] = useState(false);
-  const location = useLocation();
-
-  const { data: blogDateFilters, isLoading: isDateFiltersLoading } = useBlogDateFilters();
 
   const mainLinks = [
     { to: "/", labelKey: "home", icon: Home },
     { to: "/about", labelKey: "about", icon: Info },
-    // Blog link will be handled separately with accordion
+    { to: "/blog", labelKey: "blog", icon: BookOpen },
     { to: "/archives", labelKey: "archives", icon: Archive },
     { to: "/contact-us", labelKey: "contact us", icon: Mail },
     { to: "/partners", labelKey: "partners", icon: Handshake },
@@ -94,12 +90,6 @@ const Sidebar: React.FC = () => {
     { to: "/admin/manage-users", labelKey: "manage users", icon: Users },
   ];
 
-  // Helper to get month name
-  const getMonthName = (monthNumber: number) => {
-    const date = new Date(2000, monthNumber - 1, 1); // Use a dummy date for formatting
-    return date.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { month: 'long' });
-  };
-
   return (
     <aside
       className={cn(
@@ -122,60 +112,6 @@ const Sidebar: React.FC = () => {
               isExpanded={isExpanded}
             />
           ))}
-          {/* Blog with Date Filters */}
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="blog-main" className="border-b-0">
-              <AccordionTrigger className={cn(
-                "py-2 px-3 rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200",
-                location.pathname === "/blog" && !location.search && "bg-sidebar-primary text-sidebar-primary-foreground" // Highlight "Blog" if no specific date filter
-              )}>
-                <BookOpen className={cn("h-5 w-5", isExpanded ? "mr-3" : "mx-auto")} />
-                {isExpanded && <span className="whitespace-nowrap">{t('blog')}</span>}
-              </AccordionTrigger>
-              <AccordionContent className="pl-4 pt-2 pb-0 space-y-1">
-                <SidebarLink
-                  to="/blog"
-                  icon={FileText} // A generic icon for all posts
-                  label={t('all posts')}
-                  isExpanded={isExpanded}
-                  isActive={location.pathname === "/blog" && location.search === ""} // Explicitly active for "All Posts"
-                />
-                {isDateFiltersLoading ? (
-                  <div className={cn("flex items-center py-2 px-3 text-muted-foreground", isExpanded ? "" : "justify-center")}>
-                    <Loader2 className={cn("h-4 w-4 animate-spin", isExpanded ? "mr-2" : "")} />
-                    {isExpanded && t('loading dates')}
-                  </div>
-                ) : (
-                  <Accordion type="single" collapsible className="w-full">
-                    {blogDateFilters?.map(yearFilter => (
-                      <AccordionItem key={yearFilter.year} value={`year-${yearFilter.year}`} className="border-b-0">
-                        <AccordionTrigger className={cn(
-                          "py-2 px-3 rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200",
-                          isExpanded ? "" : "justify-center",
-                          location.pathname === "/blog" && location.search.includes(`year=${yearFilter.year}`) && "bg-sidebar-primary text-sidebar-primary-foreground" // Highlight year if any month within it is filtered
-                        )}>
-                          <CalendarDays className={cn("h-4 w-4", isExpanded ? "mr-3" : "mx-auto")} />
-                          {isExpanded && <span className="whitespace-nowrap">{yearFilter.year}</span>}
-                        </AccordionTrigger>
-                        <AccordionContent className="pl-4 pt-2 pb-0 space-y-1">
-                          {yearFilter.months.map(monthFilter => (
-                            <SidebarLink
-                              key={monthFilter.value}
-                              to={`/blog?year=${yearFilter.year}&month=${monthFilter.month}`}
-                              icon={CalendarDays} // Use a generic icon for months
-                              label={isExpanded ? getMonthName(monthFilter.month) : String(monthFilter.month)}
-                              isExpanded={isExpanded}
-                              isActive={location.pathname === "/blog" && location.search === `?year=${yearFilter.year}&month=${monthFilter.month}`} // Highlight specific month
-                            />
-                          ))}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
         </div>
 
         {/* Activity */}
