@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
 import { useSession } from "@/components/SessionProvider";
-import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
+import ResponsiveImage from "@/components/ResponsiveImage";
 
 interface BlogPost {
   id: string;
@@ -46,6 +46,8 @@ const Archives: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { getTranslatedTag } = useTranslatedTag();
   const { loading: sessionLoading } = useSession();
+  const [searchParams] = useSearchParams();
+
   const [allArchivePosts, setAllArchivePosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +55,23 @@ const Archives: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+
+  // Effect to set initial filters from URL params
+  useEffect(() => {
+    const urlYear = searchParams.get('year');
+    const urlMonth = searchParams.get('month');
+
+    if (urlYear && urlMonth) {
+      setSelectedPeriod(`${urlYear}-${urlMonth}`);
+    } else if (urlYear) {
+      setSelectedPeriod(urlYear); // If only year is provided
+    } else {
+      setSelectedPeriod("all"); // Default if no params
+    }
+    setSelectedTag("all"); // Reset tag filter when navigating via date
+    setSearchTerm(""); // Reset search term when navigating via date
+    setCurrentPage(1); // Always reset to first page
+  }, [searchParams]); // Depend on searchParams to re-run when URL changes
 
   useEffect(() => {
     const fetchArchivePosts = async () => {
@@ -77,18 +96,10 @@ const Archives: React.FC = () => {
       }
     };
 
-    // Hanya ambil postingan arsip jika sesi sudah selesai dimuat
     if (!sessionLoading) {
       fetchArchivePosts();
     }
-  }, [t, sessionLoading]); // Tambahkan sessionLoading ke dependensi
-
-  useEffect(() => {
-    setSelectedPeriod("all");
-    setSelectedTag("all");
-    setSearchTerm("");
-    setCurrentPage(1);
-  }, [i18n.language, allArchivePosts]);
+  }, [t, sessionLoading]);
 
   const allTags: string[] = useMemo(() => {
     const tags = new Set<string>();
@@ -120,8 +131,12 @@ const Archives: React.FC = () => {
 
   const getPeriodDisplayName = (period: string) => {
     if (period === "all") return t("all time period");
-    const [year, month] = period.split('-').map(Number);
-    return `${year} - ${monthNames[month]}`;
+    const parts = period.split('-');
+    if (parts.length === 2) {
+      const [year, month] = parts.map(Number);
+      return `${year} - ${monthNames[month]}`;
+    }
+    return period;
   };
 
   const filteredPosts = useMemo(() => {
@@ -132,9 +147,14 @@ const Archives: React.FC = () => {
       
       let matchesPeriod = true;
       if (selectedPeriod !== "all") {
-        const [filterYear, filterMonth] = selectedPeriod.split('-').map(Number);
         const postDate = new Date(post.created_at);
-        matchesPeriod = postDate.getFullYear() === filterYear && (postDate.getMonth() + 1) === filterMonth;
+        const [filterYear, filterMonth] = selectedPeriod.split('-').map(Number);
+        
+        if (filterMonth) { // Filter by year and month
+          matchesPeriod = postDate.getFullYear() === filterYear && (postDate.getMonth() + 1) === filterMonth;
+        } else { // Filter by year only
+          matchesPeriod = postDate.getFullYear() === filterYear;
+        }
       }
 
       const matchesTag = selectedTag === "all" || post.tags?.map(cleanTagForStorage).includes(selectedTag);

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, LogIn, LayoutDashboard, Users, User, Loader2, Info } from "lucide-react";
+import { Menu, LogOut, LogIn, LayoutDashboard, Users, User, Loader2, Info, BookOpen, FileText, CalendarDays } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -13,14 +13,19 @@ import { useTranslation } from "react-i18next";
 import { useSession } from "@/components/SessionProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { useBlogDateFilters } from "@/hooks/use-blog-date-filters";
 
 const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { session, profile, user, loading, clearSession } = useSession();
   const isAdmin = profile?.role === 'admin';
   const displayName = profile?.first_name || user?.email || t("my profile button");
+  const location = useLocation();
+
+  const { data: blogDateFilters, isLoading: isDateFiltersLoading } = useBlogDateFilters();
 
   const closeSheet = () => setIsOpen(false);
 
@@ -37,6 +42,12 @@ const MobileNav: React.FC = () => {
       console.error("Error during logout:", err);
       toast.error(t('logout failed', { error: err.message }));
     }
+  };
+
+  // Helper to get month name
+  const getMonthName = (monthNumber: number) => {
+    const date = new Date(2000, monthNumber - 1, 1);
+    return date.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { month: 'long' });
   };
 
   return (
@@ -58,9 +69,55 @@ const MobileNav: React.FC = () => {
           <Link to="/about" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
             {t('about')}
           </Link>
-          <Link to="/blog" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
-            {t('blog')}
-          </Link>
+
+          {/* Blog with Date Filters */}
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="blog-main" className="border-b-0">
+              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
+                {t('blog')}
+              </AccordionTrigger>
+              <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
+                <Link to="/blog" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  {t('all posts')}
+                </Link>
+                {isDateFiltersLoading ? (
+                  <div className="flex items-center text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    {t('loading dates')}
+                  </div>
+                ) : (
+                  <Accordion type="single" collapsible className="w-full">
+                    {blogDateFilters?.map(yearFilter => (
+                      <AccordionItem key={yearFilter.year} value={`year-${yearFilter.year}`} className="border-b-0">
+                        <AccordionTrigger className={cn(
+                          "py-0 text-base font-medium text-muted-foreground hover:no-underline hover:text-foreground transition-colors",
+                          location.pathname === "/blog" && location.search.includes(`year=${yearFilter.year}`) && "text-primary font-semibold" // Highlight year if any month within it is filtered
+                        )}>
+                          {yearFilter.year}
+                        </AccordionTrigger>
+                        <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
+                          {yearFilter.months.map(monthFilter => (
+                            <Link
+                              key={monthFilter.value}
+                              to={`/blog?year=${yearFilter.year}&month=${monthFilter.month}`}
+                              className={cn(
+                                "block text-sm text-muted-foreground hover:text-foreground transition-colors",
+                                location.pathname === "/blog" && location.search === `?year=${yearFilter.year}&month=${monthFilter.month}` && "text-primary font-semibold" // Highlight specific month
+                              )}
+                              onClick={closeSheet}
+                            >
+                              {getMonthName(monthFilter.month)}
+                            </Link>
+                          ))}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
           <Link to="/archives" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
             {t('archives')}
           </Link>

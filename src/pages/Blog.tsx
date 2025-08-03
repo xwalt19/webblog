@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -24,8 +24,8 @@ import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
-import { useSession } from "@/components/SessionProvider"; // Import useSession
-import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
+import { useSession } from "@/components/SessionProvider";
+import ResponsiveImage from "@/components/ResponsiveImage";
 
 interface BlogPost {
   id: string;
@@ -45,19 +45,38 @@ const POSTS_PER_PAGE = 6;
 const BlogPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { getTranslatedTag } = useTranslatedTag();
-  const { loading: sessionLoading } = useSession(); // Get session loading state
+  const { loading: sessionLoading } = useSession();
+  const [searchParams] = useSearchParams();
+
   const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true); // Local loading state for posts
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Effect to set initial filters from URL params
+  useEffect(() => {
+    const urlYear = searchParams.get('year');
+    const urlMonth = searchParams.get('month');
+
+    if (urlYear && urlMonth) {
+      setSelectedPeriod(`${urlYear}-${urlMonth}`);
+    } else if (urlYear) {
+      setSelectedPeriod(urlYear); // If only year is provided
+    } else {
+      setSelectedPeriod("all"); // Default if no params
+    }
+    setSelectedTag("all"); // Reset tag filter when navigating via date
+    setSearchTerm(""); // Reset search term when navigating via date
+    setCurrentPage(1); // Always reset to first page
+  }, [searchParams]); // Depend on searchParams to re-run when URL changes
+
   useEffect(() => {
     const fetchBlogPosts = async () => {
-      setLoading(true); // Start loading for posts
-      setError(null); // Clear previous errors
+      setLoading(true);
+      setError(null);
       try {
         const { data, error } = await supabase
           .from('blog_posts')
@@ -73,24 +92,20 @@ const BlogPage: React.FC = () => {
         console.error("Error fetching blog posts:", err);
         setError(t("failed to load posts", { error: err.message }));
       } finally {
-        setLoading(false); // End loading for posts
+        setLoading(false);
       }
     };
 
-    // Only fetch blog posts if session loading is complete
-    // This ensures supabase client is ready and user auth state is known
     if (!sessionLoading) {
       fetchBlogPosts();
     }
 
-    // Realtime subscription for blog posts
     const channel = supabase
       .channel('blog_posts_public_changes')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'blog_posts' },
         (payload) => {
-          // Only process changes for non-PDF posts (actual blog posts)
           if ((payload.new as BlogPost)?.pdf_link === null || (payload.old as BlogPost)?.pdf_link === null) {
             if (payload.eventType === 'INSERT') {
               setAllPosts((prev) => [payload.new as BlogPost, ...prev]);
@@ -113,15 +128,7 @@ const BlogPage: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [t, sessionLoading]); // Add sessionLoading to dependencies
-
-  useEffect(() => {
-    // Reset filters and page when language or allPosts change
-    setSelectedPeriod("all");
-    setSelectedTag("all");
-    setSearchTerm("");
-    setCurrentPage(1);
-  }, [i18n.language, allPosts]);
+  }, [t, sessionLoading]);
 
   const allTags: string[] = useMemo(() => {
     const tags = new Set<string>();
@@ -153,8 +160,12 @@ const BlogPage: React.FC = () => {
 
   const getPeriodDisplayName = (period: string) => {
     if (period === "all") return t("all time period");
-    const [year, month] = period.split('-').map(Number);
-    return `${year} - ${monthNames[month]}`;
+    const parts = period.split('-');
+    if (parts.length === 2) {
+      const [year, month] = parts.map(Number);
+      return `${year} - ${monthNames[month]}`;
+    }
+    return period;
   };
 
   const filteredPosts = useMemo(() => {
@@ -165,9 +176,14 @@ const BlogPage: React.FC = () => {
       
       let matchesPeriod = true;
       if (selectedPeriod !== "all") {
-        const [filterYear, filterMonth] = selectedPeriod.split('-').map(Number);
         const postDate = new Date(post.created_at);
-        matchesPeriod = postDate.getFullYear() === filterYear && (postDate.getMonth() + 1) === filterMonth;
+        const [filterYear, filterMonth] = selectedPeriod.split('-').map(Number);
+        
+        if (filterMonth) { // Filter by year and month
+          matchesPeriod = postDate.getFullYear() === filterYear && (postDate.getMonth() + 1) === filterMonth;
+        } else { // Filter by year only
+          matchesPeriod = postDate.getFullYear() === filterYear;
+        }
       }
 
       const matchesTag = selectedTag === "all" || post.tags?.map(cleanTagForStorage).includes(selectedTag);
@@ -213,13 +229,19 @@ const BlogPage: React.FC = () => {
           type="text"
           placeholder={t('search post placeholder')}
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1);
+          }}
           className="w-full md:max-w-xs"
         />
 
         <Select
           value={selectedTag}
-          onValueChange={(value) => setSelectedTag(value)}
+          onValueChange={(value) => {
+            setSelectedTag(value);
+            setCurrentPage(1);
+          }}
         >
           <SelectTrigger className="w-full md:w-[180px]">
             <SelectValue placeholder={t('tag placeholder')} />
@@ -235,7 +257,10 @@ const BlogPage: React.FC = () => {
 
         <Select
           value={selectedPeriod}
-          onValueChange={(value) => setSelectedPeriod(value)}
+          onValueChange={(value) => {
+            setSelectedPeriod(value);
+            setCurrentPage(1);
+          }}
         >
           <SelectTrigger className="w-full md:w-[200px]">
             <SelectValue placeholder={t('select period placeholder')} />
