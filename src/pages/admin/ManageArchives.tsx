@@ -38,8 +38,8 @@ interface ArchivePostFormData {
   initialImageUrl: string | null; // Added for existing image URL
 }
 
-const MAX_PDF_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
-const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+const MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 const ManageArchives: React.FC = () => {
   const { t } = useTranslation();

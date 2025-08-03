@@ -35,8 +35,8 @@ import MultiSelectTags from "@/components/MultiSelectTags"; // Import MultiSelec
 //   created_by: string | null; // Add created_by to interface
 // }
 
-const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
-const MAX_PDF_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+const MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 const UploadBlogPost: React.FC = () => {
   const { id: postId } = useParams<{ id: string }>(); // Get post ID from URL for editing
@@ -138,7 +138,7 @@ const UploadBlogPost: React.FC = () => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       if (file.size > MAX_IMAGE_SIZE_BYTES) {
-        toast.error(t('file size too large', { max: '5MB' }));
+        toast.error(t('file size too large', { max: '10MB' }));
         event.target.value = ''; // Clear the input
         setImageFile(null);
         return;
@@ -153,7 +153,7 @@ const UploadBlogPost: React.FC = () => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       if (file.size > MAX_PDF_SIZE_BYTES) {
-        toast.error(t('file size too large', { max: '20MB' }));
+        toast.error(t('file size too large', { max: '10MB' }));
         event.target.value = ''; // Clear the input
         setPdfFile(null);
         return;
