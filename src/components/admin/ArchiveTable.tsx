@@ -37,12 +37,12 @@ const ArchiveTable: React.FC<ArchiveTableProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation(); // Removed i18n as it's not directly used here
   const { getTranslatedTag } = useTranslatedTag();
 
   const formatDisplayDate = (isoString: string) => {
     const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', {
+    return dateObj.toLocaleDateString('id-ID', { // Changed to 'id-ID'
       year: 'numeric',
       month: 'long',
       day: 'numeric',

@@ -23,7 +23,7 @@ interface YouTubeVideo {
 }
 
 const ManageYouTubeVideos: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation(); // Removed i18n as it's not directly used here
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';
@@ -112,7 +112,7 @@ const ManageYouTubeVideos: React.FC = () => {
 
   const formatDisplayDate = (isoString: string) => {
     const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', {
+    return dateObj.toLocaleDateString('id-ID', { // Changed to 'id-ID'
       year: 'numeric',
       month: 'long',
       day: 'numeric',

@@ -26,7 +26,7 @@ interface BlogPost {
 }
 
 const ContentList: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation(); // Removed i18n as it's not directly used here
   const { getTranslatedTag } = useTranslatedTag();
   const navigate = useNavigate();
   const { session, profile, loading } = useSession();
@@ -101,7 +101,7 @@ const ContentList: React.FC = () => {
       minute: '2-digit',
       hour12: false,
     };
-    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', dateOptions);
+    return dateObj.toLocaleDateString('id-ID', dateOptions); // Changed to 'id-ID'
   };
 
   if (loading || (!session && !loading) || (session && profile?.role !== 'admin')) {
