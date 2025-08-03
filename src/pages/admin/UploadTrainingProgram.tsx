@@ -13,17 +13,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { iconMap } from "@/utils/iconMap";
-
-// Removed unused interface TrainingProgram
-// interface TrainingProgram {
-//   id: string;
-//   title: string;
-//   dates: string;
-//   description: string;
-//   icon_name: string | null;
-//   created_by: string | null;
-//   created_at: string;
-// }
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 const UploadTrainingProgram: React.FC = () => {
   const { id: programId } = useParams<{ id: string }>();
@@ -32,7 +26,7 @@ const UploadTrainingProgram: React.FC = () => {
   const { session, profile, loading: sessionLoading } = useSession();
   
   const [title, setTitle] = useState("");
-  const [dates, setDates] = useState("");
+  const [dates, setDates] = useState<Date | undefined>(undefined); // Changed to Date | undefined
   const [description, setDescription] = useState("");
   const [iconName, setIconName] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -71,7 +65,7 @@ const UploadTrainingProgram: React.FC = () => {
 
       if (data) {
         setTitle(data.title || "");
-        setDates(data.dates || "");
+        setDates(data.dates ? new Date(data.dates) : undefined); // Parse dates to Date
         setDescription(data.description || "");
         setIconName(data.icon_name || "");
       }
@@ -97,7 +91,7 @@ const UploadTrainingProgram: React.FC = () => {
     try {
       const programData = {
         title,
-        dates,
+        dates: dates ? dates.toISOString() : null, // Convert Date to ISO string
         description,
         icon_name: iconName || null,
         ...(programId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
@@ -173,14 +167,49 @@ const UploadTrainingProgram: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="dates">{t('dates label')}</Label>
-              <Input
-                id="dates"
-                type="text"
-                placeholder={t('dates placeholder')}
-                value={dates}
-                onChange={(e) => setDates(e.target.value)}
-                className="mt-1"
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal mt-1",
+                      !dates && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dates ? format(dates, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={dates}
+                    onSelect={setDates}
+                    initialFocus
+                  />
+                  <div className="p-3 border-t border-border">
+                    <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
+                    <Input
+                      id="time-input"
+                      type="time"
+                      value={dates ? format(dates, "HH:mm") : ""}
+                      onChange={(e) => {
+                        const [hours, minutes] = e.target.value.split(':').map(Number);
+                        if (dates) {
+                          const newDate = new Date(dates);
+                          newDate.setHours(hours, minutes);
+                          setDates(newDate);
+                        } else {
+                          const newDate = new Date();
+                          newDate.setHours(hours, minutes);
+                          setDates(newDate);
+                        }
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>

@@ -215,7 +215,7 @@ const UploadTikTokVideo: React.FC = () => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {publishedAt ? format(publishedAt, "PPP") : <span>{t('pick a date button')}</span>}
+                    {publishedAt ? format(publishedAt, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">
@@ -225,6 +225,27 @@ const UploadTikTokVideo: React.FC = () => {
                     onSelect={setPublishedAt}
                     initialFocus
                   />
+                  <div className="p-3 border-t border-border">
+                    <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
+                    <Input
+                      id="time-input"
+                      type="time"
+                      value={publishedAt ? format(publishedAt, "HH:mm") : ""}
+                      onChange={(e) => {
+                        const [hours, minutes] = e.target.value.split(':').map(Number);
+                        if (publishedAt) {
+                          const newDate = new Date(publishedAt);
+                          newDate.setHours(hours, minutes);
+                          setPublishedAt(newDate);
+                        } else {
+                          const newDate = new Date();
+                          newDate.setHours(hours, minutes);
+                          setPublishedAt(newDate);
+                        }
+                      }}
+                      className="w-full"
+                    />
+                  </div>
                 </PopoverContent>
               </Popover>
             </div>

@@ -13,16 +13,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { PlusCircle, MinusCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-
-// Removed unused interface Camp
-// interface Camp {
-//   id: string;
-//   title: string;
-//   dates: string;
-//   description: string;
-//   created_by: string | null;
-//   created_at: string;
-// }
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface CampDayLink {
   id?: string; // Optional for new links
@@ -37,7 +32,7 @@ const UploadCamp: React.FC = () => {
   const { session, profile, loading: sessionLoading } = useSession();
   
   const [title, setTitle] = useState("");
-  const [dates, setDates] = useState("");
+  const [dates, setDates] = useState<Date | undefined>(undefined); // Changed to Date | undefined
   const [description, setDescription] = useState("");
   const [dayLinks, setDayLinks] = useState<CampDayLink[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -74,7 +69,7 @@ const UploadCamp: React.FC = () => {
 
       if (campData) {
         setTitle(campData.title || "");
-        setDates(campData.dates || "");
+        setDates(campData.dates ? new Date(campData.dates) : undefined); // Parse dates to Date
         setDescription(campData.description || "");
 
         const { data: linksData, error: linksError } = await supabase
@@ -123,7 +118,7 @@ const UploadCamp: React.FC = () => {
     try {
       const campData = {
         title,
-        dates,
+        dates: dates ? dates.toISOString() : null, // Convert Date to ISO string
         description,
         ...(campId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
       };
@@ -219,14 +214,49 @@ const UploadCamp: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="dates">{t('dates label')}</Label>
-              <Input
-                id="dates"
-                type="text"
-                placeholder={t('dates placeholder')}
-                value={dates}
-                onChange={(e) => setDates(e.target.value)}
-                className="mt-1"
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal mt-1",
+                      !dates && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dates ? format(dates, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={dates}
+                    onSelect={setDates}
+                    initialFocus
+                  />
+                  <div className="p-3 border-t border-border">
+                    <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
+                    <Input
+                      id="time-input"
+                      type="time"
+                      value={dates ? format(dates, "HH:mm") : ""}
+                      onChange={(e) => {
+                        const [hours, minutes] = e.target.value.split(':').map(Number);
+                        if (dates) {
+                          const newDate = new Date(dates);
+                          newDate.setHours(hours, minutes);
+                          setDates(newDate);
+                        } else {
+                          const newDate = new Date();
+                          newDate.setHours(hours, minutes);
+                          setDates(newDate);
+                        }
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
