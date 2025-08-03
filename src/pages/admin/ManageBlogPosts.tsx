@@ -107,12 +107,6 @@ const ManageBlogPosts: React.FC = () => {
 
   // Combined useEffect for initial load, auth check, and data fetching/filtering
   useEffect(() => {
-    console.log("ManageBlogPosts: [DEBUG] Effect triggered.");
-    console.log("ManageBlogPosts: sessionLoading:", sessionLoading);
-    console.log("ManageBlogPosts: session:", session);
-    console.log("ManageBlogPosts: profile:", profile);
-    console.log("ManageBlogPosts: isAdmin:", isAdmin);
-
     if (sessionLoading) {
       // While session is loading, we don't do anything here.
       // The SessionProvider's global loading screen is active.

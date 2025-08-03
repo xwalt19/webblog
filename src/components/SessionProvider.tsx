@@ -50,22 +50,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
     console.log("SessionProvider: [DEBUG] Profile fetched:", profileData);
     return profileData;
-  }, []); // No dependencies, so this function reference is stable
-
-  // Function to process auth data and update states (without touching loading)
-  const processAuthData = useCallback(async (currentSession: Session | null) => {
-    setSession(currentSession);
-    setUser(currentSession?.user || null);
-
-    if (currentSession?.user) {
-      console.log("SessionProvider: [DEBUG] User present, fetching profile for state update...");
-      const fetchedProfile = await fetchProfileFromDb(currentSession.user.id);
-      setProfile(fetchedProfile);
-    } else {
-      console.log("SessionProvider: [DEBUG] No user found, clearing profile for state update.");
-      setProfile(null);
-    }
-  }, [fetchProfileFromDb]);
+  }, []);
 
   // Function to explicitly clear session state (for logout)
   const clearSession = useCallback(() => {
@@ -73,15 +58,12 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setSession(null);
     setUser(null);
     setProfile(null);
-    // Supabase handles clearing its own localStorage on signOut()
-    setLoading(false); // Ensure loading is false after clearing
+    setLoading(false);
   }, []);
 
   // Function to refresh profile, exposed via context
   const refreshProfile = useCallback(async () => {
     if (user?.id) {
-      // For manual refresh, we can briefly show loading if needed, but not the full app overlay.
-      // For now, let's just update the profile without changing the global loading state.
       console.log("SessionProvider: [DEBUG] Manually refreshing profile.");
       try {
         const fetchedProfile = await fetchProfileFromDb(user.id);
@@ -90,43 +72,37 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         console.error("SessionProvider: [ERROR] Error refreshing profile:", err);
       }
     }
-  }, [user, fetchProfileFromDb]); // Depends on `user` and `fetchProfileFromDb`
+  }, [user, fetchProfileFromDb]);
 
-  // Main effect for initial session load and auth state changes
+  // Effect 1: Handle initial session load and auth state changes
   useEffect(() => {
     console.log("SessionProvider: [LIFECYCLE] Component Mounted. Initializing session provider.");
 
-    // 1. Fetch initial session and profile immediately on mount
-    const getInitialData = async () => {
-      setLoading(true); // Ensure loading is true at the very start of initial data fetch
-      console.log("SessionProvider: [DEBUG] Fetching initial session and profile...");
+    const getInitialSession = async () => {
+      setLoading(true);
+      console.log("SessionProvider: [DEBUG] Fetching initial session...");
       try {
         const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError) throw sessionError;
         
-        // Process the initial session data
-        await processAuthData(initialSession);
-
+        setSession(initialSession);
+        setUser(initialSession?.user || null); // Set user based on initial session
       } catch (err) {
-        console.error("SessionProvider: [ERROR] Error fetching initial session or profile:", err);
+        console.error("SessionProvider: [ERROR] Error fetching initial session:", err);
         setSession(null);
         setUser(null);
-        setProfile(null);
       } finally {
-        setLoading(false); // Crucially, set loading to false *only once* after initial check
+        setLoading(false);
         console.log("SessionProvider: [DEBUG] Initial session check complete. Loading set to false.");
       }
     };
 
-    getInitialData(); // Call it immediately on mount
+    getInitialSession();
 
-    // 2. Set up real-time auth state change listener for subsequent events
-    // This listener should NOT manipulate the global 'loading' state.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       console.log(`SessionProvider: [DEBUG] Auth state change event: ${event}`, currentSession);
-      
-      // Only process auth data, do NOT touch setLoading here.
-      await processAuthData(currentSession);
+      setSession(currentSession);
+      setUser(currentSession?.user || null); // Always update user on auth state change
 
       // Handle toasts and navigation
       if (event === 'SIGNED_IN') {
@@ -136,7 +112,6 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
       } else if (event === 'SIGNED_OUT') {
         toast.info(t('signed out successfully'));
-        // The component calling `handleLogout` will handle navigation.
       } else if (event === 'USER_UPDATED') {
         toast.info(t('profile updated'));
       }
@@ -146,17 +121,22 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.log("SessionProvider: [LIFECYCLE] Component Unmounted. Cleaning up auth listener.");
       subscription.unsubscribe();
     };
-  }, [fetchProfileFromDb, navigate, location.pathname, t, processAuthData]); // Dependencies are now stable functions/values.
+  }, [navigate, location.pathname, t]);
 
-  // Render children only when loading is false
-  // Removed the full-screen loading indicator
-  // if (loading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center bg-background">
-  //       <p className="text-foreground">{t('loading status')}</p>
-  //     </div>
-  //   );
-  // }
+  // Effect 2: Fetch profile whenever the user object changes
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (user?.id) {
+        console.log("SessionProvider: [DEBUG] User object changed, fetching profile...");
+        const fetchedProfile = await fetchProfileFromDb(user.id);
+        setProfile(fetchedProfile);
+      } else {
+        console.log("SessionProvider: [DEBUG] User object is null, clearing profile.");
+        setProfile(null);
+      }
+    };
+    loadProfile();
+  }, [user, fetchProfileFromDb]); // This effect runs when 'user' changes
 
   return (
     <SessionContext.Provider value={{ session, user, profile, loading, refreshProfile, clearSession }}>

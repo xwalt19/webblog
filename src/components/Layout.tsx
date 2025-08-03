@@ -17,16 +17,6 @@ const Layout: React.FC = () => {
 
   const displayName = profile?.first_name || user?.email || "Profil Saya"; // Static Indonesian text
 
-  // Add console logs for debugging
-  React.useEffect(() => {
-    console.log("Layout: [DEBUG] Session state updated.");
-    console.log("Layout: Session:", session);
-    console.log("Layout: User:", user);
-    console.log("Layout: Profile:", profile);
-    console.log("Layout: Loading (from useSession):", loading);
-    console.log("Layout: Is Admin:", profile?.role === 'admin');
-  }, [session, user, profile, loading]);
-
   const handleLogout = async () => {
     try {
       const { error } = await supabase.auth.signOut();
