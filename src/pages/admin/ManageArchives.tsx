@@ -37,7 +37,7 @@ interface ArchivePostFormData {
   initialPdfLink: string | null; // Untuk menyimpan link PDF yang sudah ada saat edit
 }
 
-const MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+const MAX_PDF_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
 
 const ManageArchives: React.FC = () => {
   const { t } = useTranslation();
