@@ -71,9 +71,9 @@ const MultiSelectTags: React.FC<MultiSelectTagsProps> = ({
                 </SelectItem>
               ))
             ) : (
-              <SelectItem value="" disabled>
+              <div className="py-2 px-3 text-sm text-muted-foreground">
                 {t('no more tags available')}
-              </SelectItem>
+              </div>
             )}
           </SelectContent>
         </Select>
