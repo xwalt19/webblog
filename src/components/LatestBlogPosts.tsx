@@ -84,9 +84,6 @@ const LatestBlogPosts: React.FC = () => {
     return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  // Removed the explicit loading return block here.
-  // The component will now render its structure immediately.
-
   if (error) {
     return (
       <section className="py-12">
@@ -98,16 +95,9 @@ const LatestBlogPosts: React.FC = () => {
     );
   }
 
-  if (latestPosts.length === 0 && !loading) { // Only show "no posts" if not loading and no posts
-    return (
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest blog posts title')}</h2>
-          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no posts available')}</p>
-        </div>
-      </section>
-    );
-  }
+  // Removed the explicit loading return block here.
+  // The component will now render its structure immediately.
+  // The check for `latestPosts.length === 0` will handle the "no posts" state.
 
   return (
     <section className="py-12">
@@ -115,7 +105,7 @@ const LatestBlogPosts: React.FC = () => {
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest blog posts title')}</h2>
         {loading ? ( // Show loading only for the carousel content if data is still fetching
           <p className="text-center text-muted-foreground">{t('loading posts')}</p>
-        ) : (
+        ) : latestPosts.length > 0 ? (
           <div className="relative">
             <div className="overflow-hidden" ref={emblaRef}>
               <div className="flex -ml-4">
@@ -164,6 +154,8 @@ const LatestBlogPosts: React.FC = () => {
               <ChevronRight className="h-6 w-6" />
             </Button>
           </div>
+        ) : (
+          <p className="text-center text-muted-foreground mt-8 text-lg">{t('no posts available')}</p>
         )}
         <div className="text-center mt-10">
           <Link to="/blog">

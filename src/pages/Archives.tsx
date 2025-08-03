@@ -61,7 +61,7 @@ const Archives: React.FC = () => {
         const { data, error } = await supabase
           .from('blog_posts')
           .select('*')
-          .not('pdf_link', 'is', null)
+          .not('pdf_link', 'is', null) // Only fetch posts with a PDF link
           .order('created_at', { ascending: false });
 
         if (error) {
@@ -159,9 +159,6 @@ const Archives: React.FC = () => {
     return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  // Removed the explicit loading return block here.
-  // The component will now render its structure immediately.
-
   if (error) {
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -169,6 +166,9 @@ const Archives: React.FC = () => {
       </div>
     );
   }
+
+  // Removed the explicit loading return block here.
+  // The component will now render its structure immediately.
 
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">

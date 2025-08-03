@@ -192,9 +192,6 @@ const BlogPage: React.FC = () => {
     return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  // Removed the explicit loading return block here.
-  // The component will now render its structure immediately.
-
   if (error) {
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -202,6 +199,9 @@ const BlogPage: React.FC = () => {
       </div>
     );
   }
+
+  // Removed the explicit loading return block here.
+  // The component will now render its structure immediately.
 
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
