@@ -15,23 +15,15 @@ const Layout: React.FC = () => {
   const navigate = useNavigate();
   const { session, profile, user, loading, clearSession } = useSession();
 
-  const displayName = profile?.first_name || user?.email || t('my profile'); // Translated default text
+  const displayName = profile?.first_name || user?.email || "Profil Saya"; // Static Indonesian text
 
   const handleLogout = async () => {
     try {
-      // Explicitly get session right before signing out to ensure client is up-to-date
-      const { data: { session: currentSupabaseSession }, error: getSessionError } = await supabase.auth.getSession();
-
-      if (getSessionError) {
-        console.error("Error getting session before logout:", getSessionError);
-        // Even if getSession fails, try to sign out to clear local storage
-      }
-
       const { error } = await supabase.auth.signOut();
       if (error) {
         throw error;
       }
-      clearSession(); // Clear local state in SessionProvider
+      clearSession();
       navigate('/login');
     } catch (err: any) {
       console.error("Error during logout:", err);
@@ -49,9 +41,9 @@ const Layout: React.FC = () => {
 
           <div className="flex items-center gap-2">
             {/* <LanguageSwitcher /> */} {/* Removed component usage */}
-            {loading ? ( // Use the loading state from useSession
+            {loading && !session ? (
               <div className="flex items-center px-4 py-2 text-muted-foreground">
-                <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading status')}
+                <Loader2 className="h-5 w-5 animate-spin mr-2" /> Memuat...
               </div>
             ) : (
               <>
@@ -63,13 +55,13 @@ const Layout: React.FC = () => {
                       </Button>
                     </Link>
                     <Button variant="default" onClick={handleLogout} className="px-4 py-2">
-                      <LogOut className="h-5 w-5 mr-2" /> {t('logout')}
+                      <LogOut className="h-5 w-5 mr-2" /> Keluar
                     </Button>
                   </>
                 ) : (
                   <Link to="/login">
                     <Button variant="default" className="px-4 py-2">
-                      <LogIn className="h-5 w-5 mr-2" /> {t('login')}
+                      <LogIn className="h-5 w-5 mr-2" /> Masuk
                     </Button>
                   </Link>
                 )}
