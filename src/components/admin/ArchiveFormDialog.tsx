@@ -85,8 +85,8 @@ const ArchiveFormDialog: React.FC<ArchiveFormDialogProps> = ({
   const handlePdfFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      if (file.size > MAX_PDF_SIZE_BYTES) {
-        toast.error(t('file size too large', { max: '20MB' }));
+      if (file.size > 10 * 1024 * 1024) { // Hardcoded 10MB check here
+        toast.error(t('file size too large', { max: '10MB' }));
         event.target.value = ''; // Clear the input
         setPdfFile(null);
         return;
