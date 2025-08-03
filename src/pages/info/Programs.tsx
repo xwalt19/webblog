@@ -141,13 +141,8 @@ const ProgramsPage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
-        <p className="text-center text-muted-foreground">{t('loading programs')}</p>
-      </div>
-    );
-  }
+  // Removed the explicit loading return block here.
+  // The component will now render its structure immediately.
 
   if (error) {
     return (
@@ -180,111 +175,115 @@ const ProgramsPage: React.FC = () => {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 gap-8">
-        {filteredPrograms.map((program) => {
-          const ProgramIcon = getIconComponent(program.icon_name);
-          const isEnrolled = enrolledProgramIds.has(program.id);
-          return (
-            <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
-              <CardHeader className="pb-4 flex-grow">
-                <div className="flex items-center gap-4 mb-2">
-                  {ProgramIcon && <ProgramIcon className="text-primary" size={40} />}
-                  <CardTitle className="text-2xl font-bold">{program.title}</CardTitle>
-                </div>
-                <CardDescription className="text-muted-foreground">
-                  {program.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-0 pt-4">
-                {program.schedule && (
-                  <p className="text-md text-foreground mb-2 flex items-center gap-2">
-                    {t('schedule label')}: <span className="font-medium">{program.schedule}</span>
-                  </p>
-                )}
-                {program.registration_fee && (
-                  <p className="text-md text-foreground mb-4 flex items-center gap-2">
-                    {t('registration fee label')}: <span className="font-medium">{program.registration_fee}</span>
-                  </p>
-                )}
-
-                {program.price && (
-                  <p className="text-md text-foreground mb-4 flex items-center gap-2">
-                    {t('price label')}: <span className="font-medium">{program.price}</span>
-                  </p>
-                )}
-
-                {!program.price && program.program_price_tiers && program.program_price_tiers.length > 0 && (
-                  <div className="mt-4">
-                    <h3 className="text-lg font-semibold text-primary mb-2">{t('price details')}</h3>
-                    <Card className="mb-4 shadow-sm">
-                      <CardHeader className="p-3 pb-2">
-                        <CardTitle className="text-lg font-semibold">{program.program_price_tiers[0]?.header_key_col2}</CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-0">
-                        <Table className="w-full">
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead className="w-[150px]">{program.program_price_tiers[0]?.header_key_col1}</TableHead>
-                              <TableHead className="text-right">{program.program_price_tiers[0]?.header_key_col2}</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {program.program_price_tiers.map((row, rowIndex) => (
-                              <TableRow key={rowIndex}>
-                                <TableCell className="font-medium">{row.participants_key}</TableCell>
-                                <TableCell className="text-right">{row.price}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </CardContent>
-                    </Card>
+      {loading ? ( // Show loading only for this section if data is still fetching
+        <p className="text-center text-muted-foreground">{t('loading programs')}</p>
+      ) : (
+        <div className="grid grid-cols-1 gap-8">
+          {filteredPrograms.map((program) => {
+            const ProgramIcon = getIconComponent(program.icon_name);
+            const isEnrolled = enrolledProgramIds.has(program.id);
+            return (
+              <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
+                <CardHeader className="pb-4 flex-grow">
+                  <div className="flex items-center gap-4 mb-2">
+                    {ProgramIcon && <ProgramIcon className="text-primary" size={40} />}
+                    <CardTitle className="text-2xl font-bold">{program.title}</CardTitle>
                   </div>
-                )}
-
-                {program.program_topics && program.program_topics.length > 0 && (
-                  <div className="mt-4">
-                    <h3 className="text-lg font-semibold text-primary mb-4">{t('topics included')}</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {program.program_topics.map((topic, topicIdx) => {
-                        const TopicIcon = getIconComponent(topic.icon_name);
-                        return (
-                          <Card key={topicIdx} className="p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
-                            <CardHeader className="p-0 pb-2 flex flex-row items-center gap-3">
-                              {TopicIcon && <TopicIcon size={24} className="text-primary flex-shrink-0" />}
-                              <CardTitle className="text-base font-semibold">{topic.title}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="p-0 text-sm text-muted-foreground">
-                              {topic.description}
-                            </CardContent>
-                          </Card>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-                <div className="mt-6">
-                  {session?.user ? (
-                    <Button
-                      className="w-full"
-                      onClick={() => handleEnroll(program.id, program.title)}
-                      disabled={isEnrolled}
-                    >
-                      {isEnrolled ? t('enrolled button') : t('enroll now button')}
-                    </Button>
-                  ) : (
-                    <Link to="/login" className="w-full">
-                      <Button className="w-full">{t('login to enroll')}</Button>
-                    </Link>
+                  <CardDescription className="text-muted-foreground">
+                    {program.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="p-0 pt-4">
+                  {program.schedule && (
+                    <p className="text-md text-foreground mb-2 flex items-center gap-2">
+                      {t('schedule label')}: <span className="font-medium">{program.schedule}</span>
+                    </p>
                   )}
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+                  {program.registration_fee && (
+                    <p className="text-md text-foreground mb-4 flex items-center gap-2">
+                      {t('registration fee label')}: <span className="font-medium">{program.registration_fee}</span>
+                    </p>
+                  )}
 
-      {filteredPrograms.length === 0 && (
+                  {program.price && (
+                    <p className="text-md text-foreground mb-4 flex items-center gap-2">
+                      {t('price label')}: <span className="font-medium">{program.price}</span>
+                    </p>
+                  )}
+
+                  {!program.price && program.program_price_tiers && program.program_price_tiers.length > 0 && (
+                    <div className="mt-4">
+                      <h3 className="text-lg font-semibold text-primary mb-2">{t('price details')}</h3>
+                      <Card className="mb-4 shadow-sm">
+                        <CardHeader className="p-3 pb-2">
+                          <CardTitle className="text-lg font-semibold">{program.program_price_tiers[0]?.header_key_col2}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                          <Table className="w-full">
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead className="w-[150px]">{program.program_price_tiers[0]?.header_key_col1}</TableHead>
+                                <TableHead className="text-right">{program.program_price_tiers[0]?.header_key_col2}</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {program.program_price_tiers.map((row, rowIndex) => (
+                                <TableRow key={rowIndex}>
+                                  <TableCell className="font-medium">{row.participants_key}</TableCell>
+                                  <TableCell className="text-right">{row.price}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )}
+
+                  {program.program_topics && program.program_topics.length > 0 && (
+                    <div className="mt-4">
+                      <h3 className="text-lg font-semibold text-primary mb-4">{t('topics included')}</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {program.program_topics.map((topic, topicIdx) => {
+                          const TopicIcon = getIconComponent(topic.icon_name);
+                          return (
+                            <Card key={topicIdx} className="p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
+                              <CardHeader className="p-0 pb-2 flex flex-row items-center gap-3">
+                                {TopicIcon && <TopicIcon size={24} className="text-primary flex-shrink-0" />}
+                                <CardTitle className="text-base font-semibold">{topic.title}</CardTitle>
+                              </CardHeader>
+                              <CardContent className="p-0 text-sm text-muted-foreground">
+                                {topic.description}
+                              </CardContent>
+                            </Card>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  <div className="mt-6">
+                    {session?.user ? (
+                      <Button
+                        className="w-full"
+                        onClick={() => handleEnroll(program.id, program.title)}
+                        disabled={isEnrolled}
+                      >
+                        {isEnrolled ? t('enrolled button') : t('enroll now button')}
+                      </Button>
+                    ) : (
+                      <Link to="/login" className="w-full">
+                        <Button className="w-full">{t('login to enroll')}</Button>
+                      </Link>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {filteredPrograms.length === 0 && !loading && ( // Only show "no programs" if not loading and no programs
         <p className="text-center text-muted-foreground mt-8 text-lg">
           {t('no programs available')}
         </p>

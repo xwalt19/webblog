@@ -246,12 +246,11 @@ const ManageArchives: React.FC = () => {
     setIsDialogOpen(true);
   };
 
-  if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading status')}</p>
-      </div>
-    );
+  // Removed the full-screen loading return block here.
+  // The component will now render its structure immediately.
+
+  if (!session || !isAdmin) { // If session is not available or not admin after loading, redirect (handled by useEffect)
+    return null; // Or a fallback UI if needed before redirect
   }
 
   // If initial data is not loaded yet, show loading for the page content

@@ -76,13 +76,8 @@ const RegularEventsClasses: React.FC = () => {
     fetchActivities();
   }, [t]);
 
-  if (loading) {
-    return (
-      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
-        <p className="text-center text-muted-foreground">{t('loading activities')}</p>
-      </div>
-    );
-  }
+  // Removed the explicit loading return block here.
+  // The component will now render its structure immediately.
 
   if (error) {
     return (
@@ -117,7 +112,9 @@ const RegularEventsClasses: React.FC = () => {
       {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('running classes section title')}</h2>
-          {runningClasses.length > 0 ? (
+          {loading ? ( // Show loading only for this section if data is still fetching
+            <p className="text-center text-muted-foreground">{t('loading activities')}</p>
+          ) : runningClasses.length > 0 ? (
             <div className="grid grid-cols-1 gap-6"> 
               {runningClasses.map((cls) => {
                 const ClassIcon = getIconComponent(cls.icon_name);
@@ -150,7 +147,9 @@ const RegularEventsClasses: React.FC = () => {
       {(selectedActivityView === "allActivities" || selectedActivityView === "regularEvents") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('regular events section title')}</h2>
-          {regularEvents.length > 0 ? (
+          {loading ? ( // Show loading only for this section if data is still fetching
+            <p className="text-center text-muted-foreground">{t('loading activities')}</p>
+          ) : regularEvents.length > 0 ? (
             <div className="grid grid-cols-1 gap-6">
               {regularEvents.map((event) => {
                 const EventIcon = getIconComponent(event.icon_name);

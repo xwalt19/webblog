@@ -21,72 +21,71 @@ const Login: React.FC = () => {
     }
   }, [session, loading, navigate]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading status')}</p>
-      </div>
-    );
-  }
+  // Removed the full-screen loading return block here.
+  // The component will now render its structure immediately.
 
-  if (session) {
+  if (session) { // If session exists, and not loading, it means user is already logged in, so return null or redirect
     return null;
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg border border-border">
-        <h1 className="text-3xl font-bold text-center text-primary mb-6">
-          {view === 'sign_in' ? t('login page title') : t('register page title')}
-        </h1>
-        <Auth
-          key={view}
-          supabaseClient={supabase}
-          appearance={{
-            theme: ThemeSupa,
-            variables: {
-              default: {
-                colors: {
-                  brand: 'hsl(var(--primary))',
-                  brandAccent: 'hsl(var(--primary-foreground))',
-                  inputBackground: 'hsl(var(--input))',
-                  inputBorder: 'hsl(var(--border))',
-                  inputBorderHover: 'hsl(var(--ring))',
-                  inputBorderFocus: 'hsl(var(--ring))',
-                  inputText: 'hsl(var(--foreground))',
-                  defaultButtonBackground: 'hsl(var(--primary))',
-                  defaultButtonBackgroundHover: 'hsl(var(--primary-foreground))',
-                  defaultButtonBorder: 'hsl(var(--primary))',
-                  defaultButtonText: 'hsl(var(--primary-foreground))',
-                  anchorTextColor: 'hsl(var(--primary))',
-                  anchorTextHoverColor: 'hsl(var(--primary-foreground))',
+      {loading ? ( // Show a localized loading message if session is still loading
+        <p className="text-foreground">{t('loading status')}</p>
+      ) : (
+        <div className="w-full max-w-md bg-card p-8 rounded-lg shadow-lg border border-border">
+          <h1 className="text-3xl font-bold text-center text-primary mb-6">
+            {view === 'sign_in' ? t('login page title') : t('register page title')}
+          </h1>
+          <Auth
+            key={view}
+            supabaseClient={supabase}
+            appearance={{
+              theme: ThemeSupa,
+              variables: {
+                default: {
+                  colors: {
+                    brand: 'hsl(var(--primary))',
+                    brandAccent: 'hsl(var(--primary-foreground))',
+                    inputBackground: 'hsl(var(--input))',
+                    inputBorder: 'hsl(var(--border))',
+                    inputBorderHover: 'hsl(var(--ring))',
+                    inputBorderFocus: 'hsl(var(--ring))',
+                    inputText: 'hsl(var(--foreground))',
+                    defaultButtonBackground: 'hsl(var(--primary))',
+                    defaultButtonBackgroundHover: 'hsl(var(--primary-foreground))',
+                    defaultButtonBorder: 'hsl(var(--primary))',
+                    defaultButtonText: 'hsl(var(--primary-foreground))',
+                    anchorTextColor: 'hsl(var(--primary))',
+                    anchorTextHoverColor: 'hsl(var(--primary-foreground))',
+                  },
                 },
               },
-            },
-          }}
-          theme="light"
-          providers={['google']}
-          redirectTo={window.location.origin}
-          view={view}
-        />
-        <div className="mt-4 text-center">
-          {view === 'sign_in' ? (
-            <p className="text-muted-foreground">
-              {t('no account yet')}
-              <Button variant="link" onClick={() => setView('sign_up')} className="p-0 h-auto ml-1 text-primary hover:text-primary-foreground">
-                {t('sign up')}
-              </Button>
-            </p>
-          ) : (
-            <p className="text-muted-foreground">
-              {t('already have account')}
-              <Button variant="link" onClick={() => setView('sign_in')} className="p-0 h-auto ml-1 text-primary hover:text-primary-foreground">
-                {t('sign in')}
-              </Button>
-            </p>
-          )}
+            }}
+            theme="light"
+            providers={['google']}
+            redirectTo={window.location.origin}
+            view={view}
+          />
+          <div className="mt-4 text-center">
+            {view === 'sign_in' ? (
+              <p className="text-muted-foreground">
+                {t('no account yet')}
+                <Button variant="link" onClick={() => setView('sign_up')} className="p-0 h-auto ml-1 text-primary hover:text-primary-foreground">
+                  {t('sign up')}
+                </Button>
+              </p>
+            ) : (
+              <p className="text-muted-foreground">
+                {t('already have account')}
+                <Button variant="link" onClick={() => setView('sign_in')} className="p-0 h-auto ml-1 text-primary hover:text-primary-foreground">
+                  {t('sign in')}
+                </Button>
+              </p>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -13,15 +13,10 @@ const MemberDashboard: React.FC = () => {
   const { t } = useTranslation();
   const { user, profile, loading } = useSession();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading status')}</p>
-      </div>
-    );
-  }
+  // Removed the full-screen loading return block here.
+  // The component will now render its structure immediately.
 
-  if (!user) {
+  if (!user && !loading) { // Only show access denied if not loading and no user
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
@@ -35,12 +30,20 @@ const MemberDashboard: React.FC = () => {
     );
   }
 
+  if (loading) { // Show a localized loading message if session is still loading
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('member dashboard title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('member dashboard subtitle', { name: profile?.first_name || user.email })}
+          {t('member dashboard subtitle', { name: profile?.first_name || user?.email })}
         </p>
       </section>
 
@@ -52,7 +55,7 @@ const MemberDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{profile?.first_name} {profile?.last_name}</p>
-            <p className="text-sm text-muted-foreground">{user.email}</p>
+            <p className="text-sm text-muted-foreground">{user?.email}</p>
             <Link to="/profile" className="mt-4 block">
               <Button variant="outline" className="w-full">{t('view profile')}</Button>
             </Link>

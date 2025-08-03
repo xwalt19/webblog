@@ -192,13 +192,8 @@ const BlogPage: React.FC = () => {
     return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  if (loading) { // Use local loading state for rendering
-    return (
-      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
-        <p className="text-center text-muted-foreground">{t('loading posts')}</p>
-      </div>
-    );
-  }
+  // Removed the explicit loading return block here.
+  // The component will now render its structure immediately.
 
   if (error) {
     return (
@@ -257,7 +252,9 @@ const BlogPage: React.FC = () => {
         </Select>
       </div>
 
-      {currentPosts.length > 0 ? (
+      {loading ? ( // Show loading only for the posts grid if data is still fetching
+        <p className="text-center text-muted-foreground">{t('loading posts')}</p>
+      ) : currentPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">
@@ -277,9 +274,15 @@ const BlogPage: React.FC = () => {
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
-                <Link to={`/posts/${post.id}`}>
-                  <Button variant="outline" className="w-full">{t('read more')}</Button>
-                </Link>
+                {post.pdf_link ? (
+                  <a href={post.pdf_link} target="_blank" rel="noopener noreferrer" className="w-full">
+                    <Button variant="outline" className="w-full">{t('read more pdf')}</Button>
+                  </a>
+                ) : (
+                  <Link to={`/posts/${post.id}`}>
+                    <Button variant="outline" className="w-full">{t('read more')}</Button>
+                  </Link>
+                )}
               </CardContent>
             </Card>
           ))}

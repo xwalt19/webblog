@@ -95,7 +95,9 @@ const ProCodeCGCalendar: React.FC = () => {
             <h3 className="text-lg font-semibold text-primary mb-2">
               {t('events on')} {date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}:
             </h3>
-            {getDayEvents(date).length > 0 ? (
+            {loading ? ( // Show loading only for events list if data is still fetching
+              <p className="text-muted-foreground">{t('loading events')}</p>
+            ) : getDayEvents(date).length > 0 ? (
               <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
                 {getDayEvents(date).map((event, index) => (
                   <li key={index}>{event.title} - {event.description}</li>

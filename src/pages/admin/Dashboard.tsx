@@ -145,12 +145,11 @@ const AdminDashboard: React.FC = () => {
     { title: t('total users'), value: stats.totalUsers, icon: Users, link: "/admin/manage-users" }, // Link to new user management page
   ] : [];
 
-  if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading status')}</p>
-      </div>
-    );
+  // Removed the full-screen loading return block here.
+  // The component will now render its structure immediately.
+
+  if (!session || !isAdmin) { // If session is not available or not admin after loading, redirect (handled by useEffect)
+    return null; // Or a fallback UI if needed before redirect
   }
 
   return (

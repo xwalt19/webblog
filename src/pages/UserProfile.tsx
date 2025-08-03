@@ -19,7 +19,7 @@ const UserProfile: React.FC = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [updating, setUpdating] = useState(false);
-  const [dataLoading, setDataLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true); // Keep this for initial data fetch
 
   useEffect(() => {
     if (!sessionLoading) {
@@ -31,7 +31,7 @@ const UserProfile: React.FC = () => {
           setFirstName(profile.first_name || "");
           setLastName(profile.last_name || "");
         }
-        setDataLoading(false);
+        setDataLoading(false); // Set to false once profile data is loaded or determined
       }
     }
   }, [session, profile, sessionLoading, navigate, t]);
@@ -64,12 +64,21 @@ const UserProfile: React.FC = () => {
     }
   };
 
-  if (sessionLoading || dataLoading || (!session && !sessionLoading)) {
+  // Removed the full-screen loading return block here.
+  // The component will now render its structure immediately.
+
+  // If session is still loading or data is still loading, show a more localized loading message
+  if (sessionLoading || dataLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
+  }
+
+  // If session is not available after loading, redirect to login (handled by useEffect)
+  if (!session) {
+    return null; // Or a fallback UI if needed before redirect
   }
 
   return (

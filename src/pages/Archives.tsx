@@ -159,13 +159,8 @@ const Archives: React.FC = () => {
     return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  if (loading) { // Gunakan status loading lokal untuk rendering
-    return (
-      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
-        <p className="text-center text-muted-foreground">{t('loading archives')}</p>
-      </div>
-    );
-  }
+  // Removed the explicit loading return block here.
+  // The component will now render its structure immediately.
 
   if (error) {
     return (
@@ -224,7 +219,9 @@ const Archives: React.FC = () => {
         </Select>
       </div>
 
-      {currentPosts.length > 0 ? (
+      {loading ? ( // Show loading only for the posts grid if data is still fetching
+        <p className="text-center text-muted-foreground">{t('loading archives')}</p>
+      ) : currentPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">

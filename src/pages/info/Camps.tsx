@@ -64,13 +64,8 @@ const Camps: React.FC = () => {
     toast.info(t('details coming soon', { campTitle, dayLabel }));
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
-        <p className="text-center text-muted-foreground">{t('loading camps')}</p>
-      </div>
-    );
-  }
+  // Removed the explicit loading return block here.
+  // The component will now render its structure immediately.
 
   if (error) {
     return (
@@ -90,7 +85,9 @@ const Camps: React.FC = () => {
       </section>
 
       <section className="mb-16">
-        {camps.length > 0 ? (
+        {loading ? ( // Show loading only for this section if data is still fetching
+          <p className="text-center text-muted-foreground">{t('loading camps')}</p>
+        ) : camps.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {camps.map((camp) => (
               <Card key={camp.id} className="flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300">

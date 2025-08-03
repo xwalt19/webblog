@@ -84,16 +84,8 @@ const LatestBlogPosts: React.FC = () => {
     return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  if (loading) {
-    return (
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest blog posts title')}</h2>
-          <p className="text-center text-muted-foreground">{t('loading posts')}</p>
-        </div>
-      </section>
-    );
-  }
+  // Removed the explicit loading return block here.
+  // The component will now render its structure immediately.
 
   if (error) {
     return (
@@ -106,7 +98,7 @@ const LatestBlogPosts: React.FC = () => {
     );
   }
 
-  if (latestPosts.length === 0) {
+  if (latestPosts.length === 0 && !loading) { // Only show "no posts" if not loading and no posts
     return (
       <section className="py-12">
         <div className="container mx-auto px-4">
@@ -121,54 +113,58 @@ const LatestBlogPosts: React.FC = () => {
     <section className="py-12">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest blog posts title')}</h2>
-        <div className="relative">
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex -ml-4">
-              {latestPosts.map((post) => (
-                <div key={post.id} className="flex-none w-full sm:w-1/2 lg:w-1/3 pl-4">
-                  <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
-                    <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover" />
-                    <CardHeader className="flex-grow">
-                      <div className="flex justify-between items-center mb-2">
-                        <Badge variant="secondary">{post.category}</Badge>
-                        <span className="text-sm text-muted-foreground">{formatDate(post.created_at)}</span>
-                      </div>
-                      <CardTitle className="text-xl">{post.title}</CardTitle>
-                      <CardDescription className="text-sm text-muted-foreground">{t('by')} {post.author}</CardDescription>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {post.tags?.map(tag => (
-                          <Badge key={tag} variant="outline" className="text-xs">{getTranslatedTag(tag)}</Badge>
-                        ))}
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-6 pt-0">
-                      <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
-                      <Link to={`/posts/${post.id}`}>
-                        <Button variant="outline" className="w-full">{t('read more')}</Button>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
+        {loading ? ( // Show loading only for the carousel content if data is still fetching
+          <p className="text-center text-muted-foreground">{t('loading posts')}</p>
+        ) : (
+          <div className="relative">
+            <div className="overflow-hidden" ref={emblaRef}>
+              <div className="flex -ml-4">
+                {latestPosts.map((post) => (
+                  <div key={post.id} className="flex-none w-full sm:w-1/2 lg:w-1/3 pl-4">
+                    <Card className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 h-full">
+                      <img src={post.image_url} alt={post.title} className="w-full h-48 object-cover" />
+                      <CardHeader className="flex-grow">
+                        <div className="flex justify-between items-center mb-2">
+                          <Badge variant="secondary">{post.category}</Badge>
+                          <span className="text-sm text-muted-foreground">{formatDate(post.created_at)}</span>
+                        </div>
+                        <CardTitle className="text-xl">{post.title}</CardTitle>
+                        <CardDescription className="text-sm text-muted-foreground">{t('by')} {post.author}</CardDescription>
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {post.tags?.map(tag => (
+                            <Badge key={tag} variant="outline" className="text-xs">{getTranslatedTag(tag)}</Badge>
+                          ))}
+                        </div>
+                      </CardHeader>
+                      <CardContent className="p-6 pt-0">
+                        <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
+                        <Link to={`/posts/${post.id}`}>
+                          <Button variant="outline" className="w-full">{t('read more')}</Button>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+              </div>
             </div>
+            <Button
+              className="absolute top-1/2 left-0 -translate-y-1/2 bg-primary/80 hover:bg-primary text-primary-foreground rounded-full p-2 z-10"
+              onClick={scrollPrev}
+              disabled={prevBtnDisabled}
+              size="icon"
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </Button>
+            <Button
+              className="absolute top-1/2 right-0 -translate-y-1/2 bg-primary/80 hover:bg-primary text-primary-foreground rounded-full p-2 z-10"
+              onClick={scrollNext}
+              disabled={nextBtnDisabled}
+              size="icon"
+            >
+              <ChevronRight className="h-6 w-6" />
+            </Button>
           </div>
-          <Button
-            className="absolute top-1/2 left-0 -translate-y-1/2 bg-primary/80 hover:bg-primary text-primary-foreground rounded-full p-2 z-10"
-            onClick={scrollPrev}
-            disabled={prevBtnDisabled}
-            size="icon"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
-          <Button
-            className="absolute top-1/2 right-0 -translate-y-1/2 bg-primary/80 hover:bg-primary text-primary-foreground rounded-full p-2 z-10"
-            onClick={scrollNext}
-            disabled={nextBtnDisabled}
-            size="icon"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </Button>
-        </div>
+        )}
         <div className="text-center mt-10">
           <Link to="/blog">
             <Button size="lg" variant="default">{t('read all posts')}</Button>

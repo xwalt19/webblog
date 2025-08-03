@@ -61,13 +61,8 @@ const PostDetail: React.FC = () => {
     return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
-  if (loading) {
-    return (
-      <div className="text-center py-10">
-        <p className="text-muted-foreground">{t('loading post')}</p>
-      </div>
-    );
-  }
+  // Removed the explicit loading return block here.
+  // The component will now render its structure immediately.
 
   if (error) {
     return (
@@ -81,7 +76,7 @@ const PostDetail: React.FC = () => {
     );
   }
 
-  if (!post) {
+  if (!post && !loading) { // Only show "post not found" if not loading and no post
     return (
       <div className="text-center py-10">
         <h2 className="text-3xl font-bold mb-4">{t('post not found title')}</h2>
@@ -95,30 +90,36 @@ const PostDetail: React.FC = () => {
 
   return (
     <Card className="max-w-3xl mx-auto">
-      <CardHeader>
-        <CardTitle className="text-3xl font-bold">{post.title}</CardTitle>
-        <p className="text-sm text-muted-foreground">{formatDate(post.created_at)}</p>
-        <div className="flex flex-wrap gap-1 mt-2">
-          {post.tags?.map(tag => (
-            <Badge key={tag} variant="outline" className="text-xs">{getTranslatedTag(tag)}</Badge>
-          ))}
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div>
-          {post.image_url && (
-            <div className="relative w-full h-auto max-h-96 overflow-hidden mb-6 rounded-md">
-              <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
+      {loading ? ( // Show loading only for the card content if data is still fetching
+        <div className="p-6 text-center text-muted-foreground">{t('loading post')}</div>
+      ) : (
+        <>
+          <CardHeader>
+            <CardTitle className="text-3xl font-bold">{post?.title}</CardTitle>
+            <p className="text-sm text-muted-foreground">{post?.created_at ? formatDate(post.created_at) : ''}</p>
+            <div className="flex flex-wrap gap-1 mt-2">
+              {post?.tags?.map(tag => (
+                <Badge key={tag} variant="outline" className="text-xs">{getTranslatedTag(tag)}</Badge>
+              ))}
             </div>
-          )}
-          <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post.content || '' }} />
-          <div className="mt-8">
-            <Link to="/blog">
-              <Button variant="outline">{t('return to post list')}</Button>
-            </Link>
-          </div>
-        </div>
-      </CardContent>
+          </CardHeader>
+          <CardContent>
+            <div>
+              {post?.image_url && (
+                <div className="relative w-full h-auto max-h-96 overflow-hidden mb-6 rounded-md">
+                  <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post?.content || '' }} />
+              <div className="mt-8">
+                <Link to="/blog">
+                  <Button variant="outline">{t('return to post list')}</Button>
+                </Link>
+              </div>
+            </div>
+          </CardContent>
+        </>
+      )}
     </Card>
   );
 };
