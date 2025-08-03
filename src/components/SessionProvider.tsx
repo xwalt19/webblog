@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react'; // Import useRef
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -30,6 +30,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true); // Start as true
+  const isInitialLoadRef = useRef(true); // Use a ref to track initial load
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -91,8 +92,9 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       
       // Only set loading to false after the first auth state is processed
       // This ensures profile is also loaded before `loading` becomes `false`
-      if (loading) { // Only set false if it's still true (initial load)
+      if (isInitialLoadRef.current) { // Check ref instead of state `loading`
         setLoading(false);
+        isInitialLoadRef.current = false; // Mark initial load as complete
         console.log("SessionProvider: [DEBUG] Initial auth state processed. Loading set to false.");
       }
 
@@ -114,7 +116,7 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.log("SessionProvider: [LIFECYCLE] Component Unmounted. Cleaning up auth listener.");
       subscription.unsubscribe();
     };
-  }, [navigate, location.pathname, t, fetchProfileFromDb, loading]); // Add `loading` to dependencies to ensure `setLoading(false)` is correctly triggered only once.
+  }, [navigate, location.pathname, t, fetchProfileFromDb]); // Removed `loading` from dependencies, as it's managed by ref now.
 
   return (
     <SessionContext.Provider value={{ session, user, profile, loading, refreshProfile, clearSession }}>
