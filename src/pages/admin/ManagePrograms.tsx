@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Edit, Trash, PlusCircle } from "lucide-react";
 import { getIconComponent } from "@/utils/iconMap";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { CalendarEvent } from "./ManageCalendar"; // Import CalendarEvent interface
 
 interface Program {
   id: string;
@@ -134,7 +135,9 @@ const ManagePrograms: React.FC = () => {
         { event: '*', schema: 'public', table: 'calendar_events' },
         (payload) => {
           // Only invalidate if the change is related to a program_id
-          if (payload.new?.program_id || payload.old?.program_id) {
+          const newEvent = payload.new as CalendarEvent;
+          const oldEvent = payload.old as CalendarEvent;
+          if (newEvent?.program_id || oldEvent?.program_id) {
             queryClient.invalidateQueries({ queryKey: ['programs'] });
             queryClient.invalidateQueries({ queryKey: ['calendarEvents'] });
           }
