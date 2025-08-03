@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-// import { Link } from "react-router-dom"; // Removed unused import
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -15,7 +14,7 @@ interface ArchivePost {
   title: string;
   excerpt: string | null;
   created_at: string;
-  image_url: string | null;
+  image_url: string | null; // Added image_url
   category: string | null;
   author: string | null;
   tags: string[] | null;
@@ -27,7 +26,7 @@ interface ArchiveTableProps {
   dataLoading: boolean;
   error: string | null;
   onEdit: (archive: ArchivePost) => void;
-  onDelete: (id: string, pdfLink: string | null) => void;
+  onDelete: (id: string, pdfLink: string | null) => void; // Keep this signature for now, as image_url is handled internally
 }
 
 const ArchiveTable: React.FC<ArchiveTableProps> = ({
@@ -37,12 +36,12 @@ const ArchiveTable: React.FC<ArchiveTableProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const { t } = useTranslation(); // Removed i18n as it's not directly used here
+  const { t } = useTranslation();
   const { getTranslatedTag } = useTranslatedTag();
 
   const formatDisplayDate = (isoString: string) => {
     const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', { // Changed to 'id-ID'
+    return dateObj.toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -72,6 +71,7 @@ const ArchiveTable: React.FC<ArchiveTableProps> = ({
             <TableRow>
               <TableHead>{t('table title')}</TableHead>
               <TableHead>{t('table category')}</TableHead>
+              <TableHead>{t('table image')}</TableHead> {/* New column for image */}
               <TableHead>{t('table date')}</TableHead>
               <TableHead>{t('table pdf link')}</TableHead>
               <TableHead className="text-right">{t('table actions')}</TableHead>
@@ -82,6 +82,13 @@ const ArchiveTable: React.FC<ArchiveTableProps> = ({
               <TableRow key={archive.id}>
                 <TableCell className="font-medium">{archive.title}</TableCell>
                 <TableCell>{archive.category}</TableCell>
+                <TableCell>
+                  {archive.image_url ? (
+                    <img src={archive.image_url} alt={archive.title} className="w-16 h-10 object-cover rounded" />
+                  ) : (
+                    <span className="text-muted-foreground">-</span>
+                  )}
+                </TableCell>
                 <TableCell>{formatDisplayDate(archive.created_at)}</TableCell>
                 <TableCell>
                   {archive.pdf_link ? (

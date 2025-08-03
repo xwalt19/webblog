@@ -13,8 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import MultiSelectTags from "@/components/MultiSelectTags";
 import { useTranslation } from "react-i18next";
-// import { cleanTagForStorage } from "@/utils/i18nUtils"; // Removed unused import
-import { toast } from "sonner"; // Import toast
+import { toast } from "sonner";
 
 interface ArchivePostFormData {
   id?: string;
@@ -24,17 +23,20 @@ interface ArchivePostFormData {
   author: string;
   tags: string[];
   pdfFile: File | null;
+  imageFile: File | null; // Added for image upload
   createdAt: Date | undefined;
   initialPdfLink: string | null;
+  initialImageUrl: string | null; // Added for existing image URL
 }
 
 interface ArchiveFormDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   initialData: ArchivePostFormData | null; // Data untuk mode edit
-  onSave: (data: Omit<ArchivePostFormData, 'initialPdfLink'>) => Promise<void>;
+  onSave: (data: Omit<ArchivePostFormData, 'initialPdfLink' | 'initialImageUrl'>) => Promise<void>;
   allPossibleTags: string[];
   MAX_PDF_SIZE_BYTES: number;
+  MAX_IMAGE_SIZE_BYTES: number; // Added for image size limit
 }
 
 const ArchiveFormDialog: React.FC<ArchiveFormDialogProps> = ({
@@ -44,6 +46,7 @@ const ArchiveFormDialog: React.FC<ArchiveFormDialogProps> = ({
   onSave,
   allPossibleTags,
   MAX_PDF_SIZE_BYTES,
+  MAX_IMAGE_SIZE_BYTES,
 }) => {
   const { t } = useTranslation();
 
@@ -53,8 +56,9 @@ const ArchiveFormDialog: React.FC<ArchiveFormDialogProps> = ({
   const [formAuthor, setFormAuthor] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null); // New state for image file
   const [formCreatedAt, setFormCreatedAt] = useState<Date | undefined>(undefined);
-  const [uploading, setUploading] = useState(false); // State untuk tombol submit
+  const [uploading, setUploading] = useState(false);
 
   const categories = [
     "Programming", "Technology", "Education", "Data Science", "Cybersecurity", "Mobile Development", "Cloud Computing", "History", "Retro Tech", "Programming History"
@@ -68,6 +72,7 @@ const ArchiveFormDialog: React.FC<ArchiveFormDialogProps> = ({
       setFormAuthor(initialData.author);
       setSelectedTags(initialData.tags);
       setPdfFile(null); // Clear file input for edit, user must re-upload if changing
+      setImageFile(null); // Clear image file input for edit
       setFormCreatedAt(initialData.createdAt);
     } else {
       // Reset form for new entry
@@ -77,6 +82,7 @@ const ArchiveFormDialog: React.FC<ArchiveFormDialogProps> = ({
       setFormAuthor("");
       setSelectedTags([]);
       setPdfFile(null);
+      setImageFile(null);
       setFormCreatedAt(new Date()); // Default to current date for new
     }
     setUploading(false); // Reset upload status when dialog opens/changes data
@@ -94,6 +100,21 @@ const ArchiveFormDialog: React.FC<ArchiveFormDialogProps> = ({
       setPdfFile(file);
     } else {
       setPdfFile(null);
+    }
+  };
+
+  const handleImageFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      if (file.size > MAX_IMAGE_SIZE_BYTES) {
+        toast.error(t('file size too large', { max: '5MB' }));
+        event.target.value = ''; // Clear the input
+        setImageFile(null);
+        return;
+      }
+      setImageFile(file);
+    } else {
+      setImageFile(null);
     }
   };
 
@@ -118,6 +139,7 @@ const ArchiveFormDialog: React.FC<ArchiveFormDialogProps> = ({
         author: formAuthor,
         tags: selectedTags,
         pdfFile: pdfFile,
+        imageFile: imageFile, // Pass image file
         createdAt: formCreatedAt,
       });
       onOpenChange(false); // Close dialog on success
@@ -248,6 +270,33 @@ const ArchiveFormDialog: React.FC<ArchiveFormDialogProps> = ({
               </PopoverContent>
             </Popover>
           </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="image-upload-dialog" className="text-right">
+              {t('image label')}
+            </Label>
+            <Input
+              id="image-upload-dialog"
+              type="file"
+              accept="image/*"
+              onChange={handleImageFileChange}
+              className="col-span-3"
+            />
+          </div>
+          {imageFile ? (
+            <div className="grid grid-cols-4 items-center gap-4">
+              <span className="col-span-1"></span>
+              <p className="col-span-3 text-sm text-muted-foreground">
+                {t('selected image')}: {imageFile.name}
+              </p>
+            </div>
+          ) : initialData?.initialImageUrl && (
+            <div className="grid grid-cols-4 items-center gap-4">
+              <span className="col-span-1"></span>
+              <p className="col-span-3 text-sm text-muted-foreground">
+                {t('current image')}: <a href={initialData.initialImageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialData.initialImageUrl.split('/').pop()}</a>
+              </p>
+            </div>
+          )}
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="pdf-upload-dialog" className="text-right">
               {t('pdf file label')}

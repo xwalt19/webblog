@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react"; // Removed useMemo
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card"; // Keep these, they are used in the JSX
+import { CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
-// import { PlusCircle } from "lucide-react"; // Removed unused import
 import { cleanTagForStorage } from "@/utils/i18nUtils";
 import ArchiveTable from "@/components/admin/ArchiveTable";
 import ArchiveFormDialog from "@/components/admin/ArchiveFormDialog";
@@ -33,11 +32,14 @@ interface ArchivePostFormData {
   author: string;
   tags: string[];
   pdfFile: File | null;
+  imageFile: File | null; // Added for image upload
   createdAt: Date | undefined;
   initialPdfLink: string | null; // Untuk menyimpan link PDF yang sudah ada saat edit
+  initialImageUrl: string | null; // Added for existing image URL
 }
 
 const MAX_PDF_SIZE_BYTES = 20 * 1024 * 1024; // 20 MB
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 const ManageArchives: React.FC = () => {
   const { t } = useTranslation();
@@ -46,9 +48,9 @@ const ManageArchives: React.FC = () => {
   const isAdmin = profile?.role === 'admin';
 
   const [archives, setArchives] = useState<ArchivePost[]>([]);
-  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
+  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches
+  const [isFetching, setIsFetching] = useState(false);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentArchiveDataForForm, setCurrentArchiveDataForForm] = useState<ArchivePostFormData | null>(null);
@@ -73,7 +75,7 @@ const ManageArchives: React.FC = () => {
       setError(t("fetch data error", { error: err.message }));
     } finally {
       setIsFetching(false);
-      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
+      setIsInitialDataLoaded(true);
     }
   };
 
@@ -87,7 +89,7 @@ const ManageArchives: React.FC = () => {
 
       const uniqueTags = new Set<string>();
       data.forEach(post => {
-        post.tags?.forEach((tag: string) => uniqueTags.add(cleanTagForStorage(tag))); // Added type annotation for 'tag'
+        post.tags?.forEach((tag: string) => uniqueTags.add(cleanTagForStorage(tag)));
       });
       setAllPossibleTags(Array.from(uniqueTags).sort());
     } catch (err) {
@@ -122,7 +124,7 @@ const ManageArchives: React.FC = () => {
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
     const filePath = `${folder}/${fileName}`;
 
-    const { data: _uploadData, error: uploadError } = await supabase.storage // Renamed uploadData to _uploadData
+    const { data: _uploadData, error: uploadError } = await supabase.storage
       .from(bucket)
       .upload(filePath, file, {
         cacheControl: '3600',
@@ -151,20 +153,31 @@ const ManageArchives: React.FC = () => {
     }
   };
 
-  const handleSaveArchive = async (formData: Omit<ArchivePostFormData, 'initialPdfLink'>) => {
+  const handleSaveArchive = async (formData: Omit<ArchivePostFormData, 'initialPdfLink' | 'initialImageUrl'>) => {
     let newPdfLink = formData.id ? currentArchiveDataForForm?.initialPdfLink || null : null;
+    let newImageUrl = formData.id ? currentArchiveDataForForm?.initialImageUrl || null : null;
 
     try {
+      // Handle PDF upload/update
       if (formData.pdfFile) {
         if (formData.id && currentArchiveDataForForm?.initialPdfLink) {
           await deleteFileFromStorage(currentArchiveDataForForm.initialPdfLink, 'pdfs');
         }
         newPdfLink = await uploadFile(formData.pdfFile, 'pdfs', 'blog_pdfs');
       } else if (formData.id && !formData.pdfFile) {
-        // If editing and no new PDF file, but there was an initial one, keep it.
-        // If initialPdfLink was null, it remains null.
         newPdfLink = currentArchiveDataForForm?.initialPdfLink || null;
       }
+
+      // Handle Image upload/update
+      if (formData.imageFile) {
+        if (formData.id && currentArchiveDataForForm?.initialImageUrl) {
+          await deleteFileFromStorage(currentArchiveDataForForm.initialImageUrl, 'images');
+        }
+        newImageUrl = await uploadFile(formData.imageFile, 'images', 'blog_thumbnails');
+      } else if (formData.id && !formData.imageFile) {
+        newImageUrl = currentArchiveDataForForm?.initialImageUrl || null;
+      }
+
 
       const archiveData = {
         title: formData.title,
@@ -173,9 +186,9 @@ const ManageArchives: React.FC = () => {
         author: formData.author,
         tags: formData.tags,
         pdf_link: newPdfLink,
+        image_url: newImageUrl, // Save image URL
+        content: null, // Archives do not have content
         created_at: formData.createdAt?.toISOString() || new Date().toISOString(),
-        image_url: null,
-        content: null,
         ...(formData.id ? {} : { created_by: session?.user?.id }),
       };
 
@@ -203,13 +216,16 @@ const ManageArchives: React.FC = () => {
     }
   };
 
-  const handleDeleteArchive = async (id: string, pdfLink: string | null) => {
+  const handleDeleteArchive = async (id: string, pdfLink: string | null, imageUrl: string | null) => {
     if (!window.confirm(t("confirm delete archive"))) {
       return;
     }
     try {
       if (pdfLink) {
         await deleteFileFromStorage(pdfLink, 'pdfs');
+      }
+      if (imageUrl) { // Delete image if it exists
+        await deleteFileFromStorage(imageUrl, 'images');
       }
 
       const { error } = await supabase
@@ -240,20 +256,18 @@ const ManageArchives: React.FC = () => {
       author: archive.author || "",
       tags: archive.tags?.map(cleanTagForStorage) || [],
       pdfFile: null, // File input is cleared for edit, user must re-upload
+      imageFile: null, // Image file input is cleared for edit
       createdAt: archive.created_at ? new Date(archive.created_at) : undefined,
       initialPdfLink: archive.pdf_link || null,
+      initialImageUrl: archive.image_url || null, // Pass existing image URL
     });
     setIsDialogOpen(true);
   };
 
-  // Removed the full-screen loading return block here.
-  // The component will now render its structure immediately.
-
-  if (!session || !isAdmin) { // If session is not available or not admin after loading, redirect (handled by useEffect)
-    return null; // Or a fallback UI if needed before redirect
+  if (!session || !isAdmin) {
+    return null;
   }
 
-  // If initial data is not loaded yet, show loading for the page content
   if (!isInitialDataLoaded) {
     return (
       <div className="container mx-auto py-10 px-4">
@@ -277,10 +291,13 @@ const ManageArchives: React.FC = () => {
 
       <ArchiveTable
         archives={archives}
-        dataLoading={isFetching} // Use isFetching for table's loading state
+        dataLoading={isFetching}
         error={error}
         onEdit={openDialogForEdit}
-        onDelete={handleDeleteArchive}
+        onDelete={(id, pdfLink) => {
+          const archiveToDelete = archives.find(a => a.id === id);
+          handleDeleteArchive(id, pdfLink, archiveToDelete?.image_url || null);
+        }}
       />
 
       <ArchiveFormDialog
@@ -290,6 +307,7 @@ const ManageArchives: React.FC = () => {
         onSave={handleSaveArchive}
         allPossibleTags={allPossibleTags}
         MAX_PDF_SIZE_BYTES={MAX_PDF_SIZE_BYTES}
+        MAX_IMAGE_SIZE_BYTES={MAX_IMAGE_SIZE_BYTES}
       />
 
       <div className="text-center mt-12">
