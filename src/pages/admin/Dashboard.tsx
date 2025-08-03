@@ -10,6 +10,7 @@ import { useSession } from "@/components/SessionProvider";
 // @ts-ignore
 import { BookOpen, GraduationCap, Users, Youtube, Music, CalendarDays, Archive, Code, BellRing, LayoutDashboard, Tent, Cpu } from "lucide-react";
 import { toast } from "sonner";
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
 
 interface Stats {
   blogPosts: number;
@@ -27,26 +28,26 @@ interface Stats {
 const AdminDashboard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { session, profile, loading: sessionLoading } = useSession();
-  const isAdmin = profile?.role === 'admin';
+  const { session } = useSession(); // Keep session for created_by if needed elsewhere, but auth check is handled by hook
 
   const [stats, setStats] = useState<Stats | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // State to control when data fetching queries should run
+  const [shouldFetchData, setShouldFetchData] = useState(false);
+
+  // Use the new admin page logic hook
+  const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
+    isAdminRequired: true,
+    onAuthSuccess: () => setShouldFetchData(true), // Set flag to true when auth is successful
+  });
+
   useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (!isAdmin) {
-        toast.error(t('admin required'));
-        navigate('/');
-      } else {
-        fetchStats();
-      }
+    if (isAuthenticatedAndAuthorized && shouldFetchData) {
+      fetchStats();
     }
-  }, [session, isAdmin, sessionLoading, navigate, t]);
+  }, [isAuthenticatedAndAuthorized, shouldFetchData]); // Depend on isAuthenticatedAndAuthorized and shouldFetchData
 
   const fetchStats = async () => {
     setDataLoading(true);
@@ -137,8 +138,16 @@ const AdminDashboard: React.FC = () => {
     { title: t('total users'), value: stats.totalUsers, icon: Users, link: "/admin/manage-users" },
   ] : [];
 
-  if (!session || !isAdmin) {
-    return null;
+  if (isLoadingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticatedAndAuthorized) {
+    return null; // The hook handles navigation
   }
 
   return (
