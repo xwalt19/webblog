@@ -18,7 +18,7 @@ import YouTubePage from "./pages/media/YouTubePage";
 import TikTokPage from "./pages/media/TikTokPage";
 import CalendarPage from "./pages/info/CalendarPage";
 import UploadBlogPost from "./pages/UploadBlogPost";
-import ContentList from "./pages/ContentList";
+// import ContentList from "./pages/ContentList"; // Removed import
 import ManageCalendar from "./pages/admin/ManageCalendar";
 import ManageArchives from "./pages/admin/ManageArchives";
 import ManageBlogPosts from "./pages/admin/ManageBlogPosts";
@@ -98,7 +98,7 @@ const App = () => (
               <Route path="admin/tiktok-videos/new" element={<UploadTikTokVideo />} />
               <Route path="admin/tiktok-videos/:id/edit" element={<UploadTikTokVideo />} />
               <Route path="admin/manage-tiktok-videos" element={<ManageTikTokVideos />} />
-              <Route path="content" element={<ContentList />} />
+              {/* <Route path="content" element={<ContentList />} /> */} {/* Removed route */}
               <Route path="admin/manage-calendar" element={<ManageCalendar />} />
               <Route path="admin/manage-archives" element={<ManageArchives />} />
               <Route path="admin/manage-users" element={<ManageUsers />} />
