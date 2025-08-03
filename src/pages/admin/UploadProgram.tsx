@@ -11,20 +11,11 @@ import { useSession } from "@/components/SessionProvider";
 import ProgramFormFields from "@/components/admin/ProgramFormFields";
 import ProgramPriceTables from "@/components/admin/ProgramPriceTables";
 import ProgramTopics from "@/components/admin/ProgramTopics";
-
-// Removed unused interface Program
-// interface Program {
-//   id: string;
-//   title: string;
-//   description: string;
-//   schedule: string | null; // Still string from DB, will be parsed to Date
-//   registration_fee: string | null;
-//   price: string | null;
-//   type: "kids" | "private" | "professional";
-//   icon_name: string | null;
-//   created_by: string | null;
-//   created_at: string;
-// }
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Form } from "@/components/ui/form";
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
 
 interface PriceTier {
   id?: string;
@@ -41,41 +32,52 @@ interface Topic {
   description: string;
 }
 
+// Define Zod schema for the main program form fields
+const programSchema = z.object({
+  title: z.string().min(2, { message: "Title must be at least 2 characters." }).max(255, { message: "Title must not exceed 255 characters." }),
+  description: z.string().min(10, { message: "Description must be at least 10 characters." }).max(1000, { message: "Description must not exceed 1000 characters." }),
+  schedule: z.date().optional().nullable(),
+  registrationFee: z.string().optional().nullable(),
+  price: z.string().optional().nullable(),
+  type: z.union([z.literal("kids"), z.literal("private"), z.literal("professional")], {
+    errorMap: () => ({ message: "Please select a program type." })
+  }),
+  iconName: z.string().optional().nullable(),
+});
+
 const UploadProgram: React.FC = () => {
   const { id: programId } = useParams<{ id: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { session, profile, loading: sessionLoading } = useSession();
+  const { session } = useSession();
   
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [schedule, setSchedule] = useState<Date | undefined>(undefined); // Changed to Date | undefined
-  const [registrationFee, setRegistrationFee] = useState("");
-  const [price, setPrice] = useState("");
-  const [type, setType] = useState<"kids" | "private" | "professional">("kids");
-  const [iconName, setIconName] = useState("");
   const [priceTables, setPriceTables] = useState<PriceTier[][]>([]);
   const [topics, setTopics] = useState<Topic[]>([]);
-  const [uploading, setUploading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
 
-  useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else if (profile?.role !== 'admin') {
-        toast.error(t('admin required'));
-        navigate('/');
+  const form = useForm<z.infer<typeof programSchema>>({
+    resolver: zodResolver(programSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      schedule: undefined,
+      registrationFee: "",
+      price: "",
+      type: "kids", // Default value
+      iconName: "",
+    },
+  });
+
+  const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
+    isAdminRequired: true,
+    onAuthSuccess: () => {
+      if (programId) {
+        fetchProgramData(programId);
       } else {
-        if (programId) {
-          fetchProgramData(programId);
-        } else {
-          setDataLoading(false);
-        }
+        setDataLoading(false);
       }
-    }
-  }, [session, profile, sessionLoading, navigate, t, programId]);
+    },
+  });
 
   const fetchProgramData = async (id: string) => {
     setDataLoading(true);
@@ -89,13 +91,15 @@ const UploadProgram: React.FC = () => {
       if (programError) throw programError;
 
       if (programData) {
-        setTitle(programData.title || "");
-        setDescription(programData.description || "");
-        setSchedule(programData.schedule ? new Date(programData.schedule) : undefined); // Parse schedule to Date
-        setRegistrationFee(programData.registration_fee || "");
-        setPrice(programData.price || "");
-        setType(programData.type || "kids");
-        setIconName(programData.icon_name || "");
+        form.reset({
+          title: programData.title || "",
+          description: programData.description || "",
+          schedule: programData.schedule ? new Date(programData.schedule) : undefined,
+          registrationFee: programData.registration_fee || "",
+          price: programData.price || "",
+          type: programData.type || "kids",
+          iconName: programData.icon_name || "",
+        });
 
         const { data: priceTiersData, error: priceTiersError } = await supabase
           .from('program_price_tiers')
@@ -127,25 +131,28 @@ const UploadProgram: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setUploading(true);
-
-    if (!title || !description || !type) {
-      toast.error(t("required fields missing"));
-      setUploading(false);
-      return;
-    }
+  const onSubmit = async (values: z.infer<typeof programSchema>) => {
+    const toastId = toast.loading(programId ? t("updating status") : t("uploading status"));
 
     try {
+      // Manual validation for priceTables and topics
+      if (priceTables.some(table => table.some(row => !row.header_key_col1 || !row.header_key_col2 || !row.participants_key || !row.price))) {
+        toast.error(t("price table fields missing"));
+        return;
+      }
+      if (topics.some(topic => !topic.icon_name || !topic.title || !topic.description)) {
+        toast.error(t("topic fields missing"));
+        return;
+      }
+
       const programData = {
-        title,
-        description,
-        schedule: schedule ? schedule.toISOString() : null, // Convert Date to ISO string
-        registration_fee: registrationFee || null,
-        price: price || null,
-        type,
-        icon_name: iconName || null,
+        title: values.title,
+        description: values.description,
+        schedule: values.schedule ? values.schedule.toISOString() : null,
+        registration_fee: values.registrationFee || null,
+        price: values.price || null,
+        type: values.type,
+        icon_name: values.iconName || null,
         ...(programId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
       };
 
@@ -172,11 +179,11 @@ const UploadProgram: React.FC = () => {
       if (!currentProgramId) throw new Error("Program ID not found after save.");
 
       // Handle calendar event creation/update
-      if (schedule) {
+      if (values.schedule) {
         const calendarEventData = {
-          title: title,
-          description: description,
-          date: schedule.toISOString(),
+          title: values.title,
+          description: values.description,
+          date: values.schedule.toISOString(),
           created_by: session?.user?.id,
           program_id: currentProgramId, // Link to program
         };
@@ -237,23 +244,25 @@ const UploadProgram: React.FC = () => {
         if (topicsError) throw topicsError;
       }
 
-      toast.success(programId ? t("updated successfully") : t("added successfully"));
+      toast.success(programId ? t("updated successfully") : t("added successfully"), { id: toastId });
       navigate('/admin/manage-programs');
 
     } catch (err: any) {
       console.error("Error saving program:", err);
-      toast.error(t("save failed", { error: err.message }));
-    } finally {
-      setUploading(false);
+      toast.error(t("save failed", { error: err.message }), { id: toastId });
     }
   };
 
-  if (sessionLoading || dataLoading || (!session && !sessionLoading) || (session && profile?.role !== 'admin')) {
+  if (isLoadingAuth || (programId && dataLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
       </div>
     );
+  }
+
+  if (!isAuthenticatedAndAuthorized) {
+    return null;
   }
 
   return (
@@ -277,38 +286,27 @@ const UploadProgram: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <ProgramFormFields
-              title={title}
-              setTitle={setTitle}
-              description={description}
-              setDescription={setDescription}
-              schedule={schedule}
-              setSchedule={setSchedule}
-              registrationFee={registrationFee}
-              setRegistrationFee={setRegistrationFee}
-              price={price}
-              setPrice={setPrice}
-              type={type}
-              setType={setType}
-              iconName={iconName}
-              setIconName={setIconName}
-            />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <ProgramFormFields
+                control={form.control}
+              />
 
-            <ProgramPriceTables
-              priceTables={priceTables}
-              setPriceTables={setPriceTables}
-            />
+              <ProgramPriceTables
+                priceTables={priceTables}
+                setPriceTables={setPriceTables}
+              />
 
-            <ProgramTopics
-              topics={topics}
-              setTopics={setTopics}
-            />
+              <ProgramTopics
+                topics={topics}
+                setTopics={setTopics}
+              />
 
-            <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('uploading status') : (programId ? t('save changes button') : t('submit button'))}
-            </Button>
-          </form>
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? t('uploading status') : (programId ? t('save changes button') : t('submit button'))}
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
 
