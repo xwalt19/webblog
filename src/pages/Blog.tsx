@@ -51,7 +51,8 @@ const BlogPage: React.FC = () => {
   const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPeriod, setSelectedPeriod] = useState("all");
+  const [selectedYear, setSelectedYear] = useState("all");
+  const [selectedMonth, setSelectedMonth] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,17 +62,13 @@ const BlogPage: React.FC = () => {
     const urlYear = searchParams.get('year');
     const urlMonth = searchParams.get('month');
 
-    if (urlYear && urlMonth) {
-      setSelectedPeriod(`${urlYear}-${urlMonth}`);
-    } else if (urlYear) {
-      setSelectedPeriod(urlYear); // If only year is provided
-    } else {
-      setSelectedPeriod("all"); // Default if no params
-    }
+    setSelectedYear(urlYear || "all");
+    setSelectedMonth(urlMonth || "all");
+    
     setSelectedTag("all"); // Reset tag filter when navigating via date
     setSearchTerm(""); // Reset search term when navigating via date
     setCurrentPage(1); // Always reset to first page
-  }, [searchParams]); // Depend on searchParams to re-run when URL changes
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchBlogPosts = async () => {
@@ -143,37 +140,28 @@ const BlogPage: React.FC = () => {
     t("july month name"), t("august month name"), t("september month name"), t("october month name"), t("november month name"), t("december month name")
   ], [i18n.language]);
 
-  const allPeriods: string[] = useMemo(() => {
-    const periods = new Set<string>();
+  const allYears: string[] = useMemo(() => {
+    const years = new Set<string>();
     allPosts.forEach(post => {
       const date = new Date(post.created_at);
-      periods.add(`${date.getFullYear()}-${date.getMonth() + 1}`);
-      periods.add(`${date.getFullYear()}`); // Add just the year as an option
+      years.add(String(date.getFullYear()));
     });
-    const sortedPeriods = Array.from(periods).sort((a, b) => {
-      // Sort by year descending, then by month descending
-      const [yearA, monthA] = a.split('-').map(Number);
-      const [yearB, monthB] = b.split('-').map(Number);
-
-      if (yearA !== yearB) return yearB - yearA;
-      if (monthA && monthB) return monthB - monthA; // Both are months
-      if (monthA) return -1; // A is month, B is year
-      if (monthB) return 1; // B is month, A is year
-      return 0; // Both are years or invalid
-    });
-    return ["all", ...sortedPeriods];
+    return ["all", ...Array.from(years).sort((a, b) => Number(b) - Number(a))];
   }, [allPosts]);
 
-  const getPeriodDisplayName = (period: string) => {
-    if (period === "all") return t("all time period");
-    const parts = period.split('-');
-    if (parts.length === 2) { // YYYY-MM format
-      const [year, month] = parts.map(Number);
-      return monthNames[month]; // Just the month name
+  const availableMonthsForSelectedYear: string[] = useMemo(() => {
+    if (selectedYear === "all") {
+      return ["all"]; // If all years are selected, show all months option
     }
-    // If it's just a year (e.g., "2024")
-    return period; // Returns "2024"
-  };
+    const months = new Set<string>();
+    allPosts.forEach(post => {
+      const date = new Date(post.created_at);
+      if (String(date.getFullYear()) === selectedYear) {
+        months.add(String(date.getMonth() + 1));
+      }
+    });
+    return ["all", ...Array.from(months).sort((a, b) => Number(b) - Number(a))];
+  }, [allPosts, selectedYear]);
 
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
@@ -181,23 +169,23 @@ const BlogPage: React.FC = () => {
       const matchesSearch = post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
                             post.excerpt.toLowerCase().includes(lowerCaseSearchTerm);
       
-      let matchesPeriod = true;
-      if (selectedPeriod !== "all") {
-        const postDate = new Date(post.created_at);
-        const [filterYear, filterMonth] = selectedPeriod.split('-').map(Number);
-        
-        if (filterMonth) { // Filter by year and month
-          matchesPeriod = postDate.getFullYear() === filterYear && (postDate.getMonth() + 1) === filterMonth;
-        } else { // Filter by year only
-          matchesPeriod = postDate.getFullYear() === filterYear;
-        }
+      let matchesYear = true;
+      if (selectedYear !== "all") {
+        const postYear = new Date(post.created_at).getFullYear();
+        matchesYear = String(postYear) === selectedYear;
+      }
+
+      let matchesMonth = true;
+      if (selectedMonth !== "all") {
+        const postMonth = new Date(post.created_at).getMonth() + 1;
+        matchesMonth = String(postMonth) === selectedMonth;
       }
 
       const matchesTag = selectedTag === "all" || post.tags?.map(cleanTagForStorage).includes(selectedTag);
 
-      return matchesSearch && matchesPeriod && matchesTag;
+      return matchesSearch && matchesYear && matchesMonth && matchesTag;
     });
-  }, [allPosts, selectedPeriod, selectedTag, searchTerm, i18n.language]);
+  }, [allPosts, selectedYear, selectedMonth, selectedTag, searchTerm]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
   const currentPosts = useMemo(() => {
@@ -262,20 +250,43 @@ const BlogPage: React.FC = () => {
           </SelectContent>
         </Select>
 
+        {/* Year Select */}
         <Select
-          value={selectedPeriod}
+          value={selectedYear}
           onValueChange={(value) => {
-            setSelectedPeriod(value);
+            setSelectedYear(value);
+            setSelectedMonth("all"); // Reset month when year changes
             setCurrentPage(1);
           }}
         >
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder={t('select period placeholder')} />
+          <SelectTrigger className="w-full md:w-[120px]">
+            <SelectValue placeholder={t('year placeholder')} />
           </SelectTrigger>
           <SelectContent>
-            {allPeriods.map(period => (
-              <SelectItem key={period} value={period}>
-                {getPeriodDisplayName(period)}
+            {allYears.map(year => (
+              <SelectItem key={year} value={year}>
+                {year === "all" ? t("all years") : year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Month Select */}
+        <Select
+          value={selectedMonth}
+          onValueChange={(value) => {
+            setSelectedMonth(value);
+            setCurrentPage(1);
+          }}
+          disabled={selectedYear === "all"} // Disable if no specific year is chosen
+        >
+          <SelectTrigger className="w-full md:w-[150px]">
+            <SelectValue placeholder={t('month placeholder')} />
+          </SelectTrigger>
+          <SelectContent>
+            {availableMonthsForSelectedYear.map(month => (
+              <SelectItem key={month} value={month}>
+                {month === "all" ? t("all months") : monthNames[Number(month)]}
               </SelectItem>
             ))}
           </SelectContent>
