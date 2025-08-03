@@ -125,9 +125,9 @@ const MobileNav: React.FC = () => {
           {/* User Account (Conditional) */}
           {session ? (
             <>
-              <Link to="/dashboard" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+              {/* <Link to="/dashboard" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
                 <LayoutDashboard className="h-5 w-5 inline-block mr-2" /> {t('dashboard')}
-              </Link>
+              </Link> */}
               <Link to="/profile" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
                 <User className="h-5 w-5 inline-block mr-2" /> {displayName}
               </Link>

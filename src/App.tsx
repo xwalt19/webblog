@@ -40,7 +40,7 @@ import React from "react";
 import AdminDashboard from "./pages/admin/Dashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
 import UserProfile from "./pages/UserProfile";
-import MemberDashboard from "./pages/MemberDashboard";
+// import MemberDashboard from "./pages/MemberDashboard"; // Dihapus
 
 const queryClient = new QueryClient();
 
@@ -69,7 +69,7 @@ const App = () => (
               <Route path="media/tiktok" element={<TikTokPage />} />
               <Route path="info/calendar" element={<CalendarPage />} />
               <Route path="profile" element={<UserProfile />} />
-              <Route path="dashboard" element={<MemberDashboard />} />
+              {/* <Route path="dashboard" element={<MemberDashboard />} /> */} {/* Dihapus */}
               {/* Admin Routes */}
               <Route path="admin" element={<AdminDashboard />} />
               <Route path="admin/blog-posts/new" element={<UploadBlogPost />} />

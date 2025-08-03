@@ -65,7 +65,7 @@ const Sidebar: React.FC = () => {
 
   // Hanya menyertakan link profil untuk pengguna yang login
   const userLinks = [
-    { to: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
+    // { to: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard }, // Dihapus
     { to: "/profile", labelKey: "my profile", icon: User },
   ];
 
