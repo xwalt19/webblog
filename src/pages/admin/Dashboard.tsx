@@ -16,7 +16,7 @@ interface Stats {
   archives: number;
   calendarEvents: number;
   programs: number;
-  runningClasses: number;
+  // Removed runningClasses: number;
   regularEvents: number;
   camps: number;
   trainingPrograms: number;
@@ -75,10 +75,11 @@ const AdminDashboard: React.FC = () => {
         .select('*', { count: 'exact', head: true });
       if (programsError) throw programsError;
 
-      const { count: runningClassesCount, error: runningClassesError } = await supabase
-        .from('running_classes')
-        .select('*', { count: 'exact', head: true });
-      if (runningClassesError) throw runningClassesError;
+      // Removed runningClassesCount fetch
+      // const { count: runningClassesCount, error: runningClassesError } = await supabase
+      //   .from('running_classes')
+      //   .select('*', { count: 'exact', head: true });
+      // if (runningClassesError) throw runningClassesError;
 
       const { count: regularEventsCount, error: regularEventsError } = await supabase
         .from('regular_events')
@@ -115,7 +116,7 @@ const AdminDashboard: React.FC = () => {
         archives: archivesCount || 0,
         calendarEvents: calendarEventsCount || 0,
         programs: programsCount || 0,
-        runningClasses: runningClassesCount || 0,
+        // runningClasses: runningClassesCount || 0, // Removed
         regularEvents: regularEventsCount || 0,
         camps: campsCount || 0,
         trainingPrograms: trainingProgramsCount || 0,
@@ -136,7 +137,8 @@ const AdminDashboard: React.FC = () => {
     { title: t('total archives'), value: stats.archives, icon: Archive, link: "/admin/manage-archives" },
     { title: t('total calendar events'), value: stats.calendarEvents, icon: CalendarDays, link: "/admin/manage-calendar" },
     { title: t('total programs'), value: stats.programs, icon: GraduationCap, link: "/admin/manage-programs" },
-    { title: t('total running classes'), value: stats.runningClasses, icon: Code, link: "/admin/manage-running-classes" },
+    // Removed running classes card
+    // { title: t('total running classes'), value: stats.runningClasses, icon: Code, link: "/admin/manage-running-classes" },
     { title: t('total regular events'), value: stats.regularEvents, icon: BellRing, link: "/admin/manage-regular-events" },
     { title: t('total camps'), value: stats.camps, icon: Tent, link: "/admin/manage-camps" },
     { title: t('total training programs'), value: stats.trainingPrograms, icon: Cpu, link: "/admin/manage-training-programs" },
@@ -145,11 +147,8 @@ const AdminDashboard: React.FC = () => {
     { title: t('total users'), value: stats.totalUsers, icon: Users, link: "/admin/manage-users" }, // Link to new user management page
   ] : [];
 
-  // Removed the full-screen loading return block here.
-  // The component will now render its structure immediately.
-
-  if (!session || !isAdmin) { // If session is not available or not admin after loading, redirect (handled by useEffect)
-    return null; // Or a fallback UI if needed before redirect
+  if (!session || !isAdmin) {
+    return null;
   }
 
   return (

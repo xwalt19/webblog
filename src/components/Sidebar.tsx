@@ -75,14 +75,13 @@ const Sidebar: React.FC = () => {
     { to: "/admin/manage-archives", labelKey: "archives", icon: Archive },
     { to: "/admin/manage-calendar", labelKey: "calendar", icon: CalendarDays },
     { to: "/admin/manage-programs", labelKey: "programs", icon: GraduationCap },
-    { to: "/admin/manage-running-classes", labelKey: "running classes", icon: Code },
+    // Removed running classes link
     { to: "/admin/manage-regular-events", labelKey: "regular events", icon: BellRing },
     { to: "/admin/manage-camps", labelKey: "camps", icon: Tent },
     { to: "/admin/manage-training-programs", labelKey: "training programs", icon: Cpu },
     { to: "/admin/manage-youtube-videos", labelKey: "youtube videos", icon: Youtube },
     { to: "/admin/manage-tiktok-videos", labelKey: "tiktok videos", icon: Music },
     { to: "/admin/manage-users", labelKey: "manage users", icon: Users },
-    // { to: "/admin/manage-about-content", labelKey: "about page content", icon: Info }, // New link
   ];
 
   return (

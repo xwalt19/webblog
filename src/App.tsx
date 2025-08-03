@@ -18,14 +18,11 @@ import YouTubePage from "./pages/media/YouTubePage";
 import TikTokPage from "./pages/media/TikTokPage";
 import CalendarPage from "./pages/info/CalendarPage";
 import UploadBlogPost from "./pages/UploadBlogPost";
-// import ContentList from "./pages/ContentList"; // Removed import
 import ManageCalendar from "./pages/admin/ManageCalendar";
 import ManageArchives from "./pages/admin/ManageArchives";
 import ManageBlogPosts from "./pages/admin/ManageBlogPosts";
 import ManagePrograms from "./pages/admin/ManagePrograms";
 import UploadProgram from "./pages/admin/UploadProgram";
-import ManageRunningClasses from "./pages/admin/ManageRunningClasses";
-import UploadRunningClass from "./pages/admin/UploadRunningClass";
 import ManageRegularEvents from "./pages/admin/ManageRegularEvents";
 import UploadRegularEvent from "./pages/admin/UploadRegularEvent";
 import ManageCamps from "./pages/admin/ManageCamps";
@@ -44,7 +41,6 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import ManageUsers from "./pages/admin/ManageUsers";
 import UserProfile from "./pages/UserProfile";
 import MemberDashboard from "./pages/MemberDashboard";
-// import ManageAboutContent from "@/pages/admin/ManageAboutContent"; // Menggunakan alias path
 
 const queryClient = new QueryClient();
 
@@ -82,8 +78,7 @@ const App = () => (
               <Route path="admin/programs/new" element={<UploadProgram />} />
               <Route path="admin/programs/:id/edit" element={<UploadProgram />} />
               <Route path="admin/manage-programs" element={<ManagePrograms />} />
-              <Route path="admin/running-classes/new" element={<UploadRunningClass />} />
-              <Route path="admin/running-classes/:id/edit" element={<UploadRunningClass />} />
+              {/* Removed running classes routes */}
               <Route path="admin/manage-regular-events" element={<ManageRegularEvents />} />
               <Route path="admin/regular-events/:id/edit" element={<UploadRegularEvent />} />
               <Route path="admin/camps/new" element={<UploadCamp />} />
@@ -98,11 +93,9 @@ const App = () => (
               <Route path="admin/tiktok-videos/new" element={<UploadTikTokVideo />} />
               <Route path="admin/tiktok-videos/:id/edit" element={<UploadTikTokVideo />} />
               <Route path="admin/manage-tiktok-videos" element={<ManageTikTokVideos />} />
-              {/* <Route path="content" element={<ContentList />} /> */} {/* Removed route */}
               <Route path="admin/manage-calendar" element={<ManageCalendar />} />
               <Route path="admin/manage-archives" element={<ManageArchives />} />
               <Route path="admin/manage-users" element={<ManageUsers />} />
-              {/* <Route path="admin/manage-about-content" element={<ManageAboutContent />} /> */}
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

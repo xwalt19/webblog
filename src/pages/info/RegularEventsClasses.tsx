@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react"; // Removed useMemo
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,15 +16,16 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
 
-interface SupabaseRunningClass {
-  id: string;
-  name: string;
-  schedule: string;
-  description: string;
-  icon_name: string | null;
-  created_by: string | null;
-  created_at: string;
-}
+// Removed SupabaseRunningClass interface
+// interface SupabaseRunningClass {
+//   id: string;
+//   name: string;
+//   schedule: string;
+//   description: string;
+//   icon_name: string | null;
+//   created_by: string | null;
+//   created_at: string;
+// }
 
 interface SupabaseRegularEvent {
   id: string;
@@ -38,8 +39,9 @@ interface SupabaseRegularEvent {
 
 const RegularEventsClasses: React.FC = () => {
   const { t } = useTranslation();
-  const [selectedActivityView, setSelectedActivityView] = useState("allActivities"); 
-  const [runningClasses, setRunningClasses] = useState<SupabaseRunningClass[]>([]);
+  const [selectedActivityView, setSelectedActivityView] = useState("regularEvents"); // Default to regularEvents
+  // Removed runningClasses state
+  // const [runningClasses, setRunningClasses] = useState<SupabaseRunningClass[]>([]);
   const [regularEvents, setRegularEvents] = useState<SupabaseRegularEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,13 +51,14 @@ const RegularEventsClasses: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        const { data: runningData, error: runningError } = await supabase
-          .from('running_classes')
-          .select('*')
-          .order('created_at', { ascending: false });
+        // Removed runningData fetch
+        // const { data: runningData, error: runningError } = await supabase
+        //   .from('running_classes')
+        //   .select('*')
+        //   .order('created_at', { ascending: false });
 
-        if (runningError) throw runningError;
-        setRunningClasses(runningData || []);
+        // if (runningError) throw runningError;
+        // setRunningClasses(runningData || []);
 
         const { data: eventData, error: eventError } = await supabase
           .from('regular_events')
@@ -75,9 +78,6 @@ const RegularEventsClasses: React.FC = () => {
 
     fetchActivities();
   }, [t]);
-
-  // Removed the explicit loading return block here.
-  // The component will now render its structure immediately.
 
   if (error) {
     return (
@@ -102,17 +102,19 @@ const RegularEventsClasses: React.FC = () => {
             <SelectValue placeholder={t('select activity placeholder')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="allActivities">{t('all activities')}</SelectItem>
-            <SelectItem value="runningClasses">{t('running classes')}</SelectItem>
+            {/* Removed 'allActivities' and 'runningClasses' options */}
+            {/* <SelectItem value="allActivities">{t('all activities')}</SelectItem>
+            <SelectItem value="runningClasses">{t('running classes')}</SelectItem> */}
             <SelectItem value="regularEvents">{t('regular events')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && (
+      {/* Removed running classes section */}
+      {/* {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && (
         <section className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('running classes section title')}</h2>
-          {loading ? ( // Show loading only for this section if data is still fetching
+          {loading ? (
             <p className="text-center text-muted-foreground">{t('loading activities')}</p>
           ) : runningClasses.length > 0 ? (
             <div className="grid grid-cols-1 gap-6"> 
@@ -140,9 +142,10 @@ const RegularEventsClasses: React.FC = () => {
             <p className="text-center text-muted-foreground mt-8 text-lg">{t('no running classes available')}</p>
           )}
         </section>
-      )}
+      )} */}
 
-      {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && <Separator className="my-12" />}
+      {/* Removed separator if running classes section is removed */}
+      {/* {(selectedActivityView === "allActivities" || selectedActivityView === "runningClasses") && <Separator className="my-12" />} */}
 
       {(selectedActivityView === "allActivities" || selectedActivityView === "regularEvents") && (
         <section className="mb-16">
