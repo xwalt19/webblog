@@ -14,6 +14,11 @@ import { useSession } from "@/components/SessionProvider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { iconMap } from "@/utils/iconMap";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
+import { Calendar as CalendarIcon } from "lucide-react"; // Import CalendarIcon
+import { format } from "date-fns"; // Import format from date-fns
+import { Calendar } from "@/components/ui/calendar"; // Import Calendar component
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"; // Import Popover components
+import { cn } from "@/lib/utils"; // Import cn utility
 
 const UploadRegularEvent: React.FC = () => {
   const { id: eventId } = useParams<{ id: string }>();
@@ -22,7 +27,7 @@ const UploadRegularEvent: React.FC = () => {
   const { session } = useSession(); // Keep session for created_by
 
   const [name, setName] = useState("");
-  const [schedule, setSchedule] = useState("");
+  const [schedule, setSchedule] = useState<Date | undefined>(undefined); // Changed to Date | undefined
   const [description, setDescription] = useState("");
   const [iconName, setIconName] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -56,7 +61,7 @@ const UploadRegularEvent: React.FC = () => {
 
       if (data) {
         setName(data.name || "");
-        setSchedule(data.schedule || "");
+        setSchedule(data.schedule ? new Date(data.schedule) : undefined); // Parse schedule to Date
         setDescription(data.description || "");
         setIconName(data.icon_name || "");
       }
@@ -82,7 +87,7 @@ const UploadRegularEvent: React.FC = () => {
     try {
       const eventData = {
         name,
-        schedule,
+        schedule: schedule ? schedule.toISOString() : null, // Convert Date to ISO string
         description,
         icon_name: iconName || null,
         ...(eventId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
@@ -164,14 +169,49 @@ const UploadRegularEvent: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="schedule">{t('schedule label')}</Label>
-              <Input
-                id="schedule"
-                type="text"
-                placeholder={t('schedule placeholder')}
-                value={schedule}
-                onChange={(e) => setSchedule(e.target.value)}
-                className="mt-1"
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal mt-1",
+                      !schedule && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {schedule ? format(schedule, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={schedule}
+                    onSelect={setSchedule}
+                    initialFocus
+                  />
+                  <div className="p-3 border-t border-border">
+                    <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
+                    <Input
+                      id="time-input"
+                      type="time"
+                      value={schedule ? format(schedule, "HH:mm") : ""}
+                      onChange={(e) => {
+                        const [hours, minutes] = e.target.value.split(':').map(Number);
+                        if (schedule) {
+                          const newDate = new Date(schedule);
+                          newDate.setHours(hours, minutes);
+                          setSchedule(newDate);
+                        } else {
+                          const newDate = new Date();
+                          newDate.setHours(hours, minutes);
+                          setSchedule(newDate);
+                        }
+                      }}
+                      className="w-full"
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
