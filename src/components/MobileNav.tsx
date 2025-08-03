@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, LogIn, LayoutDashboard, Users, User, Loader2 } from "lucide-react"; // Import User icon
+import { Menu, LogOut, LogIn, LayoutDashboard, Users, User, Loader2 } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -12,15 +12,15 @@ import {
 import { useTranslation } from "react-i18next";
 import { useSession } from "@/components/SessionProvider";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner"; // Import toast
+import { toast } from "sonner";
 
 const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation();
-  const navigate = useNavigate(); // Initialize useNavigate
-  const { session, profile, user, loading, clearSession } = useSession(); // Get clearSession
+  const navigate = useNavigate();
+  const { session, profile, user, loading, clearSession } = useSession();
   const isAdmin = profile?.role === 'admin';
-  const displayName = profile?.first_name || user?.email || t('my profile');
+  const displayName = profile?.first_name || user?.email || "Profil Saya"; // Static Indonesian text
 
   const closeSheet = () => setIsOpen(false);
 
@@ -30,9 +30,9 @@ const MobileNav: React.FC = () => {
       if (error) {
         throw error;
       }
-      clearSession(); // Immediately clear local state and localStorage
-      closeSheet(); // Close the mobile nav sheet
-      navigate('/login'); // Navigate immediately after clearing session
+      clearSession();
+      closeSheet();
+      navigate('/login');
     } catch (err: any) {
       console.error("Error during logout:", err);
       toast.error(t('logout failed', { error: err.message }));
@@ -125,8 +125,8 @@ const MobileNav: React.FC = () => {
             </AccordionItem>
           </Accordion>
 
-          {/* User Profile Link */}
-          {session ? ( // Show if session exists
+          {/* User Account (Conditional) */}
+          {session ? (
             <>
               <Link to="/dashboard" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
                 <LayoutDashboard className="h-5 w-5 inline-block mr-2" /> {t('dashboard')}
@@ -137,7 +137,7 @@ const MobileNav: React.FC = () => {
             </>
           ) : null}
 
-          {isAdmin ? ( // Show if isAdmin is true
+          {isAdmin ? (
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-4" className="border-b-0">
                 <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
@@ -186,18 +186,18 @@ const MobileNav: React.FC = () => {
           ) : null}
 
           {/* Auth Buttons for Mobile */}
-          {loading && !session ? ( // If loading and no session, show spinner
+          {loading && !session ? (
             <div className="flex items-center px-4 py-2 text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading status')}
+              <Loader2 className="h-5 w-5 animate-spin mr-2" /> Memuat...
             </div>
-          ) : session ? ( // If session exists, show logout
+          ) : session ? (
             <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={handleLogout}>
-              <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
+              <LogOut className="h-5 w-5 mr-2" /> Keluar
             </Button>
-          ) : ( // Otherwise (not loading, no session), show sign in
+          ) : (
             <Link to="/login" onClick={closeSheet}>
               <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors">
-                <LogIn className="h-5 w-5 mr-2" /> {t('sign in')}
+                <LogIn className="h-5 w-5 mr-2" /> Masuk
               </Button>
             </Link>
           )}

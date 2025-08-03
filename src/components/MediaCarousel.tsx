@@ -7,7 +7,7 @@ import { Youtube, Music, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import YouTubeVideoModal from "@/components/YouTubeVideoModal"; // Import the new modal
+import YouTubeVideoModal from "@/components/YouTubeVideoModal";
 
 interface YouTubeVideo {
   id: string;
@@ -185,7 +185,7 @@ const MediaCarousel: React.FC = () => {
                     <CardHeader className="flex-grow">
                       <CardTitle className="text-xl">{item.title}</CardTitle>
                       <CardDescription className="text-sm text-muted-foreground">
-                        {new Date(item.date).toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })} - {item.type === 'youtube' ? 'YouTube' : 'TikTok'}
+                        {new Date(item.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })} - {item.type === 'youtube' ? 'YouTube' : 'TikTok'}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="p-6 pt-0">

@@ -3,14 +3,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card"; // Removed CardHeader, CardTitle, CardDescription
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash, PlusCircle } from "lucide-react";
-// import { Badge } from "@/components/ui/badge"; // Removed unused import
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -208,7 +207,7 @@ const ManageBlogPosts: React.FC = () => {
 
   const formatDisplayDate = (isoString: string) => {
     const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', {
+    return dateObj.toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

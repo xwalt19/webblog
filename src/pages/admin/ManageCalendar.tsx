@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react"; // Removed useMemo
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card"; // Removed CardHeader, CardTitle, CardDescription
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -173,7 +173,7 @@ const ManageCalendar: React.FC = () => {
 
   const formatDisplayDate = (isoString: string) => {
     const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', {
+    return dateObj.toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

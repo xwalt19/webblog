@@ -4,7 +4,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { CalendarDays, BellRing } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { dummyFixedItems } from "@/data/fixedItems"; // Removed unused 'FixedItem' import
+import { dummyFixedItems } from "@/data/fixedItems";
 
 const FixedNewsSchedule: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -17,7 +17,7 @@ const FixedNewsSchedule: React.FC = () => {
       day: 'numeric',
     };
 
-    let formattedDate = dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', dateOptions);
+    let formattedDate = dateObj.toLocaleDateString('id-ID', dateOptions);
 
     if (type === "schedule" && isoString.includes('T') && (dateObj.getHours() !== 0 || dateObj.getMinutes() !== 0 || dateObj.getSeconds() !== 0)) {
       const timeOptions: Intl.DateTimeFormatOptions = {
@@ -25,7 +25,7 @@ const FixedNewsSchedule: React.FC = () => {
         minute: '2-digit',
         hour12: false,
       };
-      const formattedTime = dateObj.toLocaleTimeString(i18n.language === 'id' ? 'id-ID' : 'en-US', timeOptions);
+      const formattedTime = dateObj.toLocaleTimeString('id-ID', timeOptions);
       
       if (i18n.language === 'id') {
         return `${formattedDate} pukul ${formattedTime} WIB`;

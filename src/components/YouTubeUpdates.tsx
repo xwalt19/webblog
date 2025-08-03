@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlayCircle } from "lucide-react";
+import { Youtube } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Pagination,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/pagination";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import YouTubeVideoModal from "@/components/YouTubeVideoModal"; // Import the new modal
+import YouTubeVideoModal from "@/components/YouTubeVideoModal";
 
 interface YouTubeVideo {
   id: string;
@@ -88,7 +88,7 @@ const YouTubeUpdates: React.FC = () => {
 
   const formatDate = (isoString: string) => {
     const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   const openVideoInModal = (video: YouTubeVideo) => {
@@ -119,7 +119,7 @@ const YouTubeUpdates: React.FC = () => {
               <Card key={video.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="relative w-full h-48 bg-gray-200 flex items-center justify-center cursor-pointer" onClick={() => openVideoInModal(video)}>
                   <img src={video.thumbnail_url} alt={video.title} className="w-full h-full object-cover" />
-                  <PlayCircle className="absolute text-white/80 hover:text-white transition-colors" size={64} />
+                  <Youtube className="absolute text-white/80 hover:text-white transition-colors" size={64} />
                 </div>
                 <CardHeader className="flex-grow">
                   <CardTitle className="text-xl">{video.title}</CardTitle>

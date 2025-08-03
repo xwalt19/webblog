@@ -93,7 +93,7 @@ const ProCodeCGCalendar: React.FC = () => {
         {date && (
           <div className="mt-6 p-4 border-t border-border">
             <h3 className="text-lg font-semibold text-primary mb-2">
-              {t('events on')} {date.toLocaleDateString(i18n.language === 'id' ? 'id-ID' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}:
+              {t('events on')} {date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}:
             </h3>
             {getDayEvents(date).length > 0 ? (
               <ul className="list-disc pl-5 space-y-1 text-muted-foreground">

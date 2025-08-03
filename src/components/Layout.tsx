@@ -1,22 +1,21 @@
 import React from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, LogIn, User, Loader2 } from "lucide-react"; // Import Loader2 for spinner
+import { LogOut, LogIn, User, Loader2 } from "lucide-react";
 import MobileNav from "./MobileNav";
-import LanguageSwitcher from "./LanguageSwitcher";
+// import LanguageSwitcher from "./LanguageSwitcher"; // Removed import
 import { useTranslation } from "react-i18next";
 import { useSession } from "@/components/SessionProvider";
 import { supabase } from "@/integrations/supabase/client";
-import Sidebar from "./Sidebar"; // Import Sidebar component
-import { toast } from "sonner"; // Import toast
+import Sidebar from "./Sidebar";
+import { toast } from "sonner";
 
 const Layout: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate(); // Initialize useNavigate
-  const { session, profile, user, loading, clearSession } = useSession(); // Get clearSession
+  const navigate = useNavigate();
+  const { session, profile, user, loading, clearSession } = useSession();
 
-  // const isAdmin = profile?.role === 'admin'; // Removed unused variable
-  const displayName = profile?.first_name || user?.email || t('my profile');
+  const displayName = profile?.first_name || user?.email || "Profil Saya"; // Static Indonesian text
 
   const handleLogout = async () => {
     try {
@@ -24,8 +23,8 @@ const Layout: React.FC = () => {
       if (error) {
         throw error;
       }
-      clearSession(); // Immediately clear local state and localStorage
-      navigate('/login'); // Navigate immediately after clearing session
+      clearSession();
+      navigate('/login');
     } catch (err: any) {
       console.error("Error during logout:", err);
       toast.error(t('logout failed', { error: err.message }));
@@ -41,14 +40,14 @@ const Layout: React.FC = () => {
           </Link>
 
           <div className="flex items-center gap-2">
-            <LanguageSwitcher />
-            {loading && !session ? ( // Show loading state ONLY if loading AND no session
+            {/* <LanguageSwitcher /> */} {/* Removed component usage */}
+            {loading && !session ? (
               <div className="flex items-center px-4 py-2 text-muted-foreground">
-                <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading status')}
+                <Loader2 className="h-5 w-5 animate-spin mr-2" /> Memuat...
               </div>
             ) : (
               <>
-                {session ? ( // Show session buttons if session exists
+                {session ? (
                   <>
                     <Link to="/profile">
                       <Button variant="ghost" className="px-4 py-2">
@@ -56,13 +55,13 @@ const Layout: React.FC = () => {
                       </Button>
                     </Link>
                     <Button variant="default" onClick={handleLogout} className="px-4 py-2">
-                      <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
+                      <LogOut className="h-5 w-5 mr-2" /> Keluar
                     </Button>
                   </>
-                ) : ( // Show login button if no session
+                ) : (
                   <Link to="/login">
                     <Button variant="default" className="px-4 py-2">
-                      <LogIn className="h-5 w-5 mr-2" /> {t('sign in')}
+                      <LogIn className="h-5 w-5 mr-2" /> Masuk
                     </Button>
                   </Link>
                 )}
