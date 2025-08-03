@@ -163,7 +163,12 @@ const ProgramsPage: React.FC = () => {
                         </CardHeader>
                         <CardContent className="p-0">
                           <Table className="w-full">
-                            {/* Removed TableHeader and TableHead */}
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead className="w-[150px]">{t('number of meetings')}</TableHead>
+                                <TableHead className="text-right">{t('price')}</TableHead>
+                              </TableRow>
+                            </TableHeader>
                             <TableBody>
                               {program.program_price_tiers.map((row, rowIndex) => (
                                 <TableRow key={rowIndex}>
