@@ -4,43 +4,19 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cleanTagForStorage } from "@/utils/i18nUtils";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import MultiSelectTags from "@/components/MultiSelectTags"; // Import MultiSelectTags
-import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
-
-// Removed unused interface BlogPost
-// interface BlogPost {
-//   id: string;
-//   title: string;
-//   excerpt: string | null;
-//   content: string | null;
-//   created_at: string; // This is the field to control
-//   image_url: string | null;
-//   category: string | null;
-//   author: string | null;
-//   tags: string[] | null;
-//   pdf_link: string | null;
-//   created_by: string | null; // Add created_by to interface
-// }
+import BlogPostFormFields from "@/components/admin/BlogPostFormFields"; // Import new component
+import BlogPostMediaUpload from "@/components/admin/BlogPostMediaUpload"; // Import new component
 
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 const MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 const UploadBlogPost: React.FC = () => {
-  const { id: postId } = useParams<{ id: string }>(); // Get post ID from URL for editing
+  const { id: postId } = useParams<{ id: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
@@ -50,7 +26,7 @@ const UploadBlogPost: React.FC = () => {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [author, setAuthor] = useState("");
-  const [selectedTags, setSelectedTags] = useState<string[]>([]); // Changed from tagsInput
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -59,11 +35,7 @@ const UploadBlogPost: React.FC = () => {
   const [dataLoading, setDataLoading] = useState(true);
   const [formCreatedAt, setFormCreatedAt] = useState<Date | undefined>(undefined);
 
-  const [allPossibleTags, setAllPossibleTags] = useState<string[]>([]); // New state for all tags
-
-  const categories = [
-    "Programming", "Technology", "Education", "Data Science", "Cybersecurity", "Mobile Development", "Cloud Computing", "History", "Retro Tech", "Programming History"
-  ];
+  const [allPossibleTags, setAllPossibleTags] = useState<string[]>([]);
 
   useEffect(() => {
     if (!sessionLoading) {
@@ -77,10 +49,10 @@ const UploadBlogPost: React.FC = () => {
         if (postId) {
           fetchPostData(postId);
         } else {
-          setFormCreatedAt(new Date()); // Set current date/time for new post
-          setDataLoading(false); // Ready for new post if no ID
+          setFormCreatedAt(new Date());
+          setDataLoading(false);
         }
-        fetchAllTags(); // Fetch all tags when admin is authenticated
+        fetchAllTags();
       }
     }
   }, [session, profile, sessionLoading, navigate, t, postId]);
@@ -103,15 +75,15 @@ const UploadBlogPost: React.FC = () => {
         setContent(data.content || "");
         setCategory(data.category || "");
         setAuthor(data.author || "");
-        setSelectedTags(data.tags?.map(cleanTagForStorage) || []); // Set selected tags from fetched data
+        setSelectedTags(data.tags?.map(cleanTagForStorage) || []);
         setInitialImageUrl(data.image_url || null);
         setInitialPdfLink(data.pdf_link || null);
-        setFormCreatedAt(new Date(data.created_at)); // Set existing date/time for edit
+        setFormCreatedAt(new Date(data.created_at));
       }
     } catch (err: any) {
       console.error("Error fetching post data:", err);
       toast.error(t("fetch data error", { error: err.message }));
-      navigate('/content'); // Redirect if post not found or error
+      navigate('/content');
     } finally {
       setDataLoading(false);
     }
@@ -127,41 +99,11 @@ const UploadBlogPost: React.FC = () => {
 
       const uniqueTags = new Set<string>();
       data.forEach(post => {
-        post.tags?.forEach((tag: string) => uniqueTags.add(cleanTagForStorage(tag))); // Added type annotation for 'tag'
+        post.tags?.forEach((tag: string) => uniqueTags.add(cleanTagForStorage(tag)));
       });
       setAllPossibleTags(Array.from(uniqueTags).sort());
     } catch (err) {
       console.error("Error fetching all tags:", err);
-    }
-  };
-
-  const handleImageFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      if (file.size > MAX_IMAGE_SIZE_BYTES) {
-        toast.error(t('file size too large', { max: '10MB' }));
-        event.target.value = ''; // Clear the input
-        setImageFile(null);
-        return;
-      }
-      setImageFile(file);
-    } else {
-      setImageFile(null);
-    }
-  };
-
-  const handlePdfFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      if (file.size > MAX_PDF_SIZE_BYTES) {
-        toast.error(t('file size too large', { max: '10MB' }));
-        event.target.value = ''; // Clear the input
-        setPdfFile(null);
-        return;
-      }
-      setPdfFile(file);
-    } else {
-      setPdfFile(null);
     }
   };
 
@@ -170,7 +112,7 @@ const UploadBlogPost: React.FC = () => {
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
     const filePath = `${folder}/${fileName}`;
 
-    const { data: _uploadData, error: uploadError } = await supabase.storage // Renamed uploadData to _uploadData
+    const { data: _uploadData, error: uploadError } = await supabase.storage
       .from(bucket)
       .upload(filePath, file, {
         cacheControl: '3600',
@@ -220,7 +162,6 @@ const UploadBlogPost: React.FC = () => {
         }
         currentImageUrl = await uploadFile(imageFile, 'images', 'blog_thumbnails');
       } else if (postId && !initialImageUrl) {
-        // If editing and no initial image but no new file, ensure image_url is null
         currentImageUrl = null;
       }
 
@@ -231,7 +172,6 @@ const UploadBlogPost: React.FC = () => {
         }
         currentPdfLink = await uploadFile(pdfFile, 'pdfs', 'blog_pdfs');
       } else if (postId && !initialPdfLink) {
-        // If editing and no initial PDF but no new file, ensure pdf_link is null
         currentPdfLink = null;
       }
 
@@ -242,22 +182,20 @@ const UploadBlogPost: React.FC = () => {
         image_url: currentImageUrl,
         category,
         author,
-        tags: selectedTags, // Use selectedTags directly
+        tags: selectedTags,
         pdf_link: currentPdfLink,
-        created_at: formCreatedAt.toISOString(), // Use selected date
-        ...(postId ? {} : { created_by: session?.user?.id }), // created_at is now explicitly set
+        created_at: formCreatedAt.toISOString(),
+        ...(postId ? {} : { created_by: session?.user?.id }),
       };
 
       let error;
       if (postId) {
-        // Update existing post
         const { error: updateError } = await supabase
           .from('blog_posts')
           .update(postData)
           .eq('id', postId);
         error = updateError;
       } else {
-        // Insert new post
         const { error: insertError } = await supabase
           .from('blog_posts')
           .insert([postData]);
@@ -270,23 +208,22 @@ const UploadBlogPost: React.FC = () => {
 
       toast.success(postId ? t("updated successfully") : t("added successfully"));
       
-      // Reset form or navigate
       if (!postId) {
         setTitle("");
         setExcerpt("");
         setContent("");
         setCategory("");
         setAuthor("");
-        setSelectedTags([]); // Reset selected tags
+        setSelectedTags([]);
         setImageFile(null);
         setPdfFile(null);
-        setFormCreatedAt(new Date()); // Reset to current date/time for next new post
+        setFormCreatedAt(new Date());
         const imageInput = document.getElementById("image-upload") as HTMLInputElement;
         if (imageInput) imageInput.value = "";
         const pdfInput = document.getElementById("pdf-upload") as HTMLInputElement;
         if (pdfInput) pdfInput.value = "";
       } else {
-        navigate('/admin/manage-blog-posts'); // Go back to list after edit
+        navigate('/admin/manage-blog-posts');
       }
 
     } catch (err: any) {
@@ -327,164 +264,33 @@ const UploadBlogPost: React.FC = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Label htmlFor="title">{t('title label')}</Label>
-              <Input
-                id="title"
-                type="text"
-                placeholder={t('title placeholder')}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="excerpt">{t('excerpt label')}</Label>
-              <Textarea
-                id="excerpt"
-                placeholder={t('excerpt placeholder')}
-                value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
-                className="mt-1 min-h-[80px]"
-              />
-            </div>
-            <div>
-              <Label htmlFor="content">{t('content label')}</Label>
-              <Textarea
-                id="content"
-                placeholder={t('content placeholder')}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                className="mt-1 min-h-[200px]"
-              />
-            </div>
-            <div>
-              <Label htmlFor="category">{t('category label')}</Label>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-full mt-1">
-                  <SelectValue placeholder={t('select category placeholder')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map(cat => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="author">{t('author label')}</Label>
-              <Input
-                id="author"
-                type="text"
-                placeholder={t('author placeholder')}
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="tags">{t('tags label')}</Label>
-              <MultiSelectTags
-                initialTags={selectedTags}
-                onTagsChange={setSelectedTags}
-                allAvailableTags={allPossibleTags}
-              />
-              <p className="text-sm text-muted-foreground mt-1">
-                {t('tags hint')}
-              </p>
-            </div>
-            <div>
-              <Label htmlFor="created_at">{t('created at label')}</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal mt-1",
-                      !formCreatedAt && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formCreatedAt ? format(formCreatedAt, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={formCreatedAt}
-                    onSelect={setFormCreatedAt}
-                    initialFocus
-                  />
-                  <div className="p-3 border-t border-border">
-                    <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
-                    <Input
-                      id="time-input"
-                      type="time"
-                      value={formCreatedAt ? format(formCreatedAt, "HH:mm") : ""}
-                      onChange={(e) => {
-                        const [hours, minutes] = e.target.value.split(':').map(Number);
-                        if (formCreatedAt) {
-                          const newDate = new Date(formCreatedAt);
-                          newDate.setHours(hours, minutes);
-                          setFormCreatedAt(newDate);
-                        } else {
-                          const newDate = new Date();
-                          newDate.setHours(hours, minutes);
-                          setFormCreatedAt(newDate);
-                        }
-                      }}
-                      className="w-full"
-                    />
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-            <div>
-              <Label htmlFor="image-upload">{t('image label')}</Label>
-              <Input
-                id="image-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleImageFileChange}
-                className="mt-1"
-              />
-              {imageFile ? (
-                <p className="text-sm text-muted-foreground mt-2">
-                  {t('selected image')}: {imageFile.name}
-                </p>
-              ) : initialImageUrl && (
-                <div className="mt-2">
-                  <ResponsiveImage 
-                    src={initialImageUrl} 
-                    alt={t('current image')} 
-                    containerClassName="w-32 h-20 rounded-md" 
-                    className="object-cover" 
-                  />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t('current image')}: <a href={initialImageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialImageUrl.split('/').pop()}</a>
-                  </p>
-                </div>
-              )}
-            </div>
-            <div>
-              <Label htmlFor="pdf-upload">{t('pdf file label')}</Label>
-              <Input
-                id="pdf-upload"
-                type="file"
-                accept="application/pdf"
-                onChange={handlePdfFileChange}
-                className="mt-1"
-              />
-              {pdfFile ? (
-                <p className="text-sm text-muted-foreground mt-2">
-                  {t('selected pdf')}: {pdfFile.name}
-                </p>
-              ) : initialPdfLink && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  {t('current pdf')}: <a href={initialPdfLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialPdfLink.split('/').pop()}</a>
-                </p>
-              )}
-            </div>
+            <BlogPostFormFields
+              title={title}
+              setTitle={setTitle}
+              excerpt={excerpt}
+              setExcerpt={setExcerpt}
+              content={content}
+              setContent={setContent}
+              category={category}
+              setCategory={setCategory}
+              author={author}
+              setAuthor={setAuthor}
+              selectedTags={selectedTags}
+              setSelectedTags={setSelectedTags}
+              formCreatedAt={formCreatedAt}
+              setFormCreatedAt={setFormCreatedAt}
+              allPossibleTags={allPossibleTags}
+            />
+            <BlogPostMediaUpload
+              imageFile={imageFile}
+              setImageFile={setImageFile}
+              pdfFile={pdfFile}
+              setPdfFile={setPdfFile}
+              initialImageUrl={initialImageUrl}
+              initialPdfLink={initialPdfLink}
+              MAX_IMAGE_SIZE_BYTES={MAX_IMAGE_SIZE_BYTES}
+              MAX_PDF_SIZE_BYTES={MAX_PDF_SIZE_BYTES}
+            />
             <Button type="submit" className="w-full" disabled={uploading}>
               {uploading ? t('uploading status') : (postId ? t('save changes button') : t('submit button'))}
             </Button>
