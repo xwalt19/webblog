@@ -80,6 +80,7 @@ const App = () => (
                 <Route path="admin/programs/:id/edit" element={<UploadProgram />} />
                 <Route path="admin/manage-programs" element={<ManagePrograms />} />
                 <Route path="admin/manage-regular-events" element={<ManageRegularEvents />} />
+                <Route path="admin/regular-events/new" element={<UploadRegularEvent />} /> {/* Added this missing route */}
                 <Route path="admin/regular-events/:id/edit" element={<UploadRegularEvent />} />
                 <Route path="admin/camps/new" element={<UploadCamp />} />
                 <Route path="admin/camps/:id/edit" element={<UploadCamp />} />
