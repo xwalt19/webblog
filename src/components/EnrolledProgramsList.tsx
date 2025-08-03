@@ -14,7 +14,6 @@ interface EnrolledProgram {
   id: string;
   program_id: string;
   enrolled_at: string;
-  // Mengubah 'programs' menjadi array dari detail program
   programs: Array<{
     id: string;
     title: string;
@@ -24,7 +23,7 @@ interface EnrolledProgram {
     price: string | null;
     type: "kids" | "private" | "professional";
     icon_name: string | null;
-  }> | null; // Bisa null jika tidak ada program yang terhubung, atau array kosong
+  }> | null;
 }
 
 const EnrolledProgramsList: React.FC = () => {
@@ -93,7 +92,7 @@ const EnrolledProgramsList: React.FC = () => {
         .from('user_programs')
         .delete()
         .eq('id', enrollmentId)
-        .eq('user_id', session?.user?.id); // Ensure only current user can unenroll their own
+        .eq('user_id', session?.user?.id);
 
       if (error) {
         throw error;
@@ -129,9 +128,8 @@ const EnrolledProgramsList: React.FC = () => {
       <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">{t('my enrolled programs')}</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {enrolledPrograms.map((enrollment) => {
-          // Mengakses elemen pertama dari array programs
           const program = enrollment.programs?.[0];
-          if (!program) return null; // Should not happen if FK is set up correctly
+          if (!program) return null;
 
           const ProgramIcon = getIconComponent(program.icon_name);
           return (

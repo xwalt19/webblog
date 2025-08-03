@@ -64,10 +64,6 @@ const UserProfile: React.FC = () => {
     }
   };
 
-  // Removed the full-screen loading return block here.
-  // The component will now render its structure immediately.
-
-  // If session is still loading or data is still loading, show a more localized loading message
   if (sessionLoading || dataLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -76,9 +72,8 @@ const UserProfile: React.FC = () => {
     );
   }
 
-  // If session is not available after loading, redirect to login (handled by useEffect)
   if (!session) {
-    return null; // Or a fallback UI if needed before redirect
+    return null;
   }
 
   return (

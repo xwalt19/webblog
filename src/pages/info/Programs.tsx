@@ -6,13 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-// Removed unused Accordion imports
-// import {
-//   Accordion,
-//   AccordionContent,
-//   AccordionItem,
-//   AccordionTrigger,
-// } from "@/components/ui/accordion";
 import {
   Select,
   SelectContent,
@@ -23,8 +16,6 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
-import { useSession } from "@/components/SessionProvider";
-import { toast } from "sonner";
 
 interface SupabasePriceTier {
   id: string;
@@ -60,15 +51,13 @@ interface SupabaseProgram {
 
 const ProgramsPage: React.FC = () => {
   const { t } = useTranslation();
-  const { session, loading: sessionLoading } = useSession();
   const [selectedProgramType, setSelectedProgramType] = useState("all");
   const [allPrograms, setAllPrograms] = useState<SupabaseProgram[]>([]);
-  const [enrolledProgramIds, setEnrolledProgramIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProgramsAndEnrollments = async () => {
+    const fetchPrograms = async () => {
       setLoading(true);
       setError(null);
       try {
@@ -81,28 +70,16 @@ const ProgramsPage: React.FC = () => {
           throw programsError;
         }
         setAllPrograms(programsData || []);
-
-        if (session?.user) {
-          const { data: enrollmentsData, error: enrollmentsError } = await supabase
-            .from('user_programs')
-            .select('program_id')
-            .eq('user_id', session.user.id);
-
-          if (enrollmentsError) {
-            throw enrollmentsError;
-          }
-          setEnrolledProgramIds(new Set(enrollmentsData?.map(e => e.program_id) || []));
-        }
       } catch (err: any) {
-        console.error("Error fetching programs or enrollments:", err);
+        console.error("Error fetching programs:", err);
         setError(t("fetch data error", { error: err.message }));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProgramsAndEnrollments();
-  }, [t, session, sessionLoading]);
+    fetchPrograms();
+  }, [t]);
 
   const filteredPrograms = useMemo(() => {
     if (selectedProgramType === "all") {
@@ -110,39 +87,6 @@ const ProgramsPage: React.FC = () => {
     }
     return allPrograms.filter(program => program.type === selectedProgramType);
   }, [selectedProgramType, allPrograms]);
-
-  const handleEnroll = async (programId: string, programTitle: string) => {
-    if (!session?.user) {
-      toast.error(t('login to enroll'));
-      return;
-    }
-
-    if (enrolledProgramIds.has(programId)) {
-      toast.info(t('already enrolled'));
-      return;
-    }
-
-    const toastId = toast.loading(t('enrolling in program', { programTitle }));
-
-    try {
-      const { error } = await supabase
-        .from('user_programs')
-        .insert({ user_id: session.user.id, program_id: programId });
-
-      if (error) {
-        throw error;
-      }
-
-      setEnrolledProgramIds(prev => new Set(prev).add(programId));
-      toast.success(t('enrolled successfully', { programTitle }), { id: toastId });
-    } catch (err: any) {
-      console.error("Error enrolling in program:", err);
-      toast.error(t('enrollment failed', { error: err.message }), { id: toastId });
-    }
-  };
-
-  // Removed the explicit loading return block here.
-  // The component will now render its structure immediately.
 
   if (error) {
     return (
@@ -175,13 +119,12 @@ const ProgramsPage: React.FC = () => {
         </Select>
       </div>
 
-      {loading ? ( // Show loading only for this section if data is still fetching
+      {loading ? (
         <p className="text-center text-muted-foreground">{t('loading programs')}</p>
       ) : (
         <div className="grid grid-cols-1 gap-8">
           {filteredPrograms.map((program) => {
             const ProgramIcon = getIconComponent(program.icon_name);
-            const isEnrolled = enrolledProgramIds.has(program.id);
             return (
               <Card key={program.id} className="p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
                 <CardHeader className="pb-4 flex-grow">
@@ -261,21 +204,6 @@ const ProgramsPage: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  <div className="mt-6">
-                    {session?.user ? (
-                      <Button
-                        className="w-full"
-                        onClick={() => handleEnroll(program.id, program.title)}
-                        disabled={isEnrolled}
-                      >
-                        {isEnrolled ? t('enrolled button') : t('enroll now button')}
-                      </Button>
-                    ) : (
-                      <Link to="/login" className="w-full">
-                        <Button className="w-full">{t('login to enroll')}</Button>
-                      </Link>
-                    )}
-                  </div>
                 </CardContent>
               </Card>
             );
@@ -283,7 +211,7 @@ const ProgramsPage: React.FC = () => {
         </div>
       )}
 
-      {filteredPrograms.length === 0 && !loading && ( // Only show "no programs" if not loading and no programs
+      {filteredPrograms.length === 0 && !loading && (
         <p className="text-center text-muted-foreground mt-8 text-lg">
           {t('no programs available')}
         </p>
