@@ -149,13 +149,14 @@ export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [fetchProfileFromDb, navigate, location.pathname, t, processAuthData]); // Dependencies are now stable functions/values.
 
   // Render children only when loading is false
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-foreground">{t('loading status')}</p>
-      </div>
-    );
-  }
+  // Removed the full-screen loading indicator
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center bg-background">
+  //       <p className="text-foreground">{t('loading status')}</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <SessionContext.Provider value={{ session, user, profile, loading, refreshProfile, clearSession }}>
