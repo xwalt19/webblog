@@ -11,6 +11,7 @@ import { useSession } from "@/components/SessionProvider";
 import { cleanTagForStorage } from "@/utils/i18nUtils";
 import ArchiveTable from "@/components/admin/ArchiveTable";
 import ArchiveFormDialog from "@/components/admin/ArchiveFormDialog";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ArchivePost {
   id: string;
@@ -46,41 +47,31 @@ const ManageArchives: React.FC = () => {
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';
-
-  const [archives, setArchives] = useState<ArchivePost[]>([]);
-  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isFetching, setIsFetching] = useState(false);
+  const queryClient = useQueryClient();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentArchiveDataForForm, setCurrentArchiveDataForForm] = useState<ArchivePostFormData | null>(null);
-  const [allPossibleTags, setAllPossibleTags] = useState<string[]>([]);
 
-  const fetchArchives = async () => {
-    setIsFetching(true);
-    setError(null);
-    try {
+  // Query to fetch archives
+  const { data: archives, isLoading: isArchivesLoading, isError: isArchivesError, error: archivesError } = useQuery<ArchivePost[], Error>({
+    queryKey: ['archives'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
         .not('pdf_link', 'is', null) // Only fetch posts with a PDF link
         .order('created_at', { ascending: false });
 
-      if (error) {
-        throw error;
-      }
-      setArchives(data || []);
-    } catch (err: any) {
-      console.error("Error fetching archives:", err);
-      setError(t("fetch data error", { error: err.message }));
-    } finally {
-      setIsFetching(false);
-      setIsInitialDataLoaded(true);
-    }
-  };
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!session && isAdmin, // Only run query if session exists and user is admin
+  });
 
-  const fetchAllTags = async () => {
-    try {
+  // Query to fetch all possible tags
+  const { data: allPossibleTags = [], isLoading: isTagsLoading, isError: isTagsError, error: tagsError } = useQuery<string[], Error>({
+    queryKey: ['all_tags'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('blog_posts')
         .select('tags');
@@ -91,73 +82,53 @@ const ManageArchives: React.FC = () => {
       data.forEach(post => {
         post.tags?.forEach((tag: string) => uniqueTags.add(cleanTagForStorage(tag)));
       });
-      setAllPossibleTags(Array.from(uniqueTags).sort());
-    } catch (err) {
-      console.error("Error fetching all tags:", err);
-    }
-  };
+      return Array.from(uniqueTags).sort();
+    },
+    enabled: !!session && isAdmin, // Only run query if session exists and user is admin
+  });
 
-  useEffect(() => {
-    if (sessionLoading) {
-      return;
-    }
+  // Mutation for saving (add/edit) archive
+  const saveArchiveMutation = useMutation<void, Error, Omit<ArchivePostFormData, 'initialPdfLink' | 'initialImageUrl'>>({
+    mutationFn: async (formData) => {
+      let newPdfLink = formData.id ? currentArchiveDataForForm?.initialPdfLink || null : null;
+      let newImageUrl = formData.id ? currentArchiveDataForForm?.initialImageUrl || null : null;
 
-    if (!session) {
-      toast.error(t('login required'));
-      navigate('/login');
-      return;
-    }
+      // Helper function to upload file
+      const uploadFile = async (file: File, bucket: string, folder: string) => {
+        const fileExtension = file.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
+        const filePath = `${folder}/${fileName}`;
 
-    if (!isAdmin) {
-      toast.error(t('admin required'));
-      navigate('/');
-      return;
-    }
+        const { data: _uploadData, error: uploadError } = await supabase.storage
+          .from(bucket)
+          .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false,
+          });
 
-    fetchArchives();
-    fetchAllTags();
-
-  }, [session, isAdmin, sessionLoading, navigate, t]);
-
-  const uploadFile = async (file: File, bucket: string, folder: string) => {
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
-    const filePath = `${folder}/${fileName}`;
-
-    const { data: _uploadData, error: uploadError } = await supabase.storage
-      .from(bucket)
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
-      });
-
-    if (uploadError) {
-      throw uploadError;
-    }
-
-    const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(filePath);
-    return publicUrlData.publicUrl;
-  };
-
-  const deleteFileFromStorage = async (url: string, bucket: string) => {
-    try {
-      const path = url.split(`/${bucket}/`)[1];
-      if (path) {
-        const { error } = await supabase.storage.from(bucket).remove([path]);
-        if (error) {
-          console.warn(`Failed to delete old file from ${bucket}:`, error.message);
+        if (uploadError) {
+          throw uploadError;
         }
-      }
-    } catch (e) {
-      console.warn("Error parsing file URL for deletion:", e);
-    }
-  };
 
-  const handleSaveArchive = async (formData: Omit<ArchivePostFormData, 'initialPdfLink' | 'initialImageUrl'>) => {
-    let newPdfLink = formData.id ? currentArchiveDataForForm?.initialPdfLink || null : null;
-    let newImageUrl = formData.id ? currentArchiveDataForForm?.initialImageUrl || null : null;
+        const { data: publicUrlData } = supabase.storage.from(bucket).getPublicUrl(filePath);
+        return publicUrlData.publicUrl;
+      };
 
-    try {
+      // Helper function to delete file from storage
+      const deleteFileFromStorage = async (url: string, bucket: string) => {
+        try {
+          const path = url.split(`/${bucket}/`)[1];
+          if (path) {
+            const { error } = await supabase.storage.from(bucket).remove([path]);
+            if (error) {
+              console.warn(`Failed to delete old file from ${bucket}:`, error.message);
+            }
+          }
+        } catch (e) {
+          console.warn("Error parsing file URL for deletion:", e);
+        }
+      };
+
       // Handle PDF upload/update
       if (formData.pdfFile) {
         if (formData.id && currentArchiveDataForForm?.initialPdfLink) {
@@ -177,7 +148,6 @@ const ManageArchives: React.FC = () => {
       } else if (formData.id && !formData.imageFile) {
         newImageUrl = currentArchiveDataForForm?.initialImageUrl || null;
       }
-
 
       const archiveData = {
         title: formData.title,
@@ -199,28 +169,44 @@ const ManageArchives: React.FC = () => {
           .eq('id', formData.id);
 
         if (error) throw error;
-        toast.success(t("updated successfully"));
       } else {
         const { error } = await supabase
           .from('blog_posts')
           .insert([archiveData]);
 
         if (error) throw error;
-        toast.success(t("added successfully"));
       }
-      fetchArchives(); // Refresh list after save
-    } catch (err: any) {
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['archives'] });
+      queryClient.invalidateQueries({ queryKey: ['all_tags'] });
+      toast.success(variables.id ? t("updated successfully") : t("added successfully"));
+      setIsDialogOpen(false); // Close dialog on success
+    },
+    onError: (err) => {
       console.error("Error saving archive:", err);
       toast.error(t("save failed", { error: err.message }));
-      throw err; // Re-throw to let the dialog know it failed
-    }
-  };
+    },
+  });
 
-  const handleDeleteArchive = async (id: string, pdfLink: string | null, imageUrl: string | null) => {
-    if (!window.confirm(t("confirm delete archive"))) {
-      return;
-    }
-    try {
+  // Mutation for deleting archive
+  const deleteArchiveMutation = useMutation<void, Error, { id: string, pdfLink: string | null, imageUrl: string | null }>({
+    mutationFn: async ({ id, pdfLink, imageUrl }) => {
+      // Helper function to delete file from storage
+      const deleteFileFromStorage = async (url: string, bucket: string) => {
+        try {
+          const path = url.split(`/${bucket}/`)[1];
+          if (path) {
+            const { error } = await supabase.storage.from(bucket).remove([path]);
+            if (error) {
+              console.warn(`Failed to delete old file from ${bucket}:`, error.message);
+            }
+          }
+        } catch (e) {
+          console.warn("Error parsing file URL for deletion:", e);
+        }
+      };
+
       if (pdfLink) {
         await deleteFileFromStorage(pdfLink, 'pdfs');
       }
@@ -234,13 +220,29 @@ const ManageArchives: React.FC = () => {
         .eq('id', id);
 
       if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['archives'] });
+      queryClient.invalidateQueries({ queryKey: ['all_tags'] });
       toast.success(t("deleted successfully"));
-      fetchArchives(); // Refresh the list
-    } catch (err: any) {
+    },
+    onError: (err) => {
       console.error("Error deleting archive:", err);
       toast.error(t("delete error", { error: err.message }));
+    },
+  });
+
+  useEffect(() => {
+    if (!sessionLoading) {
+      if (!session) {
+        toast.error(t('login required'));
+        navigate('/login');
+      } else if (!isAdmin) {
+        toast.error(t('admin required'));
+        navigate('/');
+      }
     }
-  };
+  }, [session, isAdmin, sessionLoading, navigate, t]);
 
   const openDialogForAdd = () => {
     setCurrentArchiveDataForForm(null); // Clear data for new entry
@@ -264,14 +266,34 @@ const ManageArchives: React.FC = () => {
     setIsDialogOpen(true);
   };
 
-  if (!session || !isAdmin) {
-    return null;
+  if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-foreground">{t('loading status')}</p>
+      </div>
+    );
   }
 
-  if (!isInitialDataLoaded) {
+  if (isArchivesLoading || isTagsLoading) {
     return (
       <div className="container mx-auto py-10 px-4">
         <p className="text-center text-muted-foreground">{t('loading status')}</p>
+      </div>
+    );
+  }
+
+  if (isArchivesError) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-destructive">{t("fetch data error", { error: archivesError?.message })}</p>
+      </div>
+    );
+  }
+
+  if (isTagsError) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-destructive">{t("fetch data error", { error: tagsError?.message })}</p>
       </div>
     );
   }
@@ -290,18 +312,18 @@ const ManageArchives: React.FC = () => {
       </div>
 
       <ArchiveTable
-        archives={archives}
-        dataLoading={isFetching}
-        error={error}
+        archives={archives || []}
+        dataLoading={isArchivesLoading}
+        error={archivesError?.message || null}
         onEdit={openDialogForEdit}
-        onDelete={(id, pdfLink, imageUrl) => handleDeleteArchive(id, pdfLink, imageUrl)}
+        onDelete={(id, pdfLink, imageUrl) => deleteArchiveMutation.mutate({ id, pdfLink, imageUrl })}
       />
 
       <ArchiveFormDialog
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         initialData={currentArchiveDataForForm}
-        onSave={handleSaveArchive}
+        onSave={saveArchiveMutation.mutateAsync} // Use mutateAsync for await
         allPossibleTags={allPossibleTags}
         MAX_PDF_SIZE_BYTES={MAX_PDF_SIZE_BYTES}
         MAX_IMAGE_SIZE_BYTES={MAX_IMAGE_SIZE_BYTES}
