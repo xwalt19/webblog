@@ -100,6 +100,22 @@ const UploadBlogPost: React.FC = () => {
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 
+  // Query to fetch all categories dynamically
+  const { data: categories = [], isLoading: isCategoriesLoading, isError: isCategoriesError, error: categoriesError } = useQuery<string[], Error>({
+    queryKey: ['blogCategories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blog_categories')
+        .select('name')
+        .order('name', { ascending: true });
+      
+      if (error) throw error;
+      return data.map(cat => cat.name);
+    },
+    enabled: !!session && isAdmin,
+    staleTime: Infinity, // Categories don't change often
+  });
+
   // Effect to populate form fields when postData is loaded
   useEffect(() => {
     if (postData) {
@@ -289,7 +305,7 @@ const UploadBlogPost: React.FC = () => {
     });
   };
 
-  const isLoadingPage = sessionLoading || isPostLoading || isTagsLoading;
+  const isLoadingPage = sessionLoading || isPostLoading || isTagsLoading || isCategoriesLoading;
 
   if (isLoadingPage || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
@@ -316,6 +332,19 @@ const UploadBlogPost: React.FC = () => {
     return (
       <div className="container mx-auto py-10 px-4">
         <p className="text-center text-destructive">{t("fetch data error", { error: tagsError?.message })}</p>
+        <div className="text-center mt-12">
+          <Link to="/admin/manage-blog-posts">
+            <Button>{t('back to list button')}</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (isCategoriesError) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-destructive">{t("fetch data error", { error: categoriesError?.message })}</p>
         <div className="text-center mt-12">
           <Link to="/admin/manage-blog-posts">
             <Button>{t('back to list button')}</Button>
@@ -363,6 +392,7 @@ const UploadBlogPost: React.FC = () => {
               formCreatedAt={formCreatedAt}
               setFormCreatedAt={setFormCreatedAt}
               allPossibleTags={allPossibleTags}
+              categories={categories} // Pass dynamic categories
             />
             <BlogPostMediaUpload
               imageFile={imageFile}

@@ -31,6 +31,7 @@ interface BlogPostFormFieldsProps {
   formCreatedAt: Date | undefined;
   setFormCreatedAt: (date: Date | undefined) => void;
   allPossibleTags: string[];
+  categories: string[]; // New prop for dynamic categories
 }
 
 const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
@@ -49,12 +50,9 @@ const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
   formCreatedAt,
   setFormCreatedAt,
   allPossibleTags,
+  categories, // Use dynamic categories
 }) => {
   const { t } = useTranslation();
-
-  const categories = [
-    "Programming", "Technology", "Education", "Data Science", "Cybersecurity", "Mobile Development", "Cloud Computing", "History", "Retro Tech", "Programming History"
-  ];
 
   return (
     <>

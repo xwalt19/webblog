@@ -51,9 +51,21 @@ const ManageBlogPosts: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const allCategories = useMemo(() => [
-    "all", "Programming", "Technology", "Education", "Data Science", "Cybersecurity", "Mobile Development", "Cloud Computing", "History", "Retro Tech", "Programming History"
-  ], []);
+  // Query to fetch all categories dynamically
+  const { data: allCategories = [], isLoading: isCategoriesLoading, isError: isCategoriesError, error: categoriesError } = useQuery<string[], Error>({
+    queryKey: ['blogCategories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blog_categories')
+        .select('name')
+        .order('name', { ascending: true });
+      
+      if (error) throw error;
+      return ["all", ...data.map(cat => cat.name)];
+    },
+    enabled: !!session && isAdmin,
+    staleTime: Infinity, // Categories don't change often
+  });
 
   // Query to fetch blog posts
   const { data: blogPostsData, isLoading: isBlogPostsLoading, isError: isBlogPostsError, error: blogPostsError } = useQuery<{ posts: BlogPost[], count: number }, Error>({
@@ -228,7 +240,7 @@ const ManageBlogPosts: React.FC = () => {
     );
   }
 
-  if (isBlogPostsLoading) {
+  if (isBlogPostsLoading || isCategoriesLoading) {
     return (
       <div className="container mx-auto py-10 px-4">
         <p className="text-center text-muted-foreground">{t('loading status')}</p>
@@ -240,6 +252,14 @@ const ManageBlogPosts: React.FC = () => {
     return (
       <div className="container mx-auto py-10 px-4">
         <p className="text-center text-destructive">{t("fetch data error", { error: blogPostsError?.message })}</p>
+      </div>
+    );
+  }
+
+  if (isCategoriesError) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-destructive">{t("fetch data error", { error: categoriesError?.message })}</p>
       </div>
     );
   }
