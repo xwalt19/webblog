@@ -123,7 +123,7 @@ const MobileNav: React.FC = () => {
           </Accordion>
 
           {/* User Account (Conditional) */}
-          {session ? (
+          {session && !loading ? (
             <>
               <Link to="/dashboard" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
                 <LayoutDashboard className="h-5 w-5 inline-block mr-2" /> {t('dashboard')}
@@ -134,7 +134,7 @@ const MobileNav: React.FC = () => {
             </>
           ) : null}
 
-          {isAdmin ? (
+          {isAdmin && !loading ? (
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-4" className="border-b-0">
                 <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">

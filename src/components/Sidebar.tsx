@@ -37,7 +37,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon: Icon, label, isExpa
 
 const Sidebar: React.FC = () => {
   const { t } = useTranslation();
-  const { profile, session } = useSession(); 
+  const { profile, session, loading } = useSession(); 
   const isAdmin = profile?.role === 'admin';
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -137,7 +137,7 @@ const Sidebar: React.FC = () => {
         </div>
 
         {/* User Account (Conditional) */}
-        {session && ( // Hanya cek jika sesi ada
+        {session && !loading && ( // Hanya cek jika sesi ada dan tidak sedang loading
           <div className="space-y-1 pt-4 border-t border-sidebar-border">
             {isExpanded && <h3 className="text-sm font-semibold text-muted-foreground px-3 mb-2">{t('my account')}</h3>}
             {userLinks.map((link) => (
@@ -153,7 +153,7 @@ const Sidebar: React.FC = () => {
         )}
 
         {/* Admin Tools (Conditional) */}
-        {isAdmin && ( // Hanya cek jika isAdmin
+        {isAdmin && !loading && ( // Hanya cek jika isAdmin dan tidak sedang loading
           <div className="space-y-1 pt-4 border-t border-sidebar-border">
             {isExpanded && <h3 className="text-sm font-semibold text-muted-foreground px-3 mb-2">{t('admin tools')}</h3>}
             {adminLinks.map((link) => (
