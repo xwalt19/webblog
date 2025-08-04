@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Search } from "lucide-react"; // Added Search icon
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -30,6 +30,7 @@ const UploadYouTubeVideo: React.FC = () => {
   const [publishedAt, setPublishedAt] = useState<Date | undefined>(undefined);
   const [uploading, setUploading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
+  const [fetchingDetails, setFetchingDetails] = useState(false); // New state for fetching details
 
   useEffect(() => {
     if (!sessionLoading) {
@@ -78,6 +79,44 @@ const UploadYouTubeVideo: React.FC = () => {
       navigate('/admin/manage-youtube-videos');
     } finally {
       setDataLoading(false);
+    }
+  };
+
+  const handleFetchDetails = async () => {
+    if (!videoUrl) {
+      toast.error(t('video url required for fetch'));
+      return;
+    }
+
+    setFetchingDetails(true);
+    const fetchToastId = toast.loading(t('fetching video details'));
+
+    try {
+      const { data, error } = await supabase.functions.invoke('fetch-youtube-video-details', {
+        body: { videoUrl },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data && data.error) {
+        throw new Error(data.error);
+      }
+
+      if (data) {
+        setTitle(data.title || "");
+        setDescription(data.description || "");
+        // Thumbnail URL is handled by getYouTubeThumbnailUrl on save
+        toast.success(t('video details fetched successfully'), { id: fetchToastId });
+      } else {
+        toast.error(t('no details found'), { id: fetchToastId });
+      }
+    } catch (err: any) {
+      console.error("Error fetching YouTube video details:", err);
+      toast.error(t('failed to fetch details', { error: err.message }), { id: fetchToastId });
+    } finally {
+      setFetchingDetails(false);
     }
   };
 
@@ -179,6 +218,22 @@ const UploadYouTubeVideo: React.FC = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
+              <Label htmlFor="videoUrl">{t('video url label')}</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="videoUrl"
+                  type="url"
+                  placeholder={t('video url placeholder')}
+                  value={videoUrl}
+                  onChange={(e) => setVideoUrl(e.target.value)}
+                  className="mt-1 flex-grow"
+                />
+                <Button type="button" onClick={handleFetchDetails} disabled={fetchingDetails || !videoUrl} className="mt-1">
+                  {fetchingDetails ? t('fetching') : <Search className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+            <div>
               <Label htmlFor="title">{t('title label')}</Label>
               <Input
                 id="title"
@@ -197,17 +252,6 @@ const UploadYouTubeVideo: React.FC = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="mt-1 min-h-[80px]"
-              />
-            </div>
-            <div>
-              <Label htmlFor="videoUrl">{t('video url label')}</Label>
-              <Input
-                id="videoUrl"
-                type="url"
-                placeholder={t('video url placeholder')}
-                value={videoUrl}
-                onChange={(e) => setVideoUrl(e.target.value)}
-                className="mt-1"
               />
             </div>
             <div>
