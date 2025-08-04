@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
@@ -11,19 +11,24 @@ interface CalendarEvent {
   title: string;
   description: string | null;
   date: string; // ISO string from database
+  isHoliday?: boolean; // New property to distinguish holidays
 }
 
 const ProCodeCGCalendar: React.FC = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [holidays, setHolidays] = useState<CalendarEvent[]>([]); // New state for holidays
+  const [loadingEvents, setLoadingEvents] = useState(true); // Separate loading for Supabase events
+  const [loadingHolidays, setLoadingHolidays] = useState(false); // Separate loading for holidays
+  const [errorEvents, setErrorEvents] = useState<string | null>(null);
+  const [errorHolidays, setErrorHolidays] = useState<string | null>(null);
 
+  // Fetch Supabase events
   useEffect(() => {
     const fetchCalendarEvents = async () => {
-      setLoading(true);
-      setError(null);
+      setLoadingEvents(true);
+      setErrorEvents(null);
       try {
         const { data, error } = await supabase
           .from('calendar_events')
@@ -36,27 +41,76 @@ const ProCodeCGCalendar: React.FC = () => {
         setEvents(data || []);
       } catch (err: any) {
         console.error("Error fetching calendar events:", err);
-        setError(t("fetch calendar events error", { error: err.message }));
+        setErrorEvents(t("fetch calendar events error", { error: err.message }));
       } finally {
-        setLoading(false);
+        setLoadingEvents(false);
       }
     };
 
     fetchCalendarEvents();
   }, [t]);
 
-  const parsedEvents = events.map(event => ({
-    ...event,
-    date: new Date(event.date)
-  }));
+  // Fetch Google Calendar holidays
+  useEffect(() => {
+    const fetchHolidays = async () => {
+      setLoadingHolidays(true);
+      setErrorHolidays(null);
+      try {
+        // Fetch holidays for the current year and next year
+        const currentYear = new Date().getFullYear();
+        const yearsToFetch = [currentYear, currentYear + 1];
+        let allFetchedHolidays: CalendarEvent[] = [];
+
+        for (const year of yearsToFetch) {
+          const { data, error } = await supabase.functions.invoke('fetch-holidays', {
+            body: { year, countryCode: 'id' }, // Assuming 'id' for Indonesia holidays
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          if (data && data.error) {
+            throw new Error(data.error);
+          }
+          
+          if (data && data.holidays) {
+            allFetchedHolidays = [...allFetchedHolidays, ...data.holidays];
+          }
+        }
+        setHolidays(allFetchedHolidays);
+      } catch (err: any) {
+        console.error("Error fetching holidays:", err);
+        setErrorHolidays(t("fetch holidays error", { error: err.message }));
+      } finally {
+        setLoadingHolidays(false);
+      }
+    };
+
+    fetchHolidays();
+  }, [t]); // Depend on t to refetch if language changes
+
+  const allCombinedEvents = useMemo(() => {
+    return [...events, ...holidays].map(event => ({
+      ...event,
+      date: new Date(event.date) // Ensure date is a Date object for comparison
+    }));
+  }, [events, holidays]);
 
   const getDayEvents = (day: Date) => {
-    return parsedEvents.filter(event => 
+    return allCombinedEvents.filter(event => 
       event.date.getDate() === day.getDate() &&
       event.date.getMonth() === day.getMonth() &&
       event.date.getFullYear() === day.getFullYear()
-    );
+    ).sort((a, b) => a.date.getTime() - b.date.getTime()); // Sort by time if available
   };
+
+  const allEventDates = useMemo(() => {
+    return allCombinedEvents.map(event => event.date);
+  }, [allCombinedEvents]);
+
+  const isLoading = loadingEvents || loadingHolidays;
+  const hasError = errorEvents || errorHolidays;
 
   return (
     <div className="flex justify-center">
@@ -65,10 +119,10 @@ const ProCodeCGCalendar: React.FC = () => {
           <CardTitle className="text-2xl font-bold text-center">{t('procodecg calendar title')}</CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center">
-          {loading ? (
+          {isLoading ? (
             <p className="text-center text-muted-foreground">{t('loading events')}</p>
-          ) : error ? (
-            <p className="text-center text-destructive">{error}</p>
+          ) : hasError ? (
+            <p className="text-center text-destructive">{hasError}</p>
           ) : (
             <Calendar
               mode="single"
@@ -76,7 +130,7 @@ const ProCodeCGCalendar: React.FC = () => {
               onSelect={setDate}
               className="rounded-md border shadow"
               modifiers={{
-                hasEvent: parsedEvents.map(event => event.date)
+                hasEvent: allEventDates
               }}
               modifiersStyles={{
                 hasEvent: {
@@ -95,12 +149,18 @@ const ProCodeCGCalendar: React.FC = () => {
             <h3 className="text-lg font-semibold text-primary mb-2">
               {t('events on')} {date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}:
             </h3>
-            {loading ? ( // Show loading only for events list if data is still fetching
+            {isLoading ? (
               <p className="text-muted-foreground">{t('loading events')}</p>
             ) : getDayEvents(date).length > 0 ? (
               <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
                 {getDayEvents(date).map((event, index) => (
-                  <li key={index}>{event.title} - {event.description}</li>
+                  <li key={index}>
+                    <span className={event.isHoliday ? "font-bold text-red-600" : ""}>
+                      {event.title}
+                    </span>
+                    {event.description && ` - ${event.description}`}
+                    {event.isHoliday && ` (${t('national holiday')})`}
+                  </li>
                 ))}
               </ul>
             ) : (
