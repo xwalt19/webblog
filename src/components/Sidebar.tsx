@@ -7,7 +7,7 @@ import { useSession } from "@/components/SessionProvider";
 import { cn } from "@/lib/utils";
 import {
   Home, Info, BookOpen, Archive, Mail, Handshake, CalendarDays,
-  GraduationCap, Users, Tent, Cpu, Youtube, Music, FileText, Code, BellRing, LayoutDashboard, User, Loader2,
+  GraduationCap, Users, Tent, Cpu, Youtube, Music, FileText, Code, BellRing, LayoutDashboard, User, Loader2, Upload,
 } from "lucide-react";
 import {
   Accordion,
@@ -87,6 +87,7 @@ const Sidebar: React.FC = () => {
     { to: "/admin/manage-training-programs", labelKey: "training programs", icon: Cpu },
     { to: "/admin/manage-youtube-videos", labelKey: "youtube videos", icon: Youtube },
     { to: "/admin/manage-tiktok-videos", labelKey: "tiktok videos", icon: Music },
+    { to: "/admin/import-youtube-channel", labelKey: "import youtube channel", icon: Upload }, // New link
     { to: "/admin/manage-users", labelKey: "manage users", icon: Users },
   ];
 

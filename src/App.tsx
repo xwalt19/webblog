@@ -42,6 +42,7 @@ const Login = React.lazy(() => import("./pages/Login"));
 const AdminDashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 const ManageUsers = React.lazy(() => import("./pages/admin/ManageUsers"));
 const UserProfile = React.lazy(() => import("./pages/UserProfile"));
+const ImportYouTubeChannel = React.lazy(() => import("./pages/admin/ImportYouTubeChannel")); // New import
 
 const queryClient = new QueryClient();
 
@@ -97,6 +98,7 @@ const App = () => (
                 <Route path="admin/manage-calendar" element={<ManageCalendar />} />
                 <Route path="admin/manage-archives" element={<ManageArchives />} />
                 <Route path="admin/manage-users" element={<ManageUsers />} />
+                <Route path="admin/import-youtube-channel" element={<ImportYouTubeChannel />} /> {/* New route */}
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
