@@ -9,8 +9,10 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Edit, Trash, PlusCircle, PlayCircle } from "lucide-react";
+import { Edit, Trash, PlusCircle, PlayCircle, Upload } from "lucide-react"; // Added Upload icon
 import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
 
 interface YouTubeVideo {
   id: string;
@@ -28,6 +30,7 @@ const ManageYouTubeVideos: React.FC = () => {
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';
+  const queryClient = useQueryClient();
 
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
@@ -147,9 +150,9 @@ const ManageYouTubeVideos: React.FC = () => {
       </section>
 
       <div className="flex justify-end mb-6">
-        <Link to="/admin/youtube-videos/new">
+        <Link to="/admin/import-youtube-channel">
           <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('add new youtube video')}
+            <Upload className="h-4 w-4 mr-2" /> {t('import youtube channel')}
           </Button>
         </Link>
       </div>
