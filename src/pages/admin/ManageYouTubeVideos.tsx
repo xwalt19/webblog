@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Edit, Trash, PlusCircle, PlayCircle } from "lucide-react"; // Removed Upload icon
+import { Edit, Trash, PlusCircle, PlayCircle, Upload } from "lucide-react"; // Added Upload icon
 import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
@@ -149,11 +149,10 @@ const ManageYouTubeVideos: React.FC = () => {
         </p>
       </section>
 
-      {/* Removed the import button from here */}
       <div className="flex justify-end mb-6">
-        <Link to="/admin/youtube-videos/new">
+        <Link to="/admin/import-youtube-channel">
           <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('add new youtube video')}
+            <Upload className="h-4 w-4 mr-2" /> {t('import youtube channel')}
           </Button>
         </Link>
       </div>

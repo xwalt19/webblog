@@ -20,8 +20,8 @@ const YouTubePage: React.FC = () => {
         </p>
       </section>
 
-      {/* Import YouTube Channel Button (visible only to admins) */}
-      {!sessionLoading && isAdmin && (
+      {/* Removed the Import YouTube Channel Button from here */}
+      {/* {!sessionLoading && isAdmin && (
         <div className="flex justify-center mb-6">
           <Link to="/admin/import-youtube-channel">
             <Button>
@@ -29,7 +29,7 @@ const YouTubePage: React.FC = () => {
             </Button>
           </Link>
         </div>
-      )}
+      )} */}
 
       <YouTubeUpdates />
 
