@@ -5,6 +5,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
+import { nationalHolidays } from "@/data/nationalHolidays"; // Import hardcoded holidays
 
 interface CalendarEvent {
   id: string;
@@ -18,11 +19,8 @@ const ProCodeCGCalendar: React.FC = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const { t, i18n } = useTranslation();
   const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [holidays, setHolidays] = useState<CalendarEvent[]>([]); // New state for holidays
-  const [loadingEvents, setLoadingEvents] = useState(true); // Separate loading for Supabase events
-  const [loadingHolidays, setLoadingHolidays] = useState(false); // Separate loading for holidays
+  const [loadingEvents, setLoadingEvents] = useState(true);
   const [errorEvents, setErrorEvents] = useState<string | null>(null);
-  const [errorHolidays, setErrorHolidays] = useState<string | null>(null);
 
   // Fetch Supabase events
   useEffect(() => {
@@ -50,52 +48,13 @@ const ProCodeCGCalendar: React.FC = () => {
     fetchCalendarEvents();
   }, [t]);
 
-  // Fetch Google Calendar holidays
-  useEffect(() => {
-    const fetchHolidays = async () => {
-      setLoadingHolidays(true);
-      setErrorHolidays(null);
-      try {
-        // Fetch holidays for the current year and next year
-        const currentYear = new Date().getFullYear();
-        const yearsToFetch = [currentYear, currentYear + 1];
-        let allFetchedHolidays: CalendarEvent[] = [];
-
-        for (const year of yearsToFetch) {
-          const { data, error } = await supabase.functions.invoke('fetch-holidays', {
-            body: { year, countryCode: 'id' }, // Assuming 'id' for Indonesia holidays
-          });
-
-          if (error) {
-            throw error;
-          }
-
-          if (data && data.error) {
-            throw new Error(data.error);
-          }
-          
-          if (data && data.holidays) {
-            allFetchedHolidays = [...allFetchedHolidays, ...data.holidays];
-          }
-        }
-        setHolidays(allFetchedHolidays);
-      } catch (err: any) {
-        console.error("Error fetching holidays:", err);
-        setErrorHolidays(t("fetch holidays error", { error: err.message }));
-      } finally {
-        setLoadingHolidays(false);
-      }
-    };
-
-    fetchHolidays();
-  }, [t]); // Depend on t to refetch if language changes
-
   const allCombinedEvents = useMemo(() => {
-    return [...events, ...holidays].map(event => ({
+    // Combine Supabase events with hardcoded national holidays
+    return [...events, ...nationalHolidays].map(event => ({
       ...event,
       date: new Date(event.date) // Ensure date is a Date object for comparison
     }));
-  }, [events, holidays]);
+  }, [events]); // Only depend on 'events' as nationalHolidays is static
 
   const getDayEvents = (day: Date) => {
     return allCombinedEvents.filter(event => 
@@ -109,8 +68,8 @@ const ProCodeCGCalendar: React.FC = () => {
     return allCombinedEvents.map(event => event.date);
   }, [allCombinedEvents]);
 
-  const isLoading = loadingEvents || loadingHolidays;
-  const hasError = errorEvents || errorHolidays;
+  const isLoading = loadingEvents; // Only loading Supabase events now
+  const hasError = errorEvents;
 
   return (
     <div className="flex justify-center">
