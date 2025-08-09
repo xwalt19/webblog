@@ -61,6 +61,7 @@ const Sidebar: React.FC = () => {
   ];
 
   const activityLinks = [
+    { to: "/info/all-activities", labelKey: "all activities", icon: Code }, // New link
     { to: "/info/programs", labelKey: "programs", icon: GraduationCap },
     { to: "/info/regular-events-classes", labelKey: "regular events classes", icon: Users },
     { to: "/info/camps", labelKey: "camps", icon: Tent },
@@ -87,7 +88,6 @@ const Sidebar: React.FC = () => {
     { to: "/admin/manage-training-programs", labelKey: "training programs", icon: Cpu },
     { to: "/admin/manage-youtube-videos", labelKey: "youtube videos", icon: Youtube },
     { to: "/admin/manage-tiktok-videos", labelKey: "tiktok videos", icon: Music },
-    // { to: "/admin/import-youtube-channel", labelKey: "import youtube channel", icon: Upload }, // Removed link
     { to: "/admin/manage-users", labelKey: "manage users", icon: Users },
   ];
 

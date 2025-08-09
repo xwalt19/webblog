@@ -72,6 +72,9 @@ const MobileNav: React.FC = () => {
                 {t('activity')}
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
+                <Link to="/info/all-activities" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  {t('all activities')}
+                </Link>
                 <Link to="/info/programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                   {t('programs')}
                 </Link>
@@ -171,7 +174,6 @@ const MobileNav: React.FC = () => {
                   <Link to="/admin/manage-tiktok-videos" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     {t('tiktok videos')}
                   </Link>
-                  {/* Removed import youtube channel link */}
                   <Link to="/admin/manage-users" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     <Users className="h-4 w-4 inline-block mr-2" /> {t('manage users')}
                   </Link>

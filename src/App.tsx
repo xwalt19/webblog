@@ -42,7 +42,7 @@ const Login = React.lazy(() => import("./pages/Login"));
 const AdminDashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 const ManageUsers = React.lazy(() => import("./pages/admin/ManageUsers"));
 const UserProfile = React.lazy(() => import("./pages/UserProfile"));
-// const ImportYouTubeChannel = React.lazy(() => import("./pages/admin/ImportYouTubeChannel")); // Removed import
+const AllActivities = React.lazy(() => import("./pages/AllActivities")); // New import
 
 const queryClient = new QueryClient();
 
@@ -62,6 +62,7 @@ const App = () => (
                 <Route path="blog" element={<BlogPage />} />
                 <Route path="about" element={<AboutPage />} />
                 <Route path="archives" element={<Archives />} />
+                <Route path="info/all-activities" element={<AllActivities />} /> {/* New route */}
                 <Route path="info/regular-events-classes" element={<RegularEventsClasses />} />
                 <Route path="info/camps" element={<Camps />} />
                 <Route path="info/training" element={<Training />} />
@@ -81,7 +82,7 @@ const App = () => (
                 <Route path="admin/programs/:id/edit" element={<UploadProgram />} />
                 <Route path="admin/manage-programs" element={<ManagePrograms />} />
                 <Route path="admin/manage-regular-events" element={<ManageRegularEvents />} />
-                <Route path="admin/regular-events/new" element={<UploadRegularEvent />} /> {/* Added this missing route */}
+                <Route path="admin/regular-events/new" element={<UploadRegularEvent />} />
                 <Route path="admin/regular-events/:id/edit" element={<UploadRegularEvent />} />
                 <Route path="admin/camps/new" element={<UploadCamp />} />
                 <Route path="admin/camps/:id/edit" element={<UploadCamp />} />
@@ -98,7 +99,6 @@ const App = () => (
                 <Route path="admin/manage-calendar" element={<ManageCalendar />} />
                 <Route path="admin/manage-archives" element={<ManageArchives />} />
                 <Route path="admin/manage-users" element={<ManageUsers />} />
-                {/* <Route path="admin/import-youtube-channel" element={<ImportYouTubeChannel />} /> Removed route */}
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
