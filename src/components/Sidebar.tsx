@@ -61,7 +61,7 @@ const Sidebar: React.FC = () => {
   ];
 
   const activityLinks = [
-    { to: "/info/all-activities", labelKey: "all activities", icon: Code }, // New link
+    // Removed AllActivities link
     { to: "/info/programs", labelKey: "programs", icon: GraduationCap },
     { to: "/info/regular-events-classes", labelKey: "regular events classes", icon: Users },
     { to: "/info/camps", labelKey: "camps", icon: Tent },

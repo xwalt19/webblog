@@ -42,7 +42,6 @@ const Login = React.lazy(() => import("./pages/Login"));
 const AdminDashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 const ManageUsers = React.lazy(() => import("./pages/admin/ManageUsers"));
 const UserProfile = React.lazy(() => import("./pages/UserProfile"));
-const AllActivities = React.lazy(() => import("./pages/AllActivities")); // New import
 
 const queryClient = new QueryClient();
 
@@ -62,7 +61,6 @@ const App = () => (
                 <Route path="blog" element={<BlogPage />} />
                 <Route path="about" element={<AboutPage />} />
                 <Route path="archives" element={<Archives />} />
-                <Route path="info/all-activities" element={<AllActivities />} /> {/* New route */}
                 <Route path="info/regular-events-classes" element={<RegularEventsClasses />} />
                 <Route path="info/camps" element={<Camps />} />
                 <Route path="info/training" element={<Training />} />

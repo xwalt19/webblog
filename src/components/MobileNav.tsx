@@ -72,9 +72,7 @@ const MobileNav: React.FC = () => {
                 {t('activity')}
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
-                <Link to="/info/all-activities" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
-                  {t('all activities')}
-                </Link>
+                {/* Removed AllActivities link */}
                 <Link to="/info/programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                   {t('programs')}
                 </Link>
