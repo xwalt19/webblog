@@ -99,9 +99,10 @@ const Camps: React.FC = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow p-6 pt-0">
-                  <CardDescription className="mb-4 text-muted-foreground">
-                    {camp.description}
-                  </CardDescription>
+                  <div 
+                    className="prose dark:prose-invert max-w-none text-muted-foreground" 
+                    dangerouslySetInnerHTML={{ __html: camp.description }} 
+                  />
                   <div className="flex flex-wrap gap-2 mt-4">
                     {camp.camp_day_links.map((day, index) => (
                       <Button
