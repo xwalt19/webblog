@@ -127,6 +127,21 @@ const HeroSection: React.FC = () => {
           </Link>
         </div>
       </div>
+      {imagesToDisplay.length > 1 && (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex space-x-2">
+          {imagesToDisplay.map((_, index) => (
+            <button
+              key={index}
+              className={cn(
+                "h-2 w-2 rounded-full bg-white transition-all duration-300",
+                index === currentImageIndex ? "w-6 bg-primary-foreground" : "opacity-50"
+              )}
+              onClick={() => setCurrentImageIndex(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 };
