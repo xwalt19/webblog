@@ -4,10 +4,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import { SessionProvider } from "./components/SessionProvider";
-import React, { Suspense } from "react"; // Import Suspense
+import React, { Suspense } from 'react'; // Memperbaiki baris impor React dan Suspense
 
-// Dynamically import page components
-const Home = React.lazy(() => import("./pages/Home"));
+const Home = React.lazy(() => import("./pages/Home")); // Memindahkan deklarasi Home ke sini
 const PostDetail = React.lazy(() => import("./pages/PostDetail"));
 const BlogPage = React.lazy(() => import("./pages/Blog"));
 const AboutPage = React.lazy(() => import("./pages/About"));
@@ -43,8 +42,7 @@ const AdminDashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 const ManageUsers = React.lazy(() => import("./pages/admin/ManageUsers"));
 const UserProfile = React.lazy(() => import("./pages/UserProfile"));
 const ManageBlogCategories = React.lazy(() => import("./pages/admin/ManageBlogCategories"));
-const ManageHeroImages = React.lazy(() => import("./pages/admin/ManageHeroImages")); // New import
-const UploadHeroImage = React.lazy(() => import("./pages/admin/UploadHeroImage")); // New import
+const ManageHeroImages = React.lazy(() => import("./pages/admin/ManageHeroImages")); 
 
 const queryClient = new QueryClient();
 
@@ -101,9 +99,8 @@ const App = () => (
                 <Route path="admin/manage-archives" element={<ManageArchives />} />
                 <Route path="admin/manage-users" element={<ManageUsers />} />
                 <Route path="admin/manage-blog-categories" element={<ManageBlogCategories />} />
-                <Route path="admin/manage-hero-images" element={<ManageHeroImages />} /> {/* New Route */}
-                <Route path="admin/hero-images/new" element={<UploadHeroImage />} /> {/* New Route */}
-                <Route path="admin/hero-images/:id/edit" element={<UploadHeroImage />} /> {/* New Route */}
+                <Route path="admin/manage-hero-images" element={<ManageHeroImages />} /> 
+                {/* Removed new and edit routes for UploadHeroImage */}
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>

@@ -195,13 +195,7 @@ const ManageHeroImages: React.FC = () => {
         </p>
       </section>
 
-      <div className="flex justify-end mb-6">
-        <Link to="/admin/hero-images/new">
-          <Button>
-            <PlusCircle className="h-4 w-4 mr-2" /> {t('add new hero image')}
-          </Button>
-        </Link>
-      </div>
+      {/* Removed the "Add New Hero Image" button */}
 
       {images && images.length > 0 ? (
         <Card className="shadow-lg">
