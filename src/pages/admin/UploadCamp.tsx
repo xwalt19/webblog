@@ -5,7 +5,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Keep Textarea for other uses if any, but it's not used for description anymore
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -15,18 +14,61 @@ import { PlusCircle, MinusCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { id } from "date-fns/locale"; // Import 'id' locale
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { formatDisplayDateTime } from "@/utils/dateUtils";
-import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
+import { formatDateRangeWithTime, parseDateRangeString } from "@/utils/dateUtils"; // Import new date utils
+import RichTextEditor from "@/components/RichTextEditor";
+import { DateRange } from "react-day-picker"; // Import DateRange type
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 interface CampDayLink {
   id?: string;
   label: string;
   url: string;
-  content: string; // Added content field
+  content: string;
 }
+
+const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+const campSchema = z.object({
+  title: z.string().min(2, { message: "Title must be at least 2 characters." }).max(255, { message: "Title must not exceed 255 characters." }),
+  description: z.string().min(10, { message: "Description must be at least 10 characters." }).max(1000, { message: "Description must not exceed 1000 characters." }),
+  // dates field will be derived from dateRange, startTime, endTime
+  
+  // New fields for date range and time
+  startDate: z.date().optional().nullable(),
+  endDate: z.date().optional().nullable(),
+  startTime: z.string().regex(timeRegex, { message: "Invalid time format (HH:MM)" }).optional().nullable(),
+  endTime: z.string().regex(timeRegex, { message: "Invalid time format (HH:MM)" }).optional().nullable(),
+}).refine((data) => {
+  if (data.startDate && data.endDate && data.startDate > data.endDate) {
+    return false;
+  }
+  return true;
+}, {
+  message: "End date cannot be before start date.",
+  path: ["endDate"],
+}).refine((data) => {
+  if (data.startTime && data.endTime && data.startTime > data.endTime && data.startDate?.toDateString() === data.endDate?.toDateString()) {
+    return false;
+  }
+  return true;
+}, {
+  message: "End time cannot be before start time on the same day.",
+  path: ["endTime"],
+});
 
 const UploadCamp: React.FC = () => {
   const { id: campId } = useParams<{ id: string }>();
@@ -34,12 +76,20 @@ const UploadCamp: React.FC = () => {
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   
-  const [title, setTitle] = useState("");
-  const [dates, setDates] = useState<Date | undefined>(undefined);
-  const [description, setDescription] = useState("");
   const [dayLinks, setDayLinks] = useState<CampDayLink[]>([]);
-  const [uploading, setUploading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
+
+  const form = useForm<z.infer<typeof campSchema>>({
+    resolver: zodResolver(campSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      startDate: undefined,
+      endDate: undefined,
+      startTime: "",
+      endTime: "",
+    },
+  });
 
   useEffect(() => {
     if (!sessionLoading) {
@@ -71,9 +121,15 @@ const UploadCamp: React.FC = () => {
       if (campError) throw campError;
 
       if (campData) {
-        setTitle(campData.title || "");
-        setDates(campData.dates ? new Date(campData.dates) : undefined);
-        setDescription(campData.description || "");
+        const { startDate, endDate, startTime, endTime } = parseDateRangeString(campData.dates);
+        form.reset({
+          title: campData.title || "",
+          description: campData.description || "",
+          startDate: startDate,
+          endDate: endDate,
+          startTime: startTime || "",
+          endTime: endTime || "",
+        });
 
         const { data: linksData, error: linksError } = await supabase
           .from('camp_day_links')
@@ -94,7 +150,7 @@ const UploadCamp: React.FC = () => {
   };
 
   const handleAddDayLink = () => {
-    setDayLinks([...dayLinks, { label: "", url: "", content: "" }]); // Initialize content
+    setDayLinks([...dayLinks, { label: "", url: "", content: "" }]);
   };
 
   const handleRemoveDayLink = (index: number) => {
@@ -108,21 +164,21 @@ const UploadCamp: React.FC = () => {
     setDayLinks(newDayLinks);
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setUploading(true);
-
-    if (!title || !dates || !description) {
-      toast.error(t("required fields missing"));
-      setUploading(false);
-      return;
-    }
+  const onSubmit = async (values: z.infer<typeof campSchema>) => {
+    const toastId = toast.loading(campId ? t("updating status") : t("uploading status"));
 
     try {
+      const formattedDates = formatDateRangeWithTime(
+        values.startDate || undefined,
+        values.endDate || undefined,
+        values.startTime || undefined,
+        values.endTime || undefined
+      );
+
       const campData = {
-        title,
-        dates: dates ? dates.toISOString() : null,
-        description,
+        title: values.title,
+        dates: formattedDates || null, // Save the formatted string
+        description: values.description,
         ...(campId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
       };
 
@@ -151,14 +207,13 @@ const UploadCamp: React.FC = () => {
       await supabase.from('camp_day_links').delete().eq('camp_id', currentCampId);
       if (dayLinks.length > 0) {
         const linksToInsert = dayLinks.map(link => {
-          const { id, ...rest } = link; // Destructure id
+          const { id, ...rest } = link;
           const newLink = {
-            ...rest, // Spread all other properties
+            ...rest,
             camp_id: currentCampId,
             created_by: session?.user?.id,
             created_at: new Date().toISOString(),
           };
-          // Only add id back if it's a valid string (for existing records)
           if (id) { 
             (newLink as any).id = id;
           }
@@ -168,14 +223,14 @@ const UploadCamp: React.FC = () => {
         if (linksError) throw linksError;
       }
 
-      toast.success(campId ? t("updated successfully") : t("added successfully"));
+      toast.success(campId ? t("updated successfully") : t("added successfully"), { id: toastId });
       navigate('/admin/manage-camps');
 
     } catch (err: any) {
       console.error("Error saving camp:", err);
-      toast.error(t("save failed", { error: err.message }));
+      toast.error(t("save failed", { error: err.message }), { id: toastId });
     } finally {
-      setUploading(false);
+      form.formState.isSubmitting = false; // Manually reset submitting state
     }
   };
 
@@ -208,121 +263,187 @@ const UploadCamp: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Label htmlFor="title">{t('title label')}</Label>
-              <Input
-                id="title"
-                type="text"
-                placeholder={t('title placeholder')}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="mt-1"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Title Field */}
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('title label')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t('title placeholder')}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <Label htmlFor="dates">{t('dates label')}</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal mt-1",
-                      !dates && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dates ? formatDisplayDateTime(dates.toISOString()) : <span>{t('pick date and time')}</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={dates}
-                    onSelect={setDates}
-                    initialFocus
-                  />
-                  <div className="p-3 border-t border-border">
-                    <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
-                    <Input
-                      id="time-input"
-                      type="time"
-                      value={dates ? format(dates, "HH:mm") : ""}
-                      onChange={(e) => {
-                        const [hours, minutes] = e.target.value.split(':').map(Number);
-                        if (dates) {
-                          const newDate = new Date(dates);
-                          newDate.setHours(hours, minutes);
-                          setDates(newDate);
-                        } else {
-                          const newDate = new Date();
-                          newDate.setHours(hours, minutes);
-                          setDates(newDate);
-                        }
-                      }}
-                      className="w-full"
-                    />
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-            <div>
-              <Label htmlFor="description">{t('description label')}</Label>
-              <RichTextEditor
-                key={campId || "new-camp"} // Pass key prop
-                value={description}
-                onChange={setDescription}
-                placeholder={t('description placeholder')}
+
+              {/* Dates Field (Date Range) */}
+              <FormField
+                control={form.control}
+                name="startDate" // Using startDate for the main field, but it controls the range
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>{t('dates label')}</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            id="date"
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal mt-1",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {form.watch("startDate") ? (
+                              form.watch("endDate") && form.watch("endDate")?.getTime() !== form.watch("startDate")?.getTime() ? (
+                                <>
+                                  {format(form.watch("startDate")!, "PPP", { locale: id })} -{" "}
+                                  {format(form.watch("endDate")!, "PPP", { locale: id })}
+                                </>
+                              ) : (
+                                format(form.watch("startDate")!, "PPP", { locale: id })
+                              )
+                            ) : (
+                              <span>{t('pick a date range')}</span>
+                            )}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          initialFocus
+                          mode="range"
+                          defaultMonth={field.value || undefined}
+                          selected={{ from: form.watch("startDate") || undefined, to: form.watch("endDate") || undefined }}
+                          onSelect={(range: DateRange | undefined) => {
+                            form.setValue("startDate", range?.from);
+                            form.setValue("endDate", range?.to);
+                          }}
+                          numberOfMonths={2}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <Separator className="my-6" />
-            <h3 className="text-lg font-semibold mb-4">{t('day links')}</h3>
-            {dayLinks.map((link, index) => (
-              <Card key={index} className="p-4 mb-4 border border-border">
-                <div className="flex justify-end mb-2">
-                  <Button variant="destructive" size="sm" onClick={() => handleRemoveDayLink(index)}>
-                    <MinusCircle className="h-4 w-4 mr-2" /> {t('remove link button')}
-                  </Button>
-                </div>
-                <div className="space-y-2">
-                  <div>
-                    <Label>{t('link label')}</Label>
-                    <Input
-                      placeholder={t('link label placeholder')}
-                      value={link.label}
-                      onChange={(e) => handleDayLinkChange(index, 'label', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label>{t('url label')}</Label>
-                    <Input
-                      placeholder={t('link url placeholder')}
-                      value={link.url}
-                      onChange={(e) => handleDayLinkChange(index, 'url', e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Label>{t('content label')}</Label>
-                    <RichTextEditor
-                      key={`day-link-content-${index}-${link.id || 'new'}`} // Unique key for editor
-                      value={link.content}
-                      onChange={(value) => handleDayLinkChange(index, 'content', value)}
-                      placeholder={t('day link content placeholder')}
-                      className="min-h-[100px]"
-                    />
-                  </div>
-                </div>
-              </Card>
-            ))}
-            <Button type="button" variant="secondary" onClick={handleAddDayLink}>
-              <PlusCircle className="h-4 w-4 mr-2" /> {t('add day link button')}
-            </Button>
+              {/* Time Range Fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('start time label')}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="time"
+                          placeholder="HH:MM"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="endTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('end time label')}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="time"
+                          placeholder="HH:MM"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            <Button type="submit" className="w-full" disabled={uploading}>
-              {uploading ? t('uploading status') : (campId ? t('save changes button') : t('submit button'))}
-            </Button>
-          </form>
+              {/* Description Field (RichTextEditor) */}
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('description label')}</FormLabel>
+                    <FormControl>
+                      <RichTextEditor
+                        key={campId || "new-camp"}
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder={t('description placeholder')}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Separator className="my-6" />
+              <h3 className="text-lg font-semibold mb-4">{t('day links')}</h3>
+              {dayLinks.map((link, index) => (
+                <Card key={index} className="p-4 mb-4 border border-border">
+                  <div className="flex justify-end mb-2">
+                    <Button variant="destructive" size="sm" onClick={() => handleRemoveDayLink(index)}>
+                      <MinusCircle className="h-4 w-4 mr-2" /> {t('remove link button')}
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <div>
+                      <Label>{t('link label')}</Label>
+                      <Input
+                        placeholder={t('link label placeholder')}
+                        value={link.label}
+                        onChange={(e) => handleDayLinkChange(index, 'label', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label>{t('url label')}</Label>
+                      <Input
+                        placeholder={t('link url placeholder')}
+                        value={link.url}
+                        onChange={(e) => handleDayLinkChange(index, 'url', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label>{t('content label')}</Label>
+                      <RichTextEditor
+                        key={`day-link-content-${index}-${link.id || 'new'}`}
+                        value={link.content}
+                        onChange={(value) => handleDayLinkChange(index, 'content', value)}
+                        placeholder={t('day link content placeholder')}
+                        className="min-h-[100px]"
+                      />
+                    </div>
+                  </div>
+                </Card>
+              ))}
+              <Button type="button" variant="secondary" onClick={handleAddDayLink}>
+                <PlusCircle className="h-4 w-4 mr-2" /> {t('add day link button')}
+              </Button>
+
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? t('uploading status') : (campId ? t('save changes button') : t('submit button'))}
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
 

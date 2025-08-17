@@ -16,7 +16,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
-import { formatDisplayDateTime } from "@/utils/dateUtils";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Keep for other uses if any
 
 interface SupabasePriceTier {
   id: string;
@@ -39,7 +39,7 @@ interface SupabaseProgram {
   id: string;
   title: string;
   description: string;
-  schedule: string | null;
+  schedule: string | null; // Now a formatted string
   registration_fee: string | null;
   price: string | null;
   type: "kids" | "private" | "professional";
@@ -141,7 +141,7 @@ const ProgramsPage: React.FC = () => {
                 <CardContent className="p-0 pt-4">
                   {program.schedule && (
                     <p className="text-md text-foreground mb-2 flex items-center gap-2">
-                      {t('schedule label')}: <span className="font-medium">{formatDisplayDateTime(program.schedule)}</span>
+                      {t('schedule label')}: <span className="font-medium">{program.schedule}</span>
                     </p>
                   )}
                   {program.registration_fee && (

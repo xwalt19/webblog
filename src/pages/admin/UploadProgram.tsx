@@ -21,17 +21,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
+import RichTextEditor from "@/components/RichTextEditor";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { id } from "date-fns/locale"; // Import 'id' locale
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { iconMap } from "@/utils/iconMap";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
+import { DateRange } from "react-day-picker"; // Import DateRange type
+import { formatDateRangeWithTime, parseDateRangeString } from "@/utils/dateUtils"; // Import new date utils
 
 interface PriceTier {
   id?: string;
@@ -48,16 +51,41 @@ interface Topic {
   description: string;
 }
 
+const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
 const programSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters." }).max(255, { message: "Title must not exceed 255 characters." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }).max(1000, { message: "Description must not exceed 1000 characters." }),
-  schedule: z.date().optional().nullable(),
+  // schedule field will be derived from dateRange, startTime, endTime
+  // It's not directly part of the form's controlled fields for validation
   registrationFee: z.string().optional().nullable(),
   price: z.string().optional().nullable(),
   type: z.union([z.literal("kids"), z.literal("private"), z.literal("professional")], {
     errorMap: () => ({ message: "Please select a program type." })
   }),
   iconName: z.string().optional().nullable(),
+  
+  // New fields for date range and time
+  startDate: z.date().optional().nullable(),
+  endDate: z.date().optional().nullable(),
+  startTime: z.string().regex(timeRegex, { message: "Invalid time format (HH:MM)" }).optional().nullable(),
+  endTime: z.string().regex(timeRegex, { message: "Invalid time format (HH:MM)" }).optional().nullable(),
+}).refine((data) => {
+  if (data.startDate && data.endDate && data.startDate > data.endDate) {
+    return false;
+  }
+  return true;
+}, {
+  message: "End date cannot be before start date.",
+  path: ["endDate"],
+}).refine((data) => {
+  if (data.startTime && data.endTime && data.startTime > data.endTime && data.startDate?.toDateString() === data.endDate?.toDateString()) {
+    return false;
+  }
+  return true;
+}, {
+  message: "End time cannot be before start time on the same day.",
+  path: ["endTime"],
 });
 
 const UploadProgram: React.FC = () => {
@@ -75,7 +103,10 @@ const UploadProgram: React.FC = () => {
     defaultValues: {
       title: "",
       description: "",
-      schedule: undefined,
+      startDate: undefined,
+      endDate: undefined,
+      startTime: "",
+      endTime: "",
       registrationFee: "",
       price: "",
       type: "kids",
@@ -106,10 +137,14 @@ const UploadProgram: React.FC = () => {
       if (programError) throw programError;
 
       if (programData) {
+        const { startDate, endDate, startTime, endTime } = parseDateRangeString(programData.schedule);
         form.reset({
           title: programData.title || "",
           description: programData.description || "",
-          schedule: programData.schedule ? new Date(programData.schedule) : undefined,
+          startDate: startDate,
+          endDate: endDate,
+          startTime: startTime || "",
+          endTime: endTime || "",
           registrationFee: programData.registration_fee || "",
           price: programData.price || "",
           type: programData.type || "kids",
@@ -159,10 +194,17 @@ const UploadProgram: React.FC = () => {
         return;
       }
 
+      const formattedSchedule = formatDateRangeWithTime(
+        values.startDate || undefined,
+        values.endDate || undefined,
+        values.startTime || undefined,
+        values.endTime || undefined
+      );
+
       const programData = {
         title: values.title,
         description: values.description,
-        schedule: values.schedule ? values.schedule.toISOString() : null,
+        schedule: formattedSchedule || null, // Save the formatted string
         registration_fee: values.registrationFee || null,
         price: values.price || null,
         type: values.type,
@@ -192,11 +234,12 @@ const UploadProgram: React.FC = () => {
       if (error) throw error;
       if (!currentProgramId) throw new Error("Program ID not found after save.");
 
-      if (values.schedule) {
+      // Handle calendar event creation/update based on the *start* date of the program
+      if (values.startDate) {
         const calendarEventData = {
           title: values.title,
           description: values.description,
-          date: values.schedule.toISOString(),
+          date: values.startDate.toISOString(), // Use start date for calendar event
           created_by: session?.user?.id,
           program_id: currentProgramId,
         };
@@ -224,6 +267,7 @@ const UploadProgram: React.FC = () => {
           if (insertEventError) throw insertEventError;
         }
       } else {
+        // If no start date, remove any associated calendar event
         await supabase
           .from('calendar_events')
           .delete()
@@ -325,7 +369,7 @@ const UploadProgram: React.FC = () => {
                     <FormLabel>{t('description label')}</FormLabel>
                     <FormControl>
                       <RichTextEditor
-                        key={programId || "new-program"} // Pass key prop
+                        key={programId || "new-program"}
                         value={field.value}
                         onChange={field.onChange}
                         placeholder={t('description placeholder')}
@@ -389,17 +433,18 @@ const UploadProgram: React.FC = () => {
                 )}
               />
 
-              {/* Schedule Field */}
+              {/* Schedule Date Range Field */}
               <FormField
                 control={form.control}
-                name="schedule"
+                name="startDate" // Using startDate for the main field, but it controls the range
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>{t('schedule label')}</FormLabel>
+                    <FormLabel>{t('schedule date range label')}</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
+                            id="date"
                             variant={"outline"}
                             className={cn(
                               "w-full justify-start text-left font-normal mt-1",
@@ -407,44 +452,79 @@ const UploadProgram: React.FC = () => {
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                            {form.watch("startDate") ? (
+                              form.watch("endDate") && form.watch("endDate")?.getTime() !== form.watch("startDate")?.getTime() ? (
+                                <>
+                                  {format(form.watch("startDate")!, "PPP", { locale: id })} -{" "}
+                                  {format(form.watch("endDate")!, "PPP", { locale: id })}
+                                </>
+                              ) : (
+                                format(form.watch("startDate")!, "PPP", { locale: id })
+                              )
+                            ) : (
+                              <span>{t('pick a date range')}</span>
+                            )}
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
+                      <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
-                          mode="single"
-                          selected={field.value || undefined}
-                          onSelect={field.onChange}
                           initialFocus
+                          mode="range"
+                          defaultMonth={field.value || undefined}
+                          selected={{ from: form.watch("startDate") || undefined, to: form.watch("endDate") || undefined }}
+                          onSelect={(range: DateRange | undefined) => {
+                            form.setValue("startDate", range?.from);
+                            form.setValue("endDate", range?.to);
+                          }}
+                          numberOfMonths={2}
                         />
-                        <div className="p-3 border-t border-border">
-                          <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
-                          <Input
-                            id="time-input"
-                            type="time"
-                            value={field.value ? format(field.value, "HH:mm") : ""}
-                            onChange={(e) => {
-                              const [hours, minutes] = e.target.value.split(':').map(Number);
-                              if (field.value) {
-                                const newDate = new Date(field.value);
-                                newDate.setHours(hours, minutes);
-                                field.onChange(newDate);
-                              } else {
-                                const newDate = new Date();
-                                newDate.setHours(hours, minutes);
-                                field.onChange(newDate);
-                              }
-                            }}
-                            className="w-full"
-                          />
-                        </div>
                       </PopoverContent>
                     </Popover>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
+              {/* Time Range Fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('start time label')}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="time"
+                          placeholder="HH:MM"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="endTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('end time label')}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="time"
+                          placeholder="HH:MM"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               {/* Registration Fee Field */}
               <FormField

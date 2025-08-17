@@ -4,26 +4,26 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CalendarDays, Code, ExternalLink } from "lucide-react"; // Import ExternalLink icon
+import { CalendarDays, Code, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { formatDisplayDate } from "@/utils/dateUtils";
+import { formatDisplayDate } from "@/utils/dateUtils"; // Keep for other uses if any
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
-import { cn } from "@/lib/utils"; // Import cn utility
+import RichTextEditor from "@/components/RichTextEditor";
+import { cn } from "@/lib/utils";
 
 interface SupabaseCampDayLink {
   id: string;
   camp_id: string;
   label: string;
   url: string;
-  content: string | null; // Added content field
+  content: string | null;
   created_by: string | null;
   created_at: string;
 }
@@ -31,7 +31,7 @@ interface SupabaseCampDayLink {
 interface SupabaseCamp {
   id: string;
   title: string;
-  dates: string;
+  dates: string; // Now a formatted string
   description: string;
   created_by: string | null;
   created_at: string;
@@ -101,7 +101,7 @@ const Camps: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <CalendarDays size={16} />
-                    <span>{formatDisplayDate(camp.dates)}</span>
+                    <span>{camp.dates}</span> {/* Display the formatted string directly */}
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow p-6 pt-0">
@@ -121,7 +121,7 @@ const Camps: React.FC = () => {
                                 "bg-primary text-primary-foreground rounded-md px-4 py-3 mb-2 shadow-md",
                                 "hover:bg-primary/90 hover:shadow-lg transition-all duration-300",
                                 "data-[state=open]:bg-primary-foreground data-[state=open]:text-primary data-[state=open]:shadow-xl",
-                                "data-[state=open]:animate-pulse-subtle" // Apply pulse on open
+                                "data-[state=open]:animate-pulse-subtle"
                               )}
                             >
                               {day.label}
