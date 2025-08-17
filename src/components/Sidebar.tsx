@@ -97,7 +97,7 @@ const Sidebar: React.FC = () => {
     <aside
       className={cn(
         "hidden md:flex flex-col flex-shrink-0 bg-sidebar border-r border-sidebar-border py-4 transition-all duration-300 ease-in-out overflow-y-auto",
-        isExpanded ? "w-64" : "w-20"
+        isExpanded ? "w-72" : "w-20" // Changed from w-64 to w-72
       )}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
