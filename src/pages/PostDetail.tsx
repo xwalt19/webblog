@@ -58,6 +58,15 @@ const PostDetail: React.FC = () => {
     }
   }, [id, t]);
 
+  // Helper function to format plain text with newlines into paragraphs
+  const formatTextToParagraphs = (text: string | null | undefined): string => {
+    if (!text) return '';
+    // Replace multiple consecutive newlines with a single one for cleaner output
+    const cleanedText = text.replace(/\n\s*\n/g, '\n');
+    // Split by newline and wrap each line in a <p> tag
+    return cleanedText.split('\n').map(line => `<p>${line}</p>`).join('');
+  };
+
   if (error) {
     return (
       <div className="text-center py-10">
@@ -109,7 +118,7 @@ const PostDetail: React.FC = () => {
                   />
                 </div>
               )}
-              <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: post?.content || '' }} />
+              <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: formatTextToParagraphs(post?.content) }} />
               <div className="mt-8">
                 <Link to="/blog">
                   <Button variant="outline">{t('return to post list')}</Button>
