@@ -4,17 +4,25 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CalendarDays, Code } from "lucide-react";
+import { CalendarDays, Code, ExternalLink } from "lucide-react"; // Import ExternalLink icon
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDisplayDate } from "@/utils/dateUtils";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 interface SupabaseCampDayLink {
   id: string;
   camp_id: string;
   label: string;
   url: string;
+  content: string | null; // Added content field
   created_by: string | null;
   created_at: string;
 }
@@ -61,10 +69,6 @@ const Camps: React.FC = () => {
     fetchCamps();
   }, [t]);
 
-  const handleDayLinkClick = (campTitle: string, dayLabel: string) => {
-    toast.info(t('details coming soon', { campTitle, dayLabel }));
-  };
-
   if (error) {
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -104,19 +108,34 @@ const Camps: React.FC = () => {
                     className="prose dark:prose-invert max-w-none text-muted-foreground" 
                     dangerouslySetInnerHTML={{ __html: camp.description }}
                   />
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {camp.camp_day_links.map((day, index) => (
-                      <Button
-                        key={index}
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDayLinkClick(camp.title, day.label)}
-                        className="hover:bg-accent hover:text-accent-foreground"
-                      >
-                        {day.label}
-                      </Button>
-                    ))}
-                  </div>
+                  {camp.camp_day_links && camp.camp_day_links.length > 0 && (
+                    <div className="mt-4">
+                      <h3 className="text-lg font-semibold text-primary mb-2">{t('day links')}</h3>
+                      <Accordion type="single" collapsible className="w-full">
+                        {camp.camp_day_links.map((day) => (
+                          <AccordionItem key={day.id} value={day.id}>
+                            <AccordionTrigger className="text-base font-medium text-foreground hover:no-underline">
+                              {day.label}
+                            </AccordionTrigger>
+                            <AccordionContent className="text-muted-foreground">
+                              {day.content ? (
+                                <RichTextEditor value={day.content} onChange={() => {}} readOnly={true} className="mb-4" />
+                              ) : (
+                                <p>{t('no content available')}</p>
+                              )}
+                              {day.url && (
+                                <a href={day.url} target="_blank" rel="noopener noreferrer" className="inline-block mt-2">
+                                  <Button variant="outline" size="sm">
+                                    <ExternalLink className="h-4 w-4 mr-2" /> {t('visit link')}
+                                  </Button>
+                                </a>
+                              )}
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}

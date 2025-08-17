@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea"; // Keep Textarea for other uses if any, but it's not used for description anymore
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -25,6 +25,7 @@ interface CampDayLink {
   id?: string;
   label: string;
   url: string;
+  content: string; // Added content field
 }
 
 const UploadCamp: React.FC = () => {
@@ -93,7 +94,7 @@ const UploadCamp: React.FC = () => {
   };
 
   const handleAddDayLink = () => {
-    setDayLinks([...dayLinks, { label: "", url: "" }]);
+    setDayLinks([...dayLinks, { label: "", url: "", content: "" }]); // Initialize content
   };
 
   const handleRemoveDayLink = (index: number) => {
@@ -291,6 +292,16 @@ const UploadCamp: React.FC = () => {
                       placeholder={t('link url placeholder')}
                       value={link.url}
                       onChange={(e) => handleDayLinkChange(index, 'url', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>{t('content label')}</Label>
+                    <RichTextEditor
+                      key={`day-link-content-${index}-${link.id || 'new'}`} // Unique key for editor
+                      value={link.content}
+                      onChange={(value) => handleDayLinkChange(index, 'content', value)}
+                      placeholder={t('day link content placeholder')}
+                      className="min-h-[100px]"
                     />
                   </div>
                 </div>
