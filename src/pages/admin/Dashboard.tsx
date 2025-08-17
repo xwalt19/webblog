@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 // @ts-ignore
-import { BookOpen, GraduationCap, Users, Youtube, Music, CalendarDays, Archive, Code, BellRing, LayoutDashboard, Tent, Cpu, ListFilter, Image } from "lucide-react"; // Added Image icon
+import { BookOpen, GraduationCap, Users, Youtube, Music, CalendarDays, Archive, Code, BellRing, LayoutDashboard, Tent, Cpu } from "lucide-react"; // Removed Image and ListFilter icons
 import { toast } from "sonner";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
 
@@ -150,8 +150,7 @@ const AdminDashboard: React.FC = () => {
     { title: t('total youtube videos'), value: stats.youtubeVideos, icon: Youtube, link: "/admin/manage-youtube-videos" },
     { title: t('total tiktok videos'), value: stats.tiktokVideos, icon: Music, link: "/admin/manage-tiktok-videos" },
     { title: t('total users'), value: stats.totalUsers, icon: Users, link: "/admin/manage-users" },
-    { title: t('total blog categories'), value: stats.blogCategories, icon: ListFilter, link: "/admin/manage-blog-categories" },
-    { title: t('total hero images'), value: stats.heroImages, icon: Image, link: "/admin/manage-hero-images" }, // New stat card
+    // Removed Blog Categories and Hero Images stat cards
   ] : [];
 
   if (isLoadingAuth) {

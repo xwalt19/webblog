@@ -41,8 +41,9 @@ const Login = React.lazy(() => import("./pages/Login"));
 const AdminDashboard = React.lazy(() => import("./pages/admin/Dashboard"));
 const ManageUsers = React.lazy(() => import("./pages/admin/ManageUsers"));
 const UserProfile = React.lazy(() => import("./pages/UserProfile"));
-const ManageBlogCategories = React.lazy(() => import("./pages/admin/ManageBlogCategories"));
-const ManageHeroImages = React.lazy(() => import("./pages/admin/ManageHeroImages")); 
+// Removed ManageBlogCategories and ManageHeroImages imports
+// const ManageBlogCategories = React.lazy(() => import("./pages/admin/ManageBlogCategories"));
+// const ManageHeroImages = React.lazy(() => import("./pages/admin/ManageHeroImages")); 
 
 const queryClient = new QueryClient();
 
@@ -98,8 +99,9 @@ const App = () => (
                 <Route path="admin/manage-calendar" element={<ManageCalendar />} />
                 <Route path="admin/manage-archives" element={<ManageArchives />} />
                 <Route path="admin/manage-users" element={<ManageUsers />} />
-                <Route path="admin/manage-blog-categories" element={<ManageBlogCategories />} />
-                <Route path="admin/manage-hero-images" element={<ManageHeroImages />} /> 
+                {/* Removed routes for ManageBlogCategories and ManageHeroImages */}
+                {/* <Route path="admin/manage-blog-categories" element={<ManageBlogCategories />} /> */}
+                {/* <Route path="admin/manage-hero-images" element={<ManageHeroImages />} /> */}
                 {/* Removed new and edit routes for UploadHeroImage */}
                 <Route path="*" element={<NotFound />} />
               </Route>
