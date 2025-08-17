@@ -59,8 +59,17 @@ const ManageHeroImages: React.FC = () => {
       if (!session?.user?.id) throw new Error("User not authenticated.");
 
       const fileExtension = file.name.split('.').pop();
+      // Mengubah filePath agar langsung diunggah ke root bucket, tanpa subfolder 'hero_images'
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
-      const filePath = `hero_images/${fileName}`; // Folder within the bucket
+      const filePath = fileName; // Simplified: upload directly to bucket root
+
+      // Log debug untuk melihat nilai yang dikirim
+      console.log("Attempting to upload file:");
+      console.log("Bucket:", 'hero_images');
+      console.log("FilePath (simplified):", filePath);
+      console.log("File Name:", file.name);
+      console.log("File Type:", file.type);
+      console.log("File Size:", file.size);
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('hero_images') // Assuming 'hero_images' is your bucket name
@@ -109,7 +118,8 @@ const ManageHeroImages: React.FC = () => {
     mutationFn: async ({ id, imageUrl }) => {
       const deleteFileFromStorage = async (url: string, bucket: string) => {
         try {
-          const path = url.split(`/${bucket}/`)[1];
+          // Path sekarang akan langsung nama file karena kita mengubah cara unggah
+          const path = url.split(`/${bucket}/`)[1]; 
           if (path) {
             const { error } = await supabase.storage.from(bucket).remove([path]);
             if (error) {
