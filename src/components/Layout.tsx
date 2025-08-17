@@ -15,6 +15,7 @@ const Layout: React.FC = () => {
   const { session, profile, user, loading, clearSession } = useSession();
 
   const displayName = profile?.first_name || user?.email || t("my profile button");
+  const userRole = profile?.role; // Ambil peran pengguna
 
   const handleLogout = async () => {
     try {
@@ -39,6 +40,14 @@ const Layout: React.FC = () => {
           </Link>
 
           <div className="flex items-center gap-2">
+            {/* Tampilan peran pengguna sementara */}
+            {userRole && (
+              <span className="text-sm text-muted-foreground mr-4">
+                Role: {userRole}
+              </span>
+            )}
+            {/* Akhir tampilan peran pengguna sementara */}
+
             {loading && !session ? (
               <div className="flex items-center px-4 py-2 text-muted-foreground">
                 <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading text')}
