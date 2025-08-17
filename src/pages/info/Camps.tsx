@@ -9,12 +9,6 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDisplayDate } from "@/utils/dateUtils";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"; // Import Accordion components
 
 interface SupabaseCampDayLink {
   id: string;
@@ -67,6 +61,10 @@ const Camps: React.FC = () => {
     fetchCamps();
   }, [t]);
 
+  const handleDayLinkClick = (campTitle: string, dayLabel: string) => {
+    toast.info(t('details coming soon', { campTitle, dayLabel }));
+  };
+
   if (error) {
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -102,34 +100,23 @@ const Camps: React.FC = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow p-6 pt-0">
-                  <div
-                    className="prose dark:prose-invert max-w-none text-muted-foreground"
+                  <div 
+                    className="prose dark:prose-invert max-w-none text-muted-foreground" 
                     dangerouslySetInnerHTML={{ __html: camp.description }}
                   />
-                  {camp.camp_day_links && camp.camp_day_links.length > 0 && (
-                    <div className="mt-4">
-                      <h3 className="text-lg font-semibold text-primary mb-2">{t('camp day links')}</h3>
-                      <Accordion type="single" collapsible className="w-full">
-                        {camp.camp_day_links.map((day, index) => (
-                          <AccordionItem key={day.id || `day-${index}`} value={`day-${day.id || index}`}>
-                            <AccordionTrigger className="text-base font-medium text-foreground hover:text-primary transition-colors">
-                              {day.label}
-                            </AccordionTrigger>
-                            <AccordionContent className="pl-4 pt-2 pb-2">
-                              <a
-                                href={day.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:underline text-sm"
-                              >
-                                {day.url}
-                              </a>
-                            </AccordionContent>
-                          </AccordionItem>
-                        ))}
-                      </Accordion>
-                    </div>
-                  )}
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {camp.camp_day_links.map((day, index) => (
+                      <Button
+                        key={index}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDayLinkClick(camp.title, day.label)}
+                        className="hover:bg-accent hover:text-accent-foreground"
+                      >
+                        {day.label}
+                      </Button>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             ))}
