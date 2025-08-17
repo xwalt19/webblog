@@ -7,8 +7,8 @@ import { useSession } from "@/components/SessionProvider";
 import { cn } from "@/lib/utils";
 import {
   Home, Info, BookOpen, Archive, Mail, Handshake, CalendarDays,
-  GraduationCap, Users, Tent, Cpu, Youtube, Music, FileText, Code, BellRing, LayoutDashboard, User, Loader2, Image, ListFilter
-} from "lucide-react";
+  GraduationCap, Users, Tent, Cpu, Youtube, Music, FileText, Code, BellRing, LayoutDashboard, User, Loader2
+} from "lucide-react"; // Removed Image and ListFilter icons
 import {
   Accordion,
   AccordionContent,

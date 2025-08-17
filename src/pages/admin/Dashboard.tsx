@@ -23,8 +23,8 @@ interface Stats {
   youtubeVideos: number;
   tiktokVideos: number;
   totalUsers: number;
-  blogCategories: number;
-  heroImages: number; // New stat
+  // blogCategories: number; // Removed as per user request
+  // heroImages: number; // Removed as per user request
 }
 
 const AdminDashboard: React.FC = () => {
@@ -107,15 +107,15 @@ const AdminDashboard: React.FC = () => {
         .select('*', { count: 'exact', head: true });
       if (usersError) throw usersError;
 
-      const { count: blogCategoriesCount, error: blogCategoriesError } = await supabase
-        .from('blog_categories')
-        .select('*', { count: 'exact', head: true });
-      if (blogCategoriesError) throw blogCategoriesError;
+      // const { count: blogCategoriesCount, error: blogCategoriesError } = await supabase
+      //   .from('blog_categories')
+      //   .select('*', { count: 'exact', head: true });
+      // if (blogCategoriesError) throw blogCategoriesError;
 
-      const { count: heroImagesCount, error: heroImagesError } = await supabase
-        .from('hero_images')
-        .select('*', { count: 'exact', head: true });
-      if (heroImagesError) throw heroImagesError;
+      // const { count: heroImagesCount, error: heroImagesError } = await supabase
+      //   .from('hero_images')
+      //   .select('*', { count: 'exact', head: true });
+      // if (heroImagesError) throw heroImagesError;
 
       setStats({
         blogPosts: blogPostsCount || 0,
@@ -128,8 +128,8 @@ const AdminDashboard: React.FC = () => {
         youtubeVideos: youtubeVideosCount || 0,
         tiktokVideos: tiktokVideosCount || 0,
         totalUsers: usersCount || 0,
-        blogCategories: blogCategoriesCount || 0,
-        heroImages: heroImagesCount || 0, // New stat
+        // blogCategories: blogCategoriesCount || 0,
+        // heroImages: heroImagesCount || 0, // New stat
       });
     } catch (err: any) {
       console.error("Error fetching dashboard stats:", err);

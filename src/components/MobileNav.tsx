@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, LogIn, LayoutDashboard, Users, User, Loader2, Image, ListFilter } from "lucide-react"; // Added Image icon
+import { Menu, LogOut, LogIn, LayoutDashboard, Users, User, Loader2 } from "lucide-react"; // Removed Image and ListFilter icons
 import {
   Accordion,
   AccordionContent,
