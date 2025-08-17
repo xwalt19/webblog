@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils"; // Import cn utility
+import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
 
 const heroImages = [
   "/assets/img_2860.jpg", // Gambar pertama
@@ -34,11 +35,17 @@ const HeroSection: React.FC = () => {
             "absolute inset-0 transition-opacity duration-1000 ease-in-out",
             index === currentImageIndex ? "opacity-100" : "opacity-0"
           )}
-          style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-        ></div>
+        >
+          <ResponsiveImage
+            src={image}
+            alt={`Hero Image ${index + 1}`}
+            containerClassName="w-full h-full"
+            className="object-cover"
+          />
+        </div>
       ))}
-      <div className="absolute inset-0 bg-black opacity-60"></div>
-      <div className="container mx-auto relative z-10 text-left px-4">
+      <div className="absolute inset-0 bg-black opacity-60 z-10"></div>
+      <div className="container mx-auto relative z-20 text-left px-4">
         <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight max-w-3xl">
           {t('hero section title')}
         </h1>
