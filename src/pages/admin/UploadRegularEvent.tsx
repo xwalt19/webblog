@@ -30,6 +30,8 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import ReactQuill from 'react-quill'; // Import ReactQuill
+import 'react-quill/dist/quill.snow.css'; // Import Quill's CSS
 
 // Define Zod schema for validation
 const formSchema = z.object({
@@ -156,6 +158,23 @@ const UploadRegularEvent: React.FC = () => {
     return null;
   }
 
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image'
+  ];
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -254,10 +273,14 @@ const UploadRegularEvent: React.FC = () => {
                   <FormItem>
                     <FormLabel>{t('description label')}</FormLabel>
                     <FormControl>
-                      <Textarea
+                      <ReactQuill
+                        theme="snow"
+                        value={field.value}
+                        onChange={field.onChange}
+                        modules={modules}
+                        formats={formats}
                         placeholder={t('description placeholder')}
-                        className="min-h-[80px]"
-                        {...field}
+                        className="mt-1 bg-background"
                       />
                     </FormControl>
                     <FormMessage />

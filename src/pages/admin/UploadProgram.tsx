@@ -8,14 +8,31 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
-import ProgramFormFields from "@/components/admin/ProgramFormFields";
 import ProgramPriceTables from "@/components/admin/ProgramPriceTables";
 import ProgramTopics from "@/components/admin/ProgramTopics";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Form } from "@/components/ui/form";
-import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { iconMap } from "@/utils/iconMap";
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Added missing import
 
 interface PriceTier {
   id?: string;
@@ -67,6 +84,8 @@ const UploadProgram: React.FC = () => {
     },
   });
 
+  // Removed the import of ProgramFormFields as its content is now inlined here.
+  // The useAdminPageLogic hook is still needed.
   const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
     isAdminRequired: true,
     onAuthSuccess: () => {
@@ -259,6 +278,23 @@ const UploadProgram: React.FC = () => {
     return null;
   }
 
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image'
+  ];
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -282,8 +318,196 @@ const UploadProgram: React.FC = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <ProgramFormFields
+              {/* Title Field */}
+              <FormField
                 control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('title label')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t('title placeholder')}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Description Field (ReactQuill) */}
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('description label')}</FormLabel>
+                    <FormControl>
+                      <ReactQuill
+                        theme="snow"
+                        value={field.value}
+                        onChange={field.onChange}
+                        modules={modules}
+                        formats={formats}
+                        placeholder={t('description placeholder')}
+                        className="mt-1 bg-background"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Type Field */}
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('type label')}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full mt-1">
+                          <SelectValue placeholder={t('select type placeholder')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {["kids", "private", "professional"].map(pType => (
+                          <SelectItem key={pType} value={pType}>{t(`${pType} program type`)}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Icon Name Field */}
+              <FormField
+                control={form.control}
+                name="iconName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('icon label')}</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
+                      <FormControl>
+                        <SelectTrigger className="w-full mt-1">
+                          <SelectValue placeholder={t('select icon placeholder')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Object.keys(iconMap).map(icon => (
+                          <SelectItem key={icon} value={icon}>{icon}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {field.value && (
+                      <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+                        {t('selected icon preview')}: {React.createElement(iconMap[field.value], { className: "h-4 w-4" })} {field.value}
+                      </p>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Schedule Field */}
+              <FormField
+                control={form.control}
+                name="schedule"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>{t('schedule label')}</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal mt-1",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? format(field.value, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.value || undefined}
+                          onSelect={field.onChange}
+                          initialFocus
+                        />
+                        <div className="p-3 border-t border-border">
+                          <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
+                          <Input
+                            id="time-input"
+                            type="time"
+                            value={field.value ? format(field.value, "HH:mm") : ""}
+                            onChange={(e) => {
+                              const [hours, minutes] = e.target.value.split(':').map(Number);
+                              if (field.value) {
+                                const newDate = new Date(field.value);
+                                newDate.setHours(hours, minutes);
+                                field.onChange(newDate);
+                              } else {
+                                const newDate = new Date();
+                                newDate.setHours(hours, minutes);
+                                field.onChange(newDate);
+                              }
+                            }}
+                            className="w-full"
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Registration Fee Field */}
+              <FormField
+                control={form.control}
+                name="registrationFee"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('registration fee label')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t('registration fee placeholder')}
+                        {...field}
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Price Field */}
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('price label')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t('price placeholder')}
+                        {...field}
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('price hint')}
+                    </p>
+                  </FormItem>
+                )}
               />
 
               <ProgramPriceTables
