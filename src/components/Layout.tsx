@@ -31,6 +31,8 @@ const Layout: React.FC = () => {
     }
   };
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <div className="flex flex-col h-screen">
       <header className="flex-shrink-0 sticky top-0 z-50 bg-background shadow-sm border-b border-border">
@@ -90,7 +92,7 @@ const Layout: React.FC = () => {
 
       <footer className="flex-shrink-0 bg-footer py-4 text-center text-sm text-white border-t border-border">
         <div className="container mx-auto px-4">
-          {t('footer text')}
+          © {currentYear} ProCodeCG.
         </div>
       </footer>
     </div>
