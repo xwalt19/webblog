@@ -124,3 +124,15 @@
 .ql-editor ol li {
   list-style-type: decimal !important; /* Force decimal for ordered lists */
 }
+
+/* Adjust spacing for paragraphs and lists within prose content */
+.prose p,
+.prose ul,
+.prose ol {
+  margin-bottom: 0.5em !important; /* Reduce vertical spacing */
+}
+
+/* Ensure list items themselves don't add extra space */
+.prose li {
+  margin-bottom: 0 !important;
+}
