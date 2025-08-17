@@ -175,9 +175,10 @@ const MobileNav: React.FC = () => {
                   <Link to="/admin/manage-users" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     <Users className="h-4 w-4 inline-block mr-2" /> {t('manage users')}
                   </Link>
-                  <Link to="/admin/manage-hero-images" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  {/* Removed the 'hero images' link */}
+                  {/* <Link to="/admin/manage-hero-images" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     <Image className="h-4 w-4 inline-block mr-2" /> {t('hero images')}
-                  </Link>
+                  </Link> */}
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
