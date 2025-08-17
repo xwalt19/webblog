@@ -14,6 +14,8 @@ import MultiSelectTags from "@/components/MultiSelectTags";
 import { useTranslation } from "react-i18next";
 import { cleanTagForStorage } from "@/utils/i18nUtils";
 import { Button } from "@/components/ui/button"; // Import Button component
+import ReactQuill from 'react-quill'; // Import ReactQuill
+import 'react-quill/dist/quill.snow.css'; // Import Quill's CSS
 
 interface BlogPostFormFieldsProps {
   title: string;
@@ -54,6 +56,23 @@ const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image'
+  ];
+
   return (
     <>
       <div>
@@ -79,12 +98,14 @@ const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
       </div>
       <div>
         <Label htmlFor="content">{t('content label')}</Label>
-        <Textarea
-          id="content"
-          placeholder={t('content placeholder')}
+        <ReactQuill
+          theme="snow"
           value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="mt-1 min-h-[200px]"
+          onChange={setContent}
+          modules={modules}
+          formats={formats}
+          placeholder={t('content placeholder')}
+          className="mt-1 bg-background"
         />
       </div>
       <div>
