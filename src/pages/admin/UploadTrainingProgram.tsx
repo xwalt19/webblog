@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea"; // Keep Textarea for other uses if any, but it's not used for description anymore
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -18,7 +18,8 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDateTime } from "@/utils/dateUtils";
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 const UploadTrainingProgram: React.FC = () => {
   const { id: programId } = useParams<{ id: string }>();
@@ -28,7 +29,7 @@ const UploadTrainingProgram: React.FC = () => {
   
   const [title, setTitle] = useState("");
   const [dates, setDates] = useState<Date | undefined>(undefined);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(""); // This will now hold HTML content
   const [iconName, setIconName] = useState("");
   const [uploading, setUploading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
@@ -67,7 +68,7 @@ const UploadTrainingProgram: React.FC = () => {
       if (data) {
         setTitle(data.title || "");
         setDates(data.dates ? new Date(data.dates) : undefined);
-        setDescription(data.description || "");
+        setDescription(data.description || ""); // Set description from fetched data
         setIconName(data.icon_name || "");
       }
     } catch (err: any) {
@@ -93,7 +94,7 @@ const UploadTrainingProgram: React.FC = () => {
       const programData = {
         title,
         dates: dates ? dates.toISOString() : null,
-        description,
+        description, // Use the HTML content from RichTextEditor
         icon_name: iconName || null,
         ...(programId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
       };
@@ -214,12 +215,11 @@ const UploadTrainingProgram: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
-              <Textarea
-                id="description"
-                placeholder={t('description placeholder')}
+              <RichTextEditor
+                key={programId || "new-training-program"} // Add key for proper re-initialization
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="mt-1 min-h-[80px]"
+                onChange={setDescription}
+                placeholder={t('description placeholder')}
               />
             </div>
             <div>
