@@ -104,17 +104,18 @@
   }
 }
 
-/* Ensure Quill editor lists have proper padding and visible bullets */
+/* Ensure Quill editor lists have proper indentation and visible bullets */
 .ql-editor ul,
 .ql-editor ol {
-  padding-left: 2em; /* Increased padding for better visibility */
-  list-style-position: outside; /* Ensure bullets are outside the content block */
+  padding-left: 2em !important; /* Force padding for indentation */
+  margin-left: 1em !important; /* Add margin to ensure space for bullets */
+  list-style-position: outside !important; /* Ensure bullets are outside the content block */
 }
 
-.ql-editor li {
-  list-style-type: disc; /* Default for unordered lists */
+.ql-editor ul li {
+  list-style-type: disc !important; /* Force disc for unordered lists */
 }
 
 .ql-editor ol li {
-  list-style-type: decimal; /* Default for ordered lists */
+  list-style-type: decimal !important; /* Force decimal for ordered lists */
 }
