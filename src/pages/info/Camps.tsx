@@ -8,7 +8,7 @@ import { CalendarDays, Code } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDate } from "@/utils/dateUtils";
 
 interface SupabaseCampDayLink {
   id: string;
@@ -64,15 +64,6 @@ const Camps: React.FC = () => {
     toast.info(t('details coming soon', { campTitle, dayLabel }));
   };
 
-  // Helper function to format plain text with newlines into paragraphs
-  const formatTextToParagraphs = (text: string | null | undefined): string => {
-    if (!text) return '';
-    // Replace multiple consecutive newlines with a single one for cleaner output
-    const cleanedText = text.replace(/\n\s*\n/g, '\n');
-    // Split by newline and wrap each line in a <p> tag
-    return cleanedText.split('\n').map(line => `<p>${line}</p>`).join('');
-  };
-
   if (error) {
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -110,7 +101,7 @@ const Camps: React.FC = () => {
                 <CardContent className="flex-grow p-6 pt-0">
                   <div 
                     className="prose dark:prose-invert max-w-none text-muted-foreground" 
-                    dangerouslySetInnerHTML={{ __html: formatTextToParagraphs(camp.description) }} 
+                    dangerouslySetInnerHTML={{ __html: camp.description }} // Removed formatTextToParagraphs
                   />
                   <div className="flex flex-wrap gap-2 mt-4">
                     {camp.camp_day_links.map((day, index) => (

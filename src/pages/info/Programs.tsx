@@ -16,7 +16,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
-import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDateTime } from "@/utils/dateUtils";
 
 interface SupabasePriceTier {
   id: string;
@@ -133,9 +133,10 @@ const ProgramsPage: React.FC = () => {
                     {ProgramIcon && <ProgramIcon className="text-primary" size={40} />}
                     <CardTitle className="text-2xl font-bold">{program.title}</CardTitle>
                   </div>
-                  <CardDescription className="text-muted-foreground">
-                    {program.description}
-                  </CardDescription>
+                  <div
+                    className="prose dark:prose-invert max-w-none text-muted-foreground"
+                    dangerouslySetInnerHTML={{ __html: program.description }}
+                  />
                 </CardHeader>
                 <CardContent className="p-0 pt-4">
                   {program.schedule && (

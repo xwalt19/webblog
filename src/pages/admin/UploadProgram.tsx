@@ -342,8 +342,9 @@ const UploadProgram: React.FC = () => {
                   <FormItem>
                     <FormLabel>{t('description label')}</FormLabel>
                     <FormControl>
-                      <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
+                      <div className="prose dark:prose-invert max-w-none">
                         <ReactQuill
+                          key={programId || "new-program"} // Added key prop
                           theme="snow"
                           value={field.value}
                           onChange={field.onChange}

@@ -15,7 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
-import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDateTime } from "@/utils/dateUtils";
 
 interface SupabaseRegularEvent {
   id: string;
@@ -105,8 +105,11 @@ const RegularEventsClasses: React.FC = () => {
                         <CardTitle className="text-2xl font-semibold">{event.name}</CardTitle>
                         <CardDescription className="text-primary font-medium">{formatDisplayDateTime(event.schedule)}</CardDescription>
                       </CardHeader>
-                      <CardContent className="text-muted-foreground p-0 pt-2">
-                        {event.description}
+                      <CardContent className="p-0 pt-2">
+                        <div
+                          className="prose dark:prose-invert max-w-none text-muted-foreground"
+                          dangerouslySetInnerHTML={{ __html: event.description }}
+                        />
                       </CardContent>
                     </div>
                   </Card>

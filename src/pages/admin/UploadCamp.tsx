@@ -18,9 +18,9 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
-import ReactQuill from 'react-quill'; // Import ReactQuill
-import 'react-quill/dist/quill.snow.css'; // Import Quill's CSS
+import { formatDisplayDateTime } from "@/utils/dateUtils";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 interface CampDayLink {
   id?: string;
@@ -279,6 +279,7 @@ const UploadCamp: React.FC = () => {
               <Label htmlFor="description">{t('description label')}</Label>
               <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
                 <ReactQuill
+                  key={campId || "new-camp"} // Added key prop
                   theme="snow"
                   value={description}
                   onChange={setDescription}

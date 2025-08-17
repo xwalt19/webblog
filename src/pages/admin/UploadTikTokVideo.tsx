@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Keep Textarea for now if needed elsewhere, but description will use Quill
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -16,8 +16,8 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import ReactQuill from 'react-quill'; // Import ReactQuill
-import 'react-quill/dist/quill.snow.css'; // Import Quill's CSS
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const UploadTikTokVideo: React.FC = () => {
   const { id: videoId } = useParams<{ id: string }>();
@@ -200,8 +200,9 @@ const UploadTikTokVideo: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
-              <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
+              <div className="prose dark:prose-invert max-w-none">
                 <ReactQuill
+                  key={videoId || "new-tiktok-video"} // Added key prop
                   theme="snow"
                   value={description}
                   onChange={setDescription}

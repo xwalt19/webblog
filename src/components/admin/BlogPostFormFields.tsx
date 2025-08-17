@@ -13,9 +13,9 @@ import { cn } from "@/lib/utils";
 import MultiSelectTags from "@/components/MultiSelectTags";
 import { useTranslation } from "react-i18next";
 import { cleanTagForStorage } from "@/utils/i18nUtils";
-import { Button } from "@/components/ui/button"; // Import Button component
-import ReactQuill from 'react-quill'; // Import ReactQuill
-import 'react-quill/dist/quill.snow.css'; // Import Quill's CSS
+import { Button } from "@/components/ui/button";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 interface BlogPostFormFieldsProps {
   title: string;
@@ -33,7 +33,8 @@ interface BlogPostFormFieldsProps {
   formCreatedAt: Date | undefined;
   setFormCreatedAt: (date: Date | undefined) => void;
   allPossibleTags: string[];
-  categories: string[]; // New prop for dynamic categories
+  categories: string[];
+  postId?: string; // Added postId prop for key
 }
 
 const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
@@ -52,7 +53,8 @@ const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
   formCreatedAt,
   setFormCreatedAt,
   allPossibleTags,
-  categories, // Use dynamic categories
+  categories,
+  postId, // Destructure postId
 }) => {
   const { t } = useTranslation();
 
@@ -98,8 +100,9 @@ const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
       </div>
       <div>
         <Label htmlFor="content">{t('content label')}</Label>
-        <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
+        <div className="prose dark:prose-invert max-w-none">
           <ReactQuill
+            key={postId || "new-post"} // Added key prop
             theme="snow"
             value={content}
             onChange={setContent}

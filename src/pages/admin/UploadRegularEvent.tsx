@@ -30,8 +30,8 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import ReactQuill from 'react-quill'; // Import ReactQuill
-import 'react-quill/dist/quill.snow.css'; // Import Quill's CSS
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 // Define Zod schema for validation
 const formSchema = z.object({
@@ -273,8 +273,9 @@ const UploadRegularEvent: React.FC = () => {
                   <FormItem>
                     <FormLabel>{t('description label')}</FormLabel>
                     <FormControl>
-                      <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
+                      <div className="prose dark:prose-invert max-w-none">
                         <ReactQuill
+                          key={eventId || "new-event"} // Added key prop
                           theme="snow"
                           value={field.value}
                           onChange={field.onChange}

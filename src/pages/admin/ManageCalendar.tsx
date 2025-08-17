@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Keep Textarea for now if needed elsewhere
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -20,9 +20,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
-import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
-import ReactQuill from 'react-quill'; // Import ReactQuill
-import 'react-quill/dist/quill.snow.css'; // Import Quill's CSS
+import { formatDisplayDateTime } from "@/utils/dateUtils";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export interface CalendarEvent {
   id: string;
@@ -300,8 +300,9 @@ const ManageCalendar: React.FC = () => {
               <Label htmlFor="description" className="text-right">
                 {t('description label')}
               </Label>
-              <div className="col-span-3"> {/* Wrap ReactQuill in a div for grid layout */}
+              <div className="col-span-3">
                 <ReactQuill
+                  key={currentEvent?.id || "new-calendar-event"} // Added key prop
                   theme="snow"
                   value={formDescription}
                   onChange={setFormDescription}
