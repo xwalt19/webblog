@@ -16,7 +16,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
-import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 interface PriceTier {
   id?: string;
@@ -35,7 +34,7 @@ interface Topic {
 
 const programSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters." }).max(255, { message: "Title must not exceed 255 characters." }),
-  description: z.string().min(10, { message: "Description must be at least 10 characters." }).max(5000, { message: "Description must not exceed 5000 characters." }), // Increased max length for HTML
+  description: z.string().min(10, { message: "Description must be at least 10 characters." }).max(1000, { message: "Description must not exceed 1000 characters." }),
   schedule: z.date().optional().nullable(),
   registrationFee: z.string().optional().nullable(),
   price: z.string().optional().nullable(),
@@ -59,7 +58,7 @@ const UploadProgram: React.FC = () => {
     resolver: zodResolver(programSchema),
     defaultValues: {
       title: "",
-      description: "", // Default to empty string for HTML content
+      description: "",
       schedule: undefined,
       registrationFee: "",
       price: "",
@@ -93,7 +92,7 @@ const UploadProgram: React.FC = () => {
       if (programData) {
         form.reset({
           title: programData.title || "",
-          description: programData.description || "", // Set HTML content
+          description: programData.description || "",
           schedule: programData.schedule ? new Date(programData.schedule) : undefined,
           registrationFee: programData.registration_fee || "",
           price: programData.price || "",
@@ -146,7 +145,7 @@ const UploadProgram: React.FC = () => {
 
       const programData = {
         title: values.title,
-        description: values.description, // Save HTML content
+        description: values.description,
         schedule: values.schedule ? values.schedule.toISOString() : null,
         registration_fee: values.registrationFee || null,
         price: values.price || null,

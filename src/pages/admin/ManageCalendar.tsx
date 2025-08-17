@@ -21,7 +21,6 @@ import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
 import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
-import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 export interface CalendarEvent {
   id: string;
@@ -42,7 +41,7 @@ const ManageCalendar: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentEvent, setCurrentEvent] = useState<CalendarEvent | null>(null);
   const [formTitle, setFormTitle] = useState("");
-  const [formDescription, setFormDescription] = useState(""); // This will now hold HTML
+  const [formDescription, setFormDescription] = useState("");
   const [formDate, setFormDate] = useState<Date | undefined>(undefined);
 
   const [shouldFetchData, setShouldFetchData] = useState(false);
@@ -70,7 +69,7 @@ const ManageCalendar: React.FC = () => {
     mutationFn: async (eventData) => {
       const dataToSave = {
         title: eventData.title,
-        description: eventData.description || null, // Save HTML content
+        description: eventData.description || null,
         date: eventData.date,
         created_by: session?.user?.id,
         program_id: eventData.program_id || null,
@@ -148,7 +147,7 @@ const ManageCalendar: React.FC = () => {
     saveEventMutation.mutate({
       id: currentEvent?.id,
       title: formTitle,
-      description: formDescription, // Pass HTML content
+      description: formDescription,
       date: formDate.toISOString(),
       program_id: currentEvent?.program_id,
     });
@@ -172,7 +171,7 @@ const ManageCalendar: React.FC = () => {
   const openDialogForEdit = (event: CalendarEvent) => {
     setCurrentEvent(event);
     setFormTitle(event.title);
-    setFormDescription(event.description || ""); // Set HTML content
+    setFormDescription(event.description || "");
     setFormDate(new Date(event.date));
     setIsDialogOpen(true);
   };
@@ -235,7 +234,7 @@ const ManageCalendar: React.FC = () => {
                   <TableRow key={event.id}>
                     <TableCell className="font-medium">{event.title}</TableCell>
                     <TableCell>{formatDisplayDateTime(event.date)}</TableCell>
-                    <TableCell className="max-w-xs truncate" dangerouslySetInnerHTML={{ __html: event.description || '-' }}></TableCell>
+                    <TableCell className="max-w-xs truncate">{event.description}</TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="icon" onClick={() => openDialogForEdit(event)} className="mr-2">
                         <Edit className="h-4 w-4" />
@@ -282,14 +281,12 @@ const ManageCalendar: React.FC = () => {
               <Label htmlFor="description" className="text-right">
                 {t('description label')}
               </Label>
-              <div className="col-span-3">
-                <RichTextEditor
-                  value={formDescription}
-                  onChange={setFormDescription}
-                  placeholder={t('description placeholder')}
-                  className="min-h-[80px]"
-                />
-              </div>
+              <Textarea
+                id="description"
+                value={formDescription}
+                onChange={(e) => setFormDescription(e.target.value)}
+                className="col-span-3"
+              />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="date" className="text-right">

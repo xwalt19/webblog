@@ -16,7 +16,6 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 const UploadTikTokVideo: React.FC = () => {
   const { id: videoId } = useParams<{ id: string }>();
@@ -25,7 +24,7 @@ const UploadTikTokVideo: React.FC = () => {
   const { session, profile, loading: sessionLoading } = useSession();
   
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState(""); // This will now hold HTML
+  const [description, setDescription] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [publishedAt, setPublishedAt] = useState<Date | undefined>(undefined);
   const [uploading, setUploading] = useState(false);
@@ -68,7 +67,7 @@ const UploadTikTokVideo: React.FC = () => {
       }
       if (data) {
         setTitle(data.title || "");
-        setDescription(data.description || ""); // Set HTML content
+        setDescription(data.description || "");
         setVideoUrl(data.video_url || "");
         setPublishedAt(data.published_at ? new Date(data.published_at) : undefined);
       }
@@ -94,7 +93,7 @@ const UploadTikTokVideo: React.FC = () => {
     try {
       const videoData = {
         title,
-        description: description || null, // Save HTML content
+        description: description || null,
         video_url: videoUrl,
         published_at: publishedAt.toISOString(),
         thumbnail_url: null,
@@ -182,10 +181,11 @@ const UploadTikTokVideo: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
-              <RichTextEditor
-                value={description}
-                onChange={setDescription}
+              <Textarea
+                id="description"
                 placeholder={t('description placeholder')}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 className="mt-1 min-h-[80px]"
               />
             </div>
