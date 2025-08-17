@@ -91,7 +91,8 @@ const ManageRegularEvents: React.FC = () => {
       }
       toast.success(t("deleted successfully"));
       fetchRegularEvents();
-    } catch (err: any) {
+    }
+    catch (err: any) {
       console.error("Error deleting event:", err);
       toast.error(t("delete error", { error: err.message }));
     }
