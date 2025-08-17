@@ -88,9 +88,10 @@ const Training: React.FC = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="flex-grow p-6 pt-0">
-                    <CardDescription className="mb-4 text-muted-foreground">
-                      {program.description}
-                    </CardDescription>
+                    <div
+                      className="prose dark:prose-invert max-w-none text-muted-foreground"
+                      dangerouslySetInnerHTML={{ __html: program.description }}
+                    />
                   </CardContent>
                 </Card>
               );
