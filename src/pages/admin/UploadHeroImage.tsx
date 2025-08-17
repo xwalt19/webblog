@@ -18,7 +18,7 @@ const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 interface HeroImageFormData {
   id?: string;
   imageFile: File | null;
-  orderIndex: number;
+  orderIndex: number; // Still needed internally
   initialImageUrl: string | null;
 }
 
@@ -39,7 +39,7 @@ const UploadHeroImage: React.FC = () => {
   const queryClient = useQueryClient();
   
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [orderIndex, setOrderIndex] = useState(0);
+  const [orderIndex, setOrderIndex] = useState(0); // Managed internally
   const [initialImageUrl, setInitialImageUrl] = useState<string | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
 
@@ -60,11 +60,17 @@ const UploadHeroImage: React.FC = () => {
     staleTime: Infinity,
   });
 
-  // Effect to populate form fields when imageData is loaded
+  // Effect to populate form fields when imageData is loaded or calculate next order for new
   useEffect(() => {
+    if (!session || !isAdmin) {
+      setDataLoading(false);
+      return;
+    }
+
     if (imageData) {
       setOrderIndex(imageData.order_index);
       setInitialImageUrl(imageData.image_url);
+      setDataLoading(false);
     } else if (!imageId) {
       // For new images, try to get the next available order_index
       const fetchNextOrderIndex = async () => {
@@ -86,7 +92,7 @@ const UploadHeroImage: React.FC = () => {
     } else {
       setDataLoading(false);
     }
-  }, [imageData, imageId]);
+  }, [imageData, imageId, session, isAdmin]);
 
   // Authentication and authorization check
   useEffect(() => {
@@ -218,10 +224,7 @@ const UploadHeroImage: React.FC = () => {
       toast.error(t("image file required"));
       return;
     }
-    if (orderIndex === null || orderIndex === undefined) {
-      toast.error(t("order index required"));
-      return;
-    }
+    // orderIndex is now managed automatically, no need for manual validation here
 
     saveImageMutation.mutate({
       id: imageId,
@@ -303,20 +306,7 @@ const UploadHeroImage: React.FC = () => {
                 </div>
               )}
             </div>
-            <div>
-              <Label htmlFor="orderIndex">{t('order index label')}</Label>
-              <Input
-                id="orderIndex"
-                type="number"
-                placeholder={t('order index placeholder')}
-                value={orderIndex}
-                onChange={(e) => setOrderIndex(Number(e.target.value))}
-                className="mt-1"
-              />
-              <p className="text-sm text-muted-foreground mt-1">
-                {t('order index hint')}
-              </p>
-            </div>
+            {/* Order Index field is now hidden and managed automatically */}
             <Button type="submit" className="w-full" disabled={saveImageMutation.isPending}>
               {saveImageMutation.isPending ? t('uploading status') : (imageId ? t('save changes button') : t('submit button'))}
             </Button>

@@ -210,7 +210,7 @@ const ManageHeroImages: React.FC = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t('table image')}</TableHead>
-                  <TableHead>{t('table order')}</TableHead>
+                  {/* Removed Order Index column from display */}
                   <TableHead>{t('table date')}</TableHead>
                   <TableHead className="text-right">{t('table actions')}</TableHead>
                 </TableRow>
@@ -226,7 +226,7 @@ const ManageHeroImages: React.FC = () => {
                         className="object-cover" 
                       />
                     </TableCell>
-                    <TableCell>{image.order_index}</TableCell>
+                    {/* Removed Order Index cell from display */}
                     <TableCell>{new Date(image.created_at).toLocaleDateString()}</TableCell>
                     <TableCell className="text-right">
                       <Button 
