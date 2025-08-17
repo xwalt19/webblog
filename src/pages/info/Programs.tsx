@@ -100,7 +100,7 @@ const ProgramsPage: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('our programs page title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary capitalize">{t('our programs page title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           {t('our programs page subtitle')}
         </p>
@@ -147,12 +147,6 @@ const ProgramsPage: React.FC = () => {
                   {program.registration_fee && (
                     <p className="text-md text-foreground mb-4 flex items-center gap-2">
                       {t('registration fee label')}: <span className="font-medium">{program.registration_fee}</span>
-                    </p>
-                  )}
-
-                  {program.price && (
-                    <p className="text-md text-foreground mb-4 flex items-center gap-2">
-                      {t('price label')}: <span className="font-medium">{program.price}</span>
                     </p>
                   )}
 

@@ -223,20 +223,19 @@ const ManageHeroImages: React.FC = () => {
       return; // Cannot move further
     }
 
-    const imageToMove = images[currentImageIndex];
-    const targetImage = images[targetIndex];
-
     // Perform optimistic update
     queryClient.setQueryData(['heroImages'], (oldImages: HeroImage[] | undefined) => {
       if (!oldImages) return oldImages;
       const newImages = [...oldImages];
-      // Swap elements
+      // Swap elements using their indices
       [newImages[currentImageIndex], newImages[targetIndex]] = [newImages[targetIndex], newImages[currentImageIndex]];
       // Reassign order_index based on new array position
       return newImages.map((img, idx) => ({ ...img, order_index: idx }));
     });
 
     // Send updates to backend
+    const imageToMove = images[currentImageIndex];
+    const targetImage = images[targetIndex];
     updateOrderMutation.mutate({ id: imageToMove.id, newOrder: targetIndex });
     updateOrderMutation.mutate({ id: targetImage.id, newOrder: currentImageIndex });
   };
@@ -272,7 +271,7 @@ const ManageHeroImages: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage hero images')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary capitalize">{t('manage hero images')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           {t('manage hero images subtitle')}
         </p>

@@ -5,7 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
+import { useTranslation }
+from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -245,7 +246,7 @@ const ManageBlogPosts: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('blog posts')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary capitalize">{t('blog posts')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           {t('manage blog posts subtitle')}
         </p>

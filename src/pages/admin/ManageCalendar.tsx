@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea"; // Keep Textarea for other uses if any, but it's not used for description anymore
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -208,7 +208,7 @@ const ManageCalendar: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('manage calendar events')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary capitalize">{t('manage calendar events')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           {t('manage calendar events subtitle')}
         </p>

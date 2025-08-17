@@ -165,7 +165,7 @@ const Archives: React.FC = () => {
 
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
-      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">{t('archives')}</h1>
+      <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 capitalize">{t('archives')}</h1>
       <p className="text-lg text-muted-foreground text-center mb-10 max-w-2xl mx-auto">
         {t('archives page subtitle')}
       </p>

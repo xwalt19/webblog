@@ -81,7 +81,7 @@ const Camps: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary">{t('our camp programs title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary capitalize">{t('our camp programs title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           {t('our camp programs subtitle')}
         </p>
