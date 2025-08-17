@@ -100,7 +100,7 @@ const ManageHeroImages: React.FC = () => {
       toast.success(t("image uploaded successfully"));
     },
     onError: (err) => {
-      console.error("Error uploading image:", err);
+      console.error("Error uploading image:", err); // Log full error object
       toast.error(t("upload failed", { error: err.message }));
     },
   });
