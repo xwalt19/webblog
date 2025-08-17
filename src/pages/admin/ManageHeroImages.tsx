@@ -59,17 +59,11 @@ const ManageHeroImages: React.FC = () => {
       if (!session?.user?.id) throw new Error("User not authenticated.");
 
       const fileExtension = file.name.split('.').pop();
-      // Mengubah filePath agar langsung diunggah ke root bucket, tanpa subfolder 'hero_images'
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
       const filePath = fileName; // Simplified: upload directly to bucket root
 
-      // Log debug untuk melihat nilai yang dikirim
-      console.log("Attempting to upload file:");
-      console.log("Bucket:", 'hero_images');
-      console.log("FilePath (simplified):", filePath);
-      console.log("File Name:", file.name);
-      console.log("File Type:", file.type);
-      console.log("File Size:", file.size);
+      console.log("ManageHeroImages: [DEBUG] Attempting to upload file to bucket 'hero_images' with filePath:", filePath);
+      console.log("ManageHeroImages: [DEBUG] File details:", { name: file.name, type: file.type, size: file.size });
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('hero_images') // Assuming 'hero_images' is your bucket name
@@ -79,15 +73,19 @@ const ManageHeroImages: React.FC = () => {
         });
 
       if (uploadError) {
+        console.error("ManageHeroImages: [ERROR] Supabase Storage upload failed:", uploadError);
         throw uploadError;
       }
+      console.log("ManageHeroImages: [DEBUG] Supabase Storage upload successful:", uploadData);
 
       const { data: publicUrlData } = supabase.storage.from('hero_images').getPublicUrl(filePath);
       const imageUrl = publicUrlData.publicUrl;
+      console.log("ManageHeroImages: [DEBUG] Public URL generated:", imageUrl);
 
       // Get the next order_index
-      const currentMaxOrder = images ? Math.max(...images.map(img => img.order_index)) : -1;
+      const currentMaxOrder = images && images.length > 0 ? Math.max(...images.map(img => img.order_index)) : -1;
       const newOrderIndex = currentMaxOrder + 1;
+      console.log("ManageHeroImages: [DEBUG] New order index for image:", newOrderIndex);
 
       const { error: insertError } = await supabase
         .from('hero_images')
@@ -99,17 +97,20 @@ const ManageHeroImages: React.FC = () => {
         });
 
       if (insertError) {
+        console.error("ManageHeroImages: [ERROR] Supabase DB insert failed for hero_images:", insertError);
         // If DB insert fails, try to delete the uploaded file from storage
+        console.log("ManageHeroImages: [DEBUG] Attempting to delete uploaded file from storage due to DB insert failure:", filePath);
         await supabase.storage.from('hero_images').remove([filePath]);
         throw insertError;
       }
+      console.log("ManageHeroImages: [DEBUG] Supabase DB insert successful.");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['heroImages'] });
       toast.success(t("image uploaded successfully"));
     },
     onError: (err) => {
-      console.error("Error uploading image:", err); // Log full error object
+      console.error("ManageHeroImages: [ERROR] Error during uploadImageMutation:", err); // Log full error object
       toast.error(t("upload failed", { error: err.message }));
     },
   });
@@ -120,14 +121,17 @@ const ManageHeroImages: React.FC = () => {
         try {
           // Path sekarang akan langsung nama file karena kita mengubah cara unggah
           const path = url.split(`/${bucket}/`)[1]; 
+          console.log("ManageHeroImages: [DEBUG] Attempting to delete file from storage. Path:", path, "Bucket:", bucket);
           if (path) {
             const { error } = await supabase.storage.from(bucket).remove([path]);
             if (error) {
-              console.warn(`Failed to delete old file from ${bucket}:`, error.message);
+              console.warn(`ManageHeroImages: [WARN] Failed to delete old file from ${bucket}:`, error.message);
+            } else {
+              console.log(`ManageHeroImages: [DEBUG] File ${path} deleted from storage.`);
             }
           }
         } catch (e) {
-          console.warn("Error parsing file URL for deletion:", e);
+          console.warn("ManageHeroImages: [WARN] Error parsing file URL for deletion:", e);
         }
       };
 
@@ -138,32 +142,41 @@ const ManageHeroImages: React.FC = () => {
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("ManageHeroImages: [ERROR] Supabase DB delete failed for hero_images:", error);
+        throw error;
+      }
+      console.log("ManageHeroImages: [DEBUG] Supabase DB delete successful.");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['heroImages'] });
       toast.success(t("deleted successfully"));
     },
     onError: (err) => {
-      console.error("Error deleting image:", err);
+      console.error("ManageHeroImages: [ERROR] Error during deleteImageMutation:", err);
       toast.error(t("delete error", { error: err.message }));
     },
   });
 
   const updateOrderMutation = useMutation<void, Error, { id: string, newOrder: number }>({
     mutationFn: async ({ id, newOrder }) => {
+      console.log(`ManageHeroImages: [DEBUG] Updating order for image ${id} to ${newOrder}`);
       const { error } = await supabase
         .from('hero_images')
         .update({ order_index: newOrder })
         .eq('id', id);
-      if (error) throw error;
+      if (error) {
+        console.error("ManageHeroImages: [ERROR] Supabase DB update order failed:", error);
+        throw error;
+      }
+      console.log("ManageHeroImages: [DEBUG] Supabase DB order update successful.");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['heroImages'] });
       toast.success(t("order updated successfully"));
     },
     onError: (err) => {
-      console.error("Error updating order:", err);
+      console.error("ManageHeroImages: [ERROR] Error during updateOrderMutation:", err);
       toast.error(t("failed to update order", { error: err.message }));
     },
   });
@@ -179,12 +192,14 @@ const ManageHeroImages: React.FC = () => {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'hero_images' },
         () => {
+          console.log("ManageHeroImages: [DEBUG] Realtime change detected for hero_images, invalidating query.");
           queryClient.invalidateQueries({ queryKey: ['heroImages'] });
         }
       )
       .subscribe();
 
     return () => {
+      console.log("ManageHeroImages: [DEBUG] Unsubscribing from hero_images_admin_changes channel.");
       supabase.removeChannel(channel);
     };
   }, [isAuthenticatedAndAuthorized, queryClient]);

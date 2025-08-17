@@ -23,11 +23,16 @@ const HeroSection: React.FC = () => {
   const { data: heroImages, isLoading, isError, error } = useQuery<HeroImage[], Error>({
     queryKey: ['heroImages'],
     queryFn: async () => {
+      console.log("HeroSection: [DEBUG] Fetching hero images from Supabase...");
       const { data, error } = await supabase
         .from('hero_images')
         .select('id, image_url, order_index')
         .order('order_index', { ascending: true });
-      if (error) throw error;
+      if (error) {
+        console.error("HeroSection: [ERROR] Error fetching hero images:", error);
+        throw error;
+      }
+      console.log("HeroSection: [DEBUG] Hero images fetched:", data);
       return data || [];
     },
     staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
@@ -60,7 +65,7 @@ const HeroSection: React.FC = () => {
   }
 
   if (isError) {
-    console.error("Failed to load hero images:", error);
+    console.error("HeroSection: [ERROR] Failed to load hero images from query:", error);
     // Fallback to a static image or a message
     return (
       <section className="relative py-24 md:py-36 text-white overflow-hidden h-[500px] md:h-[600px] flex items-center bg-gray-800">
@@ -86,6 +91,7 @@ const HeroSection: React.FC = () => {
 
   // If no images are found in DB, use a default static image
   const imagesToDisplay = heroImages && heroImages.length > 0 ? heroImages : [{ id: 'default', image_url: "/assets/img_2860.jpg", order_index: 0 }];
+  console.log("HeroSection: [DEBUG] Images to display:", imagesToDisplay);
 
   return (
     <section className="relative py-24 md:py-36 text-white overflow-hidden h-[500px] md:h-[600px] flex items-center">
