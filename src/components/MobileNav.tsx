@@ -48,8 +48,8 @@ const MobileNav: React.FC = () => {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-64 p-4 pt-10 bg-background text-foreground">
-        <Link to="/" className="text-2xl font-bold text-primary mb-6 block" onClick={closeSheet}>
-          ProCodeCG
+        <Link to="/" className="flex items-center mb-6" onClick={closeSheet}>
+          <img src="/procodecg-logo.png" alt="ProCodeCG Logo" className="h-8 w-auto object-contain" />
         </Link>
         <nav className="flex flex-col space-y-4">
           <Link to="/" className="text-lg font-medium text-foreground hover:text-primary transition-colors capitalize" onClick={closeSheet}>

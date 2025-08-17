@@ -37,8 +37,8 @@ const Layout: React.FC = () => {
     <div className="flex flex-col h-screen">
       <header className="flex-shrink-0 sticky top-0 z-50 bg-background shadow-sm border-b border-border">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <Link to="/" className="text-2xl font-bold text-primary">
-            ProCodeCG
+          <Link to="/" className="flex items-center h-full">
+            <img src="/procodecg-logo.png" alt="ProCodeCG Logo" className="h-8 w-auto object-contain" />
           </Link>
 
           <div className="flex items-center gap-2">
