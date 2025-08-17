@@ -175,12 +175,6 @@ const MobileNav: React.FC = () => {
                   <Link to="/admin/manage-users" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     <Users className="h-4 w-4 inline-block mr-2" /> {t('manage users')}
                   </Link>
-                  <Link to="/admin/manage-blog-categories" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
-                    <ListFilter className="h-4 w-4 inline-block mr-2" /> {t('blog categories')}
-                  </Link>
-                  <Link to="/admin/manage-hero-images" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
-                    <Image className="h-4 w-4 inline-block mr-2" /> {t('hero images')}
-                  </Link>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
