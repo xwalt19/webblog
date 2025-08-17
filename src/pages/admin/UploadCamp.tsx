@@ -150,12 +150,20 @@ const UploadCamp: React.FC = () => {
 
       await supabase.from('camp_day_links').delete().eq('camp_id', currentCampId);
       if (dayLinks.length > 0) {
-        const linksToInsert = dayLinks.map(link => ({
-          ...link,
-          camp_id: currentCampId,
-          created_by: session?.user?.id,
-          created_at: new Date().toISOString(),
-        }));
+        const linksToInsert = dayLinks.map(link => {
+          const { id, ...rest } = link; // Destructure id
+          const newLink = {
+            ...rest, // Spread all other properties
+            camp_id: currentCampId,
+            created_by: session?.user?.id,
+            created_at: new Date().toISOString(),
+          };
+          // Only add id back if it's a valid string (for existing records)
+          if (id) { 
+            (newLink as any).id = id;
+          }
+          return newLink;
+        });
         const { error: linksError } = await supabase.from('camp_day_links').insert(linksToInsert);
         if (linksError) throw linksError;
       }
