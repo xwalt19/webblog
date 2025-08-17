@@ -16,6 +16,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
+import { cn } from "@/lib/utils"; // Import cn utility
 
 interface SupabaseCampDayLink {
   id: string;
@@ -114,10 +115,18 @@ const Camps: React.FC = () => {
                       <Accordion type="single" collapsible className="w-full">
                         {camp.camp_day_links.map((day) => (
                           <AccordionItem key={day.id} value={day.id}>
-                            <AccordionTrigger className="text-base font-medium text-foreground hover:no-underline">
+                            <AccordionTrigger 
+                              className={cn(
+                                "text-base font-medium text-foreground hover:no-underline",
+                                "bg-primary text-primary-foreground rounded-md px-4 py-3 mb-2 shadow-md",
+                                "hover:bg-primary/90 hover:shadow-lg transition-all duration-300",
+                                "data-[state=open]:bg-primary-foreground data-[state=open]:text-primary data-[state=open]:shadow-xl",
+                                "data-[state=open]:animate-pulse-subtle" // Apply pulse on open
+                              )}
+                            >
                               {day.label}
                             </AccordionTrigger>
-                            <AccordionContent className="text-muted-foreground">
+                            <AccordionContent className="text-muted-foreground p-4 border border-t-0 border-primary/20 rounded-b-md bg-primary/5">
                               {day.content ? (
                                 <RichTextEditor value={day.content} onChange={() => {}} readOnly={true} className="mb-4" />
                               ) : (
