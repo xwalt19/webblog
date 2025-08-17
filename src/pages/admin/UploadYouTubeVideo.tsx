@@ -17,6 +17,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { getYouTubeVideoId, getYouTubeThumbnailUrl } from "@/utils/videoUtils";
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 const UploadYouTubeVideo: React.FC = () => {
   const { id: videoId } = useParams<{ id: string }>();
@@ -25,7 +26,7 @@ const UploadYouTubeVideo: React.FC = () => {
   const { session, profile, loading: sessionLoading } = useSession();
   
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(""); // This will now hold HTML
   const [videoUrl, setVideoUrl] = useState("");
   const [publishedAt, setPublishedAt] = useState<Date | undefined>(undefined);
   const [uploading, setUploading] = useState(false);
@@ -69,7 +70,7 @@ const UploadYouTubeVideo: React.FC = () => {
       }
       if (data) {
         setTitle(data.title || "");
-        setDescription(data.description || "");
+        setDescription(data.description || ""); // Set HTML content
         setVideoUrl(data.video_url || "");
         setPublishedAt(data.published_at ? new Date(data.published_at) : undefined);
       }
@@ -106,7 +107,7 @@ const UploadYouTubeVideo: React.FC = () => {
 
       if (data) {
         setTitle(data.title || "");
-        setDescription(data.description || "");
+        setDescription(data.description || ""); // Set HTML content
         toast.success(t('video details fetched successfully'), { id: fetchToastId });
       } else {
         toast.error(t('no details found'), { id: fetchToastId });
@@ -138,7 +139,7 @@ const UploadYouTubeVideo: React.FC = () => {
     try {
       const videoData = {
         title,
-        description: description || null,
+        description: description || null, // Save HTML content
         video_url: videoUrl,
         published_at: publishedAt.toISOString(),
         thumbnail_url: currentThumbnailUrl,
@@ -242,11 +243,10 @@ const UploadYouTubeVideo: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
-              <Textarea
-                id="description"
-                placeholder={t('description placeholder')}
+              <RichTextEditor
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={setDescription}
+                placeholder={t('description placeholder')}
                 className="mt-1 min-h-[80px]"
               />
             </div>

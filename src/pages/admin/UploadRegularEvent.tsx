@@ -30,6 +30,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 // Define Zod schema for validation
 const formSchema = z.object({
@@ -41,12 +42,12 @@ const formSchema = z.object({
   schedule: z.date({
     required_error: "Schedule date and time are required.",
   }),
-  description: z.string().min(10, {
+  description: z.string().min(10, { // Description will now be HTML
     message: "Description must be at least 10 characters.",
-  }).max(500, {
-    message: "Description must not be longer than 500 characters.",
+  }).max(5000, { // Increased max length for HTML content
+    message: "Description must not be longer than 5000 characters.",
   }),
-  iconName: z.string().optional(), // Optional as it can be null
+  iconName: z.string().optional().nullable(),
 });
 
 const UploadRegularEvent: React.FC = () => {
@@ -63,7 +64,7 @@ const UploadRegularEvent: React.FC = () => {
     defaultValues: {
       name: "",
       schedule: undefined, // Default to undefined for date
-      description: "",
+      description: "", // Default to empty string for HTML content
       iconName: "",
     },
   });
@@ -94,7 +95,7 @@ const UploadRegularEvent: React.FC = () => {
         form.reset({
           name: data.name || "",
           schedule: data.schedule ? new Date(data.schedule) : undefined, // Parse ISO string to Date
-          description: data.description || "",
+          description: data.description || "", // Set HTML content
           iconName: data.icon_name || "",
         });
       }
@@ -114,7 +115,7 @@ const UploadRegularEvent: React.FC = () => {
       const eventData = {
         name: values.name,
         schedule: values.schedule.toISOString(), // Convert Date to ISO string
-        description: values.description,
+        description: values.description, // Save HTML content
         icon_name: values.iconName || null,
         ...(eventId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
       };
@@ -254,10 +255,11 @@ const UploadRegularEvent: React.FC = () => {
                   <FormItem>
                     <FormLabel>{t('description label')}</FormLabel>
                     <FormControl>
-                      <Textarea
+                      <RichTextEditor
+                        value={field.value}
+                        onChange={field.onChange}
                         placeholder={t('description placeholder')}
                         className="min-h-[80px]"
-                        {...field}
                       />
                     </FormControl>
                     <FormMessage />

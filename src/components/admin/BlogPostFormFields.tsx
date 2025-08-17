@@ -14,6 +14,7 @@ import MultiSelectTags from "@/components/MultiSelectTags";
 import { useTranslation } from "react-i18next";
 import { cleanTagForStorage } from "@/utils/i18nUtils";
 import { Button } from "@/components/ui/button"; // Import Button component
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 interface BlogPostFormFieldsProps {
   title: string;
@@ -79,12 +80,11 @@ const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
       </div>
       <div>
         <Label htmlFor="content">{t('content label')}</Label>
-        <Textarea
-          id="content"
-          placeholder={t('content placeholder')}
+        <RichTextEditor
           value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="mt-1 min-h-[200px]"
+          onChange={setContent}
+          placeholder={t('content placeholder')}
+          className="mt-1"
         />
       </div>
       <div>

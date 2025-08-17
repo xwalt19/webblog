@@ -19,6 +19,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 interface CampDayLink {
   id?: string;
@@ -34,7 +35,7 @@ const UploadCamp: React.FC = () => {
   
   const [title, setTitle] = useState("");
   const [dates, setDates] = useState<Date | undefined>(undefined);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(""); // This will now hold HTML
   const [dayLinks, setDayLinks] = useState<CampDayLink[]>([]);
   const [uploading, setUploading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
@@ -71,8 +72,8 @@ const UploadCamp: React.FC = () => {
       if (campData) {
         setTitle(campData.title || "");
         setDates(campData.dates ? new Date(campData.dates) : undefined);
-        setDescription(campData.description || "");
-
+        setDescription(campData.description || ""); // Set HTML content
+        
         const { data: linksData, error: linksError } = await supabase
           .from('camp_day_links')
           .select('*')
@@ -120,7 +121,7 @@ const UploadCamp: React.FC = () => {
       const campData = {
         title,
         dates: dates ? dates.toISOString() : null,
-        description,
+        description, // Save HTML content
         ...(campId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
       };
 
@@ -258,11 +259,10 @@ const UploadCamp: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
-              <Textarea
-                id="description"
-                placeholder={t('description placeholder')}
+              <RichTextEditor
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={setDescription}
+                placeholder={t('description placeholder')}
                 className="mt-1 min-h-[80px]"
               />
             </div>

@@ -23,7 +23,7 @@ interface SupabaseCamp {
   id: string;
   title: string;
   dates: string;
-  description: string;
+  description: string; // This will now be HTML
   created_by: string | null;
   created_at: string;
   camp_day_links: SupabaseCampDayLink[];
@@ -64,14 +64,7 @@ const Camps: React.FC = () => {
     toast.info(t('details coming soon', { campTitle, dayLabel }));
   };
 
-  // Helper function to format plain text with newlines into paragraphs
-  const formatTextToParagraphs = (text: string | null | undefined): string => {
-    if (!text) return '';
-    // Replace multiple consecutive newlines with a single one for cleaner output
-    const cleanedText = text.replace(/\n\s*\n/g, '\n');
-    // Split by newline and wrap each line in a <p> tag
-    return cleanedText.split('\n').map(line => `<p>${line}</p>`).join('');
-  };
+  // Removed formatTextToParagraphs as description will now be HTML from RichTextEditor
 
   if (error) {
     return (
@@ -110,7 +103,7 @@ const Camps: React.FC = () => {
                 <CardContent className="flex-grow p-6 pt-0">
                   <div 
                     className="prose dark:prose-invert max-w-none text-muted-foreground" 
-                    dangerouslySetInnerHTML={{ __html: formatTextToParagraphs(camp.description) }} 
+                    dangerouslySetInnerHTML={{ __html: camp.description }} 
                   />
                   <div className="flex flex-wrap gap-2 mt-4">
                     {camp.camp_day_links.map((day, index) => (

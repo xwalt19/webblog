@@ -12,6 +12,7 @@ import { cleanTagForStorage } from "@/utils/i18nUtils";
 import BlogPostFormFields from "@/components/admin/BlogPostFormFields"; // Import new component
 import BlogPostMediaUpload from "@/components/admin/BlogPostMediaUpload"; // Import new component
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 const MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
@@ -53,7 +54,7 @@ const UploadBlogPost: React.FC = () => {
   
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(""); // This will now hold HTML
   const [category, setCategory] = useState("");
   const [author, setAuthor] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -121,7 +122,7 @@ const UploadBlogPost: React.FC = () => {
     if (postData) {
       setTitle(postData.title || "");
       setExcerpt(postData.excerpt || "");
-      setContent(postData.content || "");
+      setContent(postData.content || ""); // Set HTML content
       setCategory(postData.category || "");
       setAuthor(postData.author || "");
       setSelectedTags(postData.tags?.map(cleanTagForStorage) || []);
@@ -203,7 +204,7 @@ const UploadBlogPost: React.FC = () => {
       const postToSave = {
         title: formData.title,
         excerpt: formData.excerpt,
-        content: formData.content || null,
+        content: formData.content || null, // Save HTML content
         image_url: currentImageUrl,
         category: formData.category,
         author: formData.author,
@@ -241,7 +242,7 @@ const UploadBlogPost: React.FC = () => {
         // Reset form for new post
         setTitle("");
         setExcerpt("");
-        setContent("");
+        setContent(""); // Reset content
         setCategory("");
         setAuthor("");
         setSelectedTags([]);
@@ -295,7 +296,7 @@ const UploadBlogPost: React.FC = () => {
       id: postId,
       title,
       excerpt,
-      content,
+      content, // Pass HTML content
       category,
       author,
       tags: selectedTags,
