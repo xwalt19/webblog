@@ -21,8 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -276,23 +275,6 @@ const UploadProgram: React.FC = () => {
     return null;
   }
 
-  const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-      ['link', 'image'],
-      ['clean']
-    ],
-  };
-
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image'
-  ];
-
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -334,7 +316,7 @@ const UploadProgram: React.FC = () => {
                 )}
               />
 
-              {/* Description Field (ReactQuill) */}
+              {/* Description Field (RichTextEditor) */}
               <FormField
                 control={form.control}
                 name="description"
@@ -342,18 +324,12 @@ const UploadProgram: React.FC = () => {
                   <FormItem>
                     <FormLabel>{t('description label')}</FormLabel>
                     <FormControl>
-                      <div className="prose dark:prose-invert max-w-none">
-                        <ReactQuill
-                          key={programId || "new-program"} // Added key prop
-                          theme="snow"
-                          value={field.value}
-                          onChange={field.onChange}
-                          modules={modules}
-                          formats={formats}
-                          placeholder={t('description placeholder')}
-                          className="mt-1 bg-background"
-                        />
-                      </div>
+                      <RichTextEditor
+                        key={programId || "new-program"} // Pass key prop
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder={t('description placeholder')}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

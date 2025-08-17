@@ -19,8 +19,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { formatDisplayDateTime } from "@/utils/dateUtils";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 interface CampDayLink {
   id?: string;
@@ -179,23 +178,6 @@ const UploadCamp: React.FC = () => {
     );
   }
 
-  const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-      ['link', 'image'],
-      ['clean']
-    ],
-  };
-
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image'
-  ];
-
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -277,18 +259,12 @@ const UploadCamp: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
-              <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
-                <ReactQuill
-                  key={campId || "new-camp"} // Added key prop
-                  theme="snow"
-                  value={description}
-                  onChange={setDescription}
-                  modules={modules}
-                  formats={formats}
-                  placeholder={t('description placeholder')}
-                  className="mt-1 bg-background"
-                />
-              </div>
+              <RichTextEditor
+                key={campId || "new-camp"} // Pass key prop
+                value={description}
+                onChange={setDescription}
+                placeholder={t('description placeholder')}
+              />
             </div>
 
             <Separator className="my-6" />

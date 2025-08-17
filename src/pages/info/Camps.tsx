@@ -49,7 +49,8 @@ const Camps: React.FC = () => {
           throw error;
         }
         setCamps(data || []);
-      } catch (err: any) {
+      }
+      catch (err: any) {
         console.error("Error fetching camps:", err);
         setError(t("fetch data error", { error: err.message }));
       } finally {
@@ -101,7 +102,7 @@ const Camps: React.FC = () => {
                 <CardContent className="flex-grow p-6 pt-0">
                   <div 
                     className="prose dark:prose-invert max-w-none text-muted-foreground" 
-                    dangerouslySetInnerHTML={{ __html: camp.description }} // Removed formatTextToParagraphs
+                    dangerouslySetInnerHTML={{ __html: camp.description }}
                   />
                   <div className="flex flex-wrap gap-2 mt-4">
                     {camp.camp_day_links.map((day, index) => (

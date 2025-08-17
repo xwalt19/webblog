@@ -14,8 +14,7 @@ import MultiSelectTags from "@/components/MultiSelectTags";
 import { useTranslation } from "react-i18next";
 import { cleanTagForStorage } from "@/utils/i18nUtils";
 import { Button } from "@/components/ui/button";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 interface BlogPostFormFieldsProps {
   title: string;
@@ -58,23 +57,6 @@ const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-      ['link', 'image'],
-      ['clean']
-    ],
-  };
-
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image'
-  ];
-
   return (
     <>
       <div>
@@ -100,18 +82,12 @@ const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
       </div>
       <div>
         <Label htmlFor="content">{t('content label')}</Label>
-        <div className="prose dark:prose-invert max-w-none">
-          <ReactQuill
-            key={postId || "new-post"} // Added key prop
-            theme="snow"
-            value={content}
-            onChange={setContent}
-            modules={modules}
-            formats={formats}
-            placeholder={t('content placeholder')}
-            className="mt-1 bg-background"
-          />
-        </div>
+        <RichTextEditor
+          key={postId || "new-post"} // Pass key prop
+          value={content}
+          onChange={setContent}
+          placeholder={t('content placeholder')}
+        />
       </div>
       <div>
         <Label htmlFor="category">{t('category label')}</Label>

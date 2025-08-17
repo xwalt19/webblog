@@ -21,8 +21,7 @@ import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
 import { formatDisplayDateTime } from "@/utils/dateUtils";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
 
 export interface CalendarEvent {
   id: string;
@@ -206,23 +205,6 @@ const ManageCalendar: React.FC = () => {
     );
   }
 
-  const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-      ['link', 'image'],
-      ['clean']
-    ],
-  };
-
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image'
-  ];
-
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -301,15 +283,11 @@ const ManageCalendar: React.FC = () => {
                 {t('description label')}
               </Label>
               <div className="col-span-3">
-                <ReactQuill
-                  key={currentEvent?.id || "new-calendar-event"} // Added key prop
-                  theme="snow"
+                <RichTextEditor
+                  key={currentEvent?.id || "new-calendar-event"} // Pass key prop
                   value={formDescription}
                   onChange={setFormDescription}
-                  modules={modules}
-                  formats={formats}
                   placeholder={t('description placeholder')}
-                  className="mt-1 bg-background"
                 />
               </div>
             </div>
