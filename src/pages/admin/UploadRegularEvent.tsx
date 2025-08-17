@@ -273,15 +273,17 @@ const UploadRegularEvent: React.FC = () => {
                   <FormItem>
                     <FormLabel>{t('description label')}</FormLabel>
                     <FormControl>
-                      <ReactQuill
-                        theme="snow"
-                        value={field.value}
-                        onChange={field.onChange}
-                        modules={modules}
-                        formats={formats}
-                        placeholder={t('description placeholder')}
-                        className="mt-1 bg-background"
-                      />
+                      <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
+                        <ReactQuill
+                          theme="snow"
+                          value={field.value}
+                          onChange={field.onChange}
+                          modules={modules}
+                          formats={formats}
+                          placeholder={t('description placeholder')}
+                          className="mt-1 bg-background"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

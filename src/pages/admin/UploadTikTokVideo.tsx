@@ -200,15 +200,17 @@ const UploadTikTokVideo: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
-              <ReactQuill
-                theme="snow"
-                value={description}
-                onChange={setDescription}
-                modules={modules}
-                formats={formats}
-                placeholder={t('description placeholder')}
-                className="mt-1 min-h-[80px]"
-              />
+              <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
+                <ReactQuill
+                  theme="snow"
+                  value={description}
+                  onChange={setDescription}
+                  modules={modules}
+                  formats={formats}
+                  placeholder={t('description placeholder')}
+                  className="mt-1 min-h-[80px]"
+                />
+              </div>
             </div>
             <div>
               <Label htmlFor="videoUrl">{t('video url label')}</Label>

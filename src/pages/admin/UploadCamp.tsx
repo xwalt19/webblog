@@ -277,15 +277,17 @@ const UploadCamp: React.FC = () => {
             </div>
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
-              <ReactQuill
-                theme="snow"
-                value={description}
-                onChange={setDescription}
-                modules={modules}
-                formats={formats}
-                placeholder={t('description placeholder')}
-                className="mt-1 bg-background"
-              />
+              <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
+                <ReactQuill
+                  theme="snow"
+                  value={description}
+                  onChange={setDescription}
+                  modules={modules}
+                  formats={formats}
+                  placeholder={t('description placeholder')}
+                  className="mt-1 bg-background"
+                />
+              </div>
             </div>
 
             <Separator className="my-6" />

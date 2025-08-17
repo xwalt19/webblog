@@ -98,15 +98,17 @@ const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
       </div>
       <div>
         <Label htmlFor="content">{t('content label')}</Label>
-        <ReactQuill
-          theme="snow"
-          value={content}
-          onChange={setContent}
-          modules={modules}
-          formats={formats}
-          placeholder={t('content placeholder')}
-          className="mt-1 bg-background"
-        />
+        <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
+          <ReactQuill
+            theme="snow"
+            value={content}
+            onChange={setContent}
+            modules={modules}
+            formats={formats}
+            placeholder={t('content placeholder')}
+            className="mt-1 bg-background"
+          />
+        </div>
       </div>
       <div>
         <Label htmlFor="category">{t('category label')}</Label>

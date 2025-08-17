@@ -32,7 +32,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { iconMap } from "@/utils/iconMap";
-import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Added missing import
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
 
 interface PriceTier {
   id?: string;
@@ -84,8 +84,6 @@ const UploadProgram: React.FC = () => {
     },
   });
 
-  // Removed the import of ProgramFormFields as its content is now inlined here.
-  // The useAdminPageLogic hook is still needed.
   const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
     isAdminRequired: true,
     onAuthSuccess: () => {
@@ -344,15 +342,17 @@ const UploadProgram: React.FC = () => {
                   <FormItem>
                     <FormLabel>{t('description label')}</FormLabel>
                     <FormControl>
-                      <ReactQuill
-                        theme="snow"
-                        value={field.value}
-                        onChange={field.onChange}
-                        modules={modules}
-                        formats={formats}
-                        placeholder={t('description placeholder')}
-                        className="mt-1 bg-background"
-                      />
+                      <div className="prose dark:prose-invert max-w-none"> {/* Added wrapper with prose classes */}
+                        <ReactQuill
+                          theme="snow"
+                          value={field.value}
+                          onChange={field.onChange}
+                          modules={modules}
+                          formats={formats}
+                          placeholder={t('description placeholder')}
+                          className="mt-1 bg-background"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
