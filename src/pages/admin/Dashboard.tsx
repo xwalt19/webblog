@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 // @ts-ignore
-import { BookOpen, GraduationCap, Users, Youtube, Music, CalendarDays, Archive, Code, BellRing, LayoutDashboard, Tent, Cpu, ListFilter } from "lucide-react"; // Added ListFilter icon
+import { BookOpen, GraduationCap, Users, Youtube, Music, CalendarDays, Archive, Code, BellRing, LayoutDashboard, Tent, Cpu, ListFilter, Image } from "lucide-react"; // Added Image icon
 import { toast } from "sonner";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
 
@@ -23,7 +23,8 @@ interface Stats {
   youtubeVideos: number;
   tiktokVideos: number;
   totalUsers: number;
-  blogCategories: number; // New stat
+  blogCategories: number;
+  heroImages: number; // New stat
 }
 
 const AdminDashboard: React.FC = () => {
@@ -111,6 +112,11 @@ const AdminDashboard: React.FC = () => {
         .select('*', { count: 'exact', head: true });
       if (blogCategoriesError) throw blogCategoriesError;
 
+      const { count: heroImagesCount, error: heroImagesError } = await supabase
+        .from('hero_images')
+        .select('*', { count: 'exact', head: true });
+      if (heroImagesError) throw heroImagesError;
+
       setStats({
         blogPosts: blogPostsCount || 0,
         archives: archivesCount || 0,
@@ -122,7 +128,8 @@ const AdminDashboard: React.FC = () => {
         youtubeVideos: youtubeVideosCount || 0,
         tiktokVideos: tiktokVideosCount || 0,
         totalUsers: usersCount || 0,
-        blogCategories: blogCategoriesCount || 0, // New stat
+        blogCategories: blogCategoriesCount || 0,
+        heroImages: heroImagesCount || 0, // New stat
       });
     } catch (err: any) {
       console.error("Error fetching dashboard stats:", err);
@@ -143,7 +150,8 @@ const AdminDashboard: React.FC = () => {
     { title: t('total youtube videos'), value: stats.youtubeVideos, icon: Youtube, link: "/admin/manage-youtube-videos" },
     { title: t('total tiktok videos'), value: stats.tiktokVideos, icon: Music, link: "/admin/manage-tiktok-videos" },
     { title: t('total users'), value: stats.totalUsers, icon: Users, link: "/admin/manage-users" },
-    { title: t('total blog categories'), value: stats.blogCategories, icon: ListFilter, link: "/admin/manage-blog-categories" }, // New stat card
+    { title: t('total blog categories'), value: stats.blogCategories, icon: ListFilter, link: "/admin/manage-blog-categories" },
+    { title: t('total hero images'), value: stats.heroImages, icon: Image, link: "/admin/manage-hero-images" }, // New stat card
   ] : [];
 
   if (isLoadingAuth) {
