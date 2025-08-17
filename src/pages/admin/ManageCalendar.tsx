@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea"; // Keep Textarea for now if needed elsewhere
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
 import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
+import ReactQuill from 'react-quill'; // Import ReactQuill
+import 'react-quill/dist/quill.snow.css'; // Import Quill's CSS
 
 export interface CalendarEvent {
   id: string;
@@ -204,6 +206,23 @@ const ManageCalendar: React.FC = () => {
     );
   }
 
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image'
+  ];
+
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
@@ -281,12 +300,17 @@ const ManageCalendar: React.FC = () => {
               <Label htmlFor="description" className="text-right">
                 {t('description label')}
               </Label>
-              <Textarea
-                id="description"
-                value={formDescription}
-                onChange={(e) => setFormDescription(e.target.value)}
-                className="col-span-3"
-              />
+              <div className="col-span-3"> {/* Wrap ReactQuill in a div for grid layout */}
+                <ReactQuill
+                  theme="snow"
+                  value={formDescription}
+                  onChange={setFormDescription}
+                  modules={modules}
+                  formats={formats}
+                  placeholder={t('description placeholder')}
+                  className="mt-1 bg-background"
+                />
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="date" className="text-right">
