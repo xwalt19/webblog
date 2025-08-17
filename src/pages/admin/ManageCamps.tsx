@@ -11,7 +11,7 @@ import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash, PlusCircle, Link as LinkIcon } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDate, formatDynamicScheduleOrDates } from "@/utils/dateUtils"; // Import dynamic formatter
 
 interface CampDayLink {
   id: string;
@@ -23,7 +23,7 @@ interface CampDayLink {
 interface Camp {
   id: string;
   title: string;
-  dates: string;
+  dates: string; // Now a formatted string
   description: string;
   created_by: string | null;
   created_at: string;
@@ -188,7 +188,7 @@ const ManageCamps: React.FC = () => {
                 {camps.map((camp) => (
                   <TableRow key={camp.id}>
                     <TableCell className="font-medium">{camp.title}</TableCell>
-                    <TableCell>{camp.dates}</TableCell>
+                    <TableCell>{formatDynamicScheduleOrDates(camp.dates)}</TableCell> {/* Use dynamic formatter */}
                     <TableCell className="max-w-xs truncate">{camp.description}</TableCell>
                     <TableCell>
                       <Link to={`/admin/camps/${camp.id}/edit`} className="text-blue-600 hover:underline flex items-center gap-1">

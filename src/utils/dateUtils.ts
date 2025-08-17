@@ -125,3 +125,19 @@ export const parseDateRangeString = (
 
   return result;
 };
+
+export const formatDynamicScheduleOrDates = (dateString: string | null | undefined): string => {
+  if (!dateString) return '-';
+
+  const parsed = parseDateRangeString(dateString);
+
+  if (parsed.startDate) {
+    // If it was successfully parsed as a date range (new format or ISO string converted to range)
+    return formatDateRangeWithTime(parsed.startDate, parsed.endDate, parsed.startTime, parsed.endTime);
+  } else {
+    // Fallback for any string that couldn't be parsed by parseDateRangeString
+    // This might catch truly invalid strings or other unexpected formats.
+    // For robustness, we'll try to format it as a standard date-time.
+    return formatDisplayDateTime(dateString);
+  }
+};

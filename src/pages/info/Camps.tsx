@@ -8,7 +8,7 @@ import { CalendarDays, Code, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { formatDisplayDate } from "@/utils/dateUtils"; // Keep for other uses if any
+import { formatDynamicScheduleOrDates } from "@/utils/dateUtils"; // Import new dynamic formatter
 import {
   Accordion,
   AccordionContent,
@@ -101,7 +101,7 @@ const Camps: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <CalendarDays size={16} />
-                    <span>{camp.dates}</span> {/* Display the formatted string directly */}
+                    <span>{formatDynamicScheduleOrDates(camp.dates)}</span> {/* Use dynamic formatter */}
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow p-6 pt-0">

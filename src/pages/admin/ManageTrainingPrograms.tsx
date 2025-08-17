@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Edit, Trash, PlusCircle } from "lucide-react";
 import { getIconComponent } from "@/utils/iconMap";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDate, formatDynamicScheduleOrDates } from "@/utils/dateUtils"; // Import dynamic formatter
 
 interface TrainingProgram {
   id: string;
@@ -154,7 +154,7 @@ const ManageTrainingPrograms: React.FC = () => {
                   return (
                     <TableRow key={program.id}>
                       <TableCell className="font-medium">{program.title}</TableCell>
-                      <TableCell>{program.dates}</TableCell>
+                      <TableCell>{formatDynamicScheduleOrDates(program.dates)}</TableCell> {/* Use dynamic formatter */}
                       <TableCell>
                         {ProgramIcon ? <ProgramIcon className="h-5 w-5" /> : '-'}
                       </TableCell>

@@ -16,7 +16,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
-import { formatDisplayDateTime } from "@/utils/dateUtils"; // Keep for other uses if any
+import { formatDynamicScheduleOrDates } from "@/utils/dateUtils"; // Import new dynamic formatter
 
 interface SupabasePriceTier {
   id: string;
@@ -141,7 +141,7 @@ const ProgramsPage: React.FC = () => {
                 <CardContent className="p-0 pt-4">
                   {program.schedule && (
                     <p className="text-md text-foreground mb-2 flex items-center gap-2">
-                      {t('schedule label')}: <span className="font-medium">{program.schedule}</span>
+                      {t('schedule label')}: <span className="font-medium">{formatDynamicScheduleOrDates(program.schedule)}</span>
                     </p>
                   )}
                   {program.registration_fee && (
