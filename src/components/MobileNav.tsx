@@ -52,37 +52,37 @@ const MobileNav: React.FC = () => {
           ProCodeCG
         </Link>
         <nav className="flex flex-col space-y-4">
-          <Link to="/" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+          <Link to="/" className="text-lg font-medium text-foreground hover:text-primary transition-colors capitalize" onClick={closeSheet}>
             {t('home')}
           </Link>
-          <Link to="/about" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+          <Link to="/about" className="text-lg font-medium text-foreground hover:text-primary transition-colors capitalize" onClick={closeSheet}>
             {t('about')}
           </Link>
-          <Link to="/blog" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+          <Link to="/blog" className="text-lg font-medium text-foreground hover:text-primary transition-colors capitalize" onClick={closeSheet}>
             {t('blog')}
           </Link>
-          <Link to="/archives" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+          <Link to="/archives" className="text-lg font-medium text-foreground hover:text-primary transition-colors capitalize" onClick={closeSheet}>
             {t('archives')}
           </Link>
           
           {/* Activity with Accordion for sub-items */}
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1" className="border-b-0">
-              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
+              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors capitalize">
                 {t('activity')}
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
                 {/* Removed AllActivities link */}
-                <Link to="/info/programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                <Link to="/info/programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                   {t('programs')}
                 </Link>
-                <Link to="/info/regular-events-classes" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                <Link to="/info/regular-events-classes" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                   {t('regular events classes')}
                 </Link>
-                <Link to="/info/camps" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                <Link to="/info/camps" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                   {t('camps')}
                 </Link>
-                <Link to="/info/training" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                <Link to="/info/training" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                   {t('training')}
                 </Link>
               </AccordionContent>
@@ -92,14 +92,14 @@ const MobileNav: React.FC = () => {
           {/* New Media Accordion for sub-items */}
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-2" className="border-b-0">
-              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
+              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors capitalize">
                 {t('media')}
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
-                <Link to="/media/youtube" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                <Link to="/media/youtube" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                   {t('youtube')}
                 </Link>
-                <Link to="/media/tiktok" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                <Link to="/media/tiktok" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                   {t('tiktok')}
                 </Link>
               </AccordionContent>
@@ -109,17 +109,17 @@ const MobileNav: React.FC = () => {
           {/* Info with Accordion for sub-items */}
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-3" className="border-b-0">
-              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
+              <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors capitalize">
                 {t('info')}
               </AccordionTrigger>
               <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
-                <Link to="/contact-us" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                <Link to="/contact-us" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                   {t('contact us')}
                 </Link>
-                <Link to="/partners" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                <Link to="/partners" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                   {t('partners')}
                 </Link>
-                <Link to="/info/calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                <Link to="/info/calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                   {t('calendar')}
                 </Link>
               </AccordionContent>
@@ -129,7 +129,7 @@ const MobileNav: React.FC = () => {
           {/* User Account (Conditional) */}
           {session ? (
             <>
-              <Link to="/profile" className="text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={closeSheet}>
+              <Link to="/profile" className="text-lg font-medium text-foreground hover:text-primary transition-colors capitalize" onClick={closeSheet}>
                 <User className="h-5 w-5 inline-block mr-2" /> {displayName}
               </Link>
             </>
@@ -138,47 +138,47 @@ const MobileNav: React.FC = () => {
           {isAdmin ? (
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-4" className="border-b-0">
-                <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors">
+                <AccordionTrigger className="py-0 text-lg font-medium text-foreground hover:no-underline hover:text-primary transition-colors capitalize">
                   {t('admin tools')}
                 </AccordionTrigger>
                 <AccordionContent className="pl-4 pt-2 pb-0 space-y-2">
-                  <Link to="/admin" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     <LayoutDashboard className="h-4 w-4 inline-block mr-2" /> {t('admin dashboard')}
                   </Link>
-                  <Link to="/admin/manage-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-blog-posts" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     {t('blog posts')}
                   </Link>
-                  <Link to="/admin/manage-archives" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-archives" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     {t('archives')}
                   </Link>
-                  <Link to="/admin/manage-calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-calendar" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     {t('calendar')}
                   </Link>
-                  <Link to="/admin/manage-programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     {t('programs')}
                   </Link>
-                  <Link to="/admin/manage-regular-events" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-regular-events" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     {t('regular events')}
                   </Link>
-                  <Link to="/admin/manage-camps" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-camps" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     {t('camps')}
                   </Link>
-                  <Link to="/admin/manage-training-programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-training-programs" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     {t('training programs')}
                   </Link>
-                  <Link to="/admin/manage-youtube-videos" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-youtube-videos" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     {t('youtube videos')}
                   </Link>
-                  <Link to="/admin/manage-tiktok-videos" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-tiktok-videos" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     {t('tiktok videos')}
                   </Link>
-                  <Link to="/admin/manage-users" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-users" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     <Users className="h-4 w-4 inline-block mr-2" /> {t('manage users')}
                   </Link>
-                  <Link to="/admin/manage-blog-categories" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-blog-categories" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     <ListFilter className="h-4 w-4 inline-block mr-2" /> {t('blog categories')}
                   </Link>
-                  <Link to="/admin/manage-hero-images" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-hero-images" className="block text-base text-muted-foreground hover:text-foreground transition-colors capitalize" onClick={closeSheet}>
                     <Image className="h-4 w-4 inline-block mr-2" /> {t('hero images')}
                   </Link>
                 </AccordionContent>
@@ -192,12 +192,12 @@ const MobileNav: React.FC = () => {
               <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading text')}
             </div>
           ) : session ? (
-            <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors" onClick={handleLogout}>
+            <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors capitalize" onClick={handleLogout}>
               <LogOut className="h-5 w-5 mr-2" /> {t('logout button')}
             </Button>
           ) : (
             <Link to="/login" onClick={closeSheet}>
-              <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors">
+              <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors capitalize">
                 <LogIn className="h-5 w-5 mr-2" /> {t('login button')}
               </Button>
             </Link>

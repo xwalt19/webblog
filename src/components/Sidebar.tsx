@@ -39,7 +39,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon: Icon, label, isExpa
       )}
     >
       <Icon className={cn("h-5 w-5", isExpanded ? "mr-3" : "mx-auto")} />
-      {isExpanded && <span className="whitespace-nowrap">{label}</span>}
+      {isExpanded && <span className="whitespace-nowrap capitalize">{label}</span>}
     </Link>
   );
 };
