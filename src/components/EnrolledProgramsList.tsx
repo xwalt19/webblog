@@ -9,6 +9,7 @@ import { getIconComponent } from "@/utils/iconMap";
 import { CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface EnrolledProgram {
   id: string;
@@ -106,11 +107,6 @@ const EnrolledProgramsList: React.FC = () => {
     }
   };
 
-  const formatEnrolledDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-  };
-
   if (loading) {
     return <p className="text-center text-muted-foreground">{t('loading enrolled programs')}</p>;
   }
@@ -144,7 +140,7 @@ const EnrolledProgramsList: React.FC = () => {
                 </CardDescription>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                   <CalendarDays size={16} />
-                  <span>{t('enrolled on')} {formatEnrolledDate(enrollment.enrolled_at)}</span>
+                  <span>{t('enrolled on')} {formatDisplayDate(enrollment.enrolled_at)}</span>
                 </div>
               </CardHeader>
               <CardContent className="p-6 pt-0">
@@ -153,9 +149,9 @@ const EnrolledProgramsList: React.FC = () => {
                     {t('schedule label')}: <span className="font-medium">{program.schedule}</span>
                   </p>
                 )}
-                {program.price && (
+                {program.registration_fee && (
                   <p className="text-md text-foreground mb-4">
-                    {t('price label')}: <span className="font-medium">{program.price}</span>
+                    {t('registration fee label')}: <span className="font-medium">{program.registration_fee}</span>
                   </p>
                 )}
                 <Button

@@ -13,7 +13,8 @@ import { Edit, Trash, PlusCircle, PlayCircle, Upload, CheckCircle2, XCircle, Loa
 import ResponsiveImage from "@/components/ResponsiveImage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
-import { getYouTubeVideoId, getYouTubeThumbnailUrl } from "@/utils/videoUtils"; // Import video utils
+import { getYouTubeVideoId, getYouTubeThumbnailUrl } from "@/utils/videoUtils";
+import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface YouTubeVideo {
   id: string;
@@ -34,7 +35,7 @@ interface ImportedVideo {
   published_at: string;
 }
 
-const YOUTUBE_CHANNEL_HANDLE = "@procodecg2136"; // Hardcoded channel handle
+const YOUTUBE_CHANNEL_HANDLE = "@procodecg2136";
 
 const ManageYouTubeVideos: React.FC = () => {
   const { t } = useTranslation();
@@ -52,7 +53,7 @@ const ManageYouTubeVideos: React.FC = () => {
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [importedVideosCount, setImportedVideosCount] = useState(0);
   const [skippedVideosCount, setSkippedVideosCount] = useState(0);
-  const [importError, setImportError] = useState<string | null>(null); // Separate error for import process
+  const [importError, setImportError] = useState<string | null>(null);
 
   const fetchVideos = async () => {
     setIsFetching(true);
@@ -76,7 +77,6 @@ const ManageYouTubeVideos: React.FC = () => {
     }
   };
 
-  // Combined useEffect for initial load, auth check, and data fetching
   useEffect(() => {
     if (sessionLoading) {
       return;
@@ -96,7 +96,6 @@ const ManageYouTubeVideos: React.FC = () => {
 
     fetchVideos();
 
-    // Realtime subscription for YouTube videos
     const channel = supabase
       .channel('youtube_videos_admin_changes')
       .on(
@@ -104,7 +103,7 @@ const ManageYouTubeVideos: React.FC = () => {
         { event: '*', schema: 'public', table: 'youtube_videos' },
         () => {
           queryClient.invalidateQueries({ queryKey: ['youtubeVideos'] });
-          fetchVideos(); // Re-fetch data on changes
+          fetchVideos();
         }
       )
       .subscribe();
@@ -113,14 +112,13 @@ const ManageYouTubeVideos: React.FC = () => {
       supabase.removeChannel(channel);
     };
 
-  }, [session, isAdmin, sessionLoading, navigate, t, queryClient]); // Dependencies for this effect
+  }, [session, isAdmin, sessionLoading, navigate, t, queryClient]);
 
   const handleDelete = async (id: string, thumbnailUrl: string | null) => {
     if (!window.confirm(t("confirm delete youtube video"))) {
       return;
     }
     try {
-      // Optionally delete the thumbnail image from storage if it exists
       if (thumbnailUrl) {
         const filePath = thumbnailUrl.split('/storage/v1/object/public/video_thumbnails/')[1];
         if (filePath) {
@@ -141,7 +139,6 @@ const ManageYouTubeVideos: React.FC = () => {
         throw error;
       }
       toast.success(t("deleted successfully"));
-      // fetchVideos() will be triggered by realtime subscription
     } catch (err: any) {
       console.error("Error deleting video:", err);
       toast.error(t("delete error", { error: err.message }));
@@ -153,11 +150,10 @@ const ManageYouTubeVideos: React.FC = () => {
     setImportStatus(t('importing videos status'));
     setImportedVideosCount(0);
     setSkippedVideosCount(0);
-    setImportError(null); // Reset import error
+    setImportError(null);
     const importToastId = toast.loading(t('starting youtube import'));
 
     try {
-      // Step 1: Call Edge Function to fetch videos from YouTube API
       const { data, error: edgeFunctionError } = await supabase.functions.invoke('import-youtube-channel', {
         body: { channelHandle: YOUTUBE_CHANNEL_HANDLE },
       });
@@ -178,7 +174,6 @@ const ManageYouTubeVideos: React.FC = () => {
         return;
       }
 
-      // Step 2: Process and insert videos into Supabase DB
       let newVideosCount = 0;
       let existingVideosCount = 0;
 
@@ -186,16 +181,14 @@ const ManageYouTubeVideos: React.FC = () => {
         const videoId = getYouTubeVideoId(video.video_url);
         const thumbnailUrl = videoId ? getYouTubeThumbnailUrl(videoId) : null;
 
-        // Check if video already exists by video_url
         const { data: existingVideo, error: checkError } = await supabase
           .from('youtube_videos')
           .select('id')
           .eq('video_url', video.video_url)
           .single();
 
-        if (checkError && checkError.code !== 'PGRST116') { // PGRST116 means no rows found
+        if (checkError && checkError.code !== 'PGRST116') {
           console.warn(`Error checking for existing video ${video.video_url}:`, checkError.message);
-          // Continue to next video, but log the warning
         }
 
         if (existingVideo) {
@@ -209,13 +202,12 @@ const ManageYouTubeVideos: React.FC = () => {
               thumbnail_url: thumbnailUrl,
               video_url: video.video_url,
               published_at: video.published_at,
-              created_by: session?.user?.id, // Set created_by to current admin's ID
+              created_by: session?.user?.id,
               created_at: new Date().toISOString(),
             });
 
           if (insertError) {
             console.error(`Error inserting video ${video.title}:`, insertError.message);
-            // Continue to next video, but log the error
           } else {
             newVideosCount++;
           }
@@ -226,7 +218,7 @@ const ManageYouTubeVideos: React.FC = () => {
       setSkippedVideosCount(existingVideosCount);
       setImportStatus(t('youtube import summary', { new: newVideosCount, skipped: existingVideosCount }));
       toast.success(t('youtube import complete'), { id: importToastId });
-      fetchVideos(); // Refresh the list after import
+      fetchVideos();
 
     } catch (err: any) {
       console.error("Error during YouTube import:", err);
@@ -237,15 +229,6 @@ const ManageYouTubeVideos: React.FC = () => {
     }
   };
 
-  const formatDisplayDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -254,7 +237,6 @@ const ManageYouTubeVideos: React.FC = () => {
     );
   }
 
-  // If initial data is not loaded yet, show loading for the page content
   if (!isInitialDataLoaded) {
     return (
       <div className="container mx-auto py-10 px-4">
@@ -273,7 +255,6 @@ const ManageYouTubeVideos: React.FC = () => {
       </section>
 
       <div className="flex justify-end mb-6">
-        {/* Changed button to directly trigger import */}
         <Button onClick={handleImport} disabled={isImporting}>
           {isImporting ? (
             <>
@@ -366,7 +347,6 @@ const ManageYouTubeVideos: React.FC = () => {
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no youtube videos found')}</p>
       )}
 
-      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads */}
       {isFetching && videos.length > 0 && (
         <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}

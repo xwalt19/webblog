@@ -11,6 +11,7 @@ import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash, PlusCircle, Link as LinkIcon } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface CampDayLink {
   id: string;

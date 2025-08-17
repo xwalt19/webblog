@@ -8,7 +8,8 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import YouTubeVideoModal from "@/components/YouTubeVideoModal";
-import ResponsiveImage from "./ResponsiveImage"; // Import ResponsiveImage
+import ResponsiveImage from "./ResponsiveImage";
+import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface YouTubeVideo {
   id: string;
@@ -191,7 +192,7 @@ const MediaCarousel: React.FC = () => {
                     <CardHeader className="flex-grow">
                       <CardTitle className="text-xl">{item.title}</CardTitle>
                       <CardDescription className="text-sm text-muted-foreground">
-                        {new Date(item.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })} - {item.type === 'youtube' ? 'YouTube' : 'TikTok'}
+                        {formatDisplayDate(item.date)} - {item.type === 'youtube' ? 'YouTube' : 'TikTok'}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="p-6 pt-0">

@@ -15,6 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface SupabaseRegularEvent {
   id: string;
@@ -56,18 +57,6 @@ const RegularEventsClasses: React.FC = () => {
 
     fetchActivities();
   }, [t]);
-
-  const formatDisplayDateTime = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-  };
 
   if (error) {
     return (

@@ -26,6 +26,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
 import { useSession } from "@/components/SessionProvider";
 import ResponsiveImage from "@/components/ResponsiveImage";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface BlogPost {
   id: string;
@@ -57,7 +58,6 @@ const BlogPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Effect to set initial filters from URL params
   useEffect(() => {
     const urlYear = searchParams.get('year');
     const urlMonth = searchParams.get('month');
@@ -65,9 +65,9 @@ const BlogPage: React.FC = () => {
     setSelectedYear(urlYear || "all");
     setSelectedMonth(urlMonth || "all");
     
-    setSelectedTag("all"); // Reset tag filter when navigating via date
-    setSearchTerm(""); // Reset search term when navigating via date
-    setCurrentPage(1); // Always reset to first page
+    setSelectedTag("all");
+    setSearchTerm("");
+    setCurrentPage(1);
   }, [searchParams]);
 
   useEffect(() => {
@@ -140,12 +140,10 @@ const BlogPage: React.FC = () => {
     t("july month name"), t("august month name"), t("september month name"), t("october month name"), t("november month name"), t("december month name")
   ], [i18n.language]);
 
-  // Hardcoded years
   const allYears: string[] = useMemo(() => {
     return ["all", "2025", "2024", "2023"];
   }, []);
 
-  // All months regardless of selected year
   const availableMonthsForSelectedYear: string[] = useMemo(() => {
     return ["all", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   }, []);
@@ -184,11 +182,6 @@ const BlogPage: React.FC = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const formatDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
   if (error) {
@@ -237,12 +230,11 @@ const BlogPage: React.FC = () => {
           </SelectContent>
         </Select>
 
-        {/* Year Select */}
         <Select
           value={selectedYear}
           onValueChange={(value) => {
             setSelectedYear(value);
-            setSelectedMonth("all"); // Reset month when year changes
+            setSelectedMonth("all");
             setCurrentPage(1);
           }}
         >
@@ -258,14 +250,13 @@ const BlogPage: React.FC = () => {
           </SelectContent>
         </Select>
 
-        {/* Month Select */}
         <Select
           value={selectedMonth}
           onValueChange={(value) => {
             setSelectedMonth(value);
             setCurrentPage(1);
           }}
-          disabled={selectedYear === "all"} // Disable if no specific year is chosen
+          disabled={selectedYear === "all"}
         >
           <SelectTrigger className="w-full md:w-[150px]">
             <SelectValue placeholder={t('month placeholder')} />
@@ -295,7 +286,7 @@ const BlogPage: React.FC = () => {
               <CardHeader className="flex-grow">
                 <div className="flex justify-between items-center mb-2">
                   <Badge variant="secondary">{post.category}</Badge>
-                  <span className="text-sm text-muted-foreground">{formatDate(post.created_at)}</span>
+                  <span className="text-sm text-muted-foreground">{formatDisplayDateTime(post.created_at)}</span>
                 </div>
                 <CardTitle className="text-xl">{post.title}</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">{t('by')} {post.author}</CardDescription>

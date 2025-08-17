@@ -5,34 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { CalendarDays, BellRing } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { dummyFixedItems } from "@/data/fixedItems";
+import { formatDisplayDate, formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 const FixedNewsSchedule: React.FC = () => {
   const { t, i18n } = useTranslation();
 
+  // Use the new utility functions
   const formatDateTime = (isoString: string, type: "news" | "schedule") => {
-    const dateObj = new Date(isoString);
-    const dateOptions: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    };
-
-    let formattedDate = dateObj.toLocaleDateString('id-ID', dateOptions);
-
-    if (type === "schedule" && isoString.includes('T') && (dateObj.getHours() !== 0 || dateObj.getMinutes() !== 0 || dateObj.getSeconds() !== 0)) {
-      const timeOptions: Intl.DateTimeFormatOptions = {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      };
-      const formattedTime = dateObj.toLocaleTimeString('id-ID', timeOptions);
-      
-      if (i18n.language === 'id') {
-        return `${formattedDate} pukul ${formattedTime} WIB`;
-      }
-      return `${formattedDate} at ${formattedTime}`;
+    if (type === "schedule" && isoString.includes('T') && (new Date(isoString).getHours() !== 0 || new Date(isoString).getMinutes() !== 0 || new Date(isoString).getSeconds() !== 0)) {
+      return formatDisplayDateTime(isoString);
     }
-    return formattedDate;
+    return formatDisplayDate(isoString);
   };
 
   return (

@@ -12,7 +12,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Edit, Trash, PlusCircle } from "lucide-react";
 import { getIconComponent } from "@/utils/iconMap";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { CalendarEvent } from "./ManageCalendar"; // Import CalendarEvent interface
+import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
+import { CalendarEvent } from "./ManageCalendar";
 
 interface Program {
   id: string;
@@ -34,7 +35,6 @@ const ManagePrograms: React.FC = () => {
   const isAdmin = profile?.role === 'admin';
   const queryClient = useQueryClient();
 
-  // Query to fetch programs
   const { data: programs, isLoading: isProgramsLoading, isError: isProgramsError, error: programsError, isFetching: isProgramsFetching } = useQuery<Program[], Error>({
     queryKey: ['programs'],
     queryFn: async () => {
@@ -46,16 +46,13 @@ const ManagePrograms: React.FC = () => {
       if (error) throw error;
       return data || [];
     },
-    enabled: !!session && isAdmin, // Only run query if session exists and user is admin
+    enabled: !!session && isAdmin,
   });
 
-  // Mutation for deleting a program
   const deleteProgramMutation = useMutation<void, Error, string>({
     mutationFn: async (id) => {
-      // Delete related price tiers and topics first due to foreign key constraints
       await supabase.from('program_price_tiers').delete().eq('program_id', id);
       await supabase.from('program_topics').delete().eq('program_id', id);
-      // Delete associated calendar events
       await supabase.from('calendar_events').delete().eq('program_id', id);
 
       const { error } = await supabase
@@ -66,8 +63,8 @@ const ManagePrograms: React.FC = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['programs'] }); // Invalidate the query to refetch the list
-      queryClient.invalidateQueries({ queryKey: ['calendarEvents'] }); // Invalidate calendar events as well
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+      queryClient.invalidateQueries({ queryKey: ['calendarEvents'] });
       toast.success(t("deleted successfully"));
     },
     onError: (err) => {
@@ -76,7 +73,6 @@ const ManagePrograms: React.FC = () => {
     },
   });
 
-  // Authentication and authorization check
   useEffect(() => {
     if (!sessionLoading) {
       if (!session) {
@@ -89,7 +85,6 @@ const ManagePrograms: React.FC = () => {
     }
   }, [session, isAdmin, sessionLoading, navigate, t]);
 
-  // Real-time subscription for programs, price tiers, topics, and calendar events
   useEffect(() => {
     if (!session || !isAdmin) {
       return;
@@ -134,7 +129,6 @@ const ManagePrograms: React.FC = () => {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'calendar_events' },
         (payload) => {
-          // Only invalidate if the change is related to a program_id
           const newEvent = payload.new as CalendarEvent;
           const oldEvent = payload.old as CalendarEvent;
           if (newEvent?.program_id || oldEvent?.program_id) {
@@ -160,16 +154,6 @@ const ManagePrograms: React.FC = () => {
     deleteProgramMutation.mutate(id);
   };
 
-  const formatDisplayDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
-  // Render loading state based on sessionLoading OR dataLoading
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">

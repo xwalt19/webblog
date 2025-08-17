@@ -16,6 +16,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface SupabasePriceTier {
   id: string;
@@ -139,7 +140,7 @@ const ProgramsPage: React.FC = () => {
                 <CardContent className="p-0 pt-4">
                   {program.schedule && (
                     <p className="text-md text-foreground mb-2 flex items-center gap-2">
-                      {t('schedule label')}: <span className="font-medium">{program.schedule}</span>
+                      {t('schedule label')}: <span className="font-medium">{formatDisplayDateTime(program.schedule)}</span>
                     </p>
                   )}
                   {program.registration_fee && (
@@ -159,7 +160,6 @@ const ProgramsPage: React.FC = () => {
                       <h3 className="text-lg font-semibold text-primary mb-2">{t('price details')}</h3>
                       <Card className="mb-4 shadow-sm">
                         <CardHeader className="p-3 pb-2">
-                          {/* Removed CardTitle that displayed header_key_col2 */}
                         </CardHeader>
                         <CardContent className="p-0">
                           <Table className="w-full">

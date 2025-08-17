@@ -23,7 +23,8 @@ import {
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
 import ResponsiveImage from "@/components/ResponsiveImage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface BlogPost {
   id: string;
@@ -34,16 +35,16 @@ interface BlogPost {
   category: string | null;
   author: string | null;
   tags: string[] | null;
-  pdf_link: string | null; // To filter out archives
+  pdf_link: string | null;
 }
 
-const POSTS_PER_PAGE = 10; // Number of posts to display per page
+const POSTS_PER_PAGE = 10;
 
 const ManageBlogPosts: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { getTranslatedTag } = useTranslatedTag();
   const navigate = useNavigate();
-  const { session } = useSession(); // Only need session for created_by in mutations
+  const { session } = useSession();
   const queryClient = useQueryClient();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,16 +52,13 @@ const ManageBlogPosts: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // State to control when data fetching queries should run
   const [shouldFetchData, setShouldFetchData] = useState(false);
 
-  // Use the new admin page logic hook
   const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
     isAdminRequired: true,
-    onAuthSuccess: () => setShouldFetchData(true), // Set flag to true when auth is successful
+    onAuthSuccess: () => setShouldFetchData(true),
   });
 
-  // Query to fetch all categories dynamically
   const { data: allCategories = [], isLoading: isCategoriesLoading, isError: isCategoriesError, error: categoriesError } = useQuery<string[], Error>({
     queryKey: ['blogCategories'],
     queryFn: async () => {
@@ -72,18 +70,17 @@ const ManageBlogPosts: React.FC = () => {
       if (error) throw error;
       return ["all", ...data.map(cat => cat.name)];
     },
-    enabled: shouldFetchData, // Only run query if auth is successful
-    staleTime: Infinity, // Categories don't change often
+    enabled: shouldFetchData,
+    staleTime: Infinity,
   });
 
-  // Query to fetch blog posts
   const { data: blogPostsData, isLoading: isBlogPostsLoading, isError: isBlogPostsError, error: blogPostsError } = useQuery<{ posts: BlogPost[], count: number }, Error>({
     queryKey: ['blogPosts', searchTerm, selectedCategory, selectedTag, currentPage],
     queryFn: async () => {
       let query = supabase
         .from('blog_posts')
         .select('*', { count: 'exact' })
-        .is('pdf_link', null); // Only fetch actual blog posts (no PDF link)
+        .is('pdf_link', null);
 
       if (searchTerm) {
         query = query.or(`title.ilike.%${searchTerm}%,excerpt.ilike.%${searchTerm}%`);
@@ -107,21 +104,20 @@ const ManageBlogPosts: React.FC = () => {
       }
       return { posts: data || [], count: count || 0 };
     },
-    enabled: shouldFetchData, // Only run query if auth is successful
-    placeholderData: (previousData) => previousData, // Keep previous data while fetching new
+    enabled: shouldFetchData,
+    placeholderData: (previousData) => previousData,
   });
 
   const blogPosts = blogPostsData?.posts || [];
   const totalPostsCount = blogPostsData?.count || 0;
 
-  // Query to fetch all possible tags (for filter dropdown)
   const { data: allPossibleTags = [] } = useQuery<string[], Error>({
-    queryKey: ['all_tags_blog_posts'], // Separate query key for all tags
+    queryKey: ['all_tags_blog_posts'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('blog_posts')
         .select('tags')
-        .is('pdf_link', null); // Only get tags from actual blog posts
+        .is('pdf_link', null);
       
       if (error) throw error;
 
@@ -129,15 +125,13 @@ const ManageBlogPosts: React.FC = () => {
       data.forEach(post => {
         post.tags?.forEach((tag: string) => uniqueTags.add(cleanTagForStorage(tag)));
       });
-      return Array.from(uniqueTags).sort();
+      return ["all", ...Array.from(uniqueTags).sort()]; // Add "all" option here
     },
-    enabled: shouldFetchData, // Only run query if auth is successful
+    enabled: shouldFetchData,
   });
 
-  // Mutation for deleting blog post
   const deleteBlogPostMutation = useMutation<void, Error, { id: string, imageUrl: string | null }>({
     mutationFn: async ({ id, imageUrl }) => {
-      // Helper function to delete file from storage
       const deleteFileFromStorage = async (url: string, bucket: string) => {
         try {
           const path = url.split(`/${bucket}/`)[1];
@@ -174,9 +168,8 @@ const ManageBlogPosts: React.FC = () => {
     },
   });
 
-  // Realtime subscription (separate useEffect as it's a one-time setup)
   useEffect(() => {
-    if (!isAuthenticatedAndAuthorized) { // Only subscribe if authenticated and authorized
+    if (!isAuthenticatedAndAuthorized) {
       return;
     }
 
@@ -186,9 +179,7 @@ const ManageBlogPosts: React.FC = () => {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'blog_posts' },
         (payload) => {
-          // Only process changes for non-PDF posts (actual blog posts)
           if ((payload.new as BlogPost)?.pdf_link === null || (payload.old as BlogPost)?.pdf_link === null) {
-            // Invalidate the query to refetch data and update UI
             queryClient.invalidateQueries({ queryKey: ['blogPosts'] });
             queryClient.invalidateQueries({ queryKey: ['all_tags_blog_posts'] });
           }
@@ -199,25 +190,13 @@ const ManageBlogPosts: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [isAuthenticatedAndAuthorized, queryClient]); // Depend on isAuthenticatedAndAuthorized
+  }, [isAuthenticatedAndAuthorized, queryClient]);
 
   const handleDelete = (id: string, imageUrl: string | null) => {
     if (!window.confirm(t("confirm delete blog post"))) {
       return;
     }
     deleteBlogPostMutation.mutate({ id, imageUrl });
-  };
-
-  const formatDisplayDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false, // Use 24-hour format
-    });
   };
 
   const totalPages = Math.ceil(totalPostsCount / POSTS_PER_PAGE);
@@ -227,7 +206,6 @@ const ManageBlogPosts: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Render loading state based on auth loading or data loading
   if (isLoadingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -236,12 +214,10 @@ const ManageBlogPosts: React.FC = () => {
     );
   }
 
-  // If not authenticated/authorized, the hook will navigate, so we return null here
   if (!isAuthenticatedAndAuthorized) {
     return null;
   }
 
-  // Show loading for data fetching after auth is confirmed
   if (isBlogPostsLoading || isCategoriesLoading) {
     return (
       <div className="container mx-auto py-10 px-4">
@@ -282,7 +258,7 @@ const ManageBlogPosts: React.FC = () => {
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
-            setCurrentPage(1); // Reset to first page on search
+            setCurrentPage(1);
           }}
           className="w-full md:max-w-xs"
         />
@@ -292,7 +268,7 @@ const ManageBlogPosts: React.FC = () => {
             value={selectedCategory}
             onValueChange={(value) => {
               setSelectedCategory(value);
-              setCurrentPage(1); // Reset to first page on filter change
+              setCurrentPage(1);
             }}
           >
             <SelectTrigger className="w-full sm:w-[180px]">
@@ -311,7 +287,7 @@ const ManageBlogPosts: React.FC = () => {
             value={selectedTag}
             onValueChange={(value) => {
               setSelectedTag(value);
-              setCurrentPage(1); // Reset to first page on filter change
+              setCurrentPage(1);
             }}
           >
             <SelectTrigger className="w-full sm:w-[180px]">
@@ -353,7 +329,7 @@ const ManageBlogPosts: React.FC = () => {
                     <TableCell className="font-medium">{post.title}</TableCell>
                     <TableCell>{post.category}</TableCell>
                     <TableCell>{post.author}</TableCell>
-                    <TableCell>{formatDisplayDate(post.created_at)}</TableCell>
+                    <TableCell>{formatDisplayDateTime(post.created_at)}</TableCell>
                     <TableCell className="text-right">
                       <Link to={`/admin/blog-posts/${post.id}/edit`}>
                         <Button variant="ghost" size="icon" className="mr-2">

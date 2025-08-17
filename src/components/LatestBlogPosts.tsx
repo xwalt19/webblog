@@ -8,7 +8,8 @@ import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag } from "@/utils/i18nUtils";
-import ResponsiveImage from "./ResponsiveImage"; // Import ResponsiveImage
+import ResponsiveImage from "./ResponsiveImage";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface BlogPost {
   id: string;
@@ -80,22 +81,6 @@ const LatestBlogPosts: React.FC = () => {
     fetchLatestPosts();
   }, [t]);
 
-  const formatDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
-  };
-
-  if (error) {
-    return (
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest blog posts title')}</h2>
-          <p className="text-center text-destructive">{error}</p>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
@@ -118,7 +103,7 @@ const LatestBlogPosts: React.FC = () => {
                       <CardHeader className="flex-grow">
                         <div className="flex justify-between items-center mb-2">
                           <Badge variant="secondary">{post.category}</Badge>
-                          <span className="text-sm text-muted-foreground">{formatDate(post.created_at)}</span>
+                          <span className="text-sm text-muted-foreground">{formatDisplayDateTime(post.created_at)}</span>
                         </div>
                         <CardTitle className="text-xl">{post.title}</CardTitle>
                         <CardDescription className="text-sm text-muted-foreground">{t('by')} {post.author}</CardDescription>

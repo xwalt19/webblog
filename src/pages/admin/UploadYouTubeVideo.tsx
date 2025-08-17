@@ -11,12 +11,12 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
-import { Calendar as CalendarIcon, Search } from "lucide-react"; // Added Search icon
+import { Calendar as CalendarIcon, Search } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { getYouTubeVideoId, getYouTubeThumbnailUrl } from "@/utils/videoUtils"; // Import new video utils
+import { getYouTubeVideoId, getYouTubeThumbnailUrl } from "@/utils/videoUtils";
 
 const UploadYouTubeVideo: React.FC = () => {
   const { id: videoId } = useParams<{ id: string }>();
@@ -30,7 +30,7 @@ const UploadYouTubeVideo: React.FC = () => {
   const [publishedAt, setPublishedAt] = useState<Date | undefined>(undefined);
   const [uploading, setUploading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
-  const [fetchingDetails, setFetchingDetails] = useState(false); // New state for fetching details
+  const [fetchingDetails, setFetchingDetails] = useState(false);
 
   useEffect(() => {
     if (!sessionLoading) {
@@ -107,7 +107,6 @@ const UploadYouTubeVideo: React.FC = () => {
       if (data) {
         setTitle(data.title || "");
         setDescription(data.description || "");
-        // Thumbnail URL is handled by getYouTubeThumbnailUrl on save
         toast.success(t('video details fetched successfully'), { id: fetchToastId });
       } else {
         toast.error(t('no details found'), { id: fetchToastId });
@@ -143,20 +142,18 @@ const UploadYouTubeVideo: React.FC = () => {
         video_url: videoUrl,
         published_at: publishedAt.toISOString(),
         thumbnail_url: currentThumbnailUrl,
-        created_by: session?.user?.id, // Always include created_by
+        created_by: session?.user?.id,
         ...(videoId ? {} : { created_at: new Date().toISOString() }),
       };
 
       let error;
       if (videoId) {
-        // Update existing video
         const { error: updateError } = await supabase
           .from('youtube_videos')
           .update(videoData)
           .eq('id', videoId);
         error = updateError;
       } else {
-        // Insert new video
         const { error: insertError } = await supabase
           .from('youtube_videos')
           .insert([videoData]);
@@ -169,14 +166,13 @@ const UploadYouTubeVideo: React.FC = () => {
 
       toast.success(videoId ? t("updated successfully") : t("added successfully"));
       
-      // Reset form or navigate
       if (!videoId) {
         setTitle("");
         setDescription("");
         setVideoUrl("");
         setPublishedAt(undefined);
       } else {
-        navigate('/admin/manage-youtube-videos'); // Go back to list after edit
+        navigate('/admin/manage-youtube-videos');
       }
 
     } catch (err: any) {
@@ -300,7 +296,6 @@ const UploadYouTubeVideo: React.FC = () => {
                 </PopoverContent>
               </Popover>
             </div>
-            {/* Thumbnail preview (optional, based on auto-generated URL) */}
             {videoUrl && getYouTubeVideoId(videoUrl) && (
               <div>
                 <Label>{t('thumbnail preview')}</Label>

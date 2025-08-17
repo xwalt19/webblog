@@ -12,14 +12,14 @@ import { cleanTagForStorage } from "@/utils/i18nUtils";
 import ArchiveTable from "@/components/admin/ArchiveTable";
 import ArchiveFormDialog from "@/components/admin/ArchiveFormDialog";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
 
 interface ArchivePost {
   id: string;
   title: string;
   excerpt: string | null;
   created_at: string;
-  image_url: string | null; // Can be null for archives
+  image_url: string | null;
   category: string | null;
   author: string | null;
   tags: string[] | null;
@@ -34,50 +34,46 @@ interface ArchivePostFormData {
   author: string;
   tags: string[];
   pdfFile: File | null;
-  imageFile: File | null; // Added for image upload
+  imageFile: File | null;
   createdAt: Date | undefined;
-  initialPdfLink: string | null; // Untuk menyimpan link PDF yang sudah ada saat edit
-  initialImageUrl: string | null; // Added for existing image URL
+  initialPdfLink: string | null;
+  initialImageUrl: string | null;
 }
 
-const MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
-const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+const MAX_PDF_SIZE_BYTES = 10 * 1024 * 1024;
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 
 const ManageArchives: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { session } = useSession(); // Only need session for created_by in mutations
+  const { session } = useSession();
   const queryClient = useQueryClient();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentArchiveDataForForm, setCurrentArchiveDataForForm] = useState<ArchivePostFormData | null>(null);
 
-  // State to control when data fetching queries should run
   const [shouldFetchData, setShouldFetchData] = useState(false);
 
-  // Use the new admin page logic hook
   const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
     isAdminRequired: true,
-    onAuthSuccess: () => setShouldFetchData(true), // Set flag to true when auth is successful
+    onAuthSuccess: () => setShouldFetchData(true),
   });
 
-  // Query to fetch archives
   const { data: archives, isLoading: isArchivesLoading, isError: isArchivesError, error: archivesError } = useQuery<ArchivePost[], Error>({
     queryKey: ['archives'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('blog_posts')
         .select('*')
-        .not('pdf_link', 'is', null) // Only fetch posts with a PDF link
+        .not('pdf_link', 'is', null)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       return data || [];
     },
-    enabled: shouldFetchData, // Only run query if auth is successful
+    enabled: shouldFetchData,
   });
 
-  // Query to fetch all possible tags
   const { data: allPossibleTags = [], isLoading: isTagsLoading, isError: isTagsError, error: tagsError } = useQuery<string[], Error>({
     queryKey: ['all_tags'],
     queryFn: async () => {
@@ -93,16 +89,14 @@ const ManageArchives: React.FC = () => {
       });
       return Array.from(uniqueTags).sort();
     },
-    enabled: shouldFetchData, // Only run query if auth is successful
+    enabled: shouldFetchData,
   });
 
-  // Mutation for saving (add/edit) archive
   const saveArchiveMutation = useMutation<void, Error, Omit<ArchivePostFormData, 'initialPdfLink' | 'initialImageUrl'>>({
     mutationFn: async (formData) => {
       let newPdfLink = formData.id ? currentArchiveDataForForm?.initialPdfLink || null : null;
       let newImageUrl = formData.id ? currentArchiveDataForForm?.initialImageUrl || null : null;
 
-      // Helper function to upload file
       const uploadFile = async (file: File, bucket: string, folder: string) => {
         const fileExtension = file.name.split('.').pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
@@ -123,7 +117,6 @@ const ManageArchives: React.FC = () => {
         return publicUrlData.publicUrl;
       };
 
-      // Helper function to delete file from storage
       const deleteFileFromStorage = async (url: string, bucket: string) => {
         try {
           const path = url.split(`/${bucket}/`)[1];
@@ -138,7 +131,6 @@ const ManageArchives: React.FC = () => {
         }
       };
 
-      // Handle PDF upload/update
       if (formData.pdfFile) {
         if (formData.id && currentArchiveDataForForm?.initialPdfLink) {
           await deleteFileFromStorage(currentArchiveDataForForm.initialPdfLink, 'pdfs');
@@ -148,7 +140,6 @@ const ManageArchives: React.FC = () => {
         newPdfLink = currentArchiveDataForForm?.initialPdfLink || null;
       }
 
-      // Handle Image upload/update
       if (formData.imageFile) {
         if (formData.id && currentArchiveDataForForm?.initialImageUrl) {
           await deleteFileFromStorage(currentArchiveDataForForm.initialImageUrl, 'images');
@@ -165,8 +156,8 @@ const ManageArchives: React.FC = () => {
         author: formData.author,
         tags: formData.tags,
         pdf_link: newPdfLink,
-        image_url: newImageUrl, // Save image URL
-        content: null, // Archives do not have content
+        image_url: newImageUrl,
+        content: null,
         created_at: formData.createdAt?.toISOString() || new Date().toISOString(),
         ...(formData.id ? {} : { created_by: session?.user?.id }),
       };
@@ -190,7 +181,7 @@ const ManageArchives: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ['archives'] });
       queryClient.invalidateQueries({ queryKey: ['all_tags'] });
       toast.success(variables.id ? t("updated successfully") : t("added successfully"));
-      setIsDialogOpen(false); // Close dialog on success
+      setIsDialogOpen(false);
     },
     onError: (err) => {
       console.error("Error saving archive:", err);
@@ -198,10 +189,8 @@ const ManageArchives: React.FC = () => {
     },
   });
 
-  // Mutation for deleting archive
   const deleteArchiveMutation = useMutation<void, Error, { id: string, pdfLink: string | null, imageUrl: string | null }>({
     mutationFn: async ({ id, pdfLink, imageUrl }) => {
-      // Helper function to delete file from storage
       const deleteFileFromStorage = async (url: string, bucket: string) => {
         try {
           const path = url.split(`/${bucket}/`)[1];
@@ -219,7 +208,7 @@ const ManageArchives: React.FC = () => {
       if (pdfLink) {
         await deleteFileFromStorage(pdfLink, 'pdfs');
       }
-      if (imageUrl) { // Delete image if it exists
+      if (imageUrl) {
         await deleteFileFromStorage(imageUrl, 'images');
       }
 
@@ -241,9 +230,8 @@ const ManageArchives: React.FC = () => {
     },
   });
 
-  // Realtime subscription (separate useEffect as it's a one-time setup)
   useEffect(() => {
-    if (!isAuthenticatedAndAuthorized) { // Only subscribe if authenticated and authorized
+    if (!isAuthenticatedAndAuthorized) {
       return;
     }
 
@@ -253,9 +241,7 @@ const ManageArchives: React.FC = () => {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'blog_posts' },
         (payload) => {
-          // Only process changes for PDF posts (archives)
           if ((payload.new as ArchivePost)?.pdf_link !== null || (payload.old as ArchivePost)?.pdf_link !== null) {
-            // Invalidate the query to refetch data and update UI
             queryClient.invalidateQueries({ queryKey: ['archives'] });
             queryClient.invalidateQueries({ queryKey: ['all_tags'] });
           }
@@ -266,10 +252,10 @@ const ManageArchives: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [isAuthenticatedAndAuthorized, queryClient]); // Depend on isAuthenticatedAndAuthorized
+  }, [isAuthenticatedAndAuthorized, queryClient]);
 
   const openDialogForAdd = () => {
-    setCurrentArchiveDataForForm(null); // Clear data for new entry
+    setCurrentArchiveDataForForm(null);
     setIsDialogOpen(true);
   };
 
@@ -281,16 +267,15 @@ const ManageArchives: React.FC = () => {
       category: archive.category || "",
       author: archive.author || "",
       tags: archive.tags?.map(cleanTagForStorage) || [],
-      pdfFile: null, // File input is cleared for edit, user must re-upload
-      imageFile: null, // Image file input is cleared for edit
+      pdfFile: null,
+      imageFile: null,
       createdAt: archive.created_at ? new Date(archive.created_at) : undefined,
       initialPdfLink: archive.pdf_link || null,
-      initialImageUrl: archive.image_url || null, // Pass existing image URL
+      initialImageUrl: archive.image_url || null,
     });
     setIsDialogOpen(true);
   };
 
-  // Render loading state based on auth loading or data loading
   if (isLoadingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -299,12 +284,10 @@ const ManageArchives: React.FC = () => {
     );
   }
 
-  // If not authenticated/authorized, the hook will navigate, so we return null here
   if (!isAuthenticatedAndAuthorized) {
     return null;
   }
 
-  // Show loading for data fetching after auth is confirmed
   if (isArchivesLoading || isTagsLoading) {
     return (
       <div className="container mx-auto py-10 px-4">
@@ -354,7 +337,7 @@ const ManageArchives: React.FC = () => {
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         initialData={currentArchiveDataForForm}
-        onSave={saveArchiveMutation.mutateAsync} // Use mutateAsync for await
+        onSave={saveArchiveMutation.mutateAsync}
         allPossibleTags={allPossibleTags}
         MAX_PDF_SIZE_BYTES={MAX_PDF_SIZE_BYTES}
         MAX_IMAGE_SIZE_BYTES={MAX_IMAGE_SIZE_BYTES}

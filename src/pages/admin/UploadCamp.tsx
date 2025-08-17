@@ -18,9 +18,10 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface CampDayLink {
-  id?: string; // Optional for new links
+  id?: string;
   label: string;
   url: string;
 }
@@ -32,7 +33,7 @@ const UploadCamp: React.FC = () => {
   const { session, profile, loading: sessionLoading } = useSession();
   
   const [title, setTitle] = useState("");
-  const [dates, setDates] = useState<Date | undefined>(undefined); // Changed to Date | undefined
+  const [dates, setDates] = useState<Date | undefined>(undefined);
   const [description, setDescription] = useState("");
   const [dayLinks, setDayLinks] = useState<CampDayLink[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -69,14 +70,14 @@ const UploadCamp: React.FC = () => {
 
       if (campData) {
         setTitle(campData.title || "");
-        setDates(campData.dates ? new Date(campData.dates) : undefined); // Parse dates to Date
+        setDates(campData.dates ? new Date(campData.dates) : undefined);
         setDescription(campData.description || "");
 
         const { data: linksData, error: linksError } = await supabase
           .from('camp_day_links')
           .select('*')
           .eq('camp_id', id)
-          .order('label', { ascending: true }); // Order by label for consistent display
+          .order('label', { ascending: true });
 
         if (linksError) throw linksError;
         setDayLinks(linksData || []);
@@ -118,7 +119,7 @@ const UploadCamp: React.FC = () => {
     try {
       const campData = {
         title,
-        dates: dates ? dates.toISOString() : null, // Convert Date to ISO string
+        dates: dates ? dates.toISOString() : null,
         description,
         ...(campId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
       };
@@ -145,10 +146,7 @@ const UploadCamp: React.FC = () => {
       if (error) throw error;
       if (!currentCampId) throw new Error("Camp ID not found after save.");
 
-      // Handle day links
-      // Delete existing links for this camp
       await supabase.from('camp_day_links').delete().eq('camp_id', currentCampId);
-      // Insert new/updated links
       if (dayLinks.length > 0) {
         const linksToInsert = dayLinks.map(link => ({
           ...link,
@@ -224,7 +222,7 @@ const UploadCamp: React.FC = () => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dates ? format(dates, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                    {dates ? formatDisplayDateTime(dates.toISOString()) : <span>{t('pick date and time')}</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">

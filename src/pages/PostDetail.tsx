@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag } from "@/utils/i18nUtils";
-import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
+import ResponsiveImage from "@/components/ResponsiveImage";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface BlogPost {
   id: string;
@@ -57,11 +58,6 @@ const PostDetail: React.FC = () => {
     }
   }, [id, t]);
 
-  const formatDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
-  };
-
   if (error) {
     return (
       <div className="text-center py-10">
@@ -74,7 +70,7 @@ const PostDetail: React.FC = () => {
     );
   }
 
-  if (!post && !loading) { // Only show "post not found" if not loading and no post
+  if (!post && !loading) {
     return (
       <div className="text-center py-10">
         <h2 className="text-3xl font-bold mb-4">{t('post not found title')}</h2>
@@ -88,13 +84,13 @@ const PostDetail: React.FC = () => {
 
   return (
     <Card className="max-w-3xl mx-auto">
-      {loading ? ( // Show loading only for the card content if data is still fetching
+      {loading ? (
         <div className="p-6 text-center text-muted-foreground">{t('loading post')}</div>
       ) : (
         <>
           <CardHeader>
             <CardTitle className="text-3xl font-bold">{post?.title}</CardTitle>
-            <p className="text-sm text-muted-foreground">{post?.created_at ? formatDate(post.created_at) : ''}</p>
+            <p className="text-sm text-muted-foreground">{post?.created_at ? formatDisplayDateTime(post.created_at) : ''}</p>
             <div className="flex flex-wrap gap-1 mt-2">
               {post?.tags?.map(tag => (
                 <Badge key={tag} variant="outline" className="text-xs">{getTranslatedTag(tag)}</Badge>

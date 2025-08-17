@@ -8,14 +8,15 @@ import { FileText, Edit, Trash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { useTranslatedTag } from "@/utils/i18nUtils";
-import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
+import ResponsiveImage from "@/components/ResponsiveImage";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface ArchivePost {
   id: string;
   title: string;
   excerpt: string | null;
   created_at: string;
-  image_url: string | null; // Added image_url
+  image_url: string | null;
   category: string | null;
   author: string | null;
   tags: string[] | null;
@@ -27,7 +28,7 @@ interface ArchiveTableProps {
   dataLoading: boolean;
   error: string | null;
   onEdit: (archive: ArchivePost) => void;
-  onDelete: (id: string, pdfLink: string | null, imageUrl: string | null) => void; // Updated signature
+  onDelete: (id: string, pdfLink: string | null, imageUrl: string | null) => void;
 }
 
 const ArchiveTable: React.FC<ArchiveTableProps> = ({
@@ -39,18 +40,6 @@ const ArchiveTable: React.FC<ArchiveTableProps> = ({
 }) => {
   const { t } = useTranslation();
   const { getTranslatedTag } = useTranslatedTag();
-
-  const formatDisplayDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-  };
 
   if (dataLoading) {
     return <p className="text-center text-muted-foreground">{t('loading status')}</p>;
@@ -95,7 +84,7 @@ const ArchiveTable: React.FC<ArchiveTableProps> = ({
                     <span className="text-muted-foreground">-</span>
                   )}
                 </TableCell>
-                <TableCell>{formatDisplayDate(archive.created_at)}</TableCell>
+                <TableCell>{formatDisplayDateTime(archive.created_at)}</TableCell>
                 <TableCell>
                   {archive.pdf_link ? (
                     <a href={archive.pdf_link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex items-center gap-1">

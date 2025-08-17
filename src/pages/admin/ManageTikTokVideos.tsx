@@ -3,14 +3,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card"; // Removed CardHeader, CardTitle, CardDescription
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash, PlusCircle, PlayCircle } from "lucide-react";
-import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
+import ResponsiveImage from "@/components/ResponsiveImage";
+import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface TikTokVideo {
   id: string;
@@ -24,15 +25,15 @@ interface TikTokVideo {
 }
 
 const ManageTikTokVideos: React.FC = () => {
-  const { t } = useTranslation(); // Removed i18n as it's not directly used here
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';
 
   const [videos, setVideos] = useState<TikTokVideo[]>([]);
-  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
+  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetchVideos = async () => {
     setIsFetching(true);
@@ -52,11 +53,10 @@ const ManageTikTokVideos: React.FC = () => {
       setError(t("fetch data error", { error: err.message }));
     } finally {
       setIsFetching(false);
-      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
+      setIsInitialDataLoaded(true);
     }
   };
 
-  // Combined useEffect for initial load, auth check, and data fetching
   useEffect(() => {
     if (sessionLoading) {
       return;
@@ -76,14 +76,13 @@ const ManageTikTokVideos: React.FC = () => {
 
     fetchVideos();
 
-  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
+  }, [session, isAdmin, sessionLoading, navigate, t]);
 
   const handleDelete = async (id: string, thumbnailUrl: string | null) => {
     if (!window.confirm(t("confirm delete tiktok video"))) {
       return;
     }
     try {
-      // Optionally delete the thumbnail image from storage if it exists
       if (thumbnailUrl) {
         const filePath = thumbnailUrl.split('/storage/v1/object/public/video_thumbnails/')[1];
         if (filePath) {
@@ -104,20 +103,11 @@ const ManageTikTokVideos: React.FC = () => {
         throw error;
       }
       toast.success(t("deleted successfully"));
-      fetchVideos(); // Refresh the list
+      fetchVideos();
     } catch (err: any) {
       console.error("Error deleting video:", err);
       toast.error(t("delete error", { error: err.message }));
     }
-  };
-
-  const formatDisplayDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', { // Changed to 'id-ID'
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
   };
 
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
@@ -128,7 +118,6 @@ const ManageTikTokVideos: React.FC = () => {
     );
   }
 
-  // If initial data is not loaded yet, show loading for the page content
   if (!isInitialDataLoaded) {
     return (
       <div className="container mx-auto py-10 px-4">
@@ -208,7 +197,6 @@ const ManageTikTokVideos: React.FC = () => {
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no tiktok videos found')}</p>
       )}
 
-      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads */}
       {isFetching && videos.length > 0 && (
         <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}

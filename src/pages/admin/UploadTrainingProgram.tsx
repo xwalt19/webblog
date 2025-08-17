@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 const UploadTrainingProgram: React.FC = () => {
   const { id: programId } = useParams<{ id: string }>();
@@ -26,7 +27,7 @@ const UploadTrainingProgram: React.FC = () => {
   const { session, profile, loading: sessionLoading } = useSession();
   
   const [title, setTitle] = useState("");
-  const [dates, setDates] = useState<Date | undefined>(undefined); // Changed to Date | undefined
+  const [dates, setDates] = useState<Date | undefined>(undefined);
   const [description, setDescription] = useState("");
   const [iconName, setIconName] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -65,7 +66,7 @@ const UploadTrainingProgram: React.FC = () => {
 
       if (data) {
         setTitle(data.title || "");
-        setDates(data.dates ? new Date(data.dates) : undefined); // Parse dates to Date
+        setDates(data.dates ? new Date(data.dates) : undefined);
         setDescription(data.description || "");
         setIconName(data.icon_name || "");
       }
@@ -91,7 +92,7 @@ const UploadTrainingProgram: React.FC = () => {
     try {
       const programData = {
         title,
-        dates: dates ? dates.toISOString() : null, // Convert Date to ISO string
+        dates: dates ? dates.toISOString() : null,
         description,
         icon_name: iconName || null,
         ...(programId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
@@ -177,7 +178,7 @@ const UploadTrainingProgram: React.FC = () => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dates ? format(dates, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                    {dates ? formatDisplayDateTime(dates.toISOString()) : <span>{t('pick date and time')}</span>}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0">

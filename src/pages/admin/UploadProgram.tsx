@@ -32,7 +32,6 @@ interface Topic {
   description: string;
 }
 
-// Define Zod schema for the main program form fields
 const programSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters." }).max(255, { message: "Title must not exceed 255 characters." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }).max(1000, { message: "Description must not exceed 1000 characters." }),
@@ -63,7 +62,7 @@ const UploadProgram: React.FC = () => {
       schedule: undefined,
       registrationFee: "",
       price: "",
-      type: "kids", // Default value
+      type: "kids",
       iconName: "",
     },
   });
@@ -135,7 +134,6 @@ const UploadProgram: React.FC = () => {
     const toastId = toast.loading(programId ? t("updating status") : t("uploading status"));
 
     try {
-      // Manual validation for priceTables and topics
       if (priceTables.some(table => table.some(row => !row.header_key_col1 || !row.header_key_col2 || !row.participants_key || !row.price))) {
         toast.error(t("price table fields missing"));
         return;
@@ -178,14 +176,13 @@ const UploadProgram: React.FC = () => {
       if (error) throw error;
       if (!currentProgramId) throw new Error("Program ID not found after save.");
 
-      // Handle calendar event creation/update
       if (values.schedule) {
         const calendarEventData = {
           title: values.title,
           description: values.description,
           date: values.schedule.toISOString(),
           created_by: session?.user?.id,
-          program_id: currentProgramId, // Link to program
+          program_id: currentProgramId,
         };
 
         const { data: existingEvent, error: fetchEventError } = await supabase
@@ -194,26 +191,23 @@ const UploadProgram: React.FC = () => {
           .eq('program_id', currentProgramId)
           .single();
 
-        if (fetchEventError && fetchEventError.code !== 'PGRST116') { // PGRST116 means no rows found
+        if (fetchEventError && fetchEventError.code !== 'PGRST116') {
           throw fetchEventError;
         }
 
         if (existingEvent) {
-          // Update existing calendar event
           const { error: updateEventError } = await supabase
             .from('calendar_events')
             .update(calendarEventData)
             .eq('id', existingEvent.id);
           if (updateEventError) throw updateEventError;
         } else {
-          // Insert new calendar event
           const { error: insertEventError } = await supabase
             .from('calendar_events')
             .insert([calendarEventData]);
           if (insertEventError) throw insertEventError;
         }
       } else {
-        // If schedule is cleared, delete associated calendar event
         await supabase
           .from('calendar_events')
           .delete()

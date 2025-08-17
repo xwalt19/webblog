@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react"; // Removed useMemo
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-// import { Separator } from "@/components/ui/separator"; // Removed unused import
 import { CalendarDays, Code } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
+import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface SupabaseCampDayLink {
   id: string;
@@ -26,7 +26,7 @@ interface SupabaseCamp {
   description: string;
   created_by: string | null;
   created_at: string;
-  camp_day_links: SupabaseCampDayLink[]; // Joined data
+  camp_day_links: SupabaseCampDayLink[];
 }
 
 const Camps: React.FC = () => {
@@ -64,9 +64,6 @@ const Camps: React.FC = () => {
     toast.info(t('details coming soon', { campTitle, dayLabel }));
   };
 
-  // Removed the explicit loading return block here.
-  // The component will now render its structure immediately.
-
   if (error) {
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -85,7 +82,7 @@ const Camps: React.FC = () => {
       </section>
 
       <section className="mb-16">
-        {loading ? ( // Show loading only for this section if data is still fetching
+        {loading ? (
           <p className="text-center text-muted-foreground">{t('loading camps')}</p>
         ) : camps.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -98,7 +95,7 @@ const Camps: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <CalendarDays size={16} />
-                    <span>{camp.dates}</span>
+                    <span>{formatDisplayDate(camp.dates)}</span>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow p-6 pt-0">

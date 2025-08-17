@@ -96,21 +96,19 @@ const UploadTikTokVideo: React.FC = () => {
         description: description || null,
         video_url: videoUrl,
         published_at: publishedAt.toISOString(),
-        thumbnail_url: null, // TikTok thumbnails are not automatically extracted
-        created_by: session?.user?.id, // Always include created_by
+        thumbnail_url: null,
+        created_by: session?.user?.id,
         ...(videoId ? {} : { created_at: new Date().toISOString() }),
       };
 
       let error;
       if (videoId) {
-        // Update existing video
         const { error: updateError } = await supabase
           .from('tiktok_videos')
           .update(videoData)
           .eq('id', videoId);
         error = updateError;
       } else {
-        // Insert new video
         const { error: insertError } = await supabase
           .from('tiktok_videos')
           .insert([videoData]);
@@ -123,14 +121,13 @@ const UploadTikTokVideo: React.FC = () => {
 
       toast.success(videoId ? t("updated successfully") : t("added successfully"));
       
-      // Reset form or navigate
       if (!videoId) {
         setTitle("");
         setDescription("");
         setVideoUrl("");
         setPublishedAt(undefined);
       } else {
-        navigate('/admin/manage-tiktok-videos'); // Go back to list after edit
+        navigate('/admin/manage-tiktok-videos');
       }
 
     } catch (err: any) {

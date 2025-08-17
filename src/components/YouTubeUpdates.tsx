@@ -14,7 +14,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import YouTubeVideoModal from "@/components/YouTubeVideoModal";
-import ResponsiveImage from "./ResponsiveImage"; // Import ResponsiveImage
+import ResponsiveImage from "./ResponsiveImage";
+import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface YouTubeVideo {
   id: string;
@@ -87,11 +88,6 @@ const YouTubeUpdates: React.FC = () => {
     setCurrentPage(1);
   }, [searchTerm]);
 
-  const formatDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-  };
-
   const openVideoInModal = (video: YouTubeVideo) => {
     setSelectedVideoForModal(video);
     setIsModalOpen(true);
@@ -130,7 +126,7 @@ const YouTubeUpdates: React.FC = () => {
                 <CardHeader className="flex-grow">
                   <CardTitle className="text-xl">{video.title}</CardTitle>
                   <CardDescription className="text-sm text-muted-foreground">
-                    {formatDate(video.published_at)}
+                    {formatDisplayDate(video.published_at)}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">

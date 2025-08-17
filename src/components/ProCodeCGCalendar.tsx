@@ -5,14 +5,15 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import { nationalHolidays } from "@/data/nationalHolidays"; // Import hardcoded holidays
+import { nationalHolidays } from "@/data/nationalHolidays";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface CalendarEvent {
   id: string;
   title: string;
   description: string | null;
-  date: string; // ISO string from database
-  isHoliday?: boolean; // New property to distinguish holidays
+  date: string;
+  isHoliday?: boolean;
 }
 
 const ProCodeCGCalendar: React.FC = () => {
@@ -22,7 +23,6 @@ const ProCodeCGCalendar: React.FC = () => {
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [errorEvents, setErrorEvents] = useState<string | null>(null);
 
-  // Fetch Supabase events
   useEffect(() => {
     const fetchCalendarEvents = async () => {
       setLoadingEvents(true);
@@ -49,26 +49,25 @@ const ProCodeCGCalendar: React.FC = () => {
   }, [t]);
 
   const allCombinedEvents = useMemo(() => {
-    // Combine Supabase events with hardcoded national holidays
     return [...events, ...nationalHolidays].map(event => ({
       ...event,
-      date: new Date(event.date) // Ensure date is a Date object for comparison
+      date: new Date(event.date)
     }));
-  }, [events]); // Only depend on 'events' as nationalHolidays is static
+  }, [events]);
 
   const getDayEvents = (day: Date) => {
     return allCombinedEvents.filter(event => 
       event.date.getDate() === day.getDate() &&
       event.date.getMonth() === day.getMonth() &&
       event.date.getFullYear() === day.getFullYear()
-    ).sort((a, b) => a.date.getTime() - b.date.getTime()); // Sort by time if available
+    ).sort((a, b) => a.date.getTime() - b.date.getTime());
   };
 
   const allEventDates = useMemo(() => {
     return allCombinedEvents.map(event => event.date);
   }, [allCombinedEvents]);
 
-  const isLoading = loadingEvents; // Only loading Supabase events now
+  const isLoading = loadingEvents;
   const hasError = errorEvents;
 
   return (
@@ -106,7 +105,7 @@ const ProCodeCGCalendar: React.FC = () => {
         {date && (
           <div className="mt-6 p-4 border-t border-border">
             <h3 className="text-lg font-semibold text-primary mb-2">
-              {t('events on')} {date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}:
+              {t('events on')} {formatDisplayDateTime(date.toISOString())}:
             </h3>
             {isLoading ? (
               <p className="text-muted-foreground">{t('loading events')}</p>

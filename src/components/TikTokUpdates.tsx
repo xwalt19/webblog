@@ -12,8 +12,9 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useTranslation } from "react-i18next";
-import { supabase } from "@/integrations/supabase/client"; // Import supabase
-import ResponsiveImage from "./ResponsiveImage"; // Import ResponsiveImage
+import { supabase } from "@/integrations/supabase/client";
+import ResponsiveImage from "./ResponsiveImage";
+import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface TikTokVideo {
   id: string;
@@ -57,7 +58,7 @@ const TikTokUpdates: React.FC = () => {
     };
 
     fetchTikTokVideos();
-  }, [t]); // Depend on t to refetch if language changes
+  }, [t]);
 
   const filteredVideos = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
@@ -65,7 +66,7 @@ const TikTokUpdates: React.FC = () => {
       video.title.toLowerCase().includes(lowerCaseSearchTerm) ||
       video.description.toLowerCase().includes(lowerCaseSearchTerm)
     );
-  }, [videos, searchTerm]); // No need for i18n.language here as data is already fetched
+  }, [videos, searchTerm]);
 
   const totalPages = Math.ceil(filteredVideos.length / VIDEOS_PER_PAGE);
   const currentVideos = useMemo(() => {
@@ -81,12 +82,7 @@ const TikTokUpdates: React.FC = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm]); // Reset page when search term changes
-
-  const formatDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-  };
+  }, [searchTerm]);
 
   return (
     <section className="py-12 bg-muted/40">
@@ -121,7 +117,7 @@ const TikTokUpdates: React.FC = () => {
                 <CardHeader className="flex-grow">
                   <CardTitle className="text-xl">{video.title}</CardTitle>
                   <CardDescription className="text-sm text-muted-foreground">
-                    {formatDate(video.published_at)}
+                    {formatDisplayDate(video.published_at)}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">

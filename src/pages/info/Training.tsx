@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react"; // Removed useMemo
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-// import { Separator } from "@/components/ui/separator"; // Removed unused import
 import { CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
+import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
 
 interface SupabaseTrainingProgram {
   id: string;
@@ -51,9 +51,6 @@ const Training: React.FC = () => {
     fetchTrainingPrograms();
   }, [t]);
 
-  // Removed the explicit loading return block here.
-  // The component will now render its structure immediately.
-
   if (error) {
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
@@ -72,7 +69,7 @@ const Training: React.FC = () => {
       </section>
 
       <section className="mb-16">
-        {loading ? ( // Show loading only for this section if data is still fetching
+        {loading ? (
           <p className="text-center text-muted-foreground">{t('loading training programs')}</p>
         ) : trainingPrograms.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -87,7 +84,7 @@ const Training: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CalendarDays size={16} />
-                      <span>{program.dates}</span>
+                      <span>{formatDisplayDate(program.dates)}</span>
                     </div>
                   </CardHeader>
                   <CardContent className="flex-grow p-6 pt-0">

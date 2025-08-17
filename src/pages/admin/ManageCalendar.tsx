@@ -19,7 +19,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAdminPageLogic } from "@/hooks/use-admin-page-logic"; // Import the new hook
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
+import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
 
 export interface CalendarEvent {
   id: string;
@@ -28,13 +29,13 @@ export interface CalendarEvent {
   date: string; // ISO string from database
   created_by: string;
   created_at: string;
-  program_id: string | null; // Added program_id
+  program_id: string | null;
 }
 
 const ManageCalendar: React.FC = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { session } = useSession(); // Only need session for created_by in mutations
+  const { session } = useSession();
   const queryClient = useQueryClient();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -43,16 +44,13 @@ const ManageCalendar: React.FC = () => {
   const [formDescription, setFormDescription] = useState("");
   const [formDate, setFormDate] = useState<Date | undefined>(undefined);
 
-  // State to control when data fetching queries should run
   const [shouldFetchData, setShouldFetchData] = useState(false);
 
-  // Use the new admin page logic hook
   const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
     isAdminRequired: true,
-    onAuthSuccess: () => setShouldFetchData(true), // Set flag to true when auth is successful
+    onAuthSuccess: () => setShouldFetchData(true),
   });
 
-  // Query to fetch calendar events
   const { data: events, isLoading: isEventsLoading, isError: isEventsError, error: eventsError } = useQuery<CalendarEvent[], Error>({
     queryKey: ['calendarEvents'],
     queryFn: async () => {
@@ -64,10 +62,9 @@ const ManageCalendar: React.FC = () => {
       if (error) throw error;
       return data || [];
     },
-    enabled: shouldFetchData, // Only run query if auth is successful
+    enabled: shouldFetchData,
   });
 
-  // Mutation for adding/editing calendar event
   const saveEventMutation = useMutation<void, Error, Omit<CalendarEvent, 'created_at' | 'created_by' | 'program_id'> & { id?: string, program_id?: string | null }>({
     mutationFn: async (eventData) => {
       const dataToSave = {
@@ -75,18 +72,16 @@ const ManageCalendar: React.FC = () => {
         description: eventData.description || null,
         date: eventData.date,
         created_by: session?.user?.id,
-        program_id: eventData.program_id || null, // Ensure program_id is passed
+        program_id: eventData.program_id || null,
       };
 
       if (eventData.id) {
-        // Update existing event
         const { error } = await supabase
           .from('calendar_events')
           .update(dataToSave)
           .eq('id', eventData.id);
         if (error) throw error;
       } else {
-        // Add new event
         const { error } = await supabase
           .from('calendar_events')
           .insert([dataToSave]);
@@ -104,7 +99,6 @@ const ManageCalendar: React.FC = () => {
     },
   });
 
-  // Mutation for deleting calendar event
   const deleteEventMutation = useMutation<void, Error, string>({
     mutationFn: async (id) => {
       const { error } = await supabase
@@ -123,9 +117,8 @@ const ManageCalendar: React.FC = () => {
     },
   });
 
-  // Realtime subscription (separate useEffect as it's a one-time setup)
   useEffect(() => {
-    if (!isAuthenticatedAndAuthorized) { // Only subscribe if authenticated and authorized
+    if (!isAuthenticatedAndAuthorized) {
       return;
     }
 
@@ -156,7 +149,7 @@ const ManageCalendar: React.FC = () => {
       title: formTitle,
       description: formDescription,
       date: formDate.toISOString(),
-      program_id: currentEvent?.program_id, // Preserve program_id if editing
+      program_id: currentEvent?.program_id,
     });
   };
 
@@ -183,18 +176,6 @@ const ManageCalendar: React.FC = () => {
     setIsDialogOpen(true);
   };
 
-  const formatDisplayDate = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-  };
-
   if (isLoadingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -204,7 +185,7 @@ const ManageCalendar: React.FC = () => {
   }
 
   if (!isAuthenticatedAndAuthorized) {
-    return null; // The hook handles navigation
+    return null;
   }
 
   if (isEventsLoading) {
@@ -252,7 +233,7 @@ const ManageCalendar: React.FC = () => {
                 {events.map((event) => (
                   <TableRow key={event.id}>
                     <TableCell className="font-medium">{event.title}</TableCell>
-                    <TableCell>{formatDisplayDate(event.date)}</TableCell>
+                    <TableCell>{formatDisplayDateTime(event.date)}</TableCell>
                     <TableCell className="max-w-xs truncate">{event.description}</TableCell>
                     <TableCell className="text-right">
                       <Button variant="ghost" size="icon" onClick={() => openDialogForEdit(event)} className="mr-2">
