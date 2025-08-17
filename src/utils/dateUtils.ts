@@ -1,5 +1,5 @@
 import { format, isValid, parse, parseISO } from "date-fns";
-import { id } from "date-fns/locale"; // Import Indonesian locale
+import { id as idLocale } from "date-fns/locale"; // Import Indonesian locale as idLocale
 import i18n from "i18next"; // Import i18n instance directly
 
 export const formatDisplayDate = (isoString: string | null | undefined): string => {
@@ -8,7 +8,7 @@ export const formatDisplayDate = (isoString: string | null | undefined): string 
   if (isNaN(dateObj.getTime())) {
     return i18n.t('invalid date');
   }
-  return format(dateObj, 'PPP', { locale: id });
+  return format(dateObj, 'PPP', { locale: idLocale }); // Use idLocale here
 };
 
 export const formatDisplayDateTime = (isoString: string | null | undefined): string => {
@@ -17,7 +17,7 @@ export const formatDisplayDateTime = (isoString: string | null | undefined): str
   if (isNaN(dateObj.getTime())) {
     return i18n.t('invalid date');
   }
-  return format(dateObj, 'PPP HH:mm', { locale: id });
+  return format(dateObj, 'PPP HH:mm', { locale: idLocale }); // Use idLocale here
 };
 
 export const formatDateRangeWithTime = (
@@ -28,11 +28,11 @@ export const formatDateRangeWithTime = (
 ): string => {
   if (!startDate || !isValid(startDate)) return '';
 
-  const startPart = format(startDate, 'EEEE, dd MMMM yyyy', { locale: id });
+  const startPart = format(startDate, 'EEEE, dd MMMM yyyy', { locale: idLocale }); // Use idLocale
   let dateRangePart = startPart;
 
   if (endDate && isValid(endDate) && endDate.getTime() !== startDate.getTime()) {
-    const endPart = format(endDate, 'EEEE, dd MMMM yyyy', { locale: id });
+    const endPart = format(endDate, 'EEEE, dd MMMM yyyy', { locale: idLocale }); // Use idLocale
     dateRangePart = `${startPart} - ${endPart}`;
   }
 
@@ -94,12 +94,12 @@ export const parseDateRangeString = (
   const parseDateSafely = (dateStr: string | undefined): Date | undefined => {
     if (!dateStr) return undefined;
     // Try parsing with full format first
-    let parsedDate = parse(dateStr, dateFormat, new Date(), { locale: id });
+    let parsedDate = parse(dateStr, dateFormat, new Date(), { locale: idLocale }); // Use idLocale
     if (isValid(parsedDate)) return parsedDate;
 
     // If that fails, try stripping the day of the week and parsing
     const strippedDateStr = dateStr.replace(/^(Senin|Selasa|Rabu|Kamis|Jumat|Sabtu|Minggu),\s*/, '');
-    parsedDate = parse(strippedDateStr, 'dd MMMM yyyy', new Date(), { locale: id });
+    parsedDate = parse(strippedDateStr, 'dd MMMM yyyy', new Date(), { locale: idLocale }); // Use idLocale
     if (isValid(parsedDate)) return parsedDate;
 
     // As a last resort, try ISO parsing if it looks like an ISO string
