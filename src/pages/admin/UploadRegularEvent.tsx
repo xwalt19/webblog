@@ -26,6 +26,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 // Define Zod schema for validation
 const formSchema = z.object({
@@ -34,8 +38,8 @@ const formSchema = z.object({
   }).max(100, {
     message: "Name must not be longer than 100 characters.",
   }),
-  schedule: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
-    message: "Please enter a valid time in HH:MM format (e.g., 14:30).",
+  schedule: z.date({
+    required_error: "Schedule date and time are required.",
   }),
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
@@ -58,7 +62,7 @@ const UploadRegularEvent: React.FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      schedule: "", // Default to empty string for time
+      schedule: undefined, // Default to undefined for date
       description: "",
       iconName: "",
     },
@@ -89,7 +93,7 @@ const UploadRegularEvent: React.FC = () => {
       if (data) {
         form.reset({
           name: data.name || "",
-          schedule: data.schedule || "", // Directly use the string from DB
+          schedule: data.schedule ? new Date(data.schedule) : undefined, // Parse ISO string to Date
           description: data.description || "",
           iconName: data.icon_name || "",
         });
@@ -109,7 +113,7 @@ const UploadRegularEvent: React.FC = () => {
     try {
       const eventData = {
         name: values.name,
-        schedule: values.schedule, // Save the time string directly
+        schedule: values.schedule.toISOString(), // Convert Date to ISO string
         description: values.description,
         icon_name: values.iconName || null,
         ...(eventId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
@@ -192,15 +196,53 @@ const UploadRegularEvent: React.FC = () => {
                 control={form.control}
                 name="schedule"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>{t('schedule label')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="time"
-                        placeholder={t('schedule time placeholder')}
-                        {...field}
-                      />
-                    </FormControl>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal mt-1",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {field.value ? format(field.value, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={field.value || undefined}
+                          onSelect={field.onChange}
+                          initialFocus
+                        />
+                        <div className="p-3 border-t border-border">
+                          <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
+                          <Input
+                            id="time-input"
+                            type="time"
+                            value={field.value ? format(field.value, "HH:mm") : ""}
+                            onChange={(e) => {
+                              const [hours, minutes] = e.target.value.split(':').map(Number);
+                              if (field.value) {
+                                const newDate = new Date(field.value);
+                                newDate.setHours(hours, minutes);
+                                field.onChange(newDate);
+                              } else {
+                                const newDate = new Date();
+                                newDate.setHours(hours, minutes);
+                                field.onChange(newDate);
+                              }
+                            }}
+                            className="w-full"
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     <FormMessage />
                   </FormItem>
                 )}

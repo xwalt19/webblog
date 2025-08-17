@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card"; // Removed CardHeader, CardTitle, CardDescription
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,7 +15,7 @@ import { getIconComponent } from "@/utils/iconMap";
 interface RegularEvent {
   id: string;
   name: string;
-  schedule: string;
+  schedule: string; // Now an ISO string
   description: string;
   icon_name: string | null;
   created_by: string | null;
@@ -23,15 +23,15 @@ interface RegularEvent {
 }
 
 const ManageRegularEvents: React.FC = () => {
-  const { t } = useTranslation(); // Removed i18n as it's not directly used here
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { session, profile, loading: sessionLoading } = useSession();
   const isAdmin = profile?.role === 'admin';
 
   const [regularEvents, setRegularEvents] = useState<RegularEvent[]>([]);
-  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
+  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetchRegularEvents = async () => {
     setIsFetching(true);
@@ -51,11 +51,10 @@ const ManageRegularEvents: React.FC = () => {
       setError(t("fetch data error", { error: err.message }));
     } finally {
       setIsFetching(false);
-      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
+      setIsInitialDataLoaded(true);
     }
   };
 
-  // Combined useEffect for initial load, auth check, and data fetching
   useEffect(() => {
     if (sessionLoading) {
       return;
@@ -75,7 +74,7 @@ const ManageRegularEvents: React.FC = () => {
 
     fetchRegularEvents();
 
-  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
+  }, [session, isAdmin, sessionLoading, navigate, t]);
 
   const handleDelete = async (id: string) => {
     if (!window.confirm(t("confirm delete regular event"))) {
@@ -91,19 +90,22 @@ const ManageRegularEvents: React.FC = () => {
         throw error;
       }
       toast.success(t("deleted successfully"));
-      fetchRegularEvents(); // Refresh the list
+      fetchRegularEvents();
     } catch (err: any) {
       console.error("Error deleting event:", err);
       toast.error(t("delete error", { error: err.message }));
     }
   };
 
-  const formatDisplayDate = (isoString: string) => {
+  const formatDisplayDateTime = (isoString: string) => {
     const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', { // Changed to 'id-ID'
+    return dateObj.toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
     });
   };
 
@@ -115,7 +117,6 @@ const ManageRegularEvents: React.FC = () => {
     );
   }
 
-  // If initial data is not loaded yet, show loading for the page content
   if (!isInitialDataLoaded) {
     return (
       <div className="container mx-auto py-10 px-4">
@@ -162,11 +163,11 @@ const ManageRegularEvents: React.FC = () => {
                   return (
                     <TableRow key={event.id}>
                       <TableCell className="font-medium">{event.name}</TableCell>
-                      <TableCell>{event.schedule}</TableCell>
+                      <TableCell>{formatDisplayDateTime(event.schedule)}</TableCell>
                       <TableCell>
                         {EventIcon ? <EventIcon className="h-5 w-5" /> : '-'}
                       </TableCell>
-                      <TableCell>{formatDisplayDate(event.created_at)}</TableCell>
+                      <TableCell>{formatDisplayDateTime(event.created_at)}</TableCell>
                       <TableCell className="text-right">
                         <Link to={`/admin/regular-events/${event.id}/edit`}>
                           <Button variant="ghost" size="icon" className="mr-2">
@@ -188,7 +189,6 @@ const ManageRegularEvents: React.FC = () => {
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no regular events found')}</p>
       )}
 
-      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads */}
       {isFetching && regularEvents.length > 0 && (
         <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}

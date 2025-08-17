@@ -19,7 +19,7 @@ import { getIconComponent } from "@/utils/iconMap";
 interface SupabaseRegularEvent {
   id: string;
   name: string;
-  schedule: string;
+  schedule: string; // Now an ISO string
   description: string;
   icon_name: string | null;
   created_by: string | null;
@@ -56,6 +56,18 @@ const RegularEventsClasses: React.FC = () => {
 
     fetchActivities();
   }, [t]);
+
+  const formatDisplayDateTime = (isoString: string) => {
+    const dateObj = new Date(isoString);
+    return dateObj.toLocaleDateString('id-ID', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  };
 
   if (error) {
     return (
@@ -102,7 +114,7 @@ const RegularEventsClasses: React.FC = () => {
                     <div className="flex-grow">
                       <CardHeader className="pb-2 p-0">
                         <CardTitle className="text-2xl font-semibold">{event.name}</CardTitle>
-                        <CardDescription className="text-primary font-medium">{event.schedule}</CardDescription>
+                        <CardDescription className="text-primary font-medium">{formatDisplayDateTime(event.schedule)}</CardDescription>
                       </CardHeader>
                       <CardContent className="text-muted-foreground p-0 pt-2">
                         {event.description}
