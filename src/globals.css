@@ -43,7 +43,7 @@
     --sidebar-border: 210 10% 85%; /* Match main border */
     --sidebar-ring: 220 70% 40%; /* Match main primary */
 
-    --footer-background: 220 15% 10%; /* Very dark blue-grey, almost black */
+    --footer-background: 220 70% 20%; /* Darker blue for footer */
   }
 
   .dark {
@@ -84,7 +84,7 @@
     --sidebar-border: 220 20% 18%;
     --sidebar-ring: 220 70% 60%;
 
-    --footer-background: 220 15% 8%; /* Even darker for footer */
+    --footer-background: 220 70% 10%; /* Even darker blue for footer in dark mode */
   }
 }
 
