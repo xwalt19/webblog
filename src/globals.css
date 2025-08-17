@@ -104,13 +104,13 @@
   }
 }
 
-/* Ensure Quill editor lists have proper padding */
+/* Ensure Quill editor lists have proper padding and visible bullets */
 .ql-editor ul,
 .ql-editor ol {
-  padding-left: 1.5em; /* Standard indentation for lists */
+  padding-left: 2em; /* Increased padding for better visibility */
+  list-style-position: outside; /* Ensure bullets are outside the content block */
 }
 
-/* Ensure list items have default list style type */
 .ql-editor li {
   list-style-type: disc; /* Default for unordered lists */
 }
