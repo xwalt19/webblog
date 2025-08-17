@@ -103,3 +103,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom bullet styles for Quill editor */
+.ql-editor li[data-custom-bullet="star"]::before {
+  content: "★"; /* Unicode star character */
+  margin-right: 0.5em;
+  color: gold; /* Example color */
+  font-weight: bold;
+}
+
+.ql-editor li[data-custom-bullet="checkmark"]::before {
+  content: "✔"; /* Unicode checkmark */
+  margin-right: 0.5em;
+  color: green;
+  font-weight: bold;
+}
+
+/* Ensure default list styles are not overridden if not intended */
+.ql-editor ol, .ql-editor ul {
+  padding-left: 1.5em; /* Standard indentation for lists */
+}
