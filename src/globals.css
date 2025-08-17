@@ -107,9 +107,13 @@
 /* Ensure Quill editor lists have proper indentation and visible bullets */
 .ql-editor ul,
 .ql-editor ol {
-  padding-left: 2em !important; /* Force padding for indentation */
-  margin-left: 1em !important; /* Add margin to ensure space for bullets */
+  padding-left: 1.5em !important; /* Optimal padding for indentation */
   list-style-position: outside !important; /* Ensure bullets are outside the content block */
+}
+
+.ql-editor ul li,
+.ql-editor ol li {
+  color: hsl(var(--foreground)) !important; /* Force text and bullet color to black */
 }
 
 .ql-editor ul li {
