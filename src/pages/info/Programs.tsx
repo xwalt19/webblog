@@ -100,7 +100,7 @@ const ProgramsPage: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary capitalize">{t('our programs page title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground capitalize">{t('our programs page title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           {t('our programs page subtitle')}
         </p>
@@ -152,7 +152,7 @@ const ProgramsPage: React.FC = () => {
 
                   {!program.price && program.program_price_tiers && program.program_price_tiers.length > 0 && (
                     <div className="mt-4">
-                      <h3 className="text-lg font-semibold text-primary mb-2">{t('price details')}</h3>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">{t('price details')}</h3>
                       <Card className="mb-4 shadow-sm">
                         <CardHeader className="p-3 pb-2">
                         </CardHeader>
@@ -180,7 +180,7 @@ const ProgramsPage: React.FC = () => {
 
                   {program.program_topics && program.program_topics.length > 0 && (
                     <div className="mt-4">
-                      <h3 className="text-lg font-semibold text-primary mb-4">{t('topics included')}</h3>
+                      <h3 className="text-lg font-semibold text-foreground mb-4">{t('topics included')}</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {program.program_topics.map((topic, topicIdx) => {
                           const TopicIcon = getIconComponent(topic.icon_name);

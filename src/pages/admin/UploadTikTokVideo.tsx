@@ -150,7 +150,7 @@ const UploadTikTokVideo: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary capitalize">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground capitalize">
           {videoId ? t('edit tiktok video') : t('add tiktok video')}
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">

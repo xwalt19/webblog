@@ -137,7 +137,7 @@ const MediaCarousel: React.FC = () => {
     return (
       <section className="py-12 bg-muted/40">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest videos title')}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-foreground">{t('latest videos title')}</h2>
           <p className="text-center text-muted-foreground">{t('loading videos')}</p>
         </div>
       </section>
@@ -148,7 +148,7 @@ const MediaCarousel: React.FC = () => {
     return (
       <section className="py-12 bg-muted/40">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest videos title')}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-foreground">{t('latest videos title')}</h2>
           <p className="text-center text-destructive">{error}</p>
         </div>
       </section>
@@ -159,7 +159,7 @@ const MediaCarousel: React.FC = () => {
     return (
       <section className="py-12 bg-muted/40">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest videos title')}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-foreground">{t('latest videos title')}</h2>
           <p className="text-center text-muted-foreground mt-8 text-lg">{t('no videos available')}</p>
         </div>
       </section>
@@ -169,7 +169,7 @@ const MediaCarousel: React.FC = () => {
   return (
     <section className="py-12 bg-muted/40">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('latest videos title')}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-foreground">{t('latest videos title')}</h2>
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex -ml-4">

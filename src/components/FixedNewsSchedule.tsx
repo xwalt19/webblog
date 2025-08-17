@@ -97,7 +97,7 @@ const FixedNewsSchedule: React.FC = () => {
     return (
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('fixed news schedule title')}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-foreground">{t('fixed news schedule title')}</h2>
           <p className="text-center text-destructive">{error}</p>
         </div>
       </section>
@@ -107,7 +107,7 @@ const FixedNewsSchedule: React.FC = () => {
   return (
     <section className="py-12 bg-background">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">{t('fixed news schedule title')}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-foreground">{t('fixed news schedule title')}</h2>
         {loading ? (
           <p className="text-center text-muted-foreground">{t('loading data')}</p>
         ) : fixedItems.length > 0 ? (

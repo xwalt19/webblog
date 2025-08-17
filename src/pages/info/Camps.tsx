@@ -81,7 +81,7 @@ const Camps: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary capitalize">{t('our camp programs title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground capitalize">{t('our camp programs title')}</h1>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
           {t('our camp programs subtitle')}
         </p>
@@ -111,7 +111,7 @@ const Camps: React.FC = () => {
                   />
                   {camp.camp_day_links && camp.camp_day_links.length > 0 && (
                     <div className="mt-4">
-                      <h3 className="text-lg font-semibold text-primary mb-2">{t('day links')}</h3>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">{t('day links')}</h3>
                       <Accordion type="single" collapsible className="w-full">
                         {camp.camp_day_links.map((day) => (
                           <AccordionItem key={day.id} value={day.id}>

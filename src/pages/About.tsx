@@ -14,7 +14,7 @@ const AboutPage: React.FC = () => {
   return (
     <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-primary capitalize">{t('about procodecg title')}</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground capitalize">{t('about procodecg title')}</h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
           {t('about procodecg subtitle')}
         </p>
