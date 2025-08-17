@@ -24,7 +24,7 @@ interface Stats {
   tiktokVideos: number;
   totalUsers: number;
   blogCategories: number;
-  // Removed heroImages: number; // New stat
+  heroImages: number; // New stat
 }
 
 const AdminDashboard: React.FC = () => {
@@ -112,11 +112,10 @@ const AdminDashboard: React.FC = () => {
         .select('*', { count: 'exact', head: true });
       if (blogCategoriesError) throw blogCategoriesError;
 
-      // Removed heroImagesCount fetch
-      // const { count: heroImagesCount, error: heroImagesError } = await supabase
-      //   .from('hero_images')
-      //   .select('*', { count: 'exact', head: true });
-      // if (heroImagesError) throw heroImagesError;
+      const { count: heroImagesCount, error: heroImagesError } = await supabase
+        .from('hero_images')
+        .select('*', { count: 'exact', head: true });
+      if (heroImagesError) throw heroImagesError;
 
       setStats({
         blogPosts: blogPostsCount || 0,
@@ -130,7 +129,7 @@ const AdminDashboard: React.FC = () => {
         tiktokVideos: tiktokVideosCount || 0,
         totalUsers: usersCount || 0,
         blogCategories: blogCategoriesCount || 0,
-        // Removed heroImages: heroImagesCount || 0, // New stat
+        heroImages: heroImagesCount || 0, // New stat
       });
     } catch (err: any) {
       console.error("Error fetching dashboard stats:", err);
@@ -152,8 +151,7 @@ const AdminDashboard: React.FC = () => {
     { title: t('total tiktok videos'), value: stats.tiktokVideos, icon: Music, link: "/admin/manage-tiktok-videos" },
     { title: t('total users'), value: stats.totalUsers, icon: Users, link: "/admin/manage-users" },
     { title: t('total blog categories'), value: stats.blogCategories, icon: ListFilter, link: "/admin/manage-blog-categories" },
-    // Removed heroImages stat card
-    // { title: t('total hero images'), value: stats.heroImages, icon: Image, link: "/admin/manage-hero-images" }, // New stat card
+    { title: t('total hero images'), value: stats.heroImages, icon: Image, link: "/admin/manage-hero-images" }, // New stat card
   ] : [];
 
   if (isLoadingAuth) {

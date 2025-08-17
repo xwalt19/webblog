@@ -13,6 +13,7 @@ import { Edit, Trash, PlusCircle, ArrowUp, ArrowDown } from "lucide-react";
 import ResponsiveImage from "@/components/ResponsiveImage";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
+import UploadHeroImageDialog from "@/components/admin/UploadHeroImageDialog"; // Import the new dialog
 
 interface HeroImage {
   id: string;
@@ -22,17 +23,21 @@ interface HeroImage {
   created_by: string | null;
 }
 
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+
 const ManageHeroImages: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { session } = useSession();
   const queryClient = useQueryClient();
 
-  const [shouldFetchData, setShouldFetchData] = useState(false);
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
   const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
     isAdminRequired: true,
-    onAuthSuccess: () => setShouldFetchData(true),
+    onAuthSuccess: () => {
+      // Data fetching is handled by react-query's enabled option
+    },
   });
 
   const { data: images, isLoading: isImagesLoading, isError: isImagesError, error: imagesError } = useQuery<HeroImage[], Error>({
@@ -46,7 +51,58 @@ const ManageHeroImages: React.FC = () => {
       if (error) throw error;
       return data || [];
     },
-    enabled: shouldFetchData,
+    enabled: isAuthenticatedAndAuthorized,
+  });
+
+  const uploadImageMutation = useMutation<void, Error, File>({
+    mutationFn: async (file) => {
+      if (!session?.user?.id) throw new Error("User not authenticated.");
+
+      const fileExtension = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
+      const filePath = `hero_images/${fileName}`; // Folder within the bucket
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('hero_images') // Assuming 'hero_images' is your bucket name
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: publicUrlData } = supabase.storage.from('hero_images').getPublicUrl(filePath);
+      const imageUrl = publicUrlData.publicUrl;
+
+      // Get the next order_index
+      const currentMaxOrder = images ? Math.max(...images.map(img => img.order_index)) : -1;
+      const newOrderIndex = currentMaxOrder + 1;
+
+      const { error: insertError } = await supabase
+        .from('hero_images')
+        .insert({
+          image_url: imageUrl,
+          order_index: newOrderIndex,
+          created_by: session.user.id,
+          created_at: new Date().toISOString(),
+        });
+
+      if (insertError) {
+        // If DB insert fails, try to delete the uploaded file from storage
+        await supabase.storage.from('hero_images').remove([filePath]);
+        throw insertError;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['heroImages'] });
+      toast.success(t("image uploaded successfully"));
+    },
+    onError: (err) => {
+      console.error("Error uploading image:", err);
+      toast.error(t("upload failed", { error: err.message }));
+    },
   });
 
   const deleteImageMutation = useMutation<void, Error, { id: string, imageUrl: string }>({
@@ -149,8 +205,10 @@ const ManageHeroImages: React.FC = () => {
     queryClient.setQueryData(['heroImages'], (oldImages: HeroImage[] | undefined) => {
       if (!oldImages) return oldImages;
       const newImages = [...oldImages];
+      // Swap elements
       [newImages[currentImageIndex], newImages[targetIndex]] = [newImages[targetIndex], newImages[currentImageIndex]];
-      return newImages.map((img, idx) => ({ ...img, order_index: idx })); // Reassign order_index based on new array position
+      // Reassign order_index based on new array position
+      return newImages.map((img, idx) => ({ ...img, order_index: idx }));
     });
 
     // Send updates to backend
@@ -195,7 +253,11 @@ const ManageHeroImages: React.FC = () => {
         </p>
       </section>
 
-      {/* Removed the "Add New Hero Image" button */}
+      <div className="flex justify-end mb-6">
+        <Button onClick={() => setIsUploadDialogOpen(true)}>
+          <PlusCircle className="h-4 w-4 mr-2" /> {t('add new hero image')}
+        </Button>
+      </div>
 
       {images && images.length > 0 ? (
         <Card className="shadow-lg">
@@ -204,7 +266,6 @@ const ManageHeroImages: React.FC = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>{t('table image')}</TableHead>
-                  {/* Removed Order Index column from display */}
                   <TableHead>{t('table date')}</TableHead>
                   <TableHead className="text-right">{t('table actions')}</TableHead>
                 </TableRow>
@@ -220,7 +281,6 @@ const ManageHeroImages: React.FC = () => {
                         className="object-cover" 
                       />
                     </TableCell>
-                    {/* Removed Order Index cell from display */}
                     <TableCell>{new Date(image.created_at).toLocaleDateString()}</TableCell>
                     <TableCell className="text-right">
                       <Button 
@@ -241,11 +301,7 @@ const ManageHeroImages: React.FC = () => {
                       >
                         <ArrowDown className="h-4 w-4" />
                       </Button>
-                      <Link to={`/admin/hero-images/${image.id}/edit`}>
-                        <Button variant="ghost" size="icon" className="mr-2">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                      </Link>
+                      {/* Removed edit button as there's no direct edit for hero images beyond order/delete */}
                       <Button variant="destructive" size="icon" onClick={() => handleDelete(image.id, image.image_url)} disabled={deleteImageMutation.isPending}>
                         <Trash className="h-4 w-4" />
                       </Button>
@@ -260,9 +316,16 @@ const ManageHeroImages: React.FC = () => {
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no hero images found')}</p>
       )}
 
-      {(deleteImageMutation.isPending || updateOrderMutation.isPending) && (
+      {(deleteImageMutation.isPending || updateOrderMutation.isPending || uploadImageMutation.isPending) && (
         <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}
+
+      <UploadHeroImageDialog
+        isOpen={isUploadDialogOpen}
+        onOpenChange={setIsUploadDialogOpen}
+        onSave={uploadImageMutation.mutateAsync}
+        MAX_IMAGE_SIZE_BYTES={MAX_IMAGE_SIZE_BYTES}
+      />
 
       <div className="text-center mt-12">
         <Link to="/admin">

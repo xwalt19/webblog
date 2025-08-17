@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, LogIn, LayoutDashboard, Users, User, Loader2, Image } from "lucide-react"; // Added Image icon
+import { Menu, LogOut, LogIn, LayoutDashboard, Users, User, Loader2, Image, ListFilter } from "lucide-react"; // Added Image icon
 import {
   Accordion,
   AccordionContent,
@@ -175,10 +175,12 @@ const MobileNav: React.FC = () => {
                   <Link to="/admin/manage-users" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     <Users className="h-4 w-4 inline-block mr-2" /> {t('manage users')}
                   </Link>
-                  {/* Removed the 'hero images' link */}
-                  {/* <Link to="/admin/manage-hero-images" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                  <Link to="/admin/manage-blog-categories" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
+                    <ListFilter className="h-4 w-4 inline-block mr-2" /> {t('blog categories')}
+                  </Link>
+                  <Link to="/admin/manage-hero-images" className="block text-base text-muted-foreground hover:text-foreground transition-colors" onClick={closeSheet}>
                     <Image className="h-4 w-4 inline-block mr-2" /> {t('hero images')}
-                  </Link> */}
+                  </Link>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
