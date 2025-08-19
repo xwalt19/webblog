@@ -160,7 +160,7 @@ const ProgramsPage: React.FC = () => {
                           <Table className="w-full">
                             <TableHeader>
                               <TableRow>
-                                <TableHead className="w-[150px]">{t('number of meetings')}</TableHead>
+                                <TableHead className="w-[150px] text-left">{t('number of meetings')}</TableHead>
                                 <TableHead className="text-right">{t('price')}</TableHead>
                               </TableRow>
                             </TableHeader>
