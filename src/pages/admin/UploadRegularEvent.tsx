@@ -89,8 +89,8 @@ const UploadRegularEvent: React.FC = () => {
   const [initialBannerImageUrl, setInitialBannerImageUrl] = useState<string | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
 
-  const form = useForm<z.infer<typeof formSchema>>({ // Changed regularEventSchema to formSchema
-    resolver: zodResolver(formSchema), // Changed regularEventSchema to formSchema
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       startDate: undefined,
@@ -107,7 +107,7 @@ const UploadRegularEvent: React.FC = () => {
   const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
     isAdminRequired: true,
     onAuthSuccess: () => {
-      console.log("UploadRegularEvent: [DEBUG] Auth successful, should fetch data.");
+      console.log("UploadRegularEvent: [DEBUG] Auth successful, should fetch data. eventId:", eventId);
       if (eventId) {
         fetchEventData(eventId);
       } else {
@@ -335,8 +335,10 @@ const UploadRegularEvent: React.FC = () => {
     }
   };
 
+  console.log("UploadRegularEvent: [RENDER] isLoadingAuth:", isLoadingAuth, "isAuthenticatedAndAuthorized:", isAuthenticatedAndAuthorized, "dataLoading:", dataLoading, "eventId:", eventId);
+
   if (isLoadingAuth || (eventId && dataLoading)) {
-    console.log("UploadRegularEvent: [DEBUG] Rendering loading state. isLoadingAuth:", isLoadingAuth, "eventId:", eventId, "dataLoading:", dataLoading);
+    console.log("UploadRegularEvent: [RENDER] Displaying loading state.");
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
@@ -345,7 +347,7 @@ const UploadRegularEvent: React.FC = () => {
   }
 
   if (!isAuthenticatedAndAuthorized) {
-    console.log("UploadRegularEvent: [DEBUG] Not authenticated or authorized. Returning null.");
+    console.log("UploadRegularEvent: [RENDER] Not authenticated or authorized. Returning null.");
     return null;
   }
 

@@ -96,17 +96,21 @@ const UploadProgram: React.FC = () => {
   const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
     isAdminRequired: true,
     onAuthSuccess: () => {
+      console.log("UploadProgram: [DEBUG] Auth successful, should fetch data. programId:", programId);
       if (programId) {
         fetchProgramData(programId);
       } else {
+        console.log("UploadProgram: [DEBUG] No programId, setting dataLoading to false for new program form.");
         setDataLoading(false);
       }
     },
   });
 
   const fetchProgramData = async (id: string) => {
+    console.log("UploadProgram: [DEBUG] fetchProgramData called for ID:", id);
     setDataLoading(true);
     try {
+      console.log("UploadProgram: [DEBUG] Fetching program data from Supabase...");
       const { data: programData, error: programError } = await supabase
         .from('programs')
         .select('*')
@@ -116,19 +120,22 @@ const UploadProgram: React.FC = () => {
       if (programError) throw programError;
 
       if (programData) {
+        console.log("UploadProgram: [DEBUG] Program data fetched:", programData);
         const { startDate, endDate, startTime, endTime } = parseDateRangeString(programData.schedule);
+        console.log("UploadProgram: [DEBUG] Parsed schedule:", { startDate, endDate, startTime, endTime });
         form.reset({
           title: programData.title || "",
           description: programData.description || "",
           startDate: startDate,
           endDate: endDate,
           startTime: startTime || "",
-          endTime: endTime || "", // Corrected: Changed from 'fendTime' to 'endTime'
+          endTime: endTime || "",
           registrationFee: programData.registration_fee || "",
           price: programData.price || "",
           type: programData.type || "kids",
           iconName: programData.icon_name || "",
         });
+        console.log("UploadProgram: [DEBUG] Form reset with data:", form.getValues());
 
         const { data: priceTiersData, error: priceTiersError } = await supabase
           .from('program_price_tiers')
@@ -143,6 +150,7 @@ const UploadProgram: React.FC = () => {
           groupedPriceTiers[tier.header_key_col1].push(tier);
         });
         setPriceTables(Object.values(groupedPriceTiers));
+        console.log("UploadProgram: [DEBUG] Price tables set.");
 
         const { data: topicsData, error: topicsError } = await supabase
           .from('program_topics')
@@ -150,12 +158,14 @@ const UploadProgram: React.FC = () => {
           .eq('program_id', id);
         if (topicsError) throw topicsError;
         setTopics(topicsData || []);
+        console.log("UploadProgram: [DEBUG] Topics set.");
       }
     } catch (err: any) {
-      console.error("Error fetching program data:", err);
+      console.error("UploadProgram: [ERROR] Error fetching program data:", err);
       toast.error(t("fetch data error", { error: err.message }));
       navigate('/admin/manage-programs');
     } finally {
+      console.log("UploadProgram: [DEBUG] fetchProgramData finally block: setting dataLoading to false.");
       setDataLoading(false);
     }
   };
@@ -279,12 +289,15 @@ const UploadProgram: React.FC = () => {
       navigate('/admin/manage-programs');
 
     } catch (err: any) {
-      console.error("Error saving program:", err);
+      console.error("UploadProgram: [ERROR] Error saving program:", err);
       toast.error(t("save failed", { error: err.message }), { id: toastId });
     }
   };
 
+  console.log("UploadProgram: [RENDER] isLoadingAuth:", isLoadingAuth, "isAuthenticatedAndAuthorized:", isAuthenticatedAndAuthorized, "dataLoading:", dataLoading, "programId:", programId);
+
   if (isLoadingAuth || (programId && dataLoading)) {
+    console.log("UploadProgram: [RENDER] Displaying loading state.");
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
@@ -293,6 +306,7 @@ const UploadProgram: React.FC = () => {
   }
 
   if (!isAuthenticatedAndAuthorized) {
+    console.log("UploadProgram: [RENDER] Not authenticated or authorized. Returning null.");
     return null;
   }
 
@@ -321,8 +335,8 @@ const UploadProgram: React.FC = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <ProgramDetailsForm
                 control={form.control}
-                watch={form.watch} // Pass form.watch
-                setValue={form.setValue} // Pass form.setValue
+                watch={form.watch}
+                setValue={form.setValue}
                 programId={programId}
               />
               <ProgramPriceTablesSection
