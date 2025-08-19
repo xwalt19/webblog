@@ -63,7 +63,7 @@ const RegularEventFAQSection: React.FC<RegularEventFAQSectionProps> = ({ faqs, s
             <div>
               <Label>{t('answer label')}</Label>
               <RichTextEditor
-                key={`faq-answer-${index}-${faq.id || 'new'}`}
+                componentKey={`faq-answer-${index}-${faq.id || 'new'}`}
                 value={faq.answer}
                 onChange={(value) => handleFAQChange(index, 'answer', value)}
                 placeholder={t('answer placeholder')}

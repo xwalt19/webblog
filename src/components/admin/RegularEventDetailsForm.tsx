@@ -173,7 +173,7 @@ const RegularEventDetailsForm: React.FC<RegularEventDetailsFormProps> = ({
             <FormLabel>{t('description label')}</FormLabel>
             <FormControl>
               <RichTextEditor // Reverted to RichTextEditor
-                key={eventId || "new-regular-event-description"} // Added key for proper re-initialization
+                componentKey={eventId || "new-regular-event-description"} // Added key for proper re-initialization
                 value={field.value}
                 onChange={field.onChange}
                 placeholder={t('description placeholder')}

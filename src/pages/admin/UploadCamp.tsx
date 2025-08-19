@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react"; // Import useCallback
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -385,7 +385,7 @@ const UploadCamp: React.FC = () => {
                     <FormLabel>{t('description label')}</FormLabel>
                     <FormControl>
                       <RichTextEditor
-                        key={campId || "new-camp"}
+                        componentKey={campId || "new-camp"}
                         value={field.value}
                         onChange={field.onChange}
                         placeholder={t('description placeholder')}
@@ -425,7 +425,7 @@ const UploadCamp: React.FC = () => {
                     <div>
                       <Label>{t('content label')}</Label>
                       <RichTextEditor
-                        key={`day-link-content-${index}-${link.id || 'new'}`}
+                        componentKey={`day-link-content-${index}-${link.id || 'new'}`}
                         value={link.content}
                         onChange={(value) => handleDayLinkChange(index, 'content', value)}
                         placeholder={t('day link content placeholder')}

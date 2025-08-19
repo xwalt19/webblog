@@ -183,7 +183,7 @@ const UploadTikTokVideo: React.FC = () => {
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
               <RichTextEditor
-                key={videoId || "new-tiktok-video"} // Pass key prop
+                componentKey={videoId || "new-tiktok-video"} // Pass componentKey prop
                 value={description}
                 onChange={setDescription}
                 placeholder={t('description placeholder')}

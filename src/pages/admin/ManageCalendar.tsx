@@ -284,7 +284,7 @@ const ManageCalendar: React.FC = () => {
               </Label>
               <div className="col-span-3">
                 <RichTextEditor
-                  key={currentEvent?.id || "new-calendar-event"} // Pass key prop
+                  componentKey={currentEvent?.id || "new-calendar-event"} // Pass componentKey prop
                   value={formDescription}
                   onChange={setFormDescription}
                   placeholder={t('description placeholder')}

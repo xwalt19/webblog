@@ -83,7 +83,7 @@ const ProgramDetailsForm: React.FC<ProgramDetailsFormProps> = ({
             <FormLabel>{t('description label')}</FormLabel>
             <FormControl>
               <RichTextEditor
-                key={programId || "new-program-description"}
+                componentKey={programId || "new-program-description"}
                 value={field.value}
                 onChange={field.onChange}
                 placeholder={t('description placeholder')}

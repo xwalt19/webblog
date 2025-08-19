@@ -11,7 +11,7 @@ interface RichTextEditorProps {
   placeholder?: string;
   className?: string;
   readOnly?: boolean;
-  key?: string; // Added key prop for re-initialization
+  componentKey?: string; // Changed from 'key' to 'componentKey'
 }
 
 const RichTextEditor: React.FC<RichTextEditorProps> = ({
@@ -20,7 +20,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   placeholder,
   className,
   readOnly = false,
-  key,
+  componentKey, // Destructure componentKey
 }) => {
   const modules = {
     toolbar: [
@@ -42,7 +42,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <div className={cn(className)}>
       <ReactQuill
-        key={key} // Apply the key prop here
+        key={componentKey} // Use componentKey here
         theme="snow"
         value={value}
         onChange={onChange}

@@ -332,7 +332,7 @@ const UploadTrainingProgram: React.FC = () => {
                     <FormLabel>{t('description label')}</FormLabel>
                     <FormControl>
                       <RichTextEditor
-                        key={programId || "new-training-program"}
+                        componentKey={programId || "new-training-program"}
                         value={field.value}
                         onChange={field.onChange}
                         placeholder={t('description placeholder')}

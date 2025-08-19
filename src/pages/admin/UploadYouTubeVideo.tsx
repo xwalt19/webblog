@@ -244,7 +244,7 @@ const UploadYouTubeVideo: React.FC = () => {
             <div>
               <Label htmlFor="description">{t('description label')}</Label>
               <RichTextEditor
-                key={videoId || "new-youtube-video"} // Pass key prop
+                componentKey={videoId || "new-youtube-video"} // Pass componentKey prop
                 value={description}
                 onChange={setDescription}
                 placeholder={t('description placeholder')}

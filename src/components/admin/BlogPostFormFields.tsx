@@ -83,7 +83,7 @@ const BlogPostFormFields: React.FC<BlogPostFormFieldsProps> = ({
       <div>
         <Label htmlFor="content">{t('content label')}</Label>
         <RichTextEditor
-          key={postId || "new-post"} // Pass key prop
+          componentKey={postId || "new-post"} // Pass componentKey prop
           value={content}
           onChange={setContent}
           placeholder={t('content placeholder')}
