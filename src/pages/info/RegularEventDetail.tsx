@@ -200,11 +200,11 @@ const RegularEventDetail: React.FC = () => {
               <Card className="shadow-sm">
                 <CardContent className="p-0">
                   <Table>
-                    <TableHeader className="bg-primary text-primary-foreground">
+                    <TableHeader className="bg-primary"> {/* Removed text-primary-foreground here */}
                       <TableRow>
-                        <TableHead className="w-[100px] text-left border-x-0">{t('time label')}</TableHead>
-                        <TableHead className="flex-1 text-left border-x-0">{t('session title label')}</TableHead>
-                        <TableHead className="w-[250px] text-left border-x-0">{t('speaker label')}</TableHead>
+                        <TableHead className="w-[100px] text-left border-x-0 text-muted-foreground">{t('time label')}</TableHead>
+                        <TableHead className="flex-1 text-left border-x-0 text-muted-foreground">{t('session title label')}</TableHead>
+                        <TableHead className="w-[250px] text-left border-x-0 text-muted-foreground">{t('speaker label')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
