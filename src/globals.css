@@ -31,7 +31,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+    --primary: 221.2 83.2% 35%; /* Biru tua untuk tema terang */
     --primary-foreground: 210 20% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -43,19 +43,19 @@
     --destructive-foreground: 210 20% 98%;
     --border: 214.3 31.6% 91.4%;
     --input: 214.3 31.6% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 221.2 83.2% 35%; /* Biru tua untuk tema terang */
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 222.2 84% 4.9%;
-    --sidebar-primary: 221.2 83.2% 53.3%;
+    --sidebar-primary: 221.2 83.2% 35%; /* Biru tua untuk tema terang */
     --sidebar-primary-foreground: 210 20% 98%;
     --sidebar-accent: 210 40% 96.1%;
     --sidebar-accent-foreground: 222.2 47.4% 11.2%;
     --sidebar-border: 214.3 31.6% 91.4%;
-    --sidebar-ring: 221.2 83.2% 53.3%;
+    --sidebar-ring: 221.2 83.2% 35%; /* Biru tua untuk tema terang */
 
-    --footer-background: 221.2 83.2% 30%; /* Biru tua untuk tema terang */
+    --footer-background: 221.2 83.2% 35%; /* Biru tua untuk tema terang */
   }
 
   .dark {
@@ -65,7 +65,7 @@
     --card-foreground: 210 20% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 20% 98%;
-    --primary: 217.2 91.2% 59.8%;
+    --primary: 217.2 91.2% 45%; /* Biru tua untuk tema gelap */
     --primary-foreground: 222.2 47.4% 11.2%;
     --secondary: 217.2 32.4% 17.5%;
     --secondary-foreground: 210 20% 98%;
@@ -77,18 +77,18 @@
     --destructive-foreground: 210 20% 98%;
     --border: 217.2 32.4% 17.5%;
     --input: 217.2 32.4% 17.5%;
-    --ring: 217.2 91.2% 59.8%;
+    --ring: 217.2 91.2% 45%; /* Biru tua untuk tema gelap */
 
     --sidebar-background: 222.2 84% 4.9%;
     --sidebar-foreground: 210 20% 98%;
-    --sidebar-primary: 217.2 91.2% 59.8%;
+    --sidebar-primary: 217.2 91.2% 45%; /* Biru tua untuk tema gelap */
     --sidebar-primary-foreground: 222.2 47.4% 11.2%;
     --sidebar-accent: 217.2 32.4% 17.5%;
     --sidebar-accent-foreground: 210 20% 98%;
     --sidebar-border: 217.2 32.4% 17.5%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 217.2 91.2% 45%; /* Biru tua untuk tema gelap */
 
-    --footer-background: 217.2 91.2% 40%; /* Biru tua untuk tema gelap */
+    --footer-background: 217.2 91.2% 45%; /* Biru tua untuk tema gelap */
   }
 }
 
