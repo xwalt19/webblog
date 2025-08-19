@@ -21,7 +21,7 @@ const AboutPage: React.FC = () => {
       </section>
 
       <section className="mb-16 prose dark:prose-invert max-w-none mx-auto">
-        <p className="text-center text-muted-foreground">{t('about page static content placeholder')}</p>
+        <div className="text-muted-foreground text-center" dangerouslySetInnerHTML={{ __html: t('about page static content placeholder') }} />
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
