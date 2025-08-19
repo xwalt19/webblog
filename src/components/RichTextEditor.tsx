@@ -40,7 +40,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   ];
 
   return (
-    <div className={cn(className)}> {/* Removed prose dark:prose-invert max-w-none */}
+    <div className={cn(className)}>
       <ReactQuill
         key={key} // Apply the key prop here
         theme="snow"
@@ -50,7 +50,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         formats={formats}
         placeholder={placeholder}
         readOnly={readOnly}
-        className="mt-1 bg-background"
+        className="mt-1 bg-background min-h-[120px]" // Add min-h here
       />
     </div>
   );
