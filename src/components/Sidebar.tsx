@@ -37,11 +37,21 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon: Icon, label, isExpa
         "flex items-center py-2 px-3 rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
         "transition-all duration-200 ease-in-out", // Mengubah dari transition-colors menjadi transition-all
         "hover:shadow-sm hover:scale-[1.01]", // Menambahkan bayangan dan skala kecil saat hover
-        isActive && "bg-sidebar-primary text-sidebar-primary-foreground"
+        isActive && "bg-sidebar-primary text-sidebar-primary-foreground",
+        !isExpanded && "overflow-hidden" // Sembunyikan overflow saat tidak diperluas
       )}
     >
       <Icon className={cn("h-5 w-5", isExpanded ? "mr-3" : "mx-auto")} />
-      {isExpanded && <span className="whitespace-nowrap capitalize">{label}</span>}
+      <span
+        className={cn(
+          "whitespace-nowrap capitalize",
+          "transition-all duration-200 ease-in-out", // Transisi untuk opacity dan max-width
+          isExpanded ? "opacity-100 max-w-full" : "opacity-0 max-w-0", // Kontrol visibilitas dan lebar
+          "overflow-hidden" // Pastikan teks terpotong saat menyusut
+        )}
+      >
+        {label}
+      </span>
     </Link>
   );
 };
