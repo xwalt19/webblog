@@ -220,11 +220,8 @@ const RegularEventDetailsForm: React.FC<RegularEventDetailsFormProps> = ({
                 type="number"
                 placeholder={t('quota placeholder')}
                 {...field}
-                value={field.value === null ? "" : field.value} // Handle null for empty input
-                onChange={(e) => {
-                  const val = e.target.value;
-                  field.onChange(val === "" ? null : Number(val));
-                }}
+                value={field.value === null ? "" : field.value} // Ensure controlled component, display null as empty string
+                onChange={(e) => field.onChange(e.target.value)} // Pass raw string value to react-hook-form
               />
             </FormControl>
             <FormMessage />
