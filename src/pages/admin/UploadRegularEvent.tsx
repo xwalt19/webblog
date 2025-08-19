@@ -9,7 +9,8 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
-import { useForm } from "react-hook-form";
+import { useForm }
+from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form } from "@/components/ui/form";
@@ -256,7 +257,6 @@ const UploadRegularEvent: React.FC = () => {
 
       // Prepare rundowns for upsert
       const rundownsToUpsert = rundowns.map((r, idx) => ({
-        id: r.id, // Include ID for upsert
         event_id: currentEventId,
         time: r.time,
         session_title: r.session_title,
@@ -265,17 +265,18 @@ const UploadRegularEvent: React.FC = () => {
         order_index: idx,
         created_by: session?.user?.id,
         created_at: new Date().toISOString(),
+        ...(r.id && { id: r.id }), // Conditionally add id for existing records
       }));
 
       // Prepare FAQs for upsert
       const faqsToUpsert = faqs.map((f, idx) => ({
-        id: f.id, // Include ID for upsert
         event_id: currentEventId,
         question: f.question,
         answer: f.answer,
         order_index: idx,
         created_by: session?.user?.id,
         created_at: new Date().toISOString(),
+        ...(f.id && { id: f.id }), // Conditionally add id for existing records
       }));
 
       // Fetch existing rundown and FAQ IDs to determine what to delete
