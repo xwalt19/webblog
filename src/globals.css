@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  html, body, #root {
+    height: 100%; /* Memastikan html, body, dan div root mengambil tinggi penuh */
+    margin: 0; /* Menghapus margin default secara eksplisit */
+    padding: 0; /* Menghapus padding default secara eksplisit */
+  }
   :root {
     --background: 0 0% 100%; /* Pure White */
     --foreground: 220 15% 15%; /* Very Dark Blue-Grey */
