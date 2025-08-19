@@ -12,6 +12,7 @@ import { formatDisplayDate, formatDisplayDateTime } from "@/utils/dateUtils";
 import { toast } from "sonner";
 import { CalendarDays, BellRing } from "lucide-react"; // Import default icons
 import { Badge } from "@/components/ui/badge"; // Import Badge
+import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
 
 interface RegularEvent {
   id: string;
@@ -19,6 +20,7 @@ interface RegularEvent {
   schedule: string; // ISO string
   description: string;
   icon_name: string | null;
+  banner_image_url: string | null; // New
   created_by: string | null;
   created_at: string;
 }
@@ -36,7 +38,7 @@ const RegularEventsClasses: React.FC = () => {
       try {
         const { data, error } = await supabase
           .from('regular_events')
-          .select('*')
+          .select('*') // Select all columns including new ones
           .order('schedule', { ascending: false });
 
         if (error) {
@@ -80,13 +82,25 @@ const RegularEventsClasses: React.FC = () => {
             return (
               <Card key={event.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 {/* Bagian atas dengan ikon dan badge */}
-                <div className="relative w-full h-48 bg-primary/10 flex items-center justify-center">
-                  {EventIcon ? (
-                    <EventIcon className="text-primary opacity-70" size={96} />
+                <div className="relative w-full pt-[125%] bg-primary/10 flex items-center justify-center"> {/* Changed h-48 to pt-[125%] for 4:5 aspect ratio */}
+                  {event.banner_image_url ? (
+                    <ResponsiveImage 
+                      src={event.banner_image_url} 
+                      alt={event.name} 
+                      containerClassName="absolute inset-0" 
+                      className="object-cover" 
+                    />
                   ) : (
-                    <CalendarDays className="text-primary opacity-70" size={96} />
+                    // Fallback to icon if no banner image
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      {EventIcon ? (
+                        <EventIcon className="text-primary opacity-70" size={96} />
+                      ) : (
+                        <CalendarDays className="text-primary opacity-70" size={96} />
+                      )}
+                    </div>
                   )}
-                  <Badge variant="secondary" className="absolute top-4 right-4 text-sm px-3 py-1">
+                  <Badge variant="secondary" className="absolute top-4 right-4 text-sm px-3 py-1 z-10"> {/* Added z-10 to ensure badge is on top */}
                     {t('event type label')}
                   </Badge>
                 </div>
