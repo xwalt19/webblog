@@ -40,7 +40,8 @@ interface RegularEventRundown {
   event_id: string;
   time: string;
   session_title: string;
-  speaker: string;
+  speaker_name: string; // New
+  speaker_role: string; // New
   order_index: number;
 }
 
@@ -66,7 +67,7 @@ const RegularEventDetail: React.FC = () => {
       try {
         const { data, error } = await supabase
           .from('regular_events')
-          .select('*, regular_event_rundowns(*), regular_event_faqs(*)')
+          .select('*, regular_event_rundowns(id, event_id, time, session_title, speaker_name, speaker_role, order_index), regular_event_faqs(*)')
           .eq('id', id)
           .single();
 
@@ -199,11 +200,11 @@ const RegularEventDetail: React.FC = () => {
               <Card className="shadow-sm">
                 <CardContent className="p-0">
                   <Table>
-                    <TableHeader>
-                      <TableRow className="bg-muted/20"> {/* Added background to header row */}
-                        <TableHead className="w-[100px] text-left border-r-0">{t('time label')}</TableHead> {/* Removed right border */}
-                        <TableHead className="text-left border-r-0">{t('session title label')}</TableHead> {/* Removed right border */}
-                        <TableHead className="w-[250px] text-left border-r-0">{t('speaker label')}</TableHead> {/* Removed right border and set width */}
+                    <TableHeader className="bg-primary text-primary-foreground">
+                      <TableRow>
+                        <TableHead className="w-[100px] text-left border-x-0">{t('time label')}</TableHead>
+                        <TableHead className="flex-1 text-left border-x-0">{t('session title label')}</TableHead>
+                        <TableHead className="w-[250px] text-left border-x-0">{t('speaker label')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -211,9 +212,12 @@ const RegularEventDetail: React.FC = () => {
                         .sort((a, b) => a.order_index - b.order_index)
                         .map((rundown) => (
                           <TableRow key={rundown.id}>
-                            <TableCell className="font-medium text-left border-r-0">{rundown.time}</TableCell> {/* Removed right border */}
-                            <TableCell className="text-left border-r-0">{rundown.session_title}</TableCell> {/* Removed right border */}
-                            <TableCell className="text-left border-r-0">{rundown.speaker}</TableCell> {/* Removed right border */}
+                            <TableCell className="font-medium text-left border-x-0">{rundown.time}</TableCell>
+                            <TableCell className="text-left border-x-0">{rundown.session_title}</TableCell>
+                            <TableCell className="text-left border-x-0">
+                              <p className="font-bold">{rundown.speaker_name}</p>
+                              <p className="text-sm text-muted-foreground">{rundown.speaker_role}</p>
+                            </TableCell>
                           </TableRow>
                         ))}
                     </TableBody>

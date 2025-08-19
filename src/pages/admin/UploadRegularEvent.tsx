@@ -22,7 +22,8 @@ interface RundownItem {
   id?: string;
   time: string;
   session_title: string;
-  speaker: string;
+  speaker_name: string; // New
+  speaker_role: string; // New
   order_index: number;
 }
 
@@ -112,7 +113,16 @@ const UploadRegularEvent: React.FC = () => {
           registrationLink: data.registration_link || "",
         });
         setInitialBannerImageUrl(data.banner_image_url || null);
-        setRundowns(data.regular_event_rundowns.sort((a, b) => a.order_index - b.order_index) || []);
+        // Map old 'speaker' to new 'speaker_name' and 'speaker_role' if 'speaker' exists and new fields are null
+        const mappedRundowns = data.regular_event_rundowns.map((r: any) => ({
+          id: r.id,
+          time: r.time,
+          session_title: r.session_title,
+          speaker_name: r.speaker_name || r.speaker || "", // Use new field, fallback to old, then empty
+          speaker_role: r.speaker_role || "", // Use new field, fallback to empty
+          order_index: r.order_index,
+        })).sort((a, b) => a.order_index - b.order_index);
+        setRundowns(mappedRundowns || []);
         setFaqs(data.regular_event_faqs.sort((a, b) => a.order_index - b.order_index) || []);
       }
     } catch (err: any) {
@@ -211,8 +221,12 @@ const UploadRegularEvent: React.FC = () => {
 
       // Prepare rundowns for upsert
       const rundownsToUpsert = rundowns.map((r, idx) => ({
-        ...r,
+        id: r.id, // Include ID for upsert
         event_id: currentEventId,
+        time: r.time,
+        session_title: r.session_title,
+        speaker_name: r.speaker_name, // Use new field
+        speaker_role: r.speaker_role, // Use new field
         order_index: idx,
         created_by: session?.user?.id,
         created_at: new Date().toISOString(),
@@ -220,8 +234,10 @@ const UploadRegularEvent: React.FC = () => {
 
       // Prepare FAQs for upsert
       const faqsToUpsert = faqs.map((f, idx) => ({
-        ...f,
+        id: f.id, // Include ID for upsert
         event_id: currentEventId,
+        question: f.question,
+        answer: f.answer,
         order_index: idx,
         created_by: session?.user?.id,
         created_at: new Date().toISOString(),

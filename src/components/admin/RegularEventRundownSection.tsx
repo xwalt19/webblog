@@ -13,7 +13,8 @@ interface RundownItem {
   id?: string;
   time: string;
   session_title: string;
-  speaker: string;
+  speaker_name: string; // New
+  speaker_role: string; // New
   order_index: number;
 }
 
@@ -26,7 +27,7 @@ const RegularEventRundownSection: React.FC<RegularEventRundownSectionProps> = ({
   const { t } = useTranslation();
 
   const handleAddRundown = () => {
-    setRundowns([...rundowns, { time: "", session_title: "", speaker: "", order_index: rundowns.length }]);
+    setRundowns([...rundowns, { time: "", session_title: "", speaker_name: "", speaker_role: "", order_index: rundowns.length }]);
   };
 
   const handleRemoveRundown = (index: number) => {
@@ -69,11 +70,19 @@ const RegularEventRundownSection: React.FC<RegularEventRundownSectionProps> = ({
               />
             </div>
             <div>
-              <Label>{t('speaker label')}</Label>
+              <Label>{t('speaker name label')}</Label>
               <Input
-                placeholder={t('speaker placeholder')}
-                value={rundown.speaker}
-                onChange={(e) => handleRundownChange(index, 'speaker', e.target.value)}
+                placeholder={t('speaker name placeholder')}
+                value={rundown.speaker_name}
+                onChange={(e) => handleRundownChange(index, 'speaker_name', e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>{t('speaker role label')}</Label>
+              <Input
+                placeholder={t('speaker role placeholder')}
+                value={rundown.speaker_role}
+                onChange={(e) => handleRundownChange(index, 'speaker_role', e.target.value)}
               />
             </div>
           </div>
