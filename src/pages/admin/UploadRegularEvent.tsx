@@ -44,8 +44,6 @@ const formSchema = z.object({
   }),
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
-  }).max(500, {
-    message: "Description must not be longer than 500 characters.",
   }),
   iconName: z.string().optional(), // Optional as it can be null
 });

@@ -37,7 +37,7 @@ const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 const trainingProgramSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters." }).max(255, { message: "Title must not exceed 255 characters." }),
-  description: z.string().min(10, { message: "Description must be at least 10 characters." }).max(1000, { message: "Description must not exceed 1000 characters." }),
+  description: z.string().min(10, { message: "Description must be at least 10 characters." }),
   iconName: z.string().optional().nullable(),
   
   // New fields for date range and time
