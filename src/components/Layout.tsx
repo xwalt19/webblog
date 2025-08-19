@@ -50,8 +50,7 @@ const Layout: React.FC = () => {
             )}
             {/* Akhir tampilan peran pengguna sementara */}
 
-            {/* Removed login/logout buttons from header */}
-            {/* {loading && !session ? (
+            {loading && !session ? (
               <div className="flex items-center px-4 py-2 text-muted-foreground">
                 <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading text')}
               </div>
@@ -76,7 +75,7 @@ const Layout: React.FC = () => {
                   </Link>
                 )}
               </>
-            )} */}
+            )}
             <div className="md:hidden">
               <MobileNav />
             </div>

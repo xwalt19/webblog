@@ -180,8 +180,7 @@ const MobileNav: React.FC = () => {
             </Accordion>
           ) : null}
 
-          {/* Auth Buttons for Mobile - Removed */}
-          {/* {loading && !session ? (
+          {loading && !session ? (
             <div className="flex items-center px-4 py-2 text-muted-foreground">
               <Loader2 className="h-5 w-5 animate-spin mr-2" /> {t('loading text')}
             </div>
@@ -195,7 +194,7 @@ const MobileNav: React.FC = () => {
                 <LogIn className="h-5 w-5 mr-2" /> {t('login button')}
               </Button>
             </Link>
-          )} */}
+          )}
         </nav>
       </SheetContent>
     </Sheet>
