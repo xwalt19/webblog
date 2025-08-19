@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import { id as idLocale } from "date-fns/locale"; // Import Indonesian locale
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -18,15 +19,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Control } from "react-hook-form";
+import { Control, UseFormWatch, UseFormSetValue } from "react-hook-form"; // Import UseFormWatch and UseFormSetValue
 import { z } from "zod";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { DateRange } from "react-day-picker"; // Import DateRange type
+
+const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 // Define a local schema for type inference, matching the main form schema
 const formSchema = z.object({
   name: z.string(),
-  schedule: z.date(),
+  // Changed from single 'schedule' to date range and time fields
+  startDate: z.date().optional().nullable(),
+  endDate: z.date().optional().nullable(),
+  startTime: z.string().regex(timeRegex, { message: "Invalid time format (HH:MM)" }).optional().nullable(),
+  endTime: z.string().regex(timeRegex, { message: "Invalid time format (HH:MM)" }).optional().nullable(),
   description: z.string(),
   iconName: z.string().optional().nullable(),
   quota: z.preprocess(
@@ -38,11 +46,15 @@ const formSchema = z.object({
 
 interface RegularEventDetailsFormProps {
   control: Control<z.infer<typeof formSchema>>;
+  watch: UseFormWatch<z.infer<typeof formSchema>>; // Add watch prop
+  setValue: UseFormSetValue<z.infer<typeof formSchema>>; // Add setValue prop
   eventId?: string; // Optional, for keying RichTextEditor
 }
 
 const RegularEventDetailsForm: React.FC<RegularEventDetailsFormProps> = ({
   control,
+  watch,
+  setValue,
   eventId,
 }) => {
   const { t } = useTranslation();
@@ -65,7 +77,7 @@ const RegularEventDetailsForm: React.FC<RegularEventDetailsFormProps> = ({
       />
       <FormField
         control={control}
-        name="schedule"
+        name="startDate" // Using startDate for the main field, but it controls the range
         render={({ field }) => (
           <FormItem className="flex flex-col">
             <FormLabel>{t('schedule label')}</FormLabel>
@@ -73,6 +85,7 @@ const RegularEventDetailsForm: React.FC<RegularEventDetailsFormProps> = ({
               <PopoverTrigger asChild>
                 <FormControl>
                   <Button
+                    id="date"
                     variant={"outline"}
                     className={cn(
                       "w-full justify-start text-left font-normal mt-1",
@@ -80,44 +93,77 @@ const RegularEventDetailsForm: React.FC<RegularEventDetailsFormProps> = ({
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {field.value ? format(field.value, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
+                    {watch("startDate") ? ( // Use watch here
+                      watch("endDate") && watch("endDate")?.getTime() !== watch("startDate")?.getTime() ? ( // Use watch here
+                        <>
+                          {format(watch("startDate")!, "PPP", { locale: idLocale })} -{" "}
+                          {format(watch("endDate")!, "PPP", { locale: idLocale })}
+                        </>
+                      ) : (
+                        format(watch("startDate")!, "PPP", { locale: idLocale })
+                      )
+                    ) : (
+                      <span>{t('pick date and time')}</span>
+                    )}
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
+              <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
-                  mode="single"
-                  selected={field.value || undefined}
-                  onSelect={field.onChange}
                   initialFocus
+                  mode="range"
+                  defaultMonth={field.value || undefined}
+                  selected={{ from: watch("startDate") || undefined, to: watch("endDate") || undefined }} // Use watch here
+                  onSelect={(range: DateRange | undefined) => {
+                    setValue("startDate", range?.from); // Use setValue here
+                    setValue("endDate", range?.to); // Use setValue here
+                  }}
+                  numberOfMonths={2}
                 />
-                <div className="p-3 border-t border-border">
-                  <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
-                  <Input
-                    id="time-input"
-                    type="time"
-                    value={field.value ? format(field.value, "HH:mm") : ""}
-                    onChange={(e) => {
-                      const [hours, minutes] = e.target.value.split(':').map(Number);
-                      if (field.value) {
-                        const newDate = new Date(field.value);
-                        newDate.setHours(hours, minutes);
-                        field.onChange(newDate);
-                      } else {
-                        const newDate = new Date();
-                        newDate.setHours(hours, minutes);
-                        field.onChange(newDate);
-                      }
-                    }}
-                    className="w-full"
-                  />
-                </div>
               </PopoverContent>
             </Popover>
             <FormMessage />
           </FormItem>
         )}
       />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={control}
+          name="startTime"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('start time label')}</FormLabel>
+              <FormControl>
+                <Input
+                  type="time"
+                  placeholder="HH:MM"
+                  {...field}
+                  value={field.value || ""}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="endTime"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('end time label')}</FormLabel>
+              <FormControl>
+                <Input
+                  type="time"
+                  placeholder="HH:MM"
+                  {...field}
+                  value={field.value || ""}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       <FormField
         control={control}
         name="description"

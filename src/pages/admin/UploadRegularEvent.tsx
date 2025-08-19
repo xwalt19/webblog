@@ -17,6 +17,7 @@ import RegularEventDetailsForm from "@/components/admin/RegularEventDetailsForm"
 import RegularEventMediaUpload from "@/components/admin/RegularEventMediaUpload"; // New import
 import RegularEventRundownSection from "@/components/admin/RegularEventRundownSection";
 import RegularEventFAQSection from "@/components/admin/RegularEventFAQSection";
+import { formatDateRangeWithTime, parseDateRangeString } from "@/utils/dateUtils"; // Import date utils
 
 interface RundownItem {
   id?: string;
@@ -36,6 +37,8 @@ interface FAQItem {
 
 const MAX_BANNER_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
+const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
 // Define Zod schema for validation
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -43,9 +46,11 @@ const formSchema = z.object({
   }).max(100, {
     message: "Name must not be longer than 100 characters.",
   }),
-  schedule: z.date({
-    required_error: "Schedule date and time are required.",
-  }),
+  // Changed from single 'schedule' to date range and time fields
+  startDate: z.date().optional().nullable(),
+  endDate: z.date().optional().nullable(),
+  startTime: z.string().regex(timeRegex, { message: "Invalid time format (HH:MM)" }).optional().nullable(),
+  endTime: z.string().regex(timeRegex, { message: "Invalid time format (HH:MM)" }).optional().nullable(),
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
   }),
@@ -55,6 +60,22 @@ const formSchema = z.object({
     z.number().int().min(0, { message: "Quota must be a non-negative integer." }).nullable().optional()
   ),
   registrationLink: z.string().url({ message: "Must be a valid URL." }).nullable().optional().or(z.literal('')),
+}).refine((data) => {
+  if (data.startDate && data.endDate && data.startDate > data.endDate) {
+    return false;
+  }
+  return true;
+}, {
+  message: "End date cannot be before start date.",
+  path: ["endDate"],
+}).refine((data) => {
+  if (data.startTime && data.endTime && data.startTime > data.endTime && data.startDate?.toDateString() === data.endDate?.toDateString()) {
+    return false;
+  }
+  return true;
+}, {
+  message: "End time cannot be before start time on the same day.",
+  path: ["endTime"],
 });
 
 const UploadRegularEvent: React.FC = () => {
@@ -73,7 +94,10 @@ const UploadRegularEvent: React.FC = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      schedule: undefined, // Default to undefined for date
+      startDate: undefined,
+      endDate: undefined,
+      startTime: "",
+      endTime: "",
       description: "",
       iconName: "",
       quota: null,
@@ -104,9 +128,13 @@ const UploadRegularEvent: React.FC = () => {
       if (error) throw error;
 
       if (data) {
+        const { startDate, endDate, startTime, endTime } = parseDateRangeString(data.schedule);
         form.reset({
           name: data.name || "",
-          schedule: data.schedule ? new Date(data.schedule) : undefined, // Parse ISO string to Date
+          startDate: startDate,
+          endDate: endDate,
+          startTime: startTime || "",
+          endTime: endTime || "",
           description: data.description || "",
           iconName: data.icon_name || "",
           quota: data.quota,
@@ -186,9 +214,16 @@ const UploadRegularEvent: React.FC = () => {
         currentBannerImageUrl = null;
       }
 
+      const formattedSchedule = formatDateRangeWithTime(
+        values.startDate || undefined,
+        values.endDate || undefined,
+        values.startTime || undefined,
+        values.endTime || undefined
+      );
+
       const eventData = {
         name: values.name,
-        schedule: values.schedule.toISOString(), // Convert Date to ISO string
+        schedule: formattedSchedule || null, // Save the formatted string
         description: values.description,
         icon_name: values.iconName || null,
         quota: values.quota || null,
@@ -333,7 +368,12 @@ const UploadRegularEvent: React.FC = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <RegularEventDetailsForm control={form.control} eventId={eventId} />
+              <RegularEventDetailsForm
+                control={form.control}
+                watch={form.watch}
+                setValue={form.setValue}
+                eventId={eventId}
+              />
               <RegularEventMediaUpload
                 bannerImageFile={bannerImageFile}
                 setBannerImageFile={setBannerImageFile}
