@@ -8,11 +8,12 @@ import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
-import { formatDisplayDate, formatDisplayDateTime } from "@/utils/dateUtils";
+import { formatDisplayDate, formatDisplayDateTime, formatRemainingDays } from "@/utils/dateUtils";
 import { toast } from "sonner";
-import { CalendarDays, BellRing } from "lucide-react"; // Import default icons
-import { Badge } from "@/components/ui/badge"; // Import Badge
-import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
+import { CalendarDays, BellRing, Users, CheckCircle2, XCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import ResponsiveImage from "@/components/ResponsiveImage";
+import { cn } from "@/lib/utils";
 
 interface RegularEvent {
   id: string;
@@ -20,7 +21,9 @@ interface RegularEvent {
   schedule: string; // ISO string
   description: string;
   icon_name: string | null;
-  banner_image_url: string | null; // New
+  banner_image_url: string | null;
+  quota: number | null;
+  registration_link: string | null;
   created_by: string | null;
   created_at: string;
 }
@@ -38,7 +41,7 @@ const RegularEventsClasses: React.FC = () => {
       try {
         const { data, error } = await supabase
           .from('regular_events')
-          .select('*') // Select all columns including new ones
+          .select('*')
           .order('schedule', { ascending: false });
 
         if (error) {
@@ -79,10 +82,13 @@ const RegularEventsClasses: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {regularEvents.map((event) => {
             const EventIcon = getIconComponent(event.icon_name);
+            const isEventUpcoming = new Date(event.schedule) > new Date();
+            const isQuotaAvailable = event.quota === null || event.quota > 0;
+
             return (
               <Card key={event.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                {/* Bagian atas dengan ikon dan badge */}
-                <div className="relative w-full h-48 bg-primary/10 flex items-center justify-center"> {/* Changed h-72 to h-48 */}
+                {/* Image/Banner Section */}
+                <div className="relative w-full h-64 bg-primary/10 flex items-center justify-center"> {/* Increased height to h-64 */}
                   {event.banner_image_url ? (
                     <ResponsiveImage 
                       src={event.banner_image_url} 
@@ -100,28 +106,61 @@ const RegularEventsClasses: React.FC = () => {
                       )}
                     </div>
                   )}
-                  <Badge variant="secondary" className="absolute top-4 right-4 text-sm px-3 py-1 z-10">
-                    {t('event type label')}
-                  </Badge>
+                  {/* Gradient Overlay and Text on Image */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-between p-4">
+                    <div className="flex justify-end">
+                      <Badge variant="secondary" className="text-sm px-3 py-1">
+                        {t('event type label')}
+                      </Badge>
+                    </div>
+                    <h3 className="text-white text-2xl font-bold leading-tight line-clamp-2">
+                      {event.name}
+                    </h3>
+                  </div>
                 </div>
                 
-                <CardHeader className="flex-grow p-4 pb-2"> {/* Changed p-6 to p-4 */}
-                  <CardTitle className="text-xl font-semibold mb-2">{event.name}</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">
+                {/* Main Content Section */}
+                <div className="p-4 flex-grow">
+                  <p className="text-sm text-muted-foreground mb-2">
                     {t('schedule label')}: {formatDisplayDateTime(event.schedule)}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-4 pt-0"> {/* Changed p-6 to p-4 */}
+                  </p>
                   <div
                     className="prose dark:prose-invert max-w-none text-muted-foreground mb-4 line-clamp-3"
                     dangerouslySetInnerHTML={{ __html: event.description }}
                   />
+                </div>
+
+                {/* Footer Section */}
+                <div className="border-t border-border p-4 flex justify-between items-center text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    {event.quota !== null ? (
+                      <>
+                        {isQuotaAvailable ? (
+                          <Users className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Users className="h-4 w-4 text-destructive" />
+                        )}
+                        <span>
+                          {event.quota > 0
+                            ? t('quota remaining', { count: event.quota })
+                            : t('quota full')}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-muted-foreground">{t('unlimited quota')}</span>
+                    )}
+                  </div>
+                  <div className="font-semibold text-primary">
+                    {formatRemainingDays(event.schedule)}
+                  </div>
+                </div>
+                <div className="p-4 pt-0">
                   <Link to={`/info/regular-events-classes/${event.id}`}>
                     <Button variant="outline" className="w-full">
                       {t('view details button')}
                     </Button>
                   </Link>
-                </CardContent>
+                </div>
               </Card>
             );
           })}
