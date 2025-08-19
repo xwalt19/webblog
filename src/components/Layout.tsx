@@ -70,7 +70,7 @@ const Layout: React.FC = () => {
                 ) : (
                   <Link to="/login">
                     <Button variant="default" className="px-4 py-2">
-                      <LogIn className="h-5 w-5 mr-2" /> {t('login button')}
+                      <LogIn className="h-5 w-5 mr-2" /> {t('login')}
                     </Button>
                   </Link>
                 )}

@@ -191,7 +191,7 @@ const MobileNav: React.FC = () => {
           ) : (
             <Link to="/login" onClick={closeSheet}>
               <Button variant="ghost" className="w-full justify-start text-lg font-medium text-foreground hover:text-primary transition-colors capitalize">
-                <LogIn className="h-5 w-5 mr-2" /> {t('login button')}
+                <LogIn className="h-5 w-5 mr-2" /> {t('login')}
               </Button>
             </Link>
           )}
