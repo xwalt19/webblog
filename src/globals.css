@@ -10,7 +10,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* overflow-y: auto; */ /* Dihapus untuk mencegah scrollbar ganda */
+    overflow-y: auto; /* Dikembalikan untuk mencegah scrollbar ganda */
     overflow-x: hidden; /* Tetap sembunyikan overflow horizontal */
   }
 }
