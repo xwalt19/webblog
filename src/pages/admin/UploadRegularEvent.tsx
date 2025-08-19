@@ -5,7 +5,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Keep Textarea for other uses if any, but it's not used for description anymore
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -30,7 +29,27 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import RichTextEditor from "@/components/RichTextEditor"; // Import RichTextEditor
+import RichTextEditor from "@/components/RichTextEditor";
+import RegularEventRundownSection from "@/components/admin/RegularEventRundownSection"; // New import
+import RegularEventFAQSection from "@/components/admin/RegularEventFAQSection"; // New import
+import ResponsiveImage from "@/components/ResponsiveImage"; // New import
+
+interface RundownItem {
+  id?: string;
+  time: string;
+  session_title: string;
+  speaker: string;
+  order_index: number;
+}
+
+interface FAQItem {
+  id?: string;
+  question: string;
+  answer: string;
+  order_index: number;
+}
+
+const MAX_BANNER_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 // Define Zod schema for validation
 const formSchema = z.object({
@@ -45,7 +64,12 @@ const formSchema = z.object({
   description: z.string().min(10, {
     message: "Description must be at least 10 characters.",
   }),
-  iconName: z.string().optional(), // Optional as it can be null
+  iconName: z.string().optional().nullable(),
+  quota: z.preprocess(
+    (val) => (val === "" ? null : Number(val)),
+    z.number().int().min(0, { message: "Quota must be a non-negative integer." }).nullable().optional()
+  ),
+  registrationLink: z.string().url({ message: "Must be a valid URL." }).nullable().optional().or(z.literal('')),
 });
 
 const UploadRegularEvent: React.FC = () => {
@@ -56,6 +80,10 @@ const UploadRegularEvent: React.FC = () => {
 
   const [dataLoading, setDataLoading] = useState(true);
   const availableIcons = Object.keys(iconMap);
+  const [bannerImageFile, setBannerImageFile] = useState<File | null>(null);
+  const [initialBannerImageUrl, setInitialBannerImageUrl] = useState<string | null>(null);
+  const [rundowns, setRundowns] = useState<RundownItem[]>([]);
+  const [faqs, setFaqs] = useState<FAQItem[]>([]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,6 +92,8 @@ const UploadRegularEvent: React.FC = () => {
       schedule: undefined, // Default to undefined for date
       description: "",
       iconName: "",
+      quota: null,
+      registrationLink: "",
     },
   });
 
@@ -83,7 +113,7 @@ const UploadRegularEvent: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('regular_events')
-        .select('*')
+        .select('*, regular_event_rundowns(*), regular_event_faqs(*)')
         .eq('id', id)
         .single();
 
@@ -95,7 +125,12 @@ const UploadRegularEvent: React.FC = () => {
           schedule: data.schedule ? new Date(data.schedule) : undefined, // Parse ISO string to Date
           description: data.description || "",
           iconName: data.icon_name || "",
+          quota: data.quota,
+          registrationLink: data.registration_link || "",
         });
+        setInitialBannerImageUrl(data.banner_image_url || null);
+        setRundowns(data.regular_event_rundowns.sort((a, b) => a.order_index - b.order_index) || []);
+        setFaqs(data.regular_event_faqs.sort((a, b) => a.order_index - b.order_index) || []);
       }
     } catch (err: any) {
       console.error("Error fetching regular event data:", err);
@@ -106,19 +141,87 @@ const UploadRegularEvent: React.FC = () => {
     }
   };
 
+  const handleBannerImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      if (file.size > MAX_BANNER_IMAGE_SIZE_BYTES) {
+        toast.error(t('file size too large', { max: '5MB' }));
+        event.target.value = ''; // Clear the input
+        setBannerImageFile(null);
+        return;
+      }
+      setBannerImageFile(file);
+    } else {
+      setBannerImageFile(null);
+    }
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const toastId = toast.loading(eventId ? t("updating status") : t("uploading status"));
 
     try {
+      let currentBannerImageUrl = initialBannerImageUrl;
+
+      // Handle banner image upload/update
+      if (bannerImageFile) {
+        // Delete old image if exists
+        if (initialBannerImageUrl) {
+          try {
+            const path = initialBannerImageUrl.split('/images/event_banners/')[1];
+            if (path) {
+              const { error: deleteError } = await supabase.storage.from('images').remove([`event_banners/${path}`]);
+              if (deleteError) console.warn("Failed to delete old banner image:", deleteError.message);
+            }
+          } catch (e) {
+            console.warn("Error parsing old banner image URL for deletion:", e);
+          }
+        }
+
+        // Upload new image
+        const fileExtension = bannerImageFile.name.split('.').pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
+        const filePath = `event_banners/${fileName}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('images')
+          .upload(filePath, bannerImageFile, {
+            cacheControl: '3600',
+            upsert: false,
+          });
+
+        if (uploadError) {
+          throw uploadError;
+        }
+        const { data: publicUrlData } = supabase.storage.from('images').getPublicUrl(filePath);
+        currentBannerImageUrl = publicUrlData.publicUrl;
+      } else if (eventId && !bannerImageFile && initialBannerImageUrl) {
+        // If editing and image is cleared, delete old image
+        try {
+          const path = initialBannerImageUrl.split('/images/event_banners/')[1];
+          if (path) {
+            const { error: deleteError } = await supabase.storage.from('images').remove([`event_banners/${path}`]);
+            if (deleteError) console.warn("Failed to delete old banner image:", deleteError.message);
+          }
+        } catch (e) {
+          console.warn("Error parsing old banner image URL for deletion:", e);
+        }
+        currentBannerImageUrl = null;
+      }
+
       const eventData = {
         name: values.name,
         schedule: values.schedule.toISOString(), // Convert Date to ISO string
         description: values.description,
         icon_name: values.iconName || null,
+        quota: values.quota || null,
+        registration_link: values.registrationLink || null,
+        banner_image_url: currentBannerImageUrl,
         ...(eventId ? {} : { created_by: session?.user?.id, created_at: new Date().toISOString() }),
       };
 
+      let currentEventId = eventId;
       let error;
+
       if (eventId) {
         const { error: updateError } = await supabase
           .from('regular_events')
@@ -126,13 +229,45 @@ const UploadRegularEvent: React.FC = () => {
           .eq('id', eventId);
         error = updateError;
       } else {
-        const { error: insertError } = await supabase
+        const { data, error: insertError } = await supabase
           .from('regular_events')
-          .insert([eventData]);
+          .insert([eventData])
+          .select('id')
+          .single();
         error = insertError;
+        if (data) currentEventId = data.id;
       }
 
       if (error) throw error;
+      if (!currentEventId) throw new Error("Event ID not found after save.");
+
+      // Save Rundowns
+      await supabase.from('regular_event_rundowns').delete().eq('event_id', currentEventId);
+      if (rundowns.length > 0) {
+        const rundownsToInsert = rundowns.map((r, idx) => ({
+          ...r,
+          event_id: currentEventId,
+          order_index: idx,
+          created_by: session?.user?.id,
+          created_at: new Date().toISOString(),
+        }));
+        const { error: rundownsError } = await supabase.from('regular_event_rundowns').insert(rundownsToInsert);
+        if (rundownsError) throw rundownsError;
+      }
+
+      // Save FAQs
+      await supabase.from('regular_event_faqs').delete().eq('event_id', currentEventId);
+      if (faqs.length > 0) {
+        const faqsToInsert = faqs.map((f, idx) => ({
+          ...f,
+          event_id: currentEventId,
+          order_index: idx,
+          created_by: session?.user?.id,
+          created_at: new Date().toISOString(),
+        }));
+        const { error: faqsError } = await supabase.from('regular_event_faqs').insert(faqsToInsert);
+        if (faqsError) throw faqsError;
+      }
 
       toast.success(eventId ? t("updated successfully") : t("added successfully"), { id: toastId });
       navigate('/admin/manage-regular-events');
@@ -140,6 +275,8 @@ const UploadRegularEvent: React.FC = () => {
     } catch (err: any) {
       console.error("Error saving regular event:", err);
       toast.error(t("save failed", { error: err.message }), { id: toastId });
+    } finally {
+      form.formState.isSubmitting = false; // Manually reset submitting state
     }
   };
 
@@ -270,7 +407,7 @@ const UploadRegularEvent: React.FC = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('icon label')}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select onValueChange={field.onChange} value={field.value || ""}>
                       <FormControl>
                         <SelectTrigger className="w-full mt-1">
                           <SelectValue placeholder={t('select icon placeholder')} />
@@ -291,6 +428,83 @@ const UploadRegularEvent: React.FC = () => {
                   </FormItem>
                 )}
               />
+              <div>
+                <Label htmlFor="banner-image-upload">{t('banner image label')}</Label>
+                <Input
+                  id="banner-image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBannerImageChange}
+                  className="mt-1"
+                />
+                {bannerImageFile ? (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {t('selected image')}: {bannerImageFile.name}
+                  </p>
+                ) : initialBannerImageUrl && (
+                  <div className="mt-2">
+                    <ResponsiveImage 
+                      src={initialBannerImageUrl} 
+                      alt={t('current banner image')} 
+                      containerClassName="w-32 h-20 rounded-md" 
+                      className="object-cover" 
+                    />
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('current image')}: <a href={initialBannerImageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialBannerImageUrl.split('/').pop()}</a>
+                    </p>
+                  </div>
+                )}
+              </div>
+              <FormField
+                control={form.control}
+                name="quota"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('quota label')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder={t('quota placeholder')}
+                        {...field}
+                        value={field.value === null ? "" : field.value} // Handle null for empty input
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val === "" ? null : Number(val));
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('quota hint')}
+                    </p>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="registrationLink"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('registration link label')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="url"
+                        placeholder={t('registration link placeholder')}
+                        {...field}
+                        value={field.value || ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {t('registration link hint')}
+                    </p>
+                  </FormItem>
+                )}
+              />
+
+              <RegularEventRundownSection rundowns={rundowns} setRundowns={setRundowns} />
+              <RegularEventFAQSection faqs={faqs} setFaqs={setFaqs} />
+
               <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? t('uploading status') : (eventId ? t('save changes button') : t('submit button'))}
               </Button>

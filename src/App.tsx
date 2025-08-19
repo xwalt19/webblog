@@ -12,6 +12,7 @@ const BlogPage = React.lazy(() => import("./pages/Blog"));
 const AboutPage = React.lazy(() => import("./pages/About"));
 const Archives = React.lazy(() => import("./pages/Archives"));
 const RegularEventsClasses = React.lazy(() => import("./pages/info/RegularEventsClasses"));
+const RegularEventDetail = React.lazy(() => import("./pages/info/RegularEventDetail")); // New import
 const Camps = React.lazy(() => import("./pages/info/Camps"));
 const Training = React.lazy(() => import("./pages/info/Training"));
 const ProgramsPage = React.lazy(() => import("./pages/info/Programs"));
@@ -64,6 +65,7 @@ const App = () => (
                 <Route path="about" element={<AboutPage />} />
                 <Route path="archives" element={<Archives />} />
                 <Route path="info/regular-events-classes" element={<RegularEventsClasses />} />
+                <Route path="info/regular-events-classes/:id" element={<RegularEventDetail />} /> {/* New route */}
                 <Route path="info/camps" element={<Camps />} />
                 <Route path="info/training" element={<Training />} />
                 <Route path="info/programs" element={<ProgramsPage />} />

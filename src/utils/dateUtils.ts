@@ -1,4 +1,4 @@
-import { format, isValid, parse, parseISO } from "date-fns";
+import { format, isValid, parse, parseISO, differenceInDays, isPast } from "date-fns";
 import { id as idLocale } from "date-fns/locale"; // Import Indonesian locale as idLocale
 import i18n from "i18next"; // Import i18n instance directly
 
@@ -140,4 +140,33 @@ export const formatDynamicScheduleOrDates = (dateString: string | null | undefin
     // For robustness, we'll try to format it as a standard date-time.
     return formatDisplayDateTime(dateString);
   }
+};
+
+export const formatRemainingDays = (isoString: string | null | undefined): string => {
+  if (!isoString) return '-';
+  const eventDate = new Date(isoString);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Normalize today to start of day
+
+  if (isPast(eventDate) && !isSameDay(eventDate, today)) {
+    return i18n.t('event passed');
+  }
+
+  const diffDays = differenceInDays(eventDate, today);
+
+  if (diffDays === 0) {
+    return i18n.t('event today');
+  } else if (diffDays === 1) {
+    return i18n.t('event tomorrow');
+  } else if (diffDays > 1) {
+    return i18n.t('days remaining', { count: diffDays });
+  }
+  return '-';
+};
+
+// Helper function to check if two dates are the same day (ignoring time)
+const isSameDay = (d1: Date, d2: Date) => {
+  return d1.getFullYear() === d2.getFullYear() &&
+         d1.getMonth() === d2.getMonth() &&
+         d1.getDate() === d2.getDate();
 };

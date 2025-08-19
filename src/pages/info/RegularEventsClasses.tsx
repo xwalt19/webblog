@@ -102,10 +102,11 @@ const RegularEventsClasses: React.FC = () => {
                     className="prose dark:prose-invert max-w-none text-muted-foreground mb-4 line-clamp-3"
                     dangerouslySetInnerHTML={{ __html: event.description }}
                   />
-                  {/* Tombol "Lihat Detail" - belum ada tautan spesifik untuk saat ini */}
-                  <Button variant="outline" className="w-full">
-                    {t('view details button')}
-                  </Button>
+                  <Link to={`/info/regular-events-classes/${event.id}`}>
+                    <Button variant="outline" className="w-full">
+                      {t('view details button')}
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             );

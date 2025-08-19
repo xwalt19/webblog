@@ -19,6 +19,9 @@ interface RegularEvent {
   schedule: string; // Now an ISO string
   description: string;
   icon_name: string | null;
+  banner_image_url: string | null; // New
+  quota: number | null; // New
+  registration_link: string | null; // New
   created_by: string | null;
   created_at: string;
 }
@@ -40,14 +43,9 @@ const ManageRegularEvents: React.FC = () => {
     try {
       const { data, error } = await supabase
         .from('regular_events')
-        .select('*')
+        .select('*') // Select all columns including new ones
         .order('name', { ascending: true }) // Order by name first
         .order('created_at', { ascending: false }); // Then by created_at
-
-      // --- START DIAGNOSTIC LOGS ---
-      console.log("ManageRegularEvents: Supabase fetch data:", data);
-      console.log("ManageRegularEvents: Supabase fetch error:", error);
-      // --- END DIAGNOSTIC LOGS ---
 
       if (error) {
         throw error;
@@ -55,8 +53,6 @@ const ManageRegularEvents: React.FC = () => {
       setRegularEvents(data || []);
     } catch (err: any) {
       console.error("Error fetching regular events:", err);
-      // Log the full error object for more details
-      console.error("Full error object caught:", err); 
       setError(t("fetch data error", { error: err.message }));
     } finally {
       setIsFetching(false);
@@ -90,6 +86,10 @@ const ManageRegularEvents: React.FC = () => {
       return;
     }
     try {
+      // Delete related rundowns and FAQs first due to foreign key constraints
+      await supabase.from('regular_event_rundowns').delete().eq('event_id', id);
+      await supabase.from('regular_event_faqs').delete().eq('event_id', id);
+
       const { error } = await supabase
         .from('regular_events')
         .delete()
@@ -151,6 +151,7 @@ const ManageRegularEvents: React.FC = () => {
                   <TableHead>{t('name label')}</TableHead>
                   <TableHead>{t('schedule label')}</TableHead>
                   <TableHead>{t('table icon')}</TableHead>
+                  <TableHead>{t('quota label')}</TableHead> {/* New TableHead */}
                   <TableHead>{t('table date')}</TableHead>
                   <TableHead className="text-right">{t('table actions')}</TableHead>
                 </TableRow>
@@ -165,6 +166,7 @@ const ManageRegularEvents: React.FC = () => {
                       <TableCell>
                         {EventIcon ? <EventIcon className="h-5 w-5" /> : '-'}
                       </TableCell>
+                      <TableCell>{event.quota !== null ? event.quota : t('unlimited')}</TableCell> {/* Display quota */}
                       <TableCell>{formatDisplayDateTime(event.created_at)}</TableCell>
                       <TableCell className="text-right">
                         <Link to={`/admin/regular-events/${event.id}/edit`}>
