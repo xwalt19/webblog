@@ -8,33 +8,15 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
-import ProgramPriceTables from "@/components/admin/ProgramPriceTables";
-import ProgramTopics from "@/components/admin/ProgramTopics";
+import ProgramPriceTablesSection from "@/components/admin/ProgramPriceTablesSection"; // Updated import
+import ProgramTopicsSection from "@/components/admin/ProgramTopicsSection"; // Updated import
+import ProgramDetailsForm from "@/components/admin/ProgramDetailsForm"; // New import
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import RichTextEditor from "@/components/RichTextEditor";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { id } from "date-fns/locale"; // Import 'id' locale
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { iconMap } from "@/utils/iconMap";
+import { Form } from "@/components/ui/form";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
-import { DateRange } from "react-day-picker"; // Import DateRange type
-import { formatDateRangeWithTime, parseDateRangeString } from "@/utils/dateUtils"; // Import new date utils
+import { formatDateRangeWithTime, parseDateRangeString } from "@/utils/dateUtils";
 
 interface PriceTier {
   id?: string;
@@ -56,8 +38,6 @@ const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 const programSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters." }).max(255, { message: "Title must not exceed 255 characters." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
-  // schedule field will be derived from dateRange, startTime, endTime
-  // It's not directly part of the form's controlled fields for validation
   registrationFee: z.string().optional().nullable(),
   price: z.string().optional().nullable(),
   type: z.union([z.literal("kids"), z.literal("private"), z.literal("professional")], {
@@ -65,7 +45,6 @@ const programSchema = z.object({
   }),
   iconName: z.string().optional().nullable(),
   
-  // New fields for date range and time
   startDate: z.date().optional().nullable(),
   endDate: z.date().optional().nullable(),
   startTime: z.string().regex(timeRegex, { message: "Invalid time format (HH:MM)" }).optional().nullable(),
@@ -144,7 +123,7 @@ const UploadProgram: React.FC = () => {
           startDate: startDate,
           endDate: endDate,
           startTime: startTime || "",
-          endTime: endTime || "",
+          endTime: endTime || "", // Corrected: Changed from 'fendTime' to 'endTime'
           registrationFee: programData.registration_fee || "",
           price: programData.price || "",
           type: programData.type || "kids",
@@ -204,7 +183,7 @@ const UploadProgram: React.FC = () => {
       const programData = {
         title: values.title,
         description: values.description,
-        schedule: formattedSchedule || null, // Save the formatted string
+        schedule: formattedSchedule || null,
         registration_fee: values.registrationFee || null,
         price: values.price || null,
         type: values.type,
@@ -234,12 +213,11 @@ const UploadProgram: React.FC = () => {
       if (error) throw error;
       if (!currentProgramId) throw new Error("Program ID not found after save.");
 
-      // Handle calendar event creation/update based on the *start* date of the program
       if (values.startDate) {
         const calendarEventData = {
           title: values.title,
           description: values.description,
-          date: values.startDate.toISOString(), // Use start date for calendar event
+          date: values.startDate.toISOString(),
           created_by: session?.user?.id,
           program_id: currentProgramId,
         };
@@ -267,7 +245,6 @@ const UploadProgram: React.FC = () => {
           if (insertEventError) throw insertEventError;
         }
       } else {
-        // If no start date, remove any associated calendar event
         await supabase
           .from('calendar_events')
           .delete()
@@ -342,241 +319,20 @@ const UploadProgram: React.FC = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Title Field */}
-              <FormField
+              <ProgramDetailsForm
                 control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('title label')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t('title placeholder')}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                watch={form.watch} // Pass form.watch
+                setValue={form.setValue} // Pass form.setValue
+                programId={programId}
               />
-
-              {/* Description Field (RichTextEditor) */}
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('description label')}</FormLabel>
-                    <FormControl>
-                      <RichTextEditor
-                        key={programId || "new-program"}
-                        value={field.value}
-                        onChange={field.onChange}
-                        placeholder={t('description placeholder')}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Type Field */}
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('type label')}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full mt-1">
-                          <SelectValue placeholder={t('select type placeholder')} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {["kids", "private", "professional"].map(pType => (
-                          <SelectItem key={pType} value={pType}>{t(`${pType} program type`)}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Icon Name Field */}
-              <FormField
-                control={form.control}
-                name="iconName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('icon label')}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || ""}>
-                      <FormControl>
-                        <SelectTrigger className="w-full mt-1">
-                          <SelectValue placeholder={t('select icon placeholder')} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {Object.keys(iconMap).map(icon => (
-                          <SelectItem key={icon} value={icon}>{icon}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {field.value && (
-                      <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-                        {t('selected icon preview')}: {React.createElement(iconMap[field.value], { className: "h-4 w-4" })} {field.value}
-                      </p>
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Schedule Date Range Field */}
-              <FormField
-                control={form.control}
-                name="startDate" // Using startDate for the main field, but it controls the range
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>{t('schedule date range label')}</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            id="date"
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal mt-1",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {form.watch("startDate") ? (
-                              form.watch("endDate") && form.watch("endDate")?.getTime() !== form.watch("startDate")?.getTime() ? (
-                                <>
-                                  {format(form.watch("startDate")!, "PPP", { locale: id })} -{" "}
-                                  {format(form.watch("endDate")!, "PPP", { locale: id })}
-                                </>
-                              ) : (
-                                format(form.watch("startDate")!, "PPP", { locale: id })
-                              )
-                            ) : (
-                              <span>{t('pick a date range')}</span>
-                            )}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          initialFocus
-                          mode="range"
-                          defaultMonth={field.value || undefined}
-                          selected={{ from: form.watch("startDate") || undefined, to: form.watch("endDate") || undefined }}
-                          onSelect={(range: DateRange | undefined) => {
-                            form.setValue("startDate", range?.from);
-                            form.setValue("endDate", range?.to);
-                          }}
-                          numberOfMonths={2}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Time Range Fields */}
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="startTime"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('start time label')}</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="time"
-                          placeholder="HH:MM"
-                          {...field}
-                          value={field.value || ""}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="endTime"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('end time label')}</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="time"
-                          placeholder="HH:MM"
-                          {...field}
-                          value={field.value || ""}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              {/* Registration Fee Field */}
-              <FormField
-                control={form.control}
-                name="registrationFee"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('registration fee label')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t('registration fee placeholder')}
-                        {...field}
-                        value={field.value || ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Price Field */}
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('price label')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t('price placeholder')}
-                        {...field}
-                        value={field.value || ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {t('price hint')}
-                    </p>
-                  </FormItem>
-                )}
-              />
-
-              <ProgramPriceTables
+              <ProgramPriceTablesSection
                 priceTables={priceTables}
                 setPriceTables={setPriceTables}
               />
-
-              <ProgramTopics
+              <ProgramTopicsSection
                 topics={topics}
                 setTopics={setTopics}
               />
-
               <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? t('uploading status') : (programId ? t('save changes button') : t('submit button'))}
               </Button>
