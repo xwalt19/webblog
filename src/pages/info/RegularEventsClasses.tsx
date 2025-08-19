@@ -84,10 +84,10 @@ const RegularEventsClasses: React.FC = () => {
                   {EventIcon ? (
                     <EventIcon className="text-primary opacity-70" size={96} />
                   ) : (
-                    <CalendarDays className="text-primary opacity-70" size={96} /> {/* Ikon default */}
+                    <CalendarDays className="text-primary opacity-70" size={96} />
                   )}
                   <Badge variant="secondary" className="absolute top-4 right-4 text-sm px-3 py-1">
-                    {t('event type label')} {/* Label generik untuk jenis acara */}
+                    {t('event type label')}
                   </Badge>
                 </div>
                 
