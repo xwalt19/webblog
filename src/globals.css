@@ -8,88 +8,10 @@
     margin: 0; /* Menghapus margin default secara eksplisit */
     padding: 0; /* Menghapus padding default secara eksplisit */
   }
-  :root {
-    --background: 0 0% 100%; /* Pure White */
-    --foreground: 220 15% 15%; /* Very Dark Blue-Grey */
-
-    --card: 0 0% 100%;
-    --card-foreground: 220 15% 15%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 15% 15%;
-
-    --primary: 220 70% 40%; /* A vibrant blue */
-    --primary-foreground: 0 0% 98%; /* Off-white */
-
-    --secondary: 210 20% 95%; /* Very light cool grey */
-    --secondary-foreground: 220 15% 15%;
-
-    --muted: 210 20% 90%; /* Slightly darker light grey */
-    --muted-foreground: 215.4 16.3% 46.9%; /* Medium grey */
-
-    --accent: 210 20% 90%; /* Same as muted for consistency in light backgrounds */
-    --accent-foreground: 220 15% 15%;
-
-    --destructive: 0 84.2% 60.2%; /* Standard Red */
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 210 10% 85%; /* Soft light grey border */
-    --input: 210 10% 95%; /* Very light input background */
-    --ring: 220 70% 40%; /* Match primary for focus rings */
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 210 20% 98%; /* Very light, slightly cool sidebar */
-    --sidebar-foreground: 220 15% 15%; /* Dark text */
-    --sidebar-primary: 220 70% 40%; /* Match main primary */
-    --sidebar-primary-foreground: 0 0% 98%; /* Off-white */
-    --sidebar-accent: 210 20% 90%; /* Match main accent */
-    --sidebar-accent-foreground: 220 15% 15%; /* Dark text */
-    --sidebar-border: 210 10% 85%; /* Match main border */
-    --sidebar-ring: 220 70% 40%;
-
-    --footer-background: 220 70% 20%; /* Darker blue for footer */
-  }
-
-  .dark {
-    --background: 220 20% 10%; /* Deep dark blue-grey */
-    --foreground: 210 40% 95%; /* Soft off-white */
-
-    --card: 220 20% 10%;
-    --card-foreground: 210 40% 95%;
-
-    --popover: 220 20% 10%;
-    --popover-foreground: 210 40% 95%;
-
-    --primary: 220 70% 60%; /* Brighter blue for dark mode contrast */
-    --primary-foreground: 220 15% 15%; /* Dark text on primary */
-
-    --secondary: 220 20% 15%; /* Slightly lighter dark grey */
-    --secondary-foreground: 210 40% 95%;
-
-    --muted: 220 20% 20%; /* Medium dark grey */
-    --muted-foreground: 215 20.2% 65.1%; /* Lighter grey for muted text */
-
-    --accent: 220 20% 15%; /* Same as secondary */
-    --accent-foreground: 210 40% 95%;
-
-    --destructive: 0 62.8% 30.6%; /* Darker red */
-    --destructive-foreground: 210 40% 95%;
-
-    --border: 220 20% 15%;
-    --input: 220 20% 15%;
-    --ring: 220 70% 60%; /* Match primary */
-
-    --sidebar-background: 220 20% 8%; /* Even darker for sidebar */
-    --sidebar-foreground: 210 40% 90%; /* Slightly muted off-white */
-    --sidebar-primary: 220 70% 60%; /* Match main primary */
-    --sidebar-primary-foreground: 220 15% 15%; /* Dark text on primary */
-    --sidebar-accent: 220 20% 18%; /* Slightly lighter dark grey */
-    --sidebar-accent-foreground: 210 40% 90%;
-    --sidebar-border: 220 20% 18%;
-    --sidebar-ring: 220 70% 60%;
-
-    --footer-background: 220 70% 10%; /* Even darker blue for footer in dark mode */
+  body {
+    @apply bg-background text-foreground;
+    /* overflow-y: auto; */ /* Dihapus untuk mencegah scrollbar ganda */
+    overflow-x: hidden; /* Tetap sembunyikan overflow horizontal */
   }
 }
 
