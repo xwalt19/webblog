@@ -10,35 +10,35 @@ export const dummyPartners: Partner[] = [
   {
     id: "p1",
     nameKey: "dycode partner name",
-    logoUrl: "/assets/partners/dycode-logo.png",
+    logoUrl: "/assets/dycode-logo.png", // Mengoreksi jalur
     descriptionKey: "dycode partner description",
     type: "corporate",
   },
   {
     id: "p2",
     nameKey: "codeintech partner name",
-    logoUrl: "/assets/partners/CodeinTech.jpg",
+    logoUrl: "/assets/CodeinTech.jpg", // Mengoreksi jalur
     descriptionKey: "codeintech partner description",
     type: "community",
   },
   {
     id: "p3",
     nameKey: "telkom university partner name",
-    logoUrl: "/assets/partners/Telkom University.png",
+    logoUrl: "/assets/Telkom University.png", // Mengoreksi jalur
     descriptionKey: "telkom university partner description",
     type: "educational",
   },
   {
     id: "p4",
     nameKey: "itb partner name",
-    logoUrl: "/assets/partners/Institut Teknologi Bandung.webp",
+    logoUrl: "/assets/Institut Teknologi Bandung.webp", // Mengoreksi jalur
     descriptionKey: "itb partner description",
     type: "educational",
   },
   {
     id: "p5",
     nameKey: "startup bandung partner name",
-    logoUrl: "/assets/partners/Startup Bandung.png",
+    logoUrl: "/assets/Startup Bandung.png", // Mengoreksi jalur
     descriptionKey: "startup bandung partner description",
     type: "community",
   },
