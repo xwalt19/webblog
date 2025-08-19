@@ -34,7 +34,9 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon: Icon, label, isExpa
     <Link
       to={to}
       className={cn(
-        "flex items-center py-2 px-3 rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-200",
+        "flex items-center py-2 px-3 rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+        "transition-all duration-200 ease-in-out", // Mengubah dari transition-colors menjadi transition-all
+        "hover:shadow-sm hover:scale-[1.01]", // Menambahkan bayangan dan skala kecil saat hover
         isActive && "bg-sidebar-primary text-sidebar-primary-foreground"
       )}
     >
