@@ -11,7 +11,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { iconMap } from "@/utils/iconMap";
-import RichTextEditor from "@/components/RichTextEditor";
+// import RichTextEditor from "@/components/RichTextEditor"; // Removed RichTextEditor import
+import { Textarea } from "@/components/ui/textarea"; // Added Textarea import
 import {
   FormControl,
   FormField,
@@ -171,11 +172,10 @@ const RegularEventDetailsForm: React.FC<RegularEventDetailsFormProps> = ({
           <FormItem>
             <FormLabel>{t('description label')}</FormLabel>
             <FormControl>
-              <RichTextEditor
-                key={eventId || "new-event-description"} // Pass key prop
-                value={field.value}
-                onChange={field.onChange}
+              <Textarea // Changed from RichTextEditor to Textarea
                 placeholder={t('description placeholder')}
+                className="min-h-[120px]"
+                {...field}
               />
             </FormControl>
             <FormMessage />
