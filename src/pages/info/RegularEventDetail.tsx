@@ -18,7 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ResponsiveImage from "@/components/ResponsiveImage";
 import { formatDisplayDateTime, formatRemainingDays } from "@/utils/dateUtils";
 import { cn } from "@/lib/utils";
-import RichTextEditor from "@/components/RichTextEditor";
+// Removed RichTextEditor import as it's no longer used for display
 
 interface RegularEvent {
   id: string;
@@ -187,9 +187,10 @@ const RegularEventDetail: React.FC = () => {
             </div>
             <div className="space-y-4">
               <h2 className="text-2xl font-bold text-primary">{t('description label')}</h2>
-              <div className="prose dark:prose-invert max-w-none text-muted-foreground">
-                <RichTextEditor value={event.description} onChange={() => {}} readOnly={true} />
-              </div>
+              <div 
+                className="prose dark:prose-invert max-w-none text-muted-foreground"
+                dangerouslySetInnerHTML={{ __html: event.description }}
+              />
             </div>
           </div>
 
@@ -215,7 +216,7 @@ const RegularEventDetail: React.FC = () => {
                             <TableCell className="font-medium text-left text-foreground border-r border-b">{rundown.time}</TableCell>
                             <TableCell className="text-left text-foreground border-r border-b">{rundown.session_title}</TableCell>
                             <TableCell className="text-left text-foreground border-b">
-                              {/* Konten speaker dikosongkan sesuai permintaan gambar terbaru */}
+                              {rundown.speaker_name} {rundown.speaker_role && `(${rundown.speaker_role})`}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -242,7 +243,7 @@ const RegularEventDetail: React.FC = () => {
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="text-muted-foreground p-4 border border-t-0 border-border rounded-b-md bg-muted/20">
-                        <RichTextEditor value={faq.answer} onChange={() => {}} readOnly={true} />
+                        <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
                       </AccordionContent>
                     </AccordionItem>
                   ))}

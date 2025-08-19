@@ -15,7 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import RichTextEditor from "@/components/RichTextEditor";
+// Removed RichTextEditor import as it's no longer used for display
 import { cn } from "@/lib/utils";
 
 interface SupabaseCampDayLink {
@@ -128,7 +128,7 @@ const Camps: React.FC = () => {
                             </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground p-4 border border-t-0 border-primary/20 rounded-b-md bg-primary/5">
                               {day.content ? (
-                                <RichTextEditor value={day.content} onChange={() => {}} readOnly={true} className="mb-4" />
+                                <div dangerouslySetInnerHTML={{ __html: day.content }} />
                               ) : (
                                 <p>{t('no content available')}</p>
                               )}
