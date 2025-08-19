@@ -88,7 +88,7 @@ const RegularEventsClasses: React.FC = () => {
             return (
               <Card key={event.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 {/* Image/Banner Section */}
-                <div className="relative w-full h-64 bg-primary/10 flex items-center justify-center"> {/* Increased height to h-64 */}
+                <div className="relative w-full h-48 bg-primary/10 flex items-center justify-center"> {/* Changed h-64 to h-48 */}
                   {event.banner_image_url ? (
                     <ResponsiveImage 
                       src={event.banner_image_url} 
@@ -106,24 +106,19 @@ const RegularEventsClasses: React.FC = () => {
                       )}
                     </div>
                   )}
-                  {/* Gradient Overlay and Text on Image */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-between p-4">
-                    <div className="flex justify-end">
-                      <Badge variant="secondary" className="text-sm px-3 py-1">
-                        {t('event type label')}
-                      </Badge>
-                    </div>
-                    <h3 className="text-white text-2xl font-bold leading-tight line-clamp-2">
-                      {event.name}
-                    </h3>
-                  </div>
                 </div>
                 
                 {/* Main Content Section */}
-                <div className="p-4 flex-grow">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    {t('schedule label')}: {formatDisplayDateTime(event.schedule)}
-                  </p>
+                <div className="p-4 flex-grow"> {/* Changed p-4 to p-4, already compact */}
+                  <div className="flex justify-between items-center mb-2">
+                    <Badge variant="secondary" className="text-sm px-3 py-1">
+                      {t('event type label')}
+                    </Badge>
+                    <span className="text-sm text-muted-foreground">
+                      {formatDisplayDateTime(event.schedule)}
+                    </span>
+                  </div>
+                  <CardTitle className="text-xl font-semibold mb-2">{event.name}</CardTitle>
                   <div
                     className="prose dark:prose-invert max-w-none text-muted-foreground mb-4 line-clamp-3"
                     dangerouslySetInnerHTML={{ __html: event.description }}
