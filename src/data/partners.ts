@@ -8,13 +8,6 @@ export interface Partner {
 
 export const dummyPartners: Partner[] = [
   {
-    id: "p1",
-    nameKey: "dycode partner name",
-    logoUrl: "/assets/DyCode.png", // Mengoreksi jalur dan nama file
-    descriptionKey: "dycode partner description",
-    type: "corporate",
-  },
-  {
     id: "p2",
     nameKey: "codeintech partner name",
     logoUrl: "/assets/CodeinTech.jpg",
