@@ -82,13 +82,13 @@ const RegularEventsClasses: React.FC = () => {
             return (
               <Card key={event.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 {/* Bagian atas dengan ikon dan badge */}
-                <div className="relative w-full h-72 bg-primary/10 flex items-center justify-center"> {/* Changed pt-[125%] to h-72 for fixed height */}
+                <div className="relative w-full h-48 bg-primary/10 flex items-center justify-center"> {/* Changed h-72 to h-48 */}
                   {event.banner_image_url ? (
                     <ResponsiveImage 
                       src={event.banner_image_url} 
                       alt={event.name} 
                       containerClassName="absolute inset-0" 
-                      className="object-cover" // Removed objectFit="contain" to default to object-cover
+                      className="object-cover" 
                     />
                   ) : (
                     // Fallback to icon if no banner image
@@ -100,18 +100,18 @@ const RegularEventsClasses: React.FC = () => {
                       )}
                     </div>
                   )}
-                  <Badge variant="secondary" className="absolute top-4 right-4 text-sm px-3 py-1 z-10"> {/* Added z-10 to ensure badge is on top */}
+                  <Badge variant="secondary" className="absolute top-4 right-4 text-sm px-3 py-1 z-10">
                     {t('event type label')}
                   </Badge>
                 </div>
                 
-                <CardHeader className="flex-grow p-6 pb-2">
+                <CardHeader className="flex-grow p-4 pb-2"> {/* Changed p-6 to p-4 */}
                   <CardTitle className="text-xl font-semibold mb-2">{event.name}</CardTitle>
                   <CardDescription className="text-sm text-muted-foreground">
                     {t('schedule label')}: {formatDisplayDateTime(event.schedule)}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="p-6 pt-0">
+                <CardContent className="p-4 pt-0"> {/* Changed p-6 to p-4 */}
                   <div
                     className="prose dark:prose-invert max-w-none text-muted-foreground mb-4 line-clamp-3"
                     dangerouslySetInnerHTML={{ __html: event.description }}
