@@ -1,26 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardTitle, CardDescription } from "@/components/ui/card"; // Removed CardContent, CardHeader
-import { Handshake, Building, Users } from "lucide-react";
+import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+import { Handshake, Building, Users } from "lucide-react"; // Keep imports for potential future use or if icons are still desired elsewhere
 import { useTranslation } from "react-i18next";
 import { dummyPartners, Partner } from "@/data/partners";
+import ResponsiveImage from "@/components/ResponsiveImage"; // Import ResponsiveImage
 
 const Partners: React.FC = () => {
   const { t } = useTranslation();
 
-  const getIconForPartnerType = (type: Partner['type']) => {
-    switch (type) {
-      case "corporate":
-        return <Building className="text-blue-500" size={32} />;
-      case "community":
-        return <Users className="text-green-500" size={32} />;
-      case "educational":
-        return <Handshake className="text-purple-500" size={32} />;
-      default:
-        return <Handshake className="text-gray-500" size={32} />;
-    }
-  };
+  // Removed getIconForPartnerType as we are now using images directly
 
   return (
     <div className="container mx-auto py-10 px-4">
@@ -36,9 +26,14 @@ const Partners: React.FC = () => {
           {dummyPartners.map((partner) => (
             <Card key={partner.id} className="flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="mb-4">
-                {getIconForPartnerType(partner.type)}
+                {/* Replaced icon with ResponsiveImage for logo */}
+                <ResponsiveImage 
+                  src={partner.logoUrl} 
+                  alt={t(partner.nameKey)} 
+                  containerClassName="w-32 h-32 flex items-center justify-center" // Container for centering/sizing
+                  className="object-contain" // Ensure image fits within bounds
+                />
               </div>
-              <img src={partner.logoUrl} alt={t(partner.nameKey)} className="w-32 h-32 object-contain mb-4 rounded-lg" />
               <CardTitle className="text-xl mb-2">{t(partner.nameKey)}</CardTitle>
               <CardDescription className="text-muted-foreground">{t(partner.descriptionKey)}</CardDescription>
             </Card>
