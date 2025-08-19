@@ -28,7 +28,7 @@ interface RegularEvent {
 const RegularEventsClasses: React.FC = () => {
   const { t } = useTranslation();
   const [regularEvents, setRegularEvents] = useState<RegularEvent[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Perbaikan di sini
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const RegularEventsClasses: React.FC = () => {
             return (
               <Card key={event.id} className="flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 {/* Bagian atas dengan ikon dan badge */}
-                <div className="relative w-full pt-[56.25%] bg-primary/10 flex items-center justify-center"> {/* Changed pt-[125%] to pt-[56.25%] for 16:9 aspect ratio */}
+                <div className="relative w-full pt-[125%] bg-primary/10 flex items-center justify-center"> {/* Changed pt-[56.25%] to pt-[125%] for 4:5 aspect ratio */}
                   {event.banner_image_url ? (
                     <ResponsiveImage 
                       src={event.banner_image_url} 
