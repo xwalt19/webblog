@@ -11,6 +11,7 @@ import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash, PlusCircle } from "lucide-react";
 import { getIconComponent } from "@/utils/iconMap";
+import { formatDisplayDateTime } from "@/utils/dateUtils";
 
 interface RegularEvent {
   id: string;
@@ -40,7 +41,13 @@ const ManageRegularEvents: React.FC = () => {
       const { data, error } = await supabase
         .from('regular_events')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('name', { ascending: true }) // Order by name first
+        .order('created_at', { ascending: false }); // Then by created_at
+
+      // --- START DIAGNOSTIC LOGS ---
+      console.log("ManageRegularEvents: Supabase fetch data:", data);
+      console.log("ManageRegularEvents: Supabase fetch error:", error);
+      // --- END DIAGNOSTIC LOGS ---
 
       if (error) {
         throw error;
@@ -48,6 +55,8 @@ const ManageRegularEvents: React.FC = () => {
       setRegularEvents(data || []);
     } catch (err: any) {
       console.error("Error fetching regular events:", err);
+      // Log the full error object for more details
+      console.error("Full error object caught:", err); 
       setError(t("fetch data error", { error: err.message }));
     } finally {
       setIsFetching(false);
@@ -96,18 +105,6 @@ const ManageRegularEvents: React.FC = () => {
       console.error("Error deleting event:", err);
       toast.error(t("delete error", { error: err.message }));
     }
-  };
-
-  const formatDisplayDateTime = (isoString: string) => {
-    const dateObj = new Date(isoString);
-    return dateObj.toLocaleDateString('id-ID', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
   };
 
   if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
