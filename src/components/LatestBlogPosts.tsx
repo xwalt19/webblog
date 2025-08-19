@@ -114,7 +114,10 @@ const LatestBlogPosts: React.FC = () => {
                         </div>
                       </CardHeader>
                       <CardContent className="p-6 pt-0">
-                        <p className="text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
+                        <div 
+                          className="prose dark:prose-invert max-w-none text-muted-foreground mb-4 line-clamp-2"
+                          dangerouslySetInnerHTML={{ __html: post.excerpt }}
+                        />
                         <Link to={`/posts/${post.id}`}>
                           <Button variant="outline" className="w-full">{t('read more')}</Button>
                         </Link>

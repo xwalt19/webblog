@@ -128,7 +128,10 @@ const FixedNewsSchedule: React.FC = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-grow p-6 pt-0">
-                    <p className="text-muted-foreground">{item.description}</p>
+                    <div 
+                      className="prose dark:prose-invert max-w-none text-muted-foreground"
+                      dangerouslySetInnerHTML={{ __html: item.description }}
+                    />
                   </CardContent>
                 </Card>
               );

@@ -121,7 +121,10 @@ const TikTokUpdates: React.FC = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
-                  <p className="text-muted-foreground mb-4 line-clamp-2">{video.description}</p>
+                  <div 
+                    className="prose dark:prose-invert max-w-none text-muted-foreground mb-4 line-clamp-2"
+                    dangerouslySetInnerHTML={{ __html: video.description }}
+                  />
                   <a href={video.video_url} target="_blank" rel="noopener noreferrer" className="w-full">
                     <Button variant="outline" className="w-full">{t('view video')}</Button>
                   </a>
