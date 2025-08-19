@@ -40,7 +40,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   ];
 
   return (
-    <div className={cn("prose dark:prose-invert max-w-none", className)}>
+    <div className={cn(className)}> {/* Removed prose dark:prose-invert max-w-none */}
       <ReactQuill
         key={key} // Apply the key prop here
         theme="snow"
