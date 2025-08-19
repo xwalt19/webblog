@@ -41,7 +41,7 @@
     --sidebar-accent: 210 20% 90%; /* Match main accent */
     --sidebar-accent-foreground: 220 15% 15%; /* Dark text */
     --sidebar-border: 210 10% 85%; /* Match main border */
-    --sidebar-ring: 220 70% 40%; /* Match main primary */
+    --sidebar-ring: 220 70% 40%;
 
     --footer-background: 220 70% 20%; /* Darker blue for footer */
   }
@@ -96,39 +96,6 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-/* Ensure Quill editor lists have proper indentation and visible bullets */
-.ql-editor ul,
-.ql-editor ol {
-  padding-left: 1.5em !important; /* Optimal padding for indentation */
-  margin-left: 1em !important; /* Add margin to ensure space for bullets */
-  list-style-position: outside !important; /* Ensure bullets are outside the content block */
-}
-
-.ql-editor ul li,
-.ql-editor ol li {
-  color: hsl(var(--foreground)) !important; /* Force text and bullet color to foreground (black/white) */
-}
-
-.ql-editor ul li {
-  list-style-type: disc !important; /* Force disc for unordered lists */
-}
-
-.ql-editor ol li {
-  list-style-type: decimal !important; /* Force decimal for ordered lists */
-}
-
-/* Adjust spacing for paragraphs and lists within prose content */
-.prose p,
-.prose ul,
-.prose ol {
-  margin-bottom: 0.5em !important; /* Reduce vertical spacing */
-}
-
-/* Ensure list items themselves don't add extra space */
-.prose li {
-  margin-bottom: 0 !important;
 }
 
 @keyframes pulse-subtle {
