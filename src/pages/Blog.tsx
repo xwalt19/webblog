@@ -26,7 +26,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
 import { useSession } from "@/components/SessionProvider";
 import ResponsiveImage from "@/components/ResponsiveImage";
-import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDateTime } from "@/utils/dateUtils";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface BlogPost {
   id: string;
@@ -48,10 +49,8 @@ const BlogPage: React.FC = () => {
   const { getTranslatedTag } = useTranslatedTag();
   const { loading: sessionLoading } = useSession();
   const [searchParams] = useSearchParams();
+  const queryClient = useQueryClient();
 
-  const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState("all");
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
@@ -70,53 +69,35 @@ const BlogPage: React.FC = () => {
     setCurrentPage(1);
   }, [searchParams]);
 
-  useEffect(() => {
-    const fetchBlogPosts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const { data, error } = await supabase
-          .from('blog_posts')
-          .select('*')
-          .is('pdf_link', null)
-          .order('created_at', { ascending: false });
+  const { data: allPosts, isLoading, isError, error } = useQuery<BlogPost[], Error>({
+    queryKey: ['blogPostsPublic'], // Unique key for public blog posts
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .is('pdf_link', null)
+        .order('created_at', { ascending: false });
 
-        if (error) {
-          throw error;
-        }
-        setAllPosts(data || []);
-      } catch (err: any) {
-        console.error("Error fetching blog posts:", err);
-        setError(t("failed to load posts", { error: err.message }));
-      } finally {
-        setLoading(false);
+      if (error) {
+        throw error;
       }
-    };
+      return data || [];
+    },
+    enabled: !sessionLoading, // Only fetch if session is not loading
+    staleTime: 5 * 60 * 1000, // Data considered fresh for 5 minutes
+  });
 
-    if (!sessionLoading) {
-      fetchBlogPosts();
-    }
-
+  useEffect(() => {
+    // Realtime subscription for public blog posts
     const channel = supabase
       .channel('blog_posts_public_changes')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'blog_posts' },
         (payload) => {
+          // Invalidate query only if it's a non-PDF post
           if ((payload.new as BlogPost)?.pdf_link === null || (payload.old as BlogPost)?.pdf_link === null) {
-            if (payload.eventType === 'INSERT') {
-              setAllPosts((prev) => [payload.new as BlogPost, ...prev]);
-            } else if (payload.eventType === 'UPDATE') {
-              setAllPosts((prev) =>
-                prev.map((post) =>
-                  post.id === payload.new.id ? (payload.new as BlogPost) : post
-                )
-              );
-            } else if (payload.eventType === 'DELETE') {
-              setAllPosts((prev) =>
-                prev.filter((post) => post.id !== payload.old.id)
-              );
-            }
+            queryClient.invalidateQueries({ queryKey: ['blogPostsPublic'] });
           }
         }
       )
@@ -125,11 +106,11 @@ const BlogPage: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [t, sessionLoading]);
+  }, [queryClient]);
 
   const allTags: string[] = useMemo(() => {
     const tags = new Set<string>();
-    allPosts.forEach(post => {
+    (allPosts || []).forEach(post => {
       post.tags?.forEach(tag => tags.add(cleanTagForStorage(tag)));
     });
     return ["all", ...Array.from(tags)];
@@ -141,16 +122,23 @@ const BlogPage: React.FC = () => {
   ], [i18n.language]);
 
   const allYears: string[] = useMemo(() => {
-    return ["all", "2025", "2024", "2023"];
-  }, []);
+    // Dynamically generate years based on available data, or provide a fixed range
+    const years = new Set<string>();
+    (allPosts || []).forEach(post => {
+      years.add(new Date(post.created_at).getFullYear().toString());
+    });
+    const sortedYears = Array.from(years).sort((a, b) => parseInt(b) - parseInt(a));
+    return ["all", ...sortedYears];
+  }, [allPosts]);
 
   const availableMonthsForSelectedYear: string[] = useMemo(() => {
+    // This could be made dynamic based on posts in the selected year if needed
     return ["all", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   }, []);
 
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    return allPosts.filter(post => {
+    return (allPosts || []).filter(post => {
       const matchesSearch = post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
                             post.excerpt.toLowerCase().includes(lowerCaseSearchTerm);
       
@@ -184,10 +172,18 @@ const BlogPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (error) {
+  if (isLoading) {
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
-        <p className="text-center text-destructive">{error}</p>
+        <p className="text-center text-muted-foreground">{t('loading posts')}</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
+        <p className="text-center text-destructive">{error?.message}</p>
       </div>
     );
   }
@@ -271,9 +267,7 @@ const BlogPage: React.FC = () => {
         </Select>
       </div>
 
-      {loading ? (
-        <p className="text-center text-muted-foreground">{t('loading posts')}</p>
-      ) : currentPosts.length > 0 ? (
+      {currentPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">

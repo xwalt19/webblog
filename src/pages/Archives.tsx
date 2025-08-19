@@ -26,7 +26,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTranslatedTag, cleanTagForStorage } from "@/utils/i18nUtils";
 import { useSession } from "@/components/SessionProvider";
 import ResponsiveImage from "@/components/ResponsiveImage";
-import { formatDisplayDateTime } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDateTime } from "@/utils/dateUtils";
+import { useQuery } from "@tanstack/react-query";
 
 interface BlogPost {
   id: string;
@@ -49,9 +50,6 @@ const Archives: React.FC = () => {
   const { loading: sessionLoading } = useSession();
   const [searchParams] = useSearchParams();
 
-  const [allArchivePosts, setAllArchivePosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState("all");
   const [selectedMonth, setSelectedMonth] = useState("all");
   const [selectedTag, setSelectedTag] = useState("all");
@@ -70,37 +68,27 @@ const Archives: React.FC = () => {
     setCurrentPage(1);
   }, [searchParams]);
 
-  useEffect(() => {
-    const fetchArchivePosts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const { data, error } = await supabase
-          .from('blog_posts')
-          .select('*')
-          .not('pdf_link', 'is', null)
-          .order('created_at', { ascending: false });
+  const { data: allArchivePosts, isLoading, isError, error } = useQuery<BlogPost[], Error>({
+    queryKey: ['archivesPublic'], // Unique key for public archives
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .not('pdf_link', 'is', null)
+        .order('created_at', { ascending: false });
 
-        if (error) {
-          throw error;
-        }
-        setAllArchivePosts(data || []);
-      } catch (err: any) {
-        console.error("Error fetching archive posts:", err);
-        setError(t("failed to load archives", { error: err.message }));
-      } finally {
-        setLoading(false);
+      if (error) {
+        throw error;
       }
-    };
-
-    if (!sessionLoading) {
-      fetchArchivePosts();
-    }
-  }, [t, sessionLoading]);
+      return data || [];
+    },
+    enabled: !sessionLoading, // Only fetch if session is not loading
+    staleTime: 5 * 60 * 1000, // Data considered fresh for 5 minutes
+  });
 
   const allTags: string[] = useMemo(() => {
     const tags = new Set<string>();
-    allArchivePosts.forEach(post => {
+    (allArchivePosts || []).forEach(post => {
       post.tags?.forEach(tag => tags.add(cleanTagForStorage(tag)));
     });
     return ["all", ...Array.from(tags)];
@@ -112,16 +100,23 @@ const Archives: React.FC = () => {
   ], [i18n.language]);
 
   const allYears: string[] = useMemo(() => {
-    return ["all", "2025", "2024", "2023"];
-  }, []);
+    // Dynamically generate years based on available data, or provide a fixed range
+    const years = new Set<string>();
+    (allArchivePosts || []).forEach(post => {
+      years.add(new Date(post.created_at).getFullYear().toString());
+    });
+    const sortedYears = Array.from(years).sort((a, b) => parseInt(b) - parseInt(a));
+    return ["all", ...sortedYears];
+  }, [allArchivePosts]);
 
   const availableMonthsForSelectedYear: string[] = useMemo(() => {
+    // This could be made dynamic based on posts in the selected year if needed
     return ["all", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
   }, []);
 
   const filteredPosts = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    return allArchivePosts.filter(post => {
+    return (allArchivePosts || []).filter(post => {
       const matchesSearch = post.title.toLowerCase().includes(lowerCaseSearchTerm) ||
                             post.excerpt.toLowerCase().includes(lowerCaseSearchTerm);
       
@@ -155,10 +150,18 @@ const Archives: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (error) {
+  if (isLoading) {
     return (
       <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
-        <p className="text-center text-destructive">{error}</p>
+        <p className="text-center text-muted-foreground">{t('loading archives')}</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="container mx-auto py-10 px-4 bg-muted/40 rounded-lg shadow-inner">
+        <p className="text-center text-destructive">{error?.message}</p>
       </div>
     );
   }
@@ -236,9 +239,7 @@ const Archives: React.FC = () => {
         </Select>
       </div>
 
-      {loading ? (
-        <p className="text-center text-muted-foreground">{t('loading archives')}</p>
-      ) : currentPosts.length > 0 ? (
+      {currentPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentPosts.map((post) => (
             <Card key={post.id} className="flex flex-col overflow-hidden">

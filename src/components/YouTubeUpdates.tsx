@@ -15,7 +15,8 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import YouTubeVideoModal from "@/components/YouTubeVideoModal";
 import ResponsiveImage from "./ResponsiveImage";
-import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDate } from "@/utils/dateUtils";
+import { useQuery } from "@tanstack/react-query";
 
 interface YouTubeVideo {
   id: string;
@@ -29,44 +30,32 @@ interface YouTubeVideo {
 const VIDEOS_PER_PAGE = 6;
 
 const YouTubeUpdates: React.FC = () => {
-  const { t, i18n } = useTranslation();
-  const [videos, setVideos] = useState<YouTubeVideo[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
   const [selectedVideoForModal, setSelectedVideoForModal] = useState<YouTubeVideo | null>(null); // State for video in modal
 
-  useEffect(() => {
-    const fetchYouTubeVideos = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const { data, error } = await supabase
-          .from('youtube_videos')
-          .select('*')
-          .order('published_at', { ascending: false });
+  const { data: videos, isLoading, isError, error } = useQuery<YouTubeVideo[], Error>({
+    queryKey: ['youtubeVideos'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('youtube_videos')
+        .select('*')
+        .order('published_at', { ascending: false });
 
-        if (error) {
-          throw error;
-        }
-        setVideos(data || []);
-      } catch (err: any) {
-        setError(t("fetch data error", { error: err.message }));
-        console.error("Error fetching YouTube videos:", err);
-      } finally {
-        setLoading(false);
+      if (error) {
+        throw error;
       }
-    };
-
-    fetchYouTubeVideos();
-  }, [t]);
+      return data || [];
+    },
+    staleTime: 5 * 60 * 1000, // Data considered fresh for 5 minutes
+  });
 
   const filteredVideos = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    return videos.filter(video =>
+    return (videos || []).filter(video =>
       video.title.toLowerCase().includes(lowerCaseSearchTerm) ||
       video.description.toLowerCase().includes(lowerCaseSearchTerm)
     );
@@ -79,14 +68,14 @@ const YouTubeUpdates: React.FC = () => {
     return filteredVideos.slice(startIndex, endIndex);
   }, [filteredVideos, currentPage]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
 
   const openVideoInModal = (video: YouTubeVideo) => {
     setSelectedVideoForModal(video);
@@ -106,10 +95,10 @@ const YouTubeUpdates: React.FC = () => {
           />
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <p className="text-center text-muted-foreground">{t('loading videos')}</p>
-        ) : error ? (
-          <p className="text-center text-destructive">{error}</p>
+        ) : isError ? (
+          <p className="text-center text-destructive">{error?.message}</p>
         ) : currentVideos.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentVideos.map((video) => (

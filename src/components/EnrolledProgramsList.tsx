@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +9,8 @@ import { getIconComponent } from "@/utils/iconMap";
 import { CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDate } from "@/utils/dateUtils";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface EnrolledProgram {
   id: string;
@@ -28,25 +29,19 @@ interface EnrolledProgram {
 }
 
 const EnrolledProgramsList: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { session, loading: sessionLoading } = useSession();
-  const [enrolledPrograms, setEnrolledPrograms] = useState<EnrolledProgram[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchEnrolledPrograms = async () => {
+  const { data: enrolledPrograms, isLoading, isError, error } = useQuery<EnrolledProgram[], Error>({
+    queryKey: ['enrolledPrograms', session?.user?.id],
+    queryFn: async () => {
       if (!session?.user) {
-        setLoading(false);
-        return;
+        return [];
       }
-
-      setLoading(true);
-      setError(null);
-      try {
-        const { data, error } = await supabase
-          .from('user_programs')
-          .select(`
+      const { data, error } = await supabase
+        .from('user_programs')
+        .select(`
             id,
             program_id,
             enrolled_at,
@@ -61,34 +56,20 @@ const EnrolledProgramsList: React.FC = () => {
               icon_name
             )
           `)
-          .eq('user_id', session.user.id)
-          .order('enrolled_at', { ascending: false });
+        .eq('user_id', session.user.id)
+        .order('enrolled_at', { ascending: false });
 
-        if (error) {
-          throw error;
-        }
-        setEnrolledPrograms(data || []);
-      } catch (err: any) {
-        console.error("Error fetching enrolled programs:", err);
-        setError(t("fetch data error", { error: err.message }));
-      } finally {
-        setLoading(false);
+      if (error) {
+        throw error;
       }
-    };
+      return data || [];
+    },
+    enabled: !!session?.user && !sessionLoading, // Only fetch if user is logged in and session is not loading
+    staleTime: 5 * 60 * 1000, // Data considered fresh for 5 minutes
+  });
 
-    if (!sessionLoading) {
-      fetchEnrolledPrograms();
-    }
-  }, [session, sessionLoading, t]);
-
-  const handleUnenroll = async (enrollmentId: string, programTitle: string) => {
-    if (!window.confirm(t('confirm unenroll', { programTitle }))) {
-      return;
-    }
-
-    const toastId = toast.loading(t('unenrolling from program', { programTitle }));
-
-    try {
+  const unenrollMutation = useMutation<void, Error, { enrollmentId: string, programTitle: string }>({
+    mutationFn: async ({ enrollmentId }) => {
       const { error } = await supabase
         .from('user_programs')
         .delete()
@@ -98,24 +79,36 @@ const EnrolledProgramsList: React.FC = () => {
       if (error) {
         throw error;
       }
-
-      setEnrolledPrograms(prev => prev.filter(p => p.id !== enrollmentId));
-      toast.success(t('unenrolled successfully', { programTitle }), { id: toastId });
-    } catch (err: any) {
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['enrolledPrograms'] });
+      toast.success(t('unenrolled successfully', { programTitle: variables.programTitle }));
+    },
+    onError: (err, variables) => {
       console.error("Error unenrolling:", err);
-      toast.error(t('unenrollment failed', { error: err.message }), { id: toastId });
+      toast.error(t('unenrollment failed', { error: err.message, programTitle: variables.programTitle }));
+    },
+  });
+
+  const handleUnenroll = (enrollmentId: string, programTitle: string) => {
+    if (!window.confirm(t('confirm unenroll', { programTitle }))) {
+      return;
     }
+    const toastId = toast.loading(t('unenrolling from program', { programTitle }));
+    unenrollMutation.mutate({ enrollmentId, programTitle }, {
+      onSettled: () => toast.dismiss(toastId)
+    });
   };
 
-  if (loading) {
+  if (isLoading || sessionLoading) {
     return <p className="text-center text-muted-foreground">{t('loading enrolled programs')}</p>;
   }
 
-  if (error) {
-    return <p className="text-center text-destructive">{error}</p>;
+  if (isError) {
+    return <p className="text-center text-destructive">{error?.message}</p>;
   }
 
-  if (enrolledPrograms.length === 0) {
+  if (!enrolledPrograms || enrolledPrograms.length === 0) {
     return <p className="text-center text-muted-foreground mt-8 text-lg">{t('no enrolled programs')}</p>;
   }
 
@@ -158,8 +151,9 @@ const EnrolledProgramsList: React.FC = () => {
                   variant="destructive"
                   className="w-full mt-4"
                   onClick={() => handleUnenroll(enrollment.id, program.title)}
+                  disabled={unenrollMutation.isPending}
                 >
-                  {t('unenroll button')}
+                  {unenrollMutation.isPending ? t('unenrolling status') : t('unenroll button')}
                 </Button>
               </CardContent>
             </Card>

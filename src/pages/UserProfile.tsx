@@ -10,61 +10,77 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
+interface UserProfileData {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  role: string;
+}
 
 const UserProfile: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { session, user, profile, loading: sessionLoading } = useSession();
+  const { session, user, loading: sessionLoading, refreshProfile } = useSession();
+  const queryClient = useQueryClient();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [updating, setUpdating] = useState(false);
-  const [dataLoading, setDataLoading] = useState(true); // Keep this for initial data fetch
 
+  // Fetch user profile data using react-query
+  const { data: profile, isLoading: isProfileLoading, isError: isProfileError, error: profileError } = useQuery<UserProfileData, Error>({
+    queryKey: ['userProfile', user?.id],
+    queryFn: async () => {
+      if (!user?.id) throw new Error("User not authenticated.");
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, first_name, last_name, role')
+        .eq('id', user.id)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user && !sessionLoading, // Only fetch if user is available and session is not loading
+    staleTime: 5 * 60 * 1000, // Data considered fresh for 5 minutes
+  });
+
+  // Update form fields when profile data changes
   useEffect(() => {
-    if (!sessionLoading) {
-      if (!session) {
-        toast.error(t('login required'));
-        navigate('/login');
-      } else {
-        if (profile) {
-          setFirstName(profile.first_name || "");
-          setLastName(profile.last_name || "");
-        }
-        setDataLoading(false); // Set to false once profile data is loaded or determined
-      }
+    if (profile) {
+      setFirstName(profile.first_name || "");
+      setLastName(profile.last_name || "");
     }
-  }, [session, profile, sessionLoading, navigate, t]);
+  }, [profile]);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setUpdating(true);
-
-    if (!user) {
-      toast.error(t('not authenticated'));
-      setUpdating(false);
-      return;
-    }
-
-    try {
+  // Mutation for updating user profile
+  const updateProfileMutation = useMutation<void, Error, { firstName: string, lastName: string }>({
+    mutationFn: async ({ firstName, lastName }) => {
+      if (!user) throw new Error(t('not authenticated'));
       const { error } = await supabase
         .from('profiles')
         .update({ first_name: firstName, last_name: lastName })
         .eq('id', user.id);
-
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
+    },
+    onSuccess: () => {
       toast.success(t("profile updated successfully"));
-    } catch (err: any) {
+      queryClient.invalidateQueries({ queryKey: ['userProfile', user?.id] }); // Invalidate to refetch fresh data
+      refreshProfile(); // Also trigger refresh in SessionProvider
+    },
+    onError: (err) => {
       console.error("Error updating profile:", err);
       toast.error(t("profile update failed", { error: err.message }));
-    } finally {
-      setUpdating(false);
-    }
+    },
+  });
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    updateProfileMutation.mutate({ firstName, lastName });
   };
 
-  if (sessionLoading || dataLoading) {
+  // Handle authentication and loading states
+  if (sessionLoading || isProfileLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
@@ -73,7 +89,25 @@ const UserProfile: React.FC = () => {
   }
 
   if (!session) {
+    // If not logged in, redirect to login
+    useEffect(() => {
+      toast.error(t('login required'));
+      navigate('/login');
+    }, [navigate, t]);
     return null;
+  }
+
+  if (isProfileError) {
+    return (
+      <div className="container mx-auto py-10 px-4">
+        <p className="text-center text-destructive">{t("fetch data error", { error: profileError?.message })}</p>
+        <div className="text-center mt-12">
+          <Link to="/">
+            <Button>{t('return to home')}</Button>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -136,8 +170,8 @@ const UserProfile: React.FC = () => {
                 className="mt-1 bg-muted"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={updating}>
-              {updating ? t('updating status') : t('save changes button')}
+            <Button type="submit" className="w-full" disabled={updateProfileMutation.isPending}>
+              {updateProfileMutation.isPending ? t('updating status') : t('save changes button')}
             </Button>
           </form>
         </CardContent>

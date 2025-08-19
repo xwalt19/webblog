@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,9 +16,9 @@ import { CalendarDays, Clock, User, ExternalLink, HelpCircle, Users, CheckCircle
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import ResponsiveImage from "@/components/ResponsiveImage";
-import { formatDisplayDateTime, formatRemainingDays, parseDateRangeString } from "@/utils/dateUtils"; // Import parseDateRangeString
+import { formatDisplayDateTime, formatRemainingDays, parseDateRangeString } from "@/utils/dateUtils";
 import { cn } from "@/lib/utils";
-// Removed RichTextEditor import as it's no longer used for display
+import { useQuery } from "@tanstack/react-query";
 
 interface RegularEvent {
   id: string;
@@ -56,39 +56,30 @@ interface RegularEventFAQ {
 const RegularEventDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
-  const [event, setEvent] = useState<RegularEvent | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchEvent = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const { data, error } = await supabase
-          .from('regular_events')
-          .select('*, regular_event_rundowns(id, event_id, time, session_title, speaker_name, speaker_role, order_index), regular_event_faqs(*)')
-          .eq('id', id)
-          .single();
+  const { data: event, isLoading, isError, error } = useQuery<RegularEvent, Error>({
+    queryKey: ['regularEventDetail', id],
+    queryFn: async () => {
+      if (!id) throw new Error("Event ID is missing.");
+      const { data, error } = await supabase
+        .from('regular_events')
+        .select('*, regular_event_rundowns(id, event_id, time, session_title, speaker_name, speaker_role, order_index), regular_event_faqs(*)')
+        .eq('id', id)
+        .single();
 
-        if (error) {
-          throw error;
-        }
-        setEvent(data);
-      } catch (err: any) {
-        console.error("Error fetching event detail:", err);
-        setError(t("failed to load event", { error: err.message }));
-      } finally {
-        setLoading(false);
+      if (error) {
+        throw error;
       }
-    };
+      if (!data) {
+        throw new Error(t('event not found message'));
+      }
+      return data;
+    },
+    enabled: !!id, // Only fetch if ID is available
+    staleTime: 5 * 60 * 1000, // Data considered fresh for 5 minutes
+  });
 
-    if (id) {
-      fetchEvent();
-    }
-  }, [id, t]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="container mx-auto py-10 px-4">
         <p className="text-center text-muted-foreground">{t('loading event details')}</p>
@@ -96,11 +87,11 @@ const RegularEventDetail: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div className="text-center py-10">
         <h2 className="text-3xl font-bold mb-4">{t('error')}</h2>
-        <p className="text-lg text-destructive mb-6">{error}</p>
+        <p className="text-lg text-destructive mb-6">{error?.message}</p>
         <Link to="/info/regular-events-classes">
           <Button>{t('return to event list')}</Button>
         </Link>
@@ -120,7 +111,7 @@ const RegularEventDetail: React.FC = () => {
     );
   }
 
-  const { startDate } = parseDateRangeString(event.schedule); // Parse schedule string to get startDate
+  const { startDate } = parseDateRangeString(event.schedule);
   const isEventUpcoming = startDate ? startDate > new Date() : false;
   const isQuotaAvailable = event.quota === null || event.quota > 0;
 
@@ -153,11 +144,11 @@ const RegularEventDetail: React.FC = () => {
               <h2 className="text-2xl font-bold text-primary">{t('event details')}</h2>
               <div className="flex items-center gap-3 text-lg text-foreground">
                 <CalendarDays className="h-6 w-6 text-muted-foreground" />
-                <span>{event.schedule}</span> {/* Display schedule as is */}
+                <span>{event.schedule}</span>
               </div>
               <div className="flex items-center gap-3 text-lg text-foreground">
                 <Clock className="h-6 w-6 text-muted-foreground" />
-                <span>{formatRemainingDays(startDate?.toISOString())}</span> {/* Pass ISO string for remaining days */}
+                <span>{formatRemainingDays(startDate?.toISOString())}</span>
               </div>
               {event.quota !== null && (
                 <div className="flex items-center gap-3 text-lg text-foreground">
@@ -173,14 +164,13 @@ const RegularEventDetail: React.FC = () => {
                   </span>
                 </div>
               )}
-              {event.registration_link && isEventUpcoming && isQuotaAvailable && (
+              {event.registration_link && isEventUpcoming && isQuotaAvailable ? (
                 <a href={event.registration_link} target="_blank" rel="noopener noreferrer" className="block mt-6">
                   <Button size="lg" className="w-full">
                     <ExternalLink className="h-5 w-5 mr-2" /> {t('register now button')}
                   </Button>
                 </a>
-              )}
-              {(!isEventUpcoming || !isQuotaAvailable) && (
+              ) : (
                 <Button size="lg" className="w-full" disabled>
                   {isEventUpcoming ? t('registration closed') : t('event passed')}
                 </Button>

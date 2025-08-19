@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlayCircle } from "lucide-react";
@@ -14,7 +14,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import ResponsiveImage from "./ResponsiveImage";
-import { formatDisplayDate } from "@/utils/dateUtils"; // Import from dateUtils
+import { formatDisplayDate } from "@/utils/dateUtils";
+import { useQuery } from "@tanstack/react-query";
 
 interface TikTokVideo {
   id: string;
@@ -28,41 +29,29 @@ interface TikTokVideo {
 const VIDEOS_PER_PAGE = 6;
 
 const TikTokUpdates: React.FC = () => {
-  const { t, i18n } = useTranslation();
-  const [videos, setVideos] = useState<TikTokVideo[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    const fetchTikTokVideos = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const { data, error } = await supabase
-          .from('tiktok_videos')
-          .select('*')
-          .order('published_at', { ascending: false });
+  const { data: videos, isLoading, isError, error } = useQuery<TikTokVideo[], Error>({
+    queryKey: ['tiktokVideos'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tiktok_videos')
+        .select('*')
+        .order('published_at', { ascending: false });
 
-        if (error) {
-          throw error;
-        }
-        setVideos(data || []);
-      } catch (err: any) {
-        setError(t("fetch data error", { error: err.message }));
-        console.error("Error fetching TikTok videos:", err);
-      } finally {
-        setLoading(false);
+      if (error) {
+        throw error;
       }
-    };
-
-    fetchTikTokVideos();
-  }, [t]);
+      return data || [];
+    },
+    staleTime: 5 * 60 * 1000, // Data considered fresh for 5 minutes
+  });
 
   const filteredVideos = useMemo(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    return videos.filter(video =>
+    return (videos || []).filter(video =>
       video.title.toLowerCase().includes(lowerCaseSearchTerm) ||
       video.description.toLowerCase().includes(lowerCaseSearchTerm)
     );
@@ -75,14 +64,14 @@ const TikTokUpdates: React.FC = () => {
     return filteredVideos.slice(startIndex, endIndex);
   }, [filteredVideos, currentPage]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
 
   return (
     <section className="py-12 bg-muted/40">
@@ -97,10 +86,10 @@ const TikTokUpdates: React.FC = () => {
           />
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <p className="text-center text-muted-foreground">{t('loading videos')}</p>
-        ) : error ? (
-          <p className="text-center text-destructive">{error}</p>
+        ) : isError ? (
+          <p className="text-center text-destructive">{error?.message}</p>
         ) : currentVideos.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentVideos.map((video) => (

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card"; // Removed CardHeader, CardTitle, CardDescription
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -12,8 +12,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Edit, Trash } from "lucide-react"; // Removed User as UserIcon
+import { Edit, Trash } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
 
 interface UserProfile {
   id: string;
@@ -23,15 +25,10 @@ interface UserProfile {
 }
 
 const ManageUsers: React.FC = () => {
-  const { t } = useTranslation(); // Removed i18n as it's not directly used here
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const { session, profile, loading: sessionLoading } = useSession();
-  const isAdmin = profile?.role === 'admin';
-
-  const [users, setUsers] = useState<UserProfile[]>([]);
-  const [isInitialDataLoaded, setIsInitialDataLoaded] = useState(false); // New state for initial load
-  const [error, setError] = useState<string | null>(null);
-  const [isFetching, setIsFetching] = useState(false); // For subsequent fetches
+  const { session } = useSession();
+  const queryClient = useQueryClient();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
@@ -39,69 +36,79 @@ const ManageUsers: React.FC = () => {
   const [formLastName, setFormLastName] = useState("");
   const [formRole, setFormRole] = useState("");
 
-  const fetchUsers = async () => {
-    setIsFetching(true);
-    setError(null);
-    console.time("Fetch users data"); // Start timer
-    try {
+  const [shouldFetchData, setShouldFetchData] = useState(false);
+
+  const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
+    isAdminRequired: true,
+    onAuthSuccess: () => setShouldFetchData(true),
+  });
+
+  const { data: users, isLoading, isError, error } = useQuery<UserProfile[], Error>({
+    queryKey: ['adminUsers'],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
         .select('*');
-        // Removed .order('created_at', { ascending: false }) as 'created_at' column does not exist
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: shouldFetchData, // Only fetch if authenticated and authorized
+    staleTime: 60 * 1000, // Data considered fresh for 1 minute
+  });
 
-      if (error) {
-        throw error;
-      }
-      setUsers(data || []);
-    } catch (err: any) {
-      console.error("Error fetching users:", err);
-      setError(t("fetch data error", { error: err.message }));
-    } finally {
-      setIsFetching(false);
-      setIsInitialDataLoaded(true); // Mark initial data as loaded after first fetch
-      console.timeEnd("Fetch users data"); // End timer
-    }
-  };
+  const updateUserMutation = useMutation<void, Error, UserProfile>({
+    mutationFn: async (userToUpdate) => {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          first_name: userToUpdate.first_name,
+          last_name: userToUpdate.last_name,
+          role: userToUpdate.role,
+        })
+        .eq('id', userToUpdate.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+      toast.success(t("updated successfully"));
+      setIsDialogOpen(false);
+    },
+    onError: (err) => {
+      console.error("Error updating user:", err);
+      toast.error(t("save failed", { error: err.message }));
+    },
+  });
 
-  // Combined useEffect for initial load, auth check, and data fetching
+  const deleteUserMutation = useMutation<void, Error, string>({
+    mutationFn: async (userId) => {
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+      toast.success(t("deleted successfully"));
+    },
+    onError: (err) => {
+      console.error("Error deleting user:", err);
+      toast.error(t("delete error", { error: err.message }));
+    },
+  });
+
   useEffect(() => {
-    if (sessionLoading) {
+    if (!isAuthenticatedAndAuthorized) {
       return;
     }
-
-    if (!session) {
-      toast.error(t('login required'));
-      navigate('/login');
-      return;
-    }
-
-    if (!isAdmin) {
-      toast.error(t('admin required'));
-      navigate('/');
-      return;
-    }
-
-    fetchUsers();
 
     const channel = supabase
       .channel('profiles_changes')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'profiles' },
-        (payload) => {
-          if (payload.eventType === 'INSERT') {
-            setUsers((prev) => [payload.new as UserProfile, ...prev]);
-          } else if (payload.eventType === 'UPDATE') {
-            setUsers((prev) =>
-              prev.map((user) =>
-                user.id === payload.new.id ? (payload.new as UserProfile) : user
-              )
-            );
-          } else if (payload.eventType === 'DELETE') {
-            setUsers((prev) =>
-              prev.filter((user) => user.id !== payload.old.id)
-            );
-          }
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
         }
       )
       .subscribe();
@@ -109,9 +116,9 @@ const ManageUsers: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [session, isAdmin, sessionLoading, navigate, t]); // Dependencies for this effect
+  }, [isAuthenticatedAndAuthorized, queryClient]);
 
-  const handleEditUser = async () => {
+  const handleEditUser = () => {
     if (!currentUser) return;
 
     if (!formFirstName || !formLastName || !formRole) {
@@ -119,48 +126,19 @@ const ManageUsers: React.FC = () => {
       return;
     }
 
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          first_name: formFirstName,
-          last_name: formLastName,
-          role: formRole,
-        })
-        .eq('id', currentUser.id);
-
-      if (error) {
-        throw error;
-      }
-      toast.success(t("updated successfully"));
-      setIsDialogOpen(false);
-      // No need to call fetchUsers() here, Realtime will handle the update
-    } catch (err: any) {
-      console.error("Error updating user:", err);
-      toast.error(t("save failed", { error: err.message }));
-    }
+    updateUserMutation.mutate({
+      id: currentUser.id,
+      first_name: formFirstName,
+      last_name: formLastName,
+      role: formRole,
+    });
   };
 
-  const handleDeleteUser = async (userId: string) => {
+  const handleDeleteUser = (userId: string) => {
     if (!window.confirm(t("confirm delete user"))) {
       return;
     }
-    try {
-      // Deleting from 'profiles' table will cascade delete from 'auth.users'
-      const { error } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', userId);
-
-      if (error) {
-        throw error;
-      }
-      toast.success(t("deleted successfully"));
-      // No need to call fetchUsers() here, Realtime will handle the update
-    } catch (err: any) {
-      console.error("Error deleting user:", err);
-      toast.error(t("delete error", { error: err.message }));
-    }
+    deleteUserMutation.mutate(userId);
   };
 
   const openDialogForEdit = (user: UserProfile) => {
@@ -171,7 +149,7 @@ const ManageUsers: React.FC = () => {
     setIsDialogOpen(true);
   };
 
-  if (sessionLoading || (!session && !sessionLoading) || (session && !isAdmin)) {
+  if (isLoadingAuth || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
@@ -179,13 +157,16 @@ const ManageUsers: React.FC = () => {
     );
   }
 
-  // If initial data is not loaded yet, show loading for the page content
-  if (!isInitialDataLoaded) {
+  if (isError) {
     return (
       <div className="container mx-auto py-10 px-4">
-        <p className="text-center text-muted-foreground">{t('loading status')}</p>
+        <p className="text-center text-destructive">{error?.message}</p>
       </div>
     );
+  }
+
+  if (!isAuthenticatedAndAuthorized) {
+    return null;
   }
 
   return (
@@ -197,9 +178,7 @@ const ManageUsers: React.FC = () => {
         </p>
       </section>
 
-      {error ? (
-        <p className="text-center text-destructive">{error}</p>
-      ) : users.length > 0 ? (
+      {users && users.length > 0 ? (
         <Card className="shadow-lg">
           <CardContent className="p-0">
             <Table>
@@ -219,7 +198,7 @@ const ManageUsers: React.FC = () => {
                       <Button variant="ghost" size="icon" onClick={() => openDialogForEdit(user)} className="mr-2">
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="destructive" size="icon" onClick={() => handleDeleteUser(user.id)}>
+                      <Button variant="destructive" size="icon" onClick={() => handleDeleteUser(user.id)} disabled={deleteUserMutation.isPending}>
                         <Trash className="h-4 w-4" />
                       </Button>
                     </TableCell>
@@ -233,8 +212,7 @@ const ManageUsers: React.FC = () => {
         <p className="text-center text-muted-foreground mt-8 text-lg">{t('no users found')}</p>
       )}
 
-      {/* Optional: show a small spinner if `isFetching` is true for subsequent loads */}
-      {isFetching && users.length > 0 && (
+      {(updateUserMutation.isPending || deleteUserMutation.isPending) && (
         <p className="text-center text-muted-foreground mt-4">{t('updating data')}</p>
       )}
 
@@ -285,11 +263,11 @@ const ManageUsers: React.FC = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={updateUserMutation.isPending}>
               {t('cancel button')}
             </Button>
-            <Button onClick={handleEditUser}>
-              {t('save changes button')}
+            <Button onClick={handleEditUser} disabled={updateUserMutation.isPending}>
+              {updateUserMutation.isPending ? t('updating status') : t('save changes button')}
             </Button>
           </DialogFooter>
         </DialogContent>
