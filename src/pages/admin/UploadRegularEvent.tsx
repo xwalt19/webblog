@@ -209,32 +209,66 @@ const UploadRegularEvent: React.FC = () => {
       if (error) throw error;
       if (!currentEventId) throw new Error("Event ID not found after save.");
 
-      // Save Rundowns
-      await supabase.from('regular_event_rundowns').delete().eq('event_id', currentEventId);
-      if (rundowns.length > 0) {
-        const rundownsToInsert = rundowns.map((r, idx) => ({
-          ...r,
-          event_id: currentEventId,
-          order_index: idx,
-          created_by: session?.user?.id,
-          created_at: new Date().toISOString(),
-        }));
-        const { error: rundownsError } = await supabase.from('regular_event_rundowns').insert(rundownsToInsert);
-        if (rundownsError) throw rundownsError;
+      // Prepare rundowns for upsert
+      const rundownsToUpsert = rundowns.map((r, idx) => ({
+        ...r,
+        event_id: currentEventId,
+        order_index: idx,
+        created_by: session?.user?.id,
+        created_at: new Date().toISOString(),
+      }));
+
+      // Prepare FAQs for upsert
+      const faqsToUpsert = faqs.map((f, idx) => ({
+        ...f,
+        event_id: currentEventId,
+        order_index: idx,
+        created_by: session?.user?.id,
+        created_at: new Date().toISOString(),
+      }));
+
+      // Fetch existing rundown and FAQ IDs to determine what to delete
+      const { data: existingRundowns, error: fetchRundownsError } = await supabase
+        .from('regular_event_rundowns')
+        .select('id')
+        .eq('event_id', currentEventId);
+      if (fetchRundownsError) throw fetchRundownsError;
+      const existingRundownIds = new Set(existingRundowns.map(r => r.id));
+
+      const { data: existingFaqs, error: fetchFaqsError } = await supabase
+        .from('regular_event_faqs')
+        .select('id')
+        .eq('event_id', currentEventId);
+      if (fetchFaqsError) throw fetchFaqsError;
+      const existingFaqIds = new Set(existingFaqs.map(f => f.id));
+
+      // Determine IDs to delete (those that were in DB but are no longer in the form)
+      const rundownIdsToDelete = Array.from(existingRundownIds).filter(id => !rundownsToUpsert.some(r => r.id === id));
+      const faqIdsToDelete = Array.from(existingFaqIds).filter(id => !faqsToUpsert.some(f => f.id === id));
+
+      // Perform deletions
+      if (rundownIdsToDelete.length > 0) {
+        const { error: deleteRundownsError } = await supabase.from('regular_event_rundowns').delete().in('id', rundownIdsToDelete);
+        if (deleteRundownsError) throw deleteRundownsError;
+      }
+      if (faqIdsToDelete.length > 0) {
+        const { error: deleteFaqsError } = await supabase.from('regular_event_faqs').delete().in('id', faqIdsToDelete);
+        if (deleteFaqsError) throw deleteFaqsError;
       }
 
-      // Save FAQs
-      await supabase.from('regular_event_faqs').delete().eq('event_id', currentEventId);
-      if (faqs.length > 0) {
-        const faqsToInsert = faqs.map((f, idx) => ({
-          ...f,
-          event_id: currentEventId,
-          order_index: idx,
-          created_by: session?.user?.id,
-          created_at: new Date().toISOString(),
-        }));
-        const { error: faqsError } = await supabase.from('regular_event_faqs').insert(faqsToInsert);
-        if (faqsError) throw faqsError;
+      // Perform upserts for remaining/new items
+      if (rundownsToUpsert.length > 0) {
+        const { error: upsertRundownsError } = await supabase
+          .from('regular_event_rundowns')
+          .upsert(rundownsToUpsert, { onConflict: 'id' }); // Conflict on 'id' for existing records
+        if (upsertRundownsError) throw upsertRundownsError;
+      }
+
+      if (faqsToUpsert.length > 0) {
+        const { error: upsertFaqsError } = await supabase
+          .from('regular_event_faqs')
+          .upsert(faqsToUpsert, { onConflict: 'id' }); // Conflict on 'id' for existing records
+        if (upsertFaqsError) throw upsertFaqsError;
       }
 
       toast.success(eventId ? t("updated successfully") : t("added successfully"), { id: toastId });
