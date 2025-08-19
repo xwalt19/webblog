@@ -9,6 +9,7 @@ interface ResponsiveImageProps extends React.ImgHTMLAttributes<HTMLImageElement>
   alt: string;
   className?: string;
   containerClassName?: string; // Class for the div wrapper
+  objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'; // New prop for object-fit
 }
 
 const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
@@ -16,9 +17,12 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   alt,
   className,
   containerClassName,
+  objectFit = 'cover', // Default to cover
   ...props
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+
+  const objectFitClass = `object-${objectFit}`;
 
   return (
     <div className={cn("relative overflow-hidden", containerClassName)}>
@@ -29,7 +33,8 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
         src={src}
         alt={alt}
         className={cn(
-          "w-full h-full object-cover transition-opacity duration-300",
+          "w-full h-full transition-opacity duration-300",
+          objectFitClass, // Apply object-fit class
           imageLoaded ? "opacity-100" : "opacity-0",
           className
         )}
