@@ -55,7 +55,7 @@
     --sidebar-border: 214.3 31.6% 91.4%;
     --sidebar-ring: 221.2 83.2% 53.3%;
 
-    --footer-background: 221.2 83.2% 53.3%; /* Blue for light theme */
+    --footer-background: 221.2 83.2% 30%; /* Biru tua untuk tema terang */
   }
 
   .dark {
@@ -88,6 +88,15 @@
     --sidebar-border: 217.2 32.4% 17.5%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    --footer-background: 217.2 91.2% 59.8%; /* Blue for dark theme */
+    --footer-background: 217.2 91.2% 40%; /* Biru tua untuk tema gelap */
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.01);
   }
 }
