@@ -88,7 +88,7 @@ const RegularEventsClasses: React.FC = () => {
                       src={event.banner_image_url} 
                       alt={event.name} 
                       containerClassName="absolute inset-0" 
-                      objectFit="contain" // Use object-contain to show entire image
+                      className="object-cover" // Removed objectFit="contain" to default to object-cover
                     />
                   ) : (
                     // Fallback to icon if no banner image
