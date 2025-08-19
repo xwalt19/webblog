@@ -200,10 +200,10 @@ const RegularEventDetail: React.FC = () => {
                 <CardContent className="p-0">
                   <Table>
                     <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[100px]">{t('time label')}</TableHead>
-                        <TableHead>{t('session title label')}</TableHead>
-                        <TableHead>{t('speaker label')}</TableHead>
+                      <TableRow className="bg-muted/20"> {/* Added background to header row */}
+                        <TableHead className="w-[100px] text-left border-r-0">{t('time label')}</TableHead> {/* Removed right border */}
+                        <TableHead className="text-left border-r-0">{t('session title label')}</TableHead> {/* Removed right border */}
+                        <TableHead className="w-[250px] text-left border-r-0">{t('speaker label')}</TableHead> {/* Removed right border and set width */}
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -211,9 +211,9 @@ const RegularEventDetail: React.FC = () => {
                         .sort((a, b) => a.order_index - b.order_index)
                         .map((rundown) => (
                           <TableRow key={rundown.id}>
-                            <TableCell className="font-medium">{rundown.time}</TableCell>
-                            <TableCell>{rundown.session_title}</TableCell>
-                            <TableCell>{rundown.speaker}</TableCell>
+                            <TableCell className="font-medium text-left border-r-0">{rundown.time}</TableCell> {/* Removed right border */}
+                            <TableCell className="text-left border-r-0">{rundown.session_title}</TableCell> {/* Removed right border */}
+                            <TableCell className="text-left border-r-0">{rundown.speaker}</TableCell> {/* Removed right border */}
                           </TableRow>
                         ))}
                     </TableBody>
