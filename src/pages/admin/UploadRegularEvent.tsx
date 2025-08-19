@@ -89,8 +89,8 @@ const UploadRegularEvent: React.FC = () => {
   const [initialBannerImageUrl, setInitialBannerImageUrl] = useState<string | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
 
-  const form = useForm<z.infer<typeof regularEventSchema>>({
-    resolver: zodResolver(regularEventSchema),
+  const form = useForm<z.infer<typeof formSchema>>({ // Changed regularEventSchema to formSchema
+    resolver: zodResolver(formSchema), // Changed regularEventSchema to formSchema
     defaultValues: {
       name: "",
       startDate: undefined,
