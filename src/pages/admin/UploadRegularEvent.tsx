@@ -4,35 +4,19 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { iconMap } from "@/utils/iconMap";
-import { cn } from "@/lib/utils";
 import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import RichTextEditor from "@/components/RichTextEditor";
-import RegularEventRundownSection from "@/components/admin/RegularEventRundownSection"; // New import
-import RegularEventFAQSection from "@/components/admin/RegularEventFAQSection"; // New import
-import ResponsiveImage from "@/components/ResponsiveImage"; // New import
+import { Form } from "@/components/ui/form";
+import RegularEventDetailsForm from "@/components/admin/RegularEventDetailsForm"; // New import
+import RegularEventMediaUpload from "@/components/admin/RegularEventMediaUpload"; // New import
+import RegularEventRundownSection from "@/components/admin/RegularEventRundownSection";
+import RegularEventFAQSection from "@/components/admin/RegularEventFAQSection";
 
 interface RundownItem {
   id?: string;
@@ -79,7 +63,6 @@ const UploadRegularEvent: React.FC = () => {
   const { session } = useSession();
 
   const [dataLoading, setDataLoading] = useState(true);
-  const availableIcons = Object.keys(iconMap);
   const [bannerImageFile, setBannerImageFile] = useState<File | null>(null);
   const [initialBannerImageUrl, setInitialBannerImageUrl] = useState<string | null>(null);
   const [rundowns, setRundowns] = useState<RundownItem[]>([]);
@@ -138,21 +121,6 @@ const UploadRegularEvent: React.FC = () => {
       navigate('/admin/manage-regular-events');
     } finally {
       setDataLoading(false);
-    }
-  };
-
-  const handleBannerImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      if (file.size > MAX_BANNER_IMAGE_SIZE_BYTES) {
-        toast.error(t('file size too large', { max: '5MB' }));
-        event.target.value = ''; // Clear the input
-        setBannerImageFile(null);
-        return;
-      }
-      setBannerImageFile(file);
-    } else {
-      setBannerImageFile(null);
     }
   };
 
@@ -315,193 +283,13 @@ const UploadRegularEvent: React.FC = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('name label')}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={t('name placeholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+              <RegularEventDetailsForm control={form.control} eventId={eventId} />
+              <RegularEventMediaUpload
+                bannerImageFile={bannerImageFile}
+                setBannerImageFile={setBannerImageFile}
+                initialBannerImageUrl={initialBannerImageUrl}
+                MAX_BANNER_IMAGE_SIZE_BYTES={MAX_BANNER_IMAGE_SIZE_BYTES}
               />
-              <FormField
-                control={form.control}
-                name="schedule"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>{t('schedule label')}</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal mt-1",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP HH:mm") : <span>{t('pick date and time')}</span>}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={field.value || undefined}
-                          onSelect={field.onChange}
-                          initialFocus
-                        />
-                        <div className="p-3 border-t border-border">
-                          <Label htmlFor="time-input" className="sr-only">{t('time')}</Label>
-                          <Input
-                            id="time-input"
-                            type="time"
-                            value={field.value ? format(field.value, "HH:mm") : ""}
-                            onChange={(e) => {
-                              const [hours, minutes] = e.target.value.split(':').map(Number);
-                              if (field.value) {
-                                const newDate = new Date(field.value);
-                                newDate.setHours(hours, minutes);
-                                field.onChange(newDate);
-                              } else {
-                                const newDate = new Date();
-                                newDate.setHours(hours, minutes);
-                                field.onChange(newDate);
-                              }
-                            }}
-                            className="w-full"
-                          />
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('description label')}</FormLabel>
-                    <FormControl>
-                      <RichTextEditor
-                        key={eventId || "new-event"} // Pass key prop
-                        value={field.value}
-                        onChange={field.onChange}
-                        placeholder={t('description placeholder')}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="iconName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('icon label')}</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value || ""}>
-                      <FormControl>
-                        <SelectTrigger className="w-full mt-1">
-                          <SelectValue placeholder={t('select icon placeholder')} />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {availableIcons.map(icon => (
-                          <SelectItem key={icon} value={icon}>{icon}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {field.value && (
-                      <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-                        {React.createElement(iconMap[field.value], { className: "h-4 w-4" })} {field.value}
-                      </p>
-                    )}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div>
-                <Label htmlFor="banner-image-upload">{t('banner image label')}</Label>
-                <Input
-                  id="banner-image-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleBannerImageChange}
-                  className="mt-1"
-                />
-                {bannerImageFile ? (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {t('selected image')}: {bannerImageFile.name}
-                  </p>
-                ) : initialBannerImageUrl && (
-                  <div className="mt-2">
-                    <ResponsiveImage 
-                      src={initialBannerImageUrl} 
-                      alt={t('current banner image')} 
-                      containerClassName="w-32 h-20 rounded-md" 
-                      className="object-cover" 
-                    />
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {t('current image')}: <a href={initialBannerImageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{initialBannerImageUrl.split('/').pop()}</a>
-                    </p>
-                  </div>
-                )}
-              </div>
-              <FormField
-                control={form.control}
-                name="quota"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('quota label')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder={t('quota placeholder')}
-                        {...field}
-                        value={field.value === null ? "" : field.value} // Handle null for empty input
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          field.onChange(val === "" ? null : Number(val));
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {t('quota hint')}
-                    </p>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="registrationLink"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('registration link label')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="url"
-                        placeholder={t('registration link placeholder')}
-                        {...field}
-                        value={field.value || ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {t('registration link hint')}
-                    </p>
-                  </FormItem>
-                )}
-              />
-
               <RegularEventRundownSection rundowns={rundowns} setRundowns={setRundowns} />
               <RegularEventFAQSection faqs={faqs} setFaqs={setFaqs} />
 
