@@ -16,14 +16,14 @@ import { CalendarDays, Clock, User, ExternalLink, HelpCircle, Users, CheckCircle
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import ResponsiveImage from "@/components/ResponsiveImage";
-import { formatDisplayDateTime, formatRemainingDays } from "@/utils/dateUtils";
+import { formatDisplayDateTime, formatRemainingDays, parseDateRangeString } from "@/utils/dateUtils"; // Import parseDateRangeString
 import { cn } from "@/lib/utils";
 // Removed RichTextEditor import as it's no longer used for display
 
 interface RegularEvent {
   id: string;
   name: string;
-  schedule: string; // ISO string
+  schedule: string; // Changed to string
   description: string;
   icon_name: string | null;
   banner_image_url: string | null;
@@ -120,7 +120,8 @@ const RegularEventDetail: React.FC = () => {
     );
   }
 
-  const isEventUpcoming = new Date(event.schedule) > new Date();
+  const { startDate } = parseDateRangeString(event.schedule); // Parse schedule string to get startDate
+  const isEventUpcoming = startDate ? startDate > new Date() : false;
   const isQuotaAvailable = event.quota === null || event.quota > 0;
 
   return (
@@ -152,11 +153,11 @@ const RegularEventDetail: React.FC = () => {
               <h2 className="text-2xl font-bold text-primary">{t('event details')}</h2>
               <div className="flex items-center gap-3 text-lg text-foreground">
                 <CalendarDays className="h-6 w-6 text-muted-foreground" />
-                <span>{formatDisplayDateTime(event.schedule)}</span>
+                <span>{event.schedule}</span> {/* Display schedule as is */}
               </div>
               <div className="flex items-center gap-3 text-lg text-foreground">
                 <Clock className="h-6 w-6 text-muted-foreground" />
-                <span>{formatRemainingDays(event.schedule)}</span>
+                <span>{formatRemainingDays(startDate?.toISOString())}</span> {/* Pass ISO string for remaining days */}
               </div>
               {event.quota !== null && (
                 <div className="flex items-center gap-3 text-lg text-foreground">

@@ -16,7 +16,7 @@ import { formatDisplayDateTime } from "@/utils/dateUtils";
 interface RegularEvent {
   id: string;
   name: string;
-  schedule: string; // Now an ISO string
+  schedule: string; // Changed to string
   description: string;
   icon_name: string | null;
   banner_image_url: string | null; // New
@@ -162,7 +162,7 @@ const ManageRegularEvents: React.FC = () => {
                   return (
                     <TableRow key={event.id}>
                       <TableCell className="font-medium">{event.name}</TableCell>
-                      <TableCell>{formatDisplayDateTime(event.schedule)}</TableCell>
+                      <TableCell>{event.schedule}</TableCell> {/* Display as string */}
                       <TableCell>
                         {EventIcon ? <EventIcon className="h-5 w-5" /> : '-'}
                       </TableCell>

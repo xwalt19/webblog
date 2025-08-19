@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { getIconComponent } from "@/utils/iconMap";
-import { formatDisplayDate, formatDisplayDateTime, formatRemainingDays } from "@/utils/dateUtils";
+import { formatDisplayDate, formatDisplayDateTime, formatRemainingDays, parseDateRangeString } from "@/utils/dateUtils";
 import { toast } from "sonner";
 import { CalendarDays, BellRing, Users, CheckCircle2, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 interface RegularEvent {
   id: string;
   name: string;
-  schedule: string; // ISO string
+  schedule: string; // Changed to string
   description: string;
   icon_name: string | null;
   banner_image_url: string | null;
@@ -82,7 +82,9 @@ const RegularEventsClasses: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {regularEvents.map((event) => {
             const EventIcon = getIconComponent(event.icon_name);
-            const isEventUpcoming = new Date(event.schedule) > new Date();
+            // Use parseDateRangeString to get the actual start date for comparison
+            const { startDate } = parseDateRangeString(event.schedule);
+            const isEventUpcoming = startDate ? startDate > new Date() : false;
             const isQuotaAvailable = event.quota === null || event.quota > 0;
 
             return (
@@ -115,7 +117,7 @@ const RegularEventsClasses: React.FC = () => {
                       {t('event type label')}
                     </Badge>
                     <span className="text-sm text-muted-foreground">
-                      {formatDisplayDateTime(event.schedule)}
+                      {event.schedule} {/* Display schedule as is */}
                     </span>
                   </div>
                   <CardTitle className="text-xl font-semibold mb-2">{event.name}</CardTitle>
@@ -146,7 +148,7 @@ const RegularEventsClasses: React.FC = () => {
                     )}
                   </div>
                   <div className="font-semibold text-primary">
-                    {formatRemainingDays(event.schedule)}
+                    {formatRemainingDays(startDate?.toISOString())} {/* Pass ISO string for remaining days */}
                   </div>
                 </div>
                 <div className="p-4 pt-0">
