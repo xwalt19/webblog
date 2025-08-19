@@ -212,9 +212,9 @@ const RegularEventDetail: React.FC = () => {
                         .sort((a, b) => a.order_index - b.order_index)
                         .map((rundown) => (
                           <TableRow key={rundown.id}>
-                            <TableCell className="font-medium text-left text-foreground border-b border-x-0">{rundown.time}</TableCell>
-                            <TableCell className="text-left text-foreground border-b border-x-0">{rundown.session_title}</TableCell>
-                            <TableCell className="text-left text-foreground border-b border-x-0">
+                            <TableCell className="font-medium text-left text-foreground border-r border-b">{rundown.time}</TableCell>
+                            <TableCell className="text-left text-foreground border-r border-b">{rundown.session_title}</TableCell>
+                            <TableCell className="text-left text-foreground border-b">
                               {/* Konten speaker dikosongkan sesuai permintaan gambar terbaru */}
                             </TableCell>
                           </TableRow>
