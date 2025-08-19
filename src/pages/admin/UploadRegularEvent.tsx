@@ -8,24 +8,23 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/components/SessionProvider";
-import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
-import { useForm }
-from "react-hook-form";
+import RegularEventDetailsForm from "@/components/admin/RegularEventDetailsForm";
+import RegularEventRundownSection from "@/components/admin/RegularEventRundownSection";
+import RegularEventFAQSection from "@/components/admin/RegularEventFAQSection";
+import RegularEventMediaUpload from "@/components/admin/RegularEventMediaUpload";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form } from "@/components/ui/form";
-import RegularEventDetailsForm from "@/components/admin/RegularEventDetailsForm"; // New import
-import RegularEventMediaUpload from "@/components/admin/RegularEventMediaUpload"; // New import
-import RegularEventRundownSection from "@/components/admin/RegularEventRundownSection";
-import RegularEventFAQSection from "@/components/admin/RegularEventFAQSection";
-import { formatDateRangeWithTime, parseDateRangeString } from "@/utils/dateUtils"; // Import date utils
+import { useAdminPageLogic } from "@/hooks/use-admin-page-logic";
+import { formatDateRangeWithTime, parseDateRangeString } from "@/utils/dateUtils";
 
 interface RundownItem {
   id?: string;
   time: string;
   session_title: string;
-  speaker_name: string; // New
-  speaker_role: string; // New
+  speaker_name: string;
+  speaker_role: string;
   order_index: number;
 }
 
@@ -47,7 +46,6 @@ const formSchema = z.object({
   }).max(100, {
     message: "Name must not be longer than 100 characters.",
   }),
-  // Changed from single 'schedule' to date range and time fields
   startDate: z.date().optional().nullable(),
   endDate: z.date().optional().nullable(),
   startTime: z.string().regex(timeRegex, { message: "Invalid time format (HH:MM)" }).optional().nullable(),
@@ -85,14 +83,14 @@ const UploadRegularEvent: React.FC = () => {
   const navigate = useNavigate();
   const { session } = useSession();
 
-  const [dataLoading, setDataLoading] = useState(true);
-  const [bannerImageFile, setBannerImageFile] = useState<File | null>(null);
-  const [initialBannerImageUrl, setInitialBannerImageUrl] = useState<string | null>(null);
   const [rundowns, setRundowns] = useState<RundownItem[]>([]);
   const [faqs, setFaqs] = useState<FAQItem[]>([]);
+  const [bannerImageFile, setBannerImageFile] = useState<File | null>(null);
+  const [initialBannerImageUrl, setInitialBannerImageUrl] = useState<string | null>(null);
+  const [dataLoading, setDataLoading] = useState(true);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof regularEventSchema>>({
+    resolver: zodResolver(regularEventSchema),
     defaultValues: {
       name: "",
       startDate: undefined,
@@ -109,27 +107,37 @@ const UploadRegularEvent: React.FC = () => {
   const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
     isAdminRequired: true,
     onAuthSuccess: () => {
+      console.log("UploadRegularEvent: [DEBUG] Auth successful, should fetch data.");
       if (eventId) {
         fetchEventData(eventId);
       } else {
+        console.log("UploadRegularEvent: [DEBUG] No eventId, setting dataLoading to false for new event form.");
         setDataLoading(false);
       }
     },
   });
 
   const fetchEventData = async (id: string) => {
+    console.log("UploadRegularEvent: [DEBUG] fetchEventData called for ID:", id);
     setDataLoading(true);
     try {
+      console.log("UploadRegularEvent: [DEBUG] Fetching event data from Supabase...");
       const { data, error } = await supabase
         .from('regular_events')
         .select('*, regular_event_rundowns(*), regular_event_faqs(*)')
         .eq('id', id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("UploadRegularEvent: [ERROR] Error fetching event data:", error);
+        throw error;
+      }
 
       if (data) {
+        console.log("UploadRegularEvent: [DEBUG] Event data fetched:", data);
         const { startDate, endDate, startTime, endTime } = parseDateRangeString(data.schedule);
+        console.log("UploadRegularEvent: [DEBUG] Parsed schedule:", { startDate, endDate, startTime, endTime });
+
         form.reset({
           name: data.name || "",
           startDate: startDate,
@@ -141,24 +149,27 @@ const UploadRegularEvent: React.FC = () => {
           quota: data.quota,
           registrationLink: data.registration_link || "",
         });
+        console.log("UploadRegularEvent: [DEBUG] Form reset with data:", form.getValues());
         setInitialBannerImageUrl(data.banner_image_url || null);
-        // Map old 'speaker' to new 'speaker_name' and 'speaker_role' if 'speaker' exists and new fields are null
+        
         const mappedRundowns = data.regular_event_rundowns.map((r: any) => ({
           id: r.id,
           time: r.time,
           session_title: r.session_title,
-          speaker_name: r.speaker_name || r.speaker || "", // Use new field, fallback to old, then empty
-          speaker_role: r.speaker_role || "", // Use new field, fallback to empty
+          speaker_name: r.speaker_name || r.speaker || "",
+          speaker_role: r.speaker_role || "",
           order_index: r.order_index,
         })).sort((a, b) => a.order_index - b.order_index);
         setRundowns(mappedRundowns || []);
         setFaqs(data.regular_event_faqs.sort((a, b) => a.order_index - b.order_index) || []);
+        console.log("UploadRegularEvent: [DEBUG] Rundowns and FAQs set.");
       }
     } catch (err: any) {
-      console.error("Error fetching regular event data:", err);
+      console.error("UploadRegularEvent: [ERROR] Error in fetchEventData:", err);
       toast.error(t("fetch data error", { error: err.message }));
       navigate('/admin/manage-regular-events');
     } finally {
+      console.log("UploadRegularEvent: [DEBUG] fetchEventData finally block: setting dataLoading to false.");
       setDataLoading(false);
     }
   };
@@ -169,9 +180,7 @@ const UploadRegularEvent: React.FC = () => {
     try {
       let currentBannerImageUrl = initialBannerImageUrl;
 
-      // Handle banner image upload/update
       if (bannerImageFile) {
-        // Delete old image if exists
         if (initialBannerImageUrl) {
           try {
             const path = initialBannerImageUrl.split('/images/event_banners/')[1];
@@ -184,7 +193,6 @@ const UploadRegularEvent: React.FC = () => {
           }
         }
 
-        // Upload new image
         const fileExtension = bannerImageFile.name.split('.').pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExtension}`;
         const filePath = `event_banners/${fileName}`;
@@ -202,7 +210,6 @@ const UploadRegularEvent: React.FC = () => {
         const { data: publicUrlData } = supabase.storage.from('images').getPublicUrl(filePath);
         currentBannerImageUrl = publicUrlData.publicUrl;
       } else if (eventId && !bannerImageFile && initialBannerImageUrl) {
-        // If editing and image is cleared, delete old image
         try {
           const path = initialBannerImageUrl.split('/images/event_banners/')[1];
           if (path) {
@@ -224,7 +231,7 @@ const UploadRegularEvent: React.FC = () => {
 
       const eventData = {
         name: values.name,
-        schedule: formattedSchedule || null, // Save the formatted string
+        schedule: formattedSchedule || null,
         description: values.description,
         icon_name: values.iconName || null,
         quota: values.quota || null,
@@ -255,20 +262,18 @@ const UploadRegularEvent: React.FC = () => {
       if (error) throw error;
       if (!currentEventId) throw new Error("Event ID not found after save.");
 
-      // Prepare rundowns for upsert
       const rundownsToUpsert = rundowns.map((r, idx) => ({
         event_id: currentEventId,
         time: r.time,
         session_title: r.session_title,
-        speaker_name: r.speaker_name, // Use new field
-        speaker_role: r.speaker_role, // Use new field
+        speaker_name: r.speaker_name,
+        speaker_role: r.speaker_role,
         order_index: idx,
         created_by: session?.user?.id,
         created_at: new Date().toISOString(),
-        ...(r.id && { id: r.id }), // Conditionally add id for existing records
+        ...(r.id && { id: r.id }),
       }));
 
-      // Prepare FAQs for upsert
       const faqsToUpsert = faqs.map((f, idx) => ({
         event_id: currentEventId,
         question: f.question,
@@ -276,10 +281,9 @@ const UploadRegularEvent: React.FC = () => {
         order_index: idx,
         created_by: session?.user?.id,
         created_at: new Date().toISOString(),
-        ...(f.id && { id: f.id }), // Conditionally add id for existing records
+        ...(f.id && { id: f.id }),
       }));
 
-      // Fetch existing rundown and FAQ IDs to determine what to delete
       const { data: existingRundowns, error: fetchRundownsError } = await supabase
         .from('regular_event_rundowns')
         .select('id')
@@ -294,11 +298,9 @@ const UploadRegularEvent: React.FC = () => {
       if (fetchFaqsError) throw fetchFaqsError;
       const existingFaqIds = new Set(existingFaqs.map(f => f.id));
 
-      // Determine IDs to delete (those that were in DB but are no longer in the form)
       const rundownIdsToDelete = Array.from(existingRundownIds).filter(id => !rundownsToUpsert.some(r => r.id === id));
       const faqIdsToDelete = Array.from(existingFaqIds).filter(id => !faqsToUpsert.some(f => f.id === id));
 
-      // Perform deletions
       if (rundownIdsToDelete.length > 0) {
         const { error: deleteRundownsError } = await supabase.from('regular_event_rundowns').delete().in('id', rundownIdsToDelete);
         if (deleteRundownsError) throw deleteRundownsError;
@@ -308,18 +310,17 @@ const UploadRegularEvent: React.FC = () => {
         if (deleteFaqsError) throw deleteFaqsError;
       }
 
-      // Perform upserts for remaining/new items
       if (rundownsToUpsert.length > 0) {
         const { error: upsertRundownsError } = await supabase
           .from('regular_event_rundowns')
-          .upsert(rundownsToUpsert, { onConflict: 'id' }); // Conflict on 'id' for existing records
+          .upsert(rundownsToUpsert, { onConflict: 'id' });
         if (upsertRundownsError) throw upsertRundownsError;
       }
 
       if (faqsToUpsert.length > 0) {
         const { error: upsertFaqsError } = await supabase
           .from('regular_event_faqs')
-          .upsert(faqsToUpsert, { onConflict: 'id' }); // Conflict on 'id' for existing records
+          .upsert(faqsToUpsert, { onConflict: 'id' });
         if (upsertFaqsError) throw upsertFaqsError;
       }
 
@@ -327,14 +328,15 @@ const UploadRegularEvent: React.FC = () => {
       navigate('/admin/manage-regular-events');
 
     } catch (err: any) {
-      console.error("Error saving regular event:", err);
+      console.error("UploadRegularEvent: [ERROR] Error saving regular event:", err);
       toast.error(t("save failed", { error: err.message }), { id: toastId });
     } finally {
-      form.formState.isSubmitting = false; // Manually reset submitting state
+      form.formState.isSubmitting = false;
     }
   };
 
   if (isLoadingAuth || (eventId && dataLoading)) {
+    console.log("UploadRegularEvent: [DEBUG] Rendering loading state. isLoadingAuth:", isLoadingAuth, "eventId:", eventId, "dataLoading:", dataLoading);
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-foreground">{t('loading status')}</p>
@@ -343,6 +345,7 @@ const UploadRegularEvent: React.FC = () => {
   }
 
   if (!isAuthenticatedAndAuthorized) {
+    console.log("UploadRegularEvent: [DEBUG] Not authenticated or authorized. Returning null.");
     return null;
   }
 
