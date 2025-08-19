@@ -200,7 +200,7 @@ const RegularEventDetail: React.FC = () => {
               <Card className="shadow-sm">
                 <CardContent className="p-0">
                   <Table>
-                    <TableHeader className="bg-black">
+                    <TableHeader className="bg-primary"> {/* Changed to bg-primary */}
                       <TableRow>
                         <TableHead className="w-[100px] text-left border-x-0 text-white font-bold">Time</TableHead>
                         <TableHead className="flex-1 text-left border-x-0 text-white font-bold">Session</TableHead>
