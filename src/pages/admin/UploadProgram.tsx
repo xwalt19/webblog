@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react"; // Import useCallback
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -93,20 +93,8 @@ const UploadProgram: React.FC = () => {
     },
   });
 
-  const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
-    isAdminRequired: true,
-    onAuthSuccess: () => {
-      console.log("UploadProgram: [DEBUG] Auth successful, should fetch data. programId:", programId);
-      if (programId) {
-        fetchProgramData(programId);
-      } else {
-        console.log("UploadProgram: [DEBUG] No programId, setting dataLoading to false for new program form.");
-        setDataLoading(false);
-      }
-    },
-  });
-
-  const fetchProgramData = async (id: string) => {
+  // Memoize fetchProgramData to be a stable function
+  const fetchProgramData = useCallback(async (id: string) => {
     console.log("UploadProgram: [DEBUG] fetchProgramData called for ID:", id);
     setDataLoading(true);
     try {
@@ -168,7 +156,22 @@ const UploadProgram: React.FC = () => {
       console.log("UploadProgram: [DEBUG] fetchProgramData finally block: setting dataLoading to false.");
       setDataLoading(false);
     }
-  };
+  }, [form, navigate, t]); // Dependencies for useCallback
+
+  const onAuthSuccessCallback = useCallback(() => {
+    console.log("UploadProgram: [DEBUG] Auth successful, should fetch data. programId:", programId);
+    if (programId) {
+      fetchProgramData(programId);
+    } else {
+      console.log("UploadProgram: [DEBUG] No programId, setting dataLoading to false for new program form.");
+      setDataLoading(false);
+    }
+  }, [programId, fetchProgramData]); // Dependencies for onAuthSuccessCallback
+
+  const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
+    isAdminRequired: true,
+    onAuthSuccess: onAuthSuccessCallback, // Pass the memoized callback
+  });
 
   const onSubmit = async (values: z.infer<typeof programSchema>) => {
     const toastId = toast.loading(programId ? t("updating status") : t("uploading status"));

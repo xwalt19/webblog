@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react"; // Import useCallback
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -104,20 +104,8 @@ const UploadRegularEvent: React.FC = () => {
     },
   });
 
-  const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
-    isAdminRequired: true,
-    onAuthSuccess: () => {
-      console.log("UploadRegularEvent: [DEBUG] Auth successful, should fetch data. eventId:", eventId);
-      if (eventId) {
-        fetchEventData(eventId);
-      } else {
-        console.log("UploadRegularEvent: [DEBUG] No eventId, setting dataLoading to false for new event form.");
-        setDataLoading(false);
-      }
-    },
-  });
-
-  const fetchEventData = async (id: string) => {
+  // Memoize fetchEventData to be a stable function
+  const fetchEventData = useCallback(async (id: string) => {
     console.log("UploadRegularEvent: [DEBUG] fetchEventData called for ID:", id);
     setDataLoading(true);
     try {
@@ -172,7 +160,22 @@ const UploadRegularEvent: React.FC = () => {
       console.log("UploadRegularEvent: [DEBUG] fetchEventData finally block: setting dataLoading to false.");
       setDataLoading(false);
     }
-  };
+  }, [form, navigate, t]); // Dependencies for useCallback
+
+  const onAuthSuccessCallback = useCallback(() => {
+    console.log("UploadRegularEvent: [DEBUG] Auth successful, should fetch data. eventId:", eventId);
+    if (eventId) {
+      fetchEventData(eventId);
+    } else {
+      console.log("UploadRegularEvent: [DEBUG] No eventId, setting dataLoading to false for new event form.");
+      setDataLoading(false);
+    }
+  }, [eventId, fetchEventData]); // Dependencies for onAuthSuccessCallback
+
+  const { isLoadingAuth, isAuthenticatedAndAuthorized } = useAdminPageLogic({
+    isAdminRequired: true,
+    onAuthSuccess: onAuthSuccessCallback, // Pass the memoized callback
+  });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const toastId = toast.loading(eventId ? t("updating status") : t("uploading status"));
